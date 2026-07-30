@@ -74,15 +74,15 @@ Use descriptive names.
 
 Examples:
 
-feature/member-attendance
+feature/<domain-concept>-<capability>
 
 feature/payment-reminders
 
-bugfix/event-filter
+bugfix/<screen-or-endpoint>-<symptom>
 
 hotfix/login-error
 
-refactor/attendance-service
+refactor/<module>-<what-changes>
 
 docs/api-reference
 
@@ -121,11 +121,11 @@ Prefer imperative mood.
 Examples:
 
 ```
-Add attendance confirmation workflow
+Add password reset workflow
 
 Fix payment validation bug
 
-Refactor event scheduling service
+Refactor scheduling service
 
 Update onboarding documentation
 ```

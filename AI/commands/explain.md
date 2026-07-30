@@ -35,7 +35,7 @@ Examples:
 ```
 /explain Authentication flow
 
-/explain Attendance domain model
+/explain <entity> domain model
 
 /explain Why this architecture was chosen
 ```

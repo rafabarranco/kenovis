@@ -81,6 +81,8 @@ They represent user intentions.
 
 Examples:
 
+/init-project
+
 /next
 
 /feature
@@ -90,6 +92,8 @@ Examples:
 /release
 
 /bug
+
+/init-project is the first command ever run in a repository. It replaces the example product layer with a real one. Every other command assumes it has already happened.
 
 Commands do not contain complex logic.
 
@@ -177,15 +181,27 @@ Project Context
 
 Location:
 
-PROJECT/
+COMPANY_OS.md
+
+DECISIONS.md
+
+PRODUCT/
 
 DOMAIN/
 
 ENGINEERING/
 
+AUTOMATIONS/
+
+AI/memory/
+
 Project context defines the specific company and product.
 
+Every file in this layer starts with a PROJECT-SPECIFIC marker.
+
 The AI-OS must never assume project-specific information.
+
+Commands, workflows, agents, policies and templates are framework. They must never hardcode a stack, a tenancy model, a business entity or a market. When they need one, they read it from the project context.
 
 The project provides:
 

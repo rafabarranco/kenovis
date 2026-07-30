@@ -140,11 +140,11 @@ User opens event
 
 ↓
 
-Reviews participants
+Reviews the details
 
 ↓
 
-Confirms attendance
+Confirms the action
 
 ↓
 

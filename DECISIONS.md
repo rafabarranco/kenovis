@@ -1,16 +1,32 @@
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+
 # DECISIONS.md
 
 Company Decision Log
 
-Version: 2.0
+Version: 2.1
 
 Last updated: 2026
 
 ---
 
+# Document Layers
+
+Most decisions in this log are product-specific and must be removed when starting a new product.
+
+Three are framework-level and should be carried over:
+
+- DECISION-001 — AI-Native Company Operating Model.
+- DECISION-009 — Documentation As Company Memory.
+- DECISION-010 — AI Tooling Strategy.
+
+Everything else describes the example company. See AI/commands/init-project.md.
+
+---
+
 # Purpose
 
-This document records important decisions that shape Kenovis.
+This document records important decisions that shape the company.
 
 The objective is to preserve:
 
@@ -130,7 +146,7 @@ Considered but intentionally discarded.
 
 # Strategic Decisions
 
-Company-level decisions that affect Kenovis direction.
+Company-level decisions that affect the direction of the company.
 
 ---
 
@@ -158,7 +174,7 @@ Review Date:
 
 ## Context
 
-Kenovis starts with a very small human team.
+The company starts with a very small human team.
 
 Building a traditional software company would require significant investment in:
 
@@ -611,7 +627,7 @@ Negative:
 
 # Product Decisions
 
-Product decisions that affect what Kenovis builds.
+Product decisions that affect what the company builds.
 
 ---
 

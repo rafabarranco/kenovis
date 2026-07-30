@@ -2,9 +2,9 @@
 
 ## What is this?
 
-This is where Kenovis's actual product implementation lives — the software itself, as opposed to the business, product, domain and engineering documentation that lives at the repository root.
+This is where the product's actual implementation lives — the software itself, as opposed to the business, product, domain and engineering documentation that lives at the repository root.
 
-Currently empty. Phase 0 (see [PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md)) has not started yet.
+Currently empty. The first roadmap phase (see [PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md)) has not started yet.
 
 ## Structure
 

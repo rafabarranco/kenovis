@@ -223,17 +223,9 @@ Avoid copy-paste development.
 
 Use business language.
 
-Examples:
+Names in code come from DOMAIN/DOMAIN_MODEL.md and AI/memory/glossary.md.
 
-Organization
-
-Member
-
-Attendance
-
-Event
-
-Payment
+If a name does not exist in the domain vocabulary, either the name is wrong or the vocabulary is incomplete. Resolve that before writing the code.
 
 Avoid technical names leaking into business concepts.
 
@@ -241,9 +233,13 @@ Avoid technical names leaking into business concepts.
 
 # Multi-Tenant Architecture
 
+Applies only if multi-tenancy is a documented decision in DECISIONS.md.
+
+When the product is multi-tenant:
+
 Tenant isolation is mandatory.
 
-Every business workflow must respect organization boundaries.
+Every business workflow must respect tenant boundaries.
 
 Never assume global visibility.
 

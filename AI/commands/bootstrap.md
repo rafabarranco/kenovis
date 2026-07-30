@@ -33,6 +33,26 @@ Context before action.
 
 ---
 
+# Precondition - Product Layer Must Be Real
+
+Before bootstrapping, confirm the product layer describes an actual product.
+
+Product-layer files (COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/) carry a `PROJECT-SPECIFIC` marker on the first line.
+
+If they still contain example content from a previous or sample company:
+
+Stop.
+
+Execute:
+
+```
+AI/commands/init-project.md
+```
+
+Bootstrapping into someone else's context produces confident wrong work.
+
+---
+
 # Bootstrap Workflow
 
 Execute the following sequence.

@@ -1,6 +1,20 @@
+<!-- PROJECT-SPECIFIC: the Domain Terms section is placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+
 AI Glossary
 
-Version: 1.0
+Version: 1.1
+---
+Document Layers
+
+This glossary has two sections.
+
+Domain Terms
+
+Product-specific. The terms below the "Domain Terms" heading describe the current product and must be replaced when starting a new product.
+
+Framework Terms
+
+Reusable. The terms below the "Framework Terms" heading describe the AI-OS itself and apply to every product.
 ---
 Purpose
 
@@ -47,6 +61,12 @@ unless they represent different concepts.
 ---
 Domain Terms
 
+PROJECT-SPECIFIC. Everything until the "Framework Terms" heading describes the current product.
+
+The terms below are placeholders from the example company. Replace them with the vocabulary of the product defined in DOMAIN/DOMAIN_MODEL.md.
+
+Keep the definition format: name, definition, examples, and any rules attached to the concept.
+---
 Entity
 
 Definition:
@@ -178,8 +198,8 @@ Examples:
 
 - Meeting.
 - Class.
-- Concert.
-- Training session.
+- Session.
+- Appointment.
 
 Events may have:
 
@@ -218,6 +238,10 @@ Examples:
 
 Financial logic must never exist only in the UI.
 ---
+Framework Terms
+
+Reusable across products. Everything below describes the AI-OS itself and should not change when starting a new product.
+---
 Feature
 
 Definition:
@@ -252,15 +276,15 @@ Examples:
 
 Business workflow:
 
-Create Event
+Start the operation
 
 ↓
 
-Invite Members
+Involve the participants
 
 ↓
 
-Collect Attendance
+Record the outcome
 
 Technical workflow:
 
@@ -361,7 +385,7 @@ Examples:
 
 - Finance.
 - Education.
-- Music management.
+- Logistics.
 - Healthcare.
 
 The domain is independent from technology.
@@ -423,15 +447,15 @@ Example:
 
 Business:
 
-Attendance
+Invoice
 
 Possible technical representations:
 
-AttendanceService
+InvoiceService
 
-AttendanceRepository
+InvoiceRepository
 
-AttendanceController
+InvoiceController
 
 Avoid:
 

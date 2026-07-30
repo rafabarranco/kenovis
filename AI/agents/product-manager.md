@@ -112,7 +112,7 @@ Bad:
 
 Good:
 
-"Administrators need to share attendance reports with external organizations without manually copying information."
+"Administrators need to share their records with people outside the system without manually copying information."
 ---
 Feature Definition
 
@@ -154,11 +154,11 @@ So that [benefit]
 
 Example:
 
-As a teacher,
+As a [role from DOMAIN/DOMAIN_MODEL.md],
 
-I want to mark member attendance,
+I want to [capability],
 
-so that I know who participated in each event.
+so that [outcome the role actually cares about].
 
 ---
 Acceptance Criteria
@@ -175,11 +175,11 @@ Then
 
 Example:
 
-Given an event exists
+Given [precondition]
 
-When a member confirms attendance
+When [action]
 
-Then the attendance status becomes confirmed.
+Then [observable result].
 
 ---
 Roadmap Management

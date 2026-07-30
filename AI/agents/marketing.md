@@ -216,13 +216,13 @@ Translate features into customer value.
 Avoid messaging like:
 
 ```
-"Our application has advanced attendance tracking."
+"Our application has advanced reporting capabilities."
 ```
 
 Prefer:
 
 ```
-"Know exactly who attended every event in seconds."
+"Know where your numbers stand in seconds, without building a spreadsheet."
 ```
 
 Benefits before features.

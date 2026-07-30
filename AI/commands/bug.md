@@ -34,7 +34,7 @@ Command:
 Examples:
 
 ```
-/bug Users cannot confirm attendance
+/bug Users cannot complete the signup flow
 
 /bug Payment calculation is incorrect
 ```

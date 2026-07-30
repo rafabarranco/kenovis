@@ -90,17 +90,9 @@ Prefer UUIDs unless documented otherwise.
 
 Use business terminology.
 
-Good:
+Table names are the plural of a concept that exists in DOMAIN/DOMAIN_MODEL.md and AI/memory/glossary.md.
 
-organizations
-
-members
-
-events
-
-payments
-
-attendance
+If a table name does not appear in the domain vocabulary, either the name is wrong or the domain model is incomplete.
 
 Avoid:
 
@@ -169,25 +161,29 @@ Denormalize only when:
 
 # Multi-Tenant Policy
 
+Applies only if multi-tenancy is a documented decision in DECISIONS.md.
+
+Do not assume the product is multi-tenant. Do not assume it is single-tenant either. Check first.
+
+When the product is multi-tenant:
+
 Every customer-owned table must explicitly belong to a tenant.
 
-Normally:
+The tenant key is defined in ENGINEERING/DATABASE.md. Use that name, do not invent one.
 
-organization_id
-
-should exist.
-
-Never allow data that cannot be associated with an organization unless intentionally global.
+Never allow data that cannot be associated with a tenant unless it is intentionally global and documented as such.
 
 ---
 
 # Tenant Isolation
 
+Applies only when the product is multi-tenant.
+
 Every query must respect tenant boundaries.
 
 Never expose cross-tenant data.
 
-If Row-Level Security (RLS) is supported, evaluate its use.
+Enforce isolation at the database layer when the engine supports it (for example Row-Level Security in PostgreSQL).
 
 Application filtering alone is not sufficient for high-risk data.
 
@@ -332,7 +328,7 @@ Examples:
 
 Payments.
 
-Attendance confirmation.
+Multi-step state changes.
 
 Permission updates.
 
@@ -452,7 +448,7 @@ Before approving:
 
 ✓ Constraints protect integrity.
 
-✓ Tenant isolation exists.
+✓ Tenant isolation exists, if the product is multi-tenant.
 
 ✓ Migrations are safe.
 

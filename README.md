@@ -2,15 +2,32 @@
 
 ## What is this?
 
-Kenovis is building the operating platform for organizations that manage people, groups, events, attendance and financial operations — starting with music bands as the initial market (see [COMPANY_OS.md](COMPANY_OS.md)).
+Kenovis is an **AI Operating System (AI-OS)**: a framework for running a complete product and engineering organization with AI agents instead of a traditional team.
 
-This repository is currently the company's operating system: business context, product direction, domain rules, engineering standards, and the AI-OS framework that governs how AI agents and humans work here. Product implementation lives under [CODE/](CODE/), which is empty until Phase 0 of [PRODUCT/ROADMAP.md](PRODUCT/ROADMAP.md) begins.
+It gives an AI tool the context, roles, processes and rules it needs to behave like a company — CEO, CTO, product, design, engineering, security, review — rather than like a code generator.
 
-## Why does it exist?
+The repository contains **two layers**:
 
-The company replaces fragmented operational workflows (WhatsApp, spreadsheets, manual attendance and payments) with a unified operational platform, starting narrow and expanding once product-market fit is reached. Full reasoning in [COMPANY_OS.md](COMPANY_OS.md).
+| Layer | What it is | Changes per product? |
+|---|---|---|
+| **Framework** | The AI-OS itself: [AI/](AI/), [CLAUDE.md](CLAUDE.md), this README | No. Reusable as-is |
+| **Product** | The company and product being built with it | Yes. Rewritten every time |
 
-## How do I start?
+Everything in the product layer is currently a **placeholder** describing an example company. It is there to show the expected shape and depth of each document, not to define your product.
+
+## Starting a new product
+
+Read [AI/commands/init-project.md](AI/commands/init-project.md). It lists exactly which files to empty and rewrite, in which order, and what to leave untouched.
+
+Product-layer files carry this marker on their first line:
+
+```
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+```
+
+If a file has that marker, it describes the example company and must be replaced. If it does not, it is framework and should work unchanged.
+
+## Working on an existing product
 
 Read in this order, per the Session Initialization Protocol in [AI/SYSTEM.md](AI/SYSTEM.md):
 
@@ -20,27 +37,49 @@ Read in this order, per the Session Initialization Protocol in [AI/SYSTEM.md](AI
 
 Then load context relevant to your task: [PRODUCT/](PRODUCT/), [DOMAIN/](DOMAIN/), [ENGINEERING/](ENGINEERING/), [AUTOMATIONS/](AUTOMATIONS/).
 
+Then run [AI/commands/bootstrap.md](AI/commands/bootstrap.md) before touching anything.
+
 Do not modify code or documentation before understanding this context.
 
 ## Repository map
 
-| Folder | Contains |
+Framework layer — reusable:
+
+| Path | Contains |
+|---|---|
+| [AI/SYSTEM.md](AI/SYSTEM.md) | How the AI-OS operates. Entry point for non-Claude Code tools |
+| [AI/agents/](AI/agents/) | 12 specialized roles (CEO, CTO, product, design, frontend, backend, database, security, review, marketing, finance, legal) |
+| [AI/workflows/](AI/workflows/) | Execution processes (feature, bugfix, hotfix, architecture, release, review, roadmap) |
+| [AI/policies/](AI/policies/) | Non-negotiable rules (architecture, coding, database, security, testing, git, documentation) |
+| [AI/commands/](AI/commands/) | Entry points (init-project, bootstrap, next, feature, bug, review, release, architect, analyze, explain) |
+| [AI/templates/](AI/templates/) | Document templates (ADR, decision, feature plan, bug report, release notes) |
+| [CLAUDE.md](CLAUDE.md) | Constitution auto-loaded by Claude Code |
+
+Product layer — rewritten per product:
+
+| Path | Contains |
 |---|---|
 | [COMPANY_OS.md](COMPANY_OS.md) | Company vision, thesis, principles — highest-level context |
 | [DECISIONS.md](DECISIONS.md) | Log of important company/product/engineering decisions |
 | [PRODUCT/](PRODUCT/) | Features, roadmap, user research |
 | [DOMAIN/](DOMAIN/) | Business entities and rules |
-| [ENGINEERING/](ENGINEERING/) | Architecture, database and security design for this product |
-| [AI/](AI/) | The AI-OS: agents, workflows, policies, commands, templates, memory |
-| [AUTOMATIONS/](AUTOMATIONS/) | Onboarding, release and feedback automation processes |
+| [ENGINEERING/](ENGINEERING/) | Architecture, database and security design |
+| [AUTOMATIONS/](AUTOMATIONS/) | Onboarding, release and feedback processes |
+| [AI/memory/](AI/memory/) | Glossary, conventions and learnings accumulated by this product |
 | [CODE/](CODE/) | Actual product implementation (currently empty) |
+
+## Source of truth
+
+When information conflicts:
+
+```
+COMPANY_OS.md → DECISIONS.md → DOMAIN/ → PRODUCT/ → ENGINEERING/ → code
+```
+
+Code is never the source of truth.
 
 ## Tooling
 
-Primary development interface: **Claude Code** (VS Code extension, Claude Pro subscription), which auto-loads the root [CLAUDE.md](CLAUDE.md).
+Primary development interface: **Claude Code** (VS Code extension), which auto-loads the root [CLAUDE.md](CLAUDE.md).
 
-The AI-OS under [AI/](AI/) is intentionally tool-agnostic plain markdown so it can also be followed by other AI tooling, including Maker. See [DECISION-010](DECISIONS.md) in DECISIONS.md.
-
-## Where can I learn more?
-
-Start with [COMPANY_OS.md](COMPANY_OS.md), then [DECISIONS.md](DECISIONS.md), then [AI/SYSTEM.md](AI/SYSTEM.md).
+The AI-OS under [AI/](AI/) is intentionally tool-agnostic plain markdown so it can also be followed by other AI tooling. A tool other than Claude Code should load [AI/SYSTEM.md](AI/SYSTEM.md) as its entry point. See [DECISION-010](DECISIONS.md).

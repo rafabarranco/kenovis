@@ -127,13 +127,13 @@ Responsible for:
 
 Examples:
 
-Create Event
+Create <entity>
 
-Register Attendance
+Record <state change>
 
-Calculate Payment Distribution
+Calculate <derived value>
 
-Invite Member
+Invite <participant>
 
 ---
 Domain Layer

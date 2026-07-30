@@ -1,6 +1,14 @@
+<!-- PROJECT-SPECIFIC: accumulates per-product knowledge. Reset the recorded entries when starting a new product, keep the rules. See AI/commands/init-project.md -->
+
 AI Memory Conventions
 
-Version: 1.0
+Version: 1.1
+---
+Scope
+
+The rules in this document are framework-level and reusable.
+
+The conventions recorded by the AI while working on a product are project-specific and must be cleared when starting a new product.
 ---
 Purpose
 

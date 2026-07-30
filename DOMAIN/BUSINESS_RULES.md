@@ -1,3 +1,5 @@
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+
 BUSINESS_RULES.md
 
 Business Rules
