@@ -195,13 +195,15 @@ AUTOMATIONS/
 
 AI/memory/
 
+CODE/README.md
+
 Project context defines the specific company and product.
 
 Every file in this layer starts with a PROJECT-SPECIFIC marker.
 
 The AI-OS must never assume project-specific information.
 
-Commands, workflows, agents, policies and templates are framework. They must never hardcode a stack, a tenancy model, a business entity or a market. When they need one, they read it from the project context.
+Commands, workflows, agents, policies and templates are framework. They must never hardcode a stack, a language, a tenancy model, a repository topology, a business entity or a market. When they need one, they read it from the project context.
 
 The project provides:
 

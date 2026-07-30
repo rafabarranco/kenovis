@@ -137,21 +137,16 @@ Understand:
 
 # Step 4 - Inspect Repository Structure
 
-Product and platform implementation lives under `CODE/`. See `CODE/README.md` for structure details.
+Product and platform implementation lives under `CODE/`.
 
-Analyze:
+Read `CODE/README.md` first. It describes the topology this product actually uses. Do not assume a monorepo, a single app, or any particular directory layout.
 
-```
-CODE/
-CODE/apps/
-CODE/packages/
-CODE/docs/
-```
+Then analyze `CODE/` as it exists on disk.
 
 Identify:
 
-- Applications.
-- Shared packages.
+- Deployable units.
+- Shared code.
 - Entry points.
 - Technologies.
 - Build system.

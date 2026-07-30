@@ -176,20 +176,26 @@ Understand:
 
 Never duplicate backend business rules blindly.
 ---
-TypeScript Rules
+Type Safety Rules
+
+The language and its tooling are defined in ENGINEERING/ARCHITECTURE.md. Read it before writing code. Do not assume a language.
+
+These rules apply to any statically typed language:
 
 Always:
 
-- Use strict typing.
-- Define meaningful types.
-- Prefer inference when obvious.
-- Share contracts when possible.
+- Enable the strictest type checking the language offers.
+- Define meaningful types that name business concepts.
+- Prefer inference when the type is obvious.
+- Share contracts between frontend and backend when the stack allows it.
 
 Avoid:
 
-- any.
+- Escape hatches that disable checking.
 - Unsafe casts.
 - Duplicate models without reason.
+
+If the language is dynamically typed, apply the same intent through the available mechanism: type hints, schema validation at boundaries, or runtime contracts.
 ---
 UI Implementation
 

@@ -46,25 +46,40 @@ Never mix unrelated changes.
 
 # Branch Strategy
 
-Prefer short-lived branches.
+Three long-lived branches, all protected. Work happens on short-lived branches off `development`.
 
-Typical flow:
+Flow:
+
+```
+development
+
+  ↓  branch
+
+feature/XXXX
+
+  ↓  pull request + review
+
+development
+
+  ↓  pull request
+
+preproduction
+
+  ↓  pull request
 
 main
+```
 
-↓
+Create every working branch from `development`:
 
-feature/...
+```
+git fetch origin
+git checkout -b feature/XXXX origin/development
+```
 
-↓
+Never branch from `main`, from `preproduction`, or from another working branch. Doing so guarantees conflicts at pull request time.
 
-review
-
-↓
-
-merge
-
-Avoid long-running branches whenever possible.
+Keep working branches short-lived. A branch that lives longer than the code around it stops being mergeable.
 
 ---
 
@@ -191,44 +206,74 @@ Not only correctness.
 
 # Merge Strategy
 
-Prefer:
+Pull requests are merged with **Rebase and Merge**. Always.
 
-Squash Merge
+Never:
 
-or
+- Merge commits.
+- Squash merges.
+- Manual merges into a protected branch.
 
-Rebase Merge
+Rationale: a linear history keeps `git bisect` and blame usable, and makes every commit independently revertible.
 
-depending on project conventions.
+Resolving conflicts on an open pull request:
 
-Avoid noisy merge histories.
+```
+git rebase origin/development
+# resolve
+git push --force-with-lease
+```
+
+Use `--force-with-lease`, never `--force`.
 
 ---
 
 # Rebasing
 
-Rebase before merging when appropriate.
+Rebase your working branch onto `origin/development` before requesting review, and again whenever the pull request falls behind.
 
 Resolve conflicts carefully.
+
+Rebasing your own unmerged working branch is expected. Rewriting history on a protected branch is never allowed.
 
 Never overwrite another engineer's work without understanding the conflict.
 
 ---
 
-# Main Branch
+# Protected Branches
 
-The main branch should always be:
+`development`, `preproduction` and `main` are protected.
 
-- Deployable
-- Stable
-- Tested
-- Documented
+Never push directly to any of them. Every change enters through a pull request.
 
-Never merge experimental work directly into main.
+`development`
+
+Integration branch. Where working branches land. Always buildable.
+
+`preproduction`
+
+Release candidate. Mirrors what is about to ship. Always deployable and tested.
+
+`main`
+
+Production. Always deployable, stable, tested and documented.
+
+Never merge experimental work into a protected branch.
+
+Automatic backmerges between protected branches carry `[skip ci]` in the commit message.
 
 ---
 
 # Hotfixes
+
+A hotfix is the only case where a branch does not start from `development`.
+
+```
+git fetch origin
+git checkout -b hotfix/XXXX origin/main
+```
+
+It merges to `main` through a pull request, then is backmerged into `preproduction` and `development` so the fix is never lost on the next release.
 
 Hotfixes should:
 
@@ -323,9 +368,11 @@ AI should:
 
 - Create focused commits.
 - Avoid unrelated formatting changes.
-- Respect existing branch strategy.
+- Branch from `development`, never from a protected branch other than for a hotfix.
+- Never push to `development`, `preproduction` or `main`.
 - Never rewrite Git history unless explicitly requested.
-- Never force-push shared branches.
+- Never force-push shared branches. On its own working branch, use `--force-with-lease`.
+- Commit or push only when the human asks.
 
 ---
 
@@ -333,7 +380,13 @@ AI should:
 
 Before merging:
 
+✓ Branch started from `development` (or from `main` if it is a hotfix).
+
 ✓ Branch name is meaningful.
+
+✓ Pull request targets the correct branch.
+
+✓ Merge method is Rebase and Merge.
 
 ✓ Commit history is clean.
 
@@ -356,7 +409,10 @@ Before merging:
 Never:
 
 - Commit unrelated work together.
-- Push directly to production branches.
+- Push directly to `development`, `preproduction` or `main`.
+- Branch a feature from anything other than `development`.
+- Merge a pull request with a merge commit or a squash.
+- Create a merge commit manually.
 - Force-push shared history.
 - Rewrite history without agreement.
 - Commit secrets.

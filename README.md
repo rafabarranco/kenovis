@@ -10,7 +10,7 @@ The repository contains **two layers**:
 
 | Layer | What it is | Changes per product? |
 |---|---|---|
-| **Framework** | The AI-OS itself: [AI/](AI/), [CLAUDE.md](CLAUDE.md), this README | No. Reusable as-is |
+| **Framework** | The AI-OS itself: [AI/](AI/) except `memory/`, plus [CLAUDE.md](CLAUDE.md) and this README | No. Reusable as-is |
 | **Product** | The company and product being built with it | Yes. Rewritten every time |
 
 Everything in the product layer is currently a **placeholder** describing an example company. It is there to show the expected shape and depth of each document, not to define your product.
@@ -66,7 +66,7 @@ Product layer — rewritten per product:
 | [ENGINEERING/](ENGINEERING/) | Architecture, database and security design |
 | [AUTOMATIONS/](AUTOMATIONS/) | Onboarding, release and feedback processes |
 | [AI/memory/](AI/memory/) | Glossary, conventions and learnings accumulated by this product |
-| [CODE/](CODE/) | Actual product implementation (currently empty) |
+| [CODE/](CODE/) | Actual product implementation, and the repository topology chosen for it (currently empty) |
 
 ## Source of truth
 

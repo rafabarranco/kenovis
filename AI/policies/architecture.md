@@ -91,16 +91,15 @@ Frameworks are implementation details.
 
 Business logic must never depend directly on:
 
-- React
-- Next.js
-- NestJS
-- Express
-- Prisma
-- Supabase
-- Firebase
-- Any ORM
+- UI frameworks (React, Vue, SwiftUI, Jetpack Compose)
+- HTTP and application frameworks (Express, NestJS, FastAPI, Rails, Spring)
+- ORMs and query builders (Prisma, SQLAlchemy, Hibernate, ActiveRecord)
+- Backend-as-a-service SDKs (Supabase, Firebase, Amplify)
+- Any library that would have to be replaced to change vendor
 
-The business should survive replacing any framework.
+The examples name a category, not a stack. Recognise the category in whatever stack ENGINEERING/ARCHITECTURE.md defines.
+
+The business should survive replacing any of them.
 
 ---
 
@@ -128,7 +127,7 @@ Forbidden:
 
 Domain importing UI.
 
-Application importing React components.
+Application importing view components.
 
 Infrastructure defining business rules.
 

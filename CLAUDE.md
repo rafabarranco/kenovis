@@ -26,7 +26,7 @@ This repository has two layers.
 
 Framework — reusable, never rewritten per product:
 
-AI/, CLAUDE.md, README.md, CODE/README.md
+AI/agents/, AI/workflows/, AI/policies/, AI/commands/, AI/templates/, AI/SYSTEM.md, CLAUDE.md, README.md
 
 Product — rewritten for every product:
 

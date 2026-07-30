@@ -205,11 +205,7 @@ Define:
 Affected areas:
 
 ```
-apps/
-
-packages/
-
-src/
+CODE (the units listed in CODE/README.md)
 
 DATABASE
 

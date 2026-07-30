@@ -234,7 +234,7 @@ CODE/
 
 Delete any implementation left from the previous product.
 
-Keep CODE/README.md.
+Rewrite CODE/README.md to describe the repository topology chosen in Step 6. It is product-layer: the example monorepo layout is a placeholder, not a rule.
 
 Do not scaffold anything yet. Scaffolding is the first roadmap item, not part of initialization.
 
@@ -311,7 +311,7 @@ Initialization is complete when:
 
 ✓ .gitignore matches the chosen stack.
 
-✓ CODE/ is empty except its README.
+✓ CODE/ is empty, and its README describes this product's topology.
 
 ✓ No term from the example company survives.
 
