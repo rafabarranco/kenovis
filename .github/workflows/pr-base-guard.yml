@@ -1,0 +1,50 @@
+name: PR base branch guard
+
+# Contributor PRs must target `development`. main and preproduction are
+# owner-only promotion branches (development -> preproduction -> main),
+# promoted by the repo owner via their own PRs.
+#
+# Uses pull_request_target (not pull_request) so this runs with a token
+# that can comment/close even on PRs from forks. It never checks out or
+# executes PR head content — only inspects metadata via the GitHub API.
+
+on:
+  pull_request_target:
+    types: [opened, reopened, edited]
+    branches: [main, preproduction]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login != github.repository_owner
+    steps:
+      - name: Comment and close
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pr_number = context.payload.pull_request.number;
+            const base = context.payload.pull_request.base.ref;
+
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: pr_number,
+              body: [
+                `Contributions target \`development\`, not \`${base}\`.`,
+                "",
+                "`main` and `preproduction` are promotion-only branches maintained by the repo owner — see [CONTRIBUTING.md](../blob/development/CONTRIBUTING.md).",
+                "",
+                "Please retarget this PR to `development` and reopen.",
+              ].join("\n"),
+            });
+
+            await github.rest.pulls.update({
+              owner,
+              repo,
+              pull_number: pr_number,
+              state: "closed",
+            });
