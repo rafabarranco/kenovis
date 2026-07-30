@@ -15,9 +15,9 @@ The database is considered a critical business component.
 It must guarantee:
 
 - Data integrity.
-- Organization isolation.
+- Tenant isolation, if the product is multi-tenant.
 - Historical preservation.
-- Financial accuracy.
+- Financial accuracy, if the product handles money.
 - Scalability.
 ---
 Database Philosophy
@@ -38,24 +38,13 @@ Avoid:
 ---
 Database Technology
 
-Primary database:
-
-PostgreSQL
-
-Initial platform:
-
-Supabase PostgreSQL
-
+[No engine chosen yet. Record it here and log the decision in DECISIONS.md — see ENGINEERING/ARCHITECTURE.md.]
 ---
 Core Database Principles
 
 Principle 1
 
-Every business entity belongs to an organization.
-
-Default:
-
-organization_id NOT NULL
+[If multi-tenant: every business entity carries the tenant key chosen in ENGINEERING/ARCHITECTURE.md, NOT NULL by default.]
 
 ---
 Principle 2
@@ -86,27 +75,6 @@ Use:
 - lowercase.
 - plural names.
 - snake_case.
-
-Examples:
-
-Good:
-
-organizations
-
-members
-
-events
-
-attendance_records
-
-Bad:
-
-Organization
-
-MemberData
-
-EventTable
-
 ---
 Columns
 
@@ -120,7 +88,7 @@ created_at
 
 updated_at
 
-organization_id
+[tenant_key]
 
 ---
 Primary Keys
@@ -154,494 +122,24 @@ Entities that represent business history should support:
 
 deleted_at
 
-Examples:
-
-- Members.
-- Groups.
-- Events.
 ---
-Organization Table
+Schema
 
-Purpose
-
-Root tenant entity.
----
-Schema Concept
-
-organizations
-
-id
-
-name
-
-logo_url
-
-status
-
-created_at
-
-updated_at
-
----
-Rules
-
-An organization:
-
-- Owns all business data.
-- Defines the security boundary.
----
-User Table
-
-Purpose
-
-Authenticated application users.
----
-Concept:
-
-users
-
-id
-
-email
-
-created_at
-
----
-Important:
-
-A User is not the same as a Member.
-
-A user can manage organizations.
-
-A member represents participation.
----
-Organization Membership
-
-Purpose
-
-Connect users with organizations.
----
-Schema:
-
-organization_memberships
-
-id
-
-organization_id
-
-user_id
-
-role
-
-created_at
-
----
-Roles:
-
-Initial:
-
-owner
-
-admin
-
-manager
-
-member
-
----
-Members Table
-
-Purpose
-
-People belonging to organizations.
----
-Schema:
-
-members
-
-id
-
-organization_id
-
-name
-
-email
-
-phone
-
-status
-
-created_at
-
-updated_at
-
-deleted_at
-
----
-Rules:
-
-- Must belong to organization.
-- Historical references must remain.
----
-Groups Table
-
-Purpose
-
-Organizational subdivisions.
----
-Schema:
-
-groups
-
-id
-
-organization_id
-
-name
-
-created_at
-
-updated_at
-
----
-Group Members Table
-
-Purpose
-
-Many-to-many relationship.
----
-Schema:
-
-group_members
-
-id
-
-group_id
-
-member_id
-
-created_at
-
----
-Rules:
-
-A member:
-
-- Can belong to multiple groups.
-
-A group:
-
-- Can contain multiple members.
----
-Events Table
-
-Purpose
-
-Activities organized by the organization.
----
-Schema:
-
-events
-
-id
-
-organization_id
-
-title
-
-description
-
-location
-
-starts_at
-
-ends_at
-
-status
-
-created_at
-
-updated_at
-
----
-Status:
-
-draft
-
-published
-
-completed
-
-cancelled
-
----
-Event Participants Table
-
-Purpose
-
-Expected participation.
----
-Schema:
-
-event_participants
-
-id
-
-event_id
-
-member_id
-
-status
-
-created_at
-
-updated_at
-
----
-Status:
-
-pending
-
-confirmed
-
-rejected
-
-cancelled
-
----
-Constraints:
-
-Unique:
-
-event_id + member_id
-
-A member cannot have duplicate participation.
----
-Attendance Records Table
-
-Purpose
-
-Historical attendance.
----
-Schema:
-
-attendance_records
-
-id
-
-organization_id
-
-event_id
-
-member_id
-
-status
-
-created_at
-
-updated_at
-
----
-Status:
-
-present
-
-absent
-
-excused
-
----
-Constraints:
-
-Unique:
-
-event_id + member_id
-
----
-Financial Operations Table
-
-Purpose
-
-Represent money movements.
----
-Schema:
-
-financial_operations
-
-id
-
-organization_id
-
-event_id
-
-type
-
-amount
-
-currency
-
-status
-
-created_at
-
-updated_at
-
----
-Type:
-
-income
-
-expense
-
-distribution
-
----
-Status:
-
-draft
-
-confirmed
-
-cancelled
-
----
-Financial Distribution Table
-
-Purpose
-
-Store money allocation results.
----
-Schema:
-
-financial_distributions
-
-id
-
-financial_operation_id
-
-member_id
-
-amount
-
-status
-
-created_at
-
----
-Example:
-
-Concert payment:
-
-Total:
-
-3000 €
-
-Members:
-
-30
-
-Distribution:
-
-100 € each
-
----
-Audit Log Table
-
-Purpose
-
-Track important changes.
----
-Schema:
-
-audit_logs
-
-id
-
-organization_id
-
-user_id
-
-action
-
-entity_type
-
-entity_id
-
-metadata
-
-created_at
-
----
-Examples:
-
-MEMBER_CREATED
-
-EVENT_UPDATED
-
-PAYMENT_CONFIRMED
-
+[No tables defined yet. Derive the schema from DOMAIN/DOMAIN_MODEL.md — one section per core entity, each documenting: purpose, schema (conceptual column list), constraints, and status/type enums where relevant. Add an audit_logs table if DATA integrity rules in DOMAIN/BUSINESS_RULES.md require traceability.]
 ---
 Indexing Strategy
 
-Important indexes:
-
-Organization filtering
-
-All business tables:
-
-organization_id
-
----
-Events
-
-Common queries:
-
-organization_id
-
-starts_at
-
----
-Attendance
-
-Common queries:
-
-event_id
-
-member_id
-
----
-Financial Operations
-
-Common queries:
-
-organization_id
-
-event_id
-
+[Once the schema is defined, list the indexes required by common query patterns — typically the tenant key on every business table, plus foreign keys used in frequent lookups.]
 ---
 Row Level Security (RLS)
 
-Supabase RLS is mandatory.
-
-Every business table must enforce:
-
-User can only access authorized organizations.
-
+[If the chosen database and platform support RLS (e.g. Supabase/PostgreSQL) and the product is multi-tenant, RLS is mandatory: every business table must enforce that a user can only access rows belonging to their tenant.]
 ---
 RLS Principle
 
 Frontend security is not enough.
 
 The database must protect itself.
----
-Example Logic
-
-Conceptually:
-
-Allow SELECT
-
-IF user belongs to organization_id
-
 ---
 Migration Rules
 
@@ -668,34 +166,23 @@ Deploy
 ---
 Seed Data
 
-Development environments should include:
-
-- Example organization.
-- Example members.
-- Example events.
-- Example financial operations.
+Development environments should include representative seed data covering the core entities defined in DOMAIN/DOMAIN_MODEL.md.
 ---
 Database Testing
 
 Critical tests:
 
-Tenant Isolation
+Tenant Isolation (if multi-tenant)
 
-Verify:
-
-Organization A cannot see Organization B.
+Verify one tenant cannot see another tenant's data.
 ---
-Financial Accuracy
+Data Accuracy
 
-Verify:
-
-Distribution calculations.
+Verify any business-critical calculations the domain performs.
 ---
 Historical Preservation
 
-Verify:
-
-Deleted members do not remove history.
+Verify soft-deleted records do not remove history.
 ---
 Performance Rules
 
@@ -711,14 +198,7 @@ Optimize after measuring.
 ---
 Future Considerations
 
-Possible future additions:
-
-- Payment provider integration.
-- Advanced reporting.
-- Event analytics.
-- Data warehouse.
-
-Do not design these prematurely.
+[Note here anything deliberately deferred — e.g. payment provider integration, advanced reporting, a data warehouse — without designing it prematurely.]
 ---
 AI Agent Database Rules
 
@@ -728,7 +208,7 @@ Ask:
 
 1. What business problem requires this?
 2. Does an existing entity already represent it?
-3. Does it respect organization isolation?
+3. Does it respect tenant isolation, if applicable?
 4. Does it preserve historical data?
 5. Are migrations required?
 ---

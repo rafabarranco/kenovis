@@ -31,198 +31,19 @@ Initial Market
 
 Primary Market
 
-Music bands.
+[The first customer segment named in COMPANY_OS.md.]
 ---
 Why Start Here
 
-Music bands provide:
-
-- Easy access to users.
-- Strong community networks.
-- Clear operational problems.
-- Frequent activities.
-- Existing financial workflows.
+[The reasons this segment was chosen — access, network, clarity of problem, existing workflow to observe.]
 ---
 Target User Profiles
----
-Persona 1: Organization Manager
 
-Description
-
-The person responsible for coordinating the organization.
-
-Examples:
-
-- Band director.
-- President.
-- Coordinator.
-- Administrator.
----
-Main Responsibilities
-
-- Organizing activities.
-- Managing members.
-- Communicating information.
-- Tracking attendance.
-- Managing money.
----
-Current Tools
-
-Typical workflow:
-
-- WhatsApp.
-- Excel.
-- Google Sheets.
-- Paper notes.
-- Bank transfers.
----
-Main Pain Points
-
-Potential problems:
-
-- Losing information in conversations.
-- Not knowing who attends.
-- Manually calculating payments.
-- Repeating the same communication.
-- Lack of historical information.
----
-Desired Outcome
-
-"I want everything organized in one place."
----
-Persona 2: Member
-
-Description
-
-A person participating in the organization.
-
-Examples:
-
-- Musician.
-- Student.
-- Participant.
----
-Main Needs
-
-- Know upcoming events.
-- Confirm attendance.
-- Receive relevant information.
-- Access personal history.
----
-Pain Points
-
-- Too many messages.
-- Missing important information.
-- Confusion about schedules.
-- Lack of visibility.
----
-Desired Outcome
-
-"I want to know what I have to do and when."
----
-Persona 3: Treasurer / Financial Manager
-
-Description
-
-The person responsible for money management.
----
-Responsibilities
-
-- Receive payments.
-- Track expenses.
-- Calculate distributions.
-- Maintain records.
----
-Pain Points
-
-- Manual calculations.
-- Lack of transparency.
-- Difficult historical tracking.
-- Errors in payments.
+[No personas recorded yet. Add real personas as real research happens — do not invent them to fill this section. Each persona should include: description, main responsibilities, current tools/workarounds, main pain points, desired outcome.]
 ---
 Core User Problems
----
-Problem 1: Member Management
 
-Current Situation
-
-Organizations maintain member information manually.
-
-Typical solutions:
-
-- Spreadsheets.
-- Contact lists.
-- Messaging groups.
----
-Problem Hypothesis
-
-Organizations need a centralized member database.
----
-Validation Questions
-
-Ask:
-
-- How do you currently store member information?
-- How often does it change?
-- Who manages it?
-- What problems happen today?
----
-Problem 2: Attendance Management
-
-Current Situation
-
-Attendance is managed through:
-
-- WhatsApp messages.
-- Manual lists.
-- Memory.
----
-Problem Hypothesis
-
-Organizations need a simple attendance workflow.
----
-Validation Questions
-
-Ask:
-
-- How do you know who attends an activity?
-- How much time do you spend collecting responses?
-- What happens when someone does not answer?
-- Do attendance records matter historically?
----
-Problem 3: Financial Distribution
-
-Current Situation
-
-Payments are manually calculated.
-
-Example:
-
-A concert pays:
-
-3000 €
-
-Participants:
-
-30 people
-
-Someone manually calculates:
-
-100 € per person
----
-Problem Hypothesis
-
-Organizations need transparent automated distribution.
----
-Validation Questions
-
-Ask:
-
-- How are payments currently divided?
-- Who calculates them?
-- How long does it take?
-- Have mistakes happened?
-- Would members value seeing the calculation?
+[No validated problems recorded yet. Add them here once observed or confirmed through real conversations, structured as: current situation, problem hypothesis, validation questions.]
 ---
 Interview Framework
 ---
@@ -242,16 +63,13 @@ Introduction
 
 Explain:
 
-"We are researching how organizations manage their daily operations."
+"We are researching how [target users] manage [the relevant part of their work]."
 ---
 Current Workflow
 
 Questions:
 
-- How do you currently manage members?
-- How do you organize activities?
-- How do you know who participates?
-- How do you handle payments?
+[Questions about how the user currently does the relevant work, without mentioning the product.]
 ---
 Pain Discovery
 

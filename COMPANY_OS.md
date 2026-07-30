@@ -6,7 +6,7 @@ Company Operating System
 
 Version: 2.0
 
-Last updated: 2026
+Last updated: —
 
 ---
 
@@ -26,134 +26,37 @@ The objective is to build a sustainable, valuable and scalable company.
 
 # Company Vision
 
-Build the operating system for organizations that manage:
-
-- People.
-- Groups.
-- Events.
-- Attendance.
-- Financial operations.
-
-The company creates software that replaces fragmented operational workflows with a unified operational platform.
-
-Today, many organizations operate using:
-
-- WhatsApp groups.
-- Excel spreadsheets.
-- Google Sheets.
-- Manual attendance lists.
-- Manual payment tracking.
-- Informal communication.
-- Human memory.
-
-The mission is to help organizations operate professionally by simplifying their daily operations.
+[What does the company build, and for whom? One or two sentences describing the long-term ambition — the world this company wants to exist once it succeeds.]
 
 ---
 
 # Company Thesis
 
-Small and medium organizations do not need another generic productivity tool.
-
-They need software designed around their real operational workflows.
-
-The company wins by understanding specific operational problems better than horizontal software solutions.
-
-The product should feel like it was created specifically for the organization using it.
+[Why does this company win where others don't? What belief about the market or the customer justifies building this instead of something else?]
 
 ---
 
 # Initial Market Strategy
 
-The company starts with music bands.
-
-Music bands are not the final market.
-
-They are the first market entry point.
-
-The reason for starting here:
-
-- Direct access to users.
-- Strong domain understanding.
-- Immediate feedback.
-- Existing trust network.
-- Clear operational problems.
-
-The first objective is not to serve every organization.
-
-The first objective is to become essential for one specific customer segment.
+[Who is the very first customer segment? Why start there instead of the broader eventual market — access, domain knowledge, feedback speed, existing trust?]
 
 ---
 
 # Long-Term Market Vision
 
-After achieving product-market fit in the initial segment, expand into organizations with the same operational structure:
-
-People
-
-+
-
-Groups
-
-+
-
-Events
-
-+
-
-Attendance
-
-+
-
-Money
-
-
-Potential future verticals:
-
-- Music schools.
-- Dance schools.
-- Theatre groups.
-- Sports clubs.
-- Cultural associations.
-- Educational organizations.
-- Volunteer organizations.
-- Event-based communities.
-- Professional groups.
-
-The domain changes.
-
-The operational problem remains the same.
+[After the initial segment, what adjacent segments or use cases could this expand into? What stays constant about the problem being solved as the domain changes?]
 
 ---
 
 # Ideal Customer Profile
 
-The company serves organizations that:
-
-- Manage groups of people.
-- Have recurring activities.
-- Coordinate events or activities.
-- Track participation.
-- Manage payments or finances.
-- Currently depend on manual processes.
-- Experience operational friction.
-
-The ideal customer is not defined by industry.
-
-It is defined by operational complexity.
+[What characteristics define a good-fit customer? Not industry — the underlying operational or business condition that makes this product valuable to them.]
 
 ---
 
 # Market Exclusions
 
-The company will not initially optimize for:
-
-- Large enterprise organizations.
-- Organizations without recurring operations.
-- Individual consumers.
-- Pure social communities.
-- Generic collaboration use cases.
-
-The company focuses on organizations where operational coordination is a painful problem.
+[What kinds of customers or use cases will the company deliberately NOT optimize for, at least initially? Naming exclusions protects focus.]
 
 ---
 
@@ -212,27 +115,7 @@ Every person and AI agent working on the company should act with responsibility 
 
 # Product Philosophy
 
-The product is an operational system.
-
-It is not a collection of disconnected features.
-
-Every feature must achieve at least one objective:
-
-## Save Time
-
-Remove repetitive manual work.
-
-## Reduce Errors
-
-Prevent mistakes caused by spreadsheets, messages and manual calculations.
-
-## Increase Transparency
-
-Make information accessible and trustworthy.
-
-## Improve Coordination
-
-Help organizations coordinate people and activities efficiently.
+[What must every feature achieve to justify existing? List the small set of measurable outcomes — e.g. save time, reduce errors, increase transparency — that define product value here.]
 
 Features without measurable value should not be built.
 
@@ -457,33 +340,7 @@ Implementation
 
 # Distribution Strategy
 
-The first competitive advantage is distribution.
-
-Technology can be copied.
-
-Trust networks are harder to copy.
-
-
-Initial growth strategy:
-
-First Users
-
-↓
-
-Successful Results
-
-↓
-
-Recommendations
-
-↓
-
-New Organizations
-
-↓
-
-Community Growth
-
+[How does the company expect to acquire its first users, and what makes that channel defensible over time — referrals, existing trust networks, community, something else?]
 
 Customer satisfaction is the primary marketing channel.
 
@@ -506,42 +363,13 @@ Customer feedback directly influences product direction.
 
 # Competitive Advantages
 
-Long-term advantages:
-
-## Domain Knowledge
-
-Understanding how organizations actually operate.
-
-## Workflow Ownership
-
-Becoming part of daily operations.
-
-## Historical Data
-
-Organizations accumulate:
-
-- Members.
-- Events.
-- Attendance.
-- Financial history.
-
-## Trust
-
-Once organizations depend on the platform, switching becomes harder.
+[What compounds in the company's favor over time — domain knowledge, workflow ownership, accumulated customer data, trust, switching costs? Name the ones that actually apply.]
 
 ---
 
 # What The Company Will NOT Become
 
-The company will not become:
-
-- A generic CRM.
-- A generic accounting platform.
-- A social network.
-- A chat application.
-- An ERP attempting to solve everything.
-
-The company focuses on operational management for organizations built around people and events.
+[What adjacent, tempting products or business models will the company deliberately avoid turning into? Naming anti-goals protects scope.]
 
 ---
 

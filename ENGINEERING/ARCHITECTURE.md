@@ -67,66 +67,19 @@ Infrastructure
 External Services
 
 ---
-Recommended Technology Stack
+Technology Stack
 
-Frontend
+[No stack chosen yet. Decide and record here, then log the decision in DECISIONS.md per AI/commands/init-project.md Step 6:
 
-Initial recommendation:
-
-Mobile:
-
-- React Native.
-- Expo.
-- TypeScript.
-
-Web:
-
-- Next.js.
-- TypeScript.
-
-Reason:
-
-A shared TypeScript ecosystem reduces complexity.
----
-Backend
-
-Initial recommendation:
-
-- Supabase.
-- PostgreSQL.
-- Edge Functions when required.
-
-Reason:
-
-The first phase requires:
-
-- Fast development.
-- Authentication.
-- Database.
-- Storage.
-- Security rules.
-
-Avoid unnecessary backend complexity initially.
+- Frontend (web / mobile).
+- Backend / API layer.
+- Database engine.
+- Authentication approach.
+- Deployment target.]
 ---
 Database
 
-Primary database:
-
-PostgreSQL.
-
-Reason:
-
-The domain is relational.
-
-Important relationships:
-
-- Organizations.
-- Members.
-- Events.
-- Attendance.
-- Financial operations.
-
-Relational consistency is critical.
+[Record the chosen database engine and why the domain's relationships require it — see ENGINEERING/DATABASE.md for schema detail.]
 ---
 Authentication
 
@@ -137,83 +90,17 @@ Requirements:
 - Secure login.
 - Password management.
 - Session handling.
-- Organization access control.
+- Access control scoped to the tenancy model chosen below.
 
 Authentication is separate from authorization.
 ---
 Authorization Model
 
-The system uses organization-based authorization.
-
-Concept:
-
-User
-
-belongs to
-
-Organization
-
-has
-
-Role
-
-can perform
-
-Actions
-
+[Describe how permissions are structured — e.g. role-based, scoped to an account/organization, resource-level.]
 ---
-Multi-Tenant Architecture
+Tenancy Model
 
-The application is multi-tenant from day one.
-
-Every customer operates inside an isolated organization.
----
-Tenant Boundary
-
-Primary isolation key:
-
-organization_id
-
-Every business entity must contain:
-
-organization_id
-
-unless explicitly documented.
----
-Example
-
-Members:
-
-members
-
-id
-
-organization_id
-
-name
-
-Events:
-
-events
-
-id
-
-organization_id
-
-title
-
-Attendance:
-
-attendance
-
-id
-
-organization_id
-
-event_id
-
-member_id
-
+[Decide explicitly: single-tenant or multi-tenant. If multi-tenant, name the tenant key (e.g. organization_id, account_id) here — AI/policies/database.md and AI/agents/database.md look it up from this document and must not invent one.]
 ---
 Domain Architecture
 
@@ -251,15 +138,6 @@ Contains:
 - Workflows.
 - Commands.
 - Queries.
-
-Examples:
-
-Create Event
-
-Register Attendance
-
-Calculate Distribution
-
 ---
 Infrastructure Layer
 
@@ -290,15 +168,9 @@ src/
 
 ├── domain/
 
-│   ├── organization/
+│   ├── [entity]/
 
-│   ├── member/
-
-│   ├── event/
-
-│   ├── attendance/
-
-│   └── finance/
+│   └── ...
 
 
 ├── application/
@@ -328,23 +200,7 @@ src/
 ---
 Feature-Based Organization
 
-As the application grows, prefer feature boundaries.
-
-Example:
-
-features/
-
-organization/
-
-members/
-
-events/
-
-attendance/
-
-finance/
-
-Avoid huge shared folders.
+As the application grows, prefer feature boundaries over huge shared folders, mirroring the core entities in DOMAIN/DOMAIN_MODEL.md.
 ---
 Database Architecture
 
@@ -370,9 +226,9 @@ APIs should represent business actions.
 
 Prefer:
 
-POST /events
+POST /[resources]
 
-POST /events/{id}/attendance
+POST /[resources]/{id}/[sub-resource]
 
 over:
 
@@ -389,9 +245,9 @@ Something went wrong
 
 Prefer:
 
-EVENT_ALREADY_COMPLETED
+[SPECIFIC_ERROR_CODE]
 
-Cannot modify attendance after event completion.
+[Human-readable explanation of what constraint was violated.]
 
 ---
 Validation Strategy
@@ -450,13 +306,7 @@ Testing priority:
 
 1. Domain Tests
 
-Highest value.
-
-Examples:
-
-- Distribution calculations.
-- Attendance rules.
-- Permission rules.
+Highest value. Cover core business calculations and rules.
 ---
 2. Integration Tests
 
@@ -494,7 +344,7 @@ Security principles:
 
 - Least privilege.
 - Server-side validation.
-- Tenant isolation.
+- Tenant isolation, if the product is multi-tenant.
 - Auditability.
 ---
 Scalability Strategy
