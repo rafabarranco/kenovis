@@ -8,7 +8,7 @@ Version: 1.0
 ---
 Purpose
 
-Define the automated onboarding process that converts a new organization into an active customer.
+Define the automated onboarding process that converts a new signup into an active customer.
 
 The goal is to reduce friction and accelerate the first value moment.
 ---
@@ -21,362 +21,33 @@ Do not teach the product.
 Help users achieve their first success.
 
 ---
-Onboarding Goal
-
-A new organization should achieve:
-
-Create organization
-
-↓
-
-Add members
-
-↓
-
-Create first event
-
-↓
-
-Manage first attendance
-
-↓
-
-Experience value
-
----
 Activation Definition
 
-A customer is activated when:
-
-The organization has:
-
-- Added members.
-- Created an event.
-- Recorded attendance.
+[Not defined yet. State precisely what "activated" means for this product — the smallest sequence of actions that proves a customer got real value. Derive it from the core workflow in PRODUCT/ROADMAP.md, not invented in isolation.]
 ---
 Time-To-Value Objective
 
-Target:
-
-First value within 30 minutes.
-
+[Target time from signup to first value moment, once known.]
 ---
 Customer Journey
----
-Stage 1
 
-Registration
-
-User creates account.
-
-Information required:
-
-- Name.
-- Email.
-- Organization name.
-
-Avoid unnecessary questions.
----
-Automation
-
-After registration:
-
-Create:
-
-- Organization.
-- Owner user.
-- Initial workspace.
-
-Send:
-
-Welcome message.
----
-Stage 2
-
-Organization Setup
-
-Goal:
-
-Understand the organization.
-
-Collect:
-
-- Organization type.
-- Approximate number of members.
-- Main use case.
-
-Examples:
-
-- Band.
-- Music school.
-- Cultural organization.
-- Other.
----
-Automation
-
-Based on answers:
-
-Customize onboarding experience.
-
-Example:
-
-Band:
-
-Show:
-
-- Members.
-- Rehearsals.
-- Concerts.
----
-Stage 3
-
-Member Import
-
-This is a critical activation moment.
-
-Users should have multiple options.
----
-Option 1
-
-Manual creation.
-
-For small organizations.
----
-Option 2
-
-CSV import.
-
-For existing lists.
----
-Option 3
-
-Invitation link.
-
-Members join themselves.
----
-Automation
-
-After members are added:
-
-Show:
-
-"Your organization is ready."
----
-Stage 4
-
-First Event Creation
-
-Guide user to create first activity.
-
-Examples:
-
-- Rehearsal.
-- Concert.
-- Class.
----
-Required Information
-
-Only ask:
-
-- Name.
-- Date.
-- Participants.
-
-Advanced options later.
----
-Automation
-
-After creation:
-
-Generate:
-
-- Event page.
-- Attendance workflow.
-- Member notifications.
----
-Stage 5
-
-First Attendance
-
-The first attendance record creates habit.
----
-Automation
-
-After completion:
-
-Show:
-
-Summary:
-
-Members invited
-
-Confirmed
-
-Present
-
-Absent
-
----
-Stage 6
-
-Financial Workflow
-
-Introduce only after operational adoption.
-
-Do not lead with money.
-
-Reason:
-
-Attendance creates trust first.
----
-First Financial Experience
-
-Example:
-
-Concert payment:
-
-Input:
-
-Total amount
-
-System:
-
-Calculates distribution.
+[No stages defined yet. Map the real journey once the product's core workflow is known — typically: registration → initial setup → first core-entity created → first meaningful action completed → value experienced. For each stage: required information, and what the system automates after completion.]
 ---
 Onboarding Communication
----
-Welcome Message
 
-Goal:
-
-Create confidence.
-
-Should explain:
-
-- Why the product exists.
-- What to do first.
-- Where to get help.
----
-Day 1 Message
-
-Focus:
-
-Complete setup.
----
-Day 3 Message
-
-Focus:
-
-Create first recurring workflow.
----
-Day 7 Message
-
-Focus:
-
-Discover additional value.
-
-Examples:
-
-- Statistics.
-- Financial management.
-- Organization history.
+[No message sequence defined yet. Plan communication around the customer journey above — e.g. welcome message, day-1 nudge, day-3 nudge, day-7 value discovery — once the journey is mapped.]
 ---
 Automation Tools
 
-Possible stack:
----
-Authentication
-
-Supabase Auth.
----
-Database
-
-Supabase PostgreSQL.
----
-Automation
-
-- Make.
-- Zapier.
----
-Communication
-
-- Email provider.
-- Push notifications.
----
-Analytics
-
-Product analytics platform.
+[No stack chosen yet. Record here once ENGINEERING/ARCHITECTURE.md settles the stack: auth provider, database, automation/workflow tool, communication provider, analytics platform.]
 ---
 Automated Triggers
----
-Trigger:
 
-Organization created.
-
-Actions:
-
-- Send welcome email.
-- Create onboarding checklist.
-- Start onboarding sequence.
----
-Trigger:
-
-No members after 24 hours.
-
-Actions:
-
-Send reminder.
-
-Message:
-
-"Add your members to start organizing."
----
-Trigger:
-
-Members added but no event created.
-
-Actions:
-
-Send guidance.
----
-Trigger:
-
-Event created but no attendance recorded.
-
-Actions:
-
-Explain attendance workflow.
----
-Trigger:
-
-Inactive organization.
-
-Condition:
-
-No activity for X days.
-
-Actions:
-
-Re-engagement campaign.
+[No triggers defined yet. Typical shape once the journey is known: signup → welcome + checklist; no progress after N hours → reminder; stalled mid-journey → guidance; inactive account → re-engagement.]
 ---
 Onboarding Checklist
 
-Organization owner should complete:
-
-[ ] Create account
-
-[ ] Complete organization profile
-
-[ ] Add members
-
-[ ] Create first event
-
-[ ] Record attendance
-
-[ ] Explore reports
-
-[ ] Configure financial features
-
+[Derive a checklist from the customer journey once mapped — one item per required step to reach activation.]
 ---
 Self-Service Philosophy
 
@@ -402,11 +73,11 @@ Activation Rate
 
 Formula:
 
-Activated organizations
+Activated accounts
 
 /
 
-Registered organizations
+Registered accounts
 
 ---
 Time To Value

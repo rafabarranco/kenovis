@@ -21,33 +21,11 @@ The roadmap exists to protect product focus.
 ---
 Product Vision
 
-Create the operating platform for organizations that manage:
-
-- Members.
-- Groups.
-- Events.
-- Attendance.
-- Financial operations.
-
-The platform starts with music bands.
-
-The product must become essential for managing daily operations.
+[Restate the product vision from COMPANY_OS.md in roadmap terms — what the platform becomes once mature.]
 ---
 Product Strategy
 
-The company follows a land-and-expand strategy.
-
-Phase 1:
-
-Dominate a narrow vertical.
-
-Phase 2:
-
-Expand into adjacent organizations with the same operational problems.
-
-Phase 3:
-
-Become the standard operating platform for community-based organizations.
+[Describe the phased go-to-market approach — e.g. land-and-expand, single-segment-first, platform-later. Name the phases and what each unlocks.]
 ---
 Product Development Principles
 
@@ -61,11 +39,11 @@ Example:
 
 Bad:
 
-"Add attendance calendar."
+"Add [isolated feature]."
 
 Good:
 
-"Reduce the time required to organize an event and know who participates."
+"[Reduce the time/friction of the actual workflow the user is trying to complete.]"
 ---
 Principle 2: Build the minimum complete workflow
 
@@ -77,15 +55,11 @@ Example:
 
 Not complete:
 
-- Create event screen.
+- [Single screen in isolation.]
 
 Complete:
 
-- Create event.
-- Invite members.
-- Collect responses.
-- View attendance.
-- Export results.
+- [Full sequence of steps the user needs, start to finish.]
 ---
 Principle 3: Avoid premature expansion
 
@@ -103,7 +77,7 @@ Create the company and product foundation.
 
 Duration
 
-0-2 months.
+[Estimate.]
 
 Users
 
@@ -119,7 +93,7 @@ Technical:
 
 - Application foundation.
 - Authentication.
-- Organization model.
+- [Core domain entity from DOMAIN/DOMAIN_MODEL.md].
 - Database foundation.
 - User management.
 
@@ -131,152 +105,27 @@ Documentation:
 ---
 Success Criteria
 
-The platform can support:
-
-- One organization.
-- Multiple members.
-- Basic workflows.
+[What must be true for Phase 0 to be considered done — e.g. the platform supports one real account end to end.]
 ---
 Phase 1 — MVP
 
 Objective
 
-Solve the three core problems.
-
-The first usable product.
+[State the core problem(s) this phase must prove the product solves.]
 
 Target users
 
-Music bands.
+[The first customer segment named in COMPANY_OS.md.]
 ---
 MVP Core Modules
----
-Module 1: Organization Management
 
-Purpose:
-
-Create and manage an organization.
-
-Capabilities:
-
-- Create organization.
-- Configure organization.
-- Manage administrators.
----
-Module 2: Member Management
-
-Purpose:
-
-Replace spreadsheets of members.
-
-Capabilities:
-
-- Create members.
-- Edit members.
-- Remove members.
-- Assign groups.
-- Store basic information.
----
-Module 3: Groups
-
-Purpose:
-
-Organize members.
-
-Capabilities:
-
-- Create groups.
-- Assign members.
-- Filter members by group.
-
-Examples:
-
-- Main band.
-- Youth band.
-- Section.
-- Class.
----
-Module 4: Events
-
-Purpose:
-
-Manage activities.
-
-Capabilities:
-
-- Create events.
-- Edit events.
-- Cancel events.
-- View upcoming events.
-
-Examples:
-
-- Rehearsal.
-- Concert.
-- Meeting.
----
-Module 5: Attendance
-
-Purpose:
-
-Know who participates.
-
-Capabilities:
-
-- Event attendance.
-- Member response.
-- Attendance status.
-
-Statuses:
-
-- Pending.
-- Confirmed.
-- Present.
-- Absent.
-- Excused.
----
-Module 6: Financial Distribution
-
-Purpose:
-
-Solve the money problem.
-
-Initial version:
-
-- Create financial event.
-- Define total income.
-- Select participants.
-- Calculate distribution.
-- Track status.
-
-Example:
-
-Concert payment:
-
-Income:
-
-3000 €
-
-Participants:
-
-30 members
-
-Distribution:
-
-100 € each
+[List the modules that make up the MVP, one per core domain entity. For each: purpose, capabilities, required information, business rules, acceptance criteria — see PRODUCT/FEATURES.md for the detailed spec format.]
 ---
 MVP Non Goals
 
 Do NOT build:
 
-- AI assistant.
-- Chat.
-- Invoicing.
-- Accounting.
-- Payroll.
-- Marketplace.
-- Public profiles.
-- Advanced analytics.
+[List capabilities deliberately excluded from the MVP and why — this protects scope more than any list of what to build.]
 ---
 MVP Success Metrics
 
@@ -284,11 +133,11 @@ The MVP is successful when:
 
 Usage
 
-At least 5 organizations actively use the product.
+[Target — e.g. N active accounts.]
 
 Engagement
 
-Organizations create events weekly.
+[What recurring action indicates real use.]
 
 Retention
 
@@ -302,72 +151,31 @@ Phase 2 — Product Market Fit
 
 Objective
 
-Become indispensable for organizations.
+Become indispensable for [the target customer].
 ---
 New Capabilities
 
-Advanced Member Management
-
-Add:
-
-- Custom fields.
-- Roles.
-- Permissions.
-- Member history.
----
-Advanced Events
-
-Add:
-
-- Recurring events.
-- Templates.
-- Attendance history.
-- Event statistics.
----
-Financial Improvements
-
-Add:
-
-- Payment history.
-- Expenses.
-- Reports.
-- Exports.
----
-Communication
-
-Possible additions:
-
-- Notifications.
-- Reminders.
-- Email integration.
+[What gets added once the MVP is validated — deeper functionality on existing modules, not new verticals.]
 ---
 Phase 2 Success Metrics
 
 Target:
 
-50-100 active organizations.
+[Numeric target for active accounts/organizations.]
 
 Metrics:
 
-- Weekly active organizations.
-- Events created.
-- Attendance records.
-- Financial volume managed.
+[The 3-5 numbers that indicate the product is becoming indispensable.]
 ---
 Phase 3 — Expansion
 
 Objective
 
-Expand beyond music bands.
+Expand beyond the initial customer segment.
 ---
 New Verticals
 
-Potential targets:
-
-- Music schools.
-- Dance academies.
-- Sports organizations.
-- Cultural associations.
+[Potential adjacent segments — see COMPANY_OS.md Long-Term Market Vision.]
 ---
 Product Adaptation
 
@@ -385,16 +193,11 @@ Phase 4 — Platform
 
 Objective
 
-Become the operational infrastructure.
+Become the operational infrastructure for the category.
 ---
 Possible capabilities:
 
-- Payment processing.
-- Advanced reporting.
-- Integrations.
-- API.
-- Automation.
-- AI assistants.
+[Longer-horizon bets — integrations, API, automation, AI features — once the core is proven.]
 ---
 Features Backlog Philosophy
 
@@ -461,16 +264,11 @@ Operational usage.
 ---
 North Star Metric
 
-The primary product metric:
-
-Number of organizations successfully managing real operational workflows through the platform.
+[The single metric that best represents customers achieving real value through the product.]
 
 Supporting metrics:
 
-- Events created.
-- Attendance records.
-- Members managed.
-- Financial operations processed.
+[2-4 metrics that feed the North Star metric.]
 ---
 Final Product Principle
 

@@ -177,8 +177,7 @@ Must include tests.
 
 Examples:
 
-- Attendance calculations.
-- Financial distribution.
+- Core domain calculations, per DOMAIN/BUSINESS_RULES.md.
 - Permissions.
 ---
 Database Changes

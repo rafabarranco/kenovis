@@ -29,15 +29,7 @@ Build intentionally.
 ---
 Feedback Sources
 
-The company can receive feedback from:
-
-- In-app feedback.
-- Customer conversations.
-- Support messages.
-- Interviews.
-- Emails.
-- WhatsApp conversations.
-- Sales conversations.
+[List the real channels once known — e.g. in-app feedback, support messages, interviews, sales conversations.]
 ---
 Feedback Principle
 
@@ -47,11 +39,11 @@ Example:
 
 User says:
 
-"Add WhatsApp integration."
+"Add [integration]."
 
 Possible underlying problem:
 
-"I need members to know about events."
+"I need [the actual outcome they're after]."
 
 The problem may have multiple solutions.
 ---
@@ -90,7 +82,7 @@ Every feedback item should capture:
 
 User
 
-Organization
+Account
 
 Date
 
@@ -115,10 +107,6 @@ Bug
 
 Something does not work as expected.
 
-Example:
-
-"Attendance cannot be saved."
-
 Priority:
 
 Usually high.
@@ -126,10 +114,6 @@ Usually high.
 Usability Issue
 
 The feature works but is confusing.
-
-Example:
-
-"I cannot find where to create events."
 
 Priority:
 
@@ -139,10 +123,6 @@ Feature Request
 
 A user proposes a solution.
 
-Example:
-
-"Add calendar integration."
-
 Priority:
 
 Requires analysis.
@@ -150,10 +130,6 @@ Requires analysis.
 Product Insight
 
 A discovered user behavior or problem.
-
-Example:
-
-"Directors spend 30 minutes every week preparing attendance."
 
 High value.
 ---
@@ -185,7 +161,7 @@ How is it solved today?
 ---
 Strategic Alignment
 
-Does it support the company direction?
+Does it support the company direction, per COMPANY_OS.md?
 ---
 Step 4
 
@@ -208,7 +184,7 @@ Characteristics:
 
 - Frequent.
 - Painful.
-- Affects many organizations.
+- Affects many accounts.
 - Supports core workflows.
 ---
 Low Priority
@@ -228,7 +204,7 @@ feedback_items
 
 id
 
-organization_id
+[tenant_key, if multi-tenant]
 
 user_id
 
@@ -355,26 +331,7 @@ Human judgment is required.
 ---
 Tools Integration
 
-Possible tools:
-
-Communication
-
-- WhatsApp.
-- Email.
-
-Database
-
-- Supabase.
-
-Automation
-
-- Zapier.
-- Make.
-
-Documentation
-
-- Notion.
-- Markdown repository.
+[Record the actual tools once chosen — communication, database, automation, documentation.]
 ---
 First 100 Customers Strategy
 

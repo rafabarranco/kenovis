@@ -12,12 +12,7 @@ This document defines the security principles, requirements and practices of the
 
 Security is a fundamental product requirement.
 
-The platform manages:
-
-- Personal information.
-- Organization data.
-- Attendance history.
-- Financial information.
+[List here what categories of sensitive data the platform will actually handle — e.g. personal information, financial data, health data — once known.]
 
 Security failures can damage user trust and business viability.
 ---
@@ -59,14 +54,6 @@ Principle 2
 Least privilege
 
 Users should only access what they need.
-
-Examples:
-
-A member should not automatically access:
-
-- Organization finances.
-- Administration settings.
-- Other organizations.
 ---
 Principle 3
 
@@ -124,128 +111,15 @@ Authorization answers:
 ---
 Authorization Model
 
-The platform uses:
-
-User
-
-+
-
-Organization
-
-+
-
-Role
-
-+
-
-Permission
-
----
-Roles
-
-Initial roles:
----
-Owner
-
-Full organization control.
-
-Can:
-
-- Manage organization.
-- Manage users.
-- Manage permissions.
-- Access financial data.
----
-Administrator
-
-Organization management.
-
-Can:
-
-- Manage members.
-- Manage events.
-- Manage settings.
----
-Manager
-
-Operational access.
-
-Can:
-
-- Create events.
-- Manage attendance.
-- Coordinate activities.
----
-Member
-
-Participant access.
-
-Can:
-
-- View own information.
-- Confirm participation.
-- View assigned activities.
+[Describe the roles/permissions model — see ENGINEERING/ARCHITECTURE.md Authorization Model and DOMAIN/DOMAIN_MODEL.md for the entities involved.]
 ---
 Multi-Tenant Security
 
-Multi-tenancy is a critical security requirement.
----
-Rule
-
-A user must never access another organization's data.
----
-Enforcement Layers
-
-Security must exist in:
-
-1. Database.
-2. Backend.
-3. Frontend.
----
-Database Security
-
-Supabase Row Level Security (RLS) is mandatory.
-
-Every business table must verify:
-
-organization_id
-
----
-Example
-
-Allowed:
-
-User
-
-belongs to
-
-Organization A
-
-can read
-
-Organization A members
-
-Forbidden:
-
-User
-
-belongs to
-
-Organization A
-
-reading
-
-Organization B members
-
+[If the product is multi-tenant, per ENGINEERING/ARCHITECTURE.md: a user must never access another tenant's data. State the enforcement layers — database, backend, frontend — and the mandatory technique (e.g. RLS) from ENGINEERING/DATABASE.md.]
 ---
 Personal Data Protection
 
-The platform may store:
-
-- Names.
-- Emails.
-- Phone numbers.
-- Attendance information.
+[List the categories of personal data the platform will actually store, once known.]
 ---
 Data Minimization
 
@@ -257,41 +131,8 @@ Avoid collecting:
 - Sensitive information without reason.
 ---
 Data Classification
----
-Public Data
 
-Information that can be publicly displayed.
-
-Example:
-
-Organization name.
----
-Internal Data
-
-Operational information.
-
-Example:
-
-Events.
----
-Personal Data
-
-Information related to individuals.
-
-Example:
-
-- Name.
-- Email.
-- Phone.
----
-Sensitive Business Data
-
-High importance.
-
-Example:
-
-- Financial operations.
-- Payment history.
+[Classify the product's data once known — e.g. public, internal, personal, sensitive business data — with an example of each.]
 ---
 Personal Data Rules
 
@@ -304,7 +145,7 @@ The system must support:
 ---
 GDPR Considerations
 
-The product must consider European data protection requirements.
+The product must consider European data protection requirements, if it serves EU users.
 
 Important concepts:
 
@@ -320,44 +161,15 @@ Legal compliance requires professional review before commercial scale.
 
 AI assistance is useful for preparation but does not replace legal advice.
 ---
-Financial Security
+Sensitive Operations
 
-Financial operations require additional protection.
----
-Rules
-
-Financial data must:
-
-- Be permission controlled.
-- Maintain history.
-- Be auditable.
-- Avoid silent modifications.
----
-Financial Changes
-
-Important changes should record:
-
-- Who changed it.
-- When.
-- Previous value.
-- New value.
+[If the product handles money or other high-stakes operations, state the extra rules here: permission-controlled, history maintained, auditable, no silent modifications.]
 ---
 Audit System
 
 Critical actions should create audit records.
 
-Examples:
-
-USER_CREATED
-
-MEMBER_ADDED
-
-EVENT_CREATED
-
-PAYMENT_UPDATED
-
-DISTRIBUTION_CONFIRMED
-
+[List the action types worth auditing once the domain is defined — e.g. ENTITY_CREATED, ENTITY_UPDATED, PAYMENT_CONFIRMED.]
 ---
 Logging
 
@@ -390,7 +202,7 @@ All APIs must validate:
 - Authentication.
 - Authorization.
 - Input data.
-- Organization ownership.
+- Tenant/resource ownership, if applicable.
 ---
 Input Validation
 
@@ -507,14 +319,14 @@ Authorization
 Verify:
 
 - Role restrictions.
-- Organization isolation.
+- Tenant isolation, if applicable.
 ---
 Data Protection
 
 Verify:
 
 - Personal data access.
-- Financial data protection.
+- Sensitive business data protection.
 ---
 AI Agent Security Rules
 
@@ -538,7 +350,7 @@ Security Review Checklist
 Before releasing a feature:
 
 - Does it access personal data?
-- Does it respect organization boundaries?
+- Does it respect tenant/resource boundaries?
 - Are permissions correct?
 - Is historical information protected?
 - Are errors safe?
