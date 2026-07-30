@@ -683,7 +683,7 @@ Date:
 
 Status:
 
-Proposed
+Accepted
 
 Owner:
 
@@ -883,6 +883,97 @@ Positive:
 Negative:
 
 - Requires maintenance discipline.
+
+---
+
+# DECISION-010
+
+# AI Tooling Strategy: Claude Code Primary, Tool-Agnostic AI-OS
+
+Date:
+
+2026-07-30
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-01-01
+
+---
+
+## Context
+
+The company operates using an AI-native model (DECISION-001). Day-to-day development happens through Claude Code (VS Code extension, Claude Pro subscription), which automatically loads the root CLAUDE.md file.
+
+The company also needs the operating model to work through other AI tooling, including Maker, without rebuilding it per tool.
+
+---
+
+## Options Considered
+
+### Option A
+
+Write AI instructions using Claude Code-specific mechanisms (Skills, hooks, tool syntax) throughout the AI-OS.
+
+Advantages:
+
+- Deeper integration with Claude Code.
+
+Disadvantages:
+
+- Locks the AI-OS to one tool.
+- Breaks if followed from Maker or any future tool.
+
+---
+
+### Option B
+
+Keep the AI-OS (AI/SYSTEM.md, agents, workflows, policies, commands, templates, memory) as plain, tool-agnostic markdown. Keep Claude Code-specific configuration isolated to the root CLAUDE.md file only.
+
+Advantages:
+
+- AI-OS remains portable across tools.
+- Claude Code still gets automatic loading via CLAUDE.md without polluting the framework.
+
+Disadvantages:
+
+- Requires discipline to avoid leaking tool-specific syntax into AI/.
+
+---
+
+## Decision
+
+Adopt Option B.
+
+Claude Code (VS Code extension, Claude Pro subscription) is the primary development interface and loads root CLAUDE.md automatically.
+
+The AI-OS under AI/ must remain tool-agnostic plain markdown, readable and followable by any AI tool, including Maker. A tool other than Claude Code should manually load AI/SYSTEM.md as its equivalent entry point.
+
+---
+
+## Reason
+
+The operating model (DECISION-001) depends on AI/SYSTEM.md being reusable. Coupling it to one tool's syntax would contradict that decision and create migration risk.
+
+---
+
+## Consequences
+
+Positive:
+
+- No vendor lock-in on the operating model.
+- New tools can be onboarded by pointing them at AI/SYSTEM.md.
+
+Negative:
+
+- Tool-specific optimizations (e.g. Claude Code Skills) must live outside AI/, which may duplicate some setup per tool.
 
 ---
 

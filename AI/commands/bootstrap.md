@@ -117,14 +117,15 @@ Understand:
 
 # Step 4 - Inspect Repository Structure
 
+Product and platform implementation lives under `CODE/`. See `CODE/README.md` for structure details.
+
 Analyze:
 
 ```
-/
-apps/
-packages/
-src/
-docs/
+CODE/
+CODE/apps/
+CODE/packages/
+CODE/docs/
 ```
 
 Identify:

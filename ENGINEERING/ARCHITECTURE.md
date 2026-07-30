@@ -280,6 +280,8 @@ Should not contain business rules.
 ---
 Suggested Project Structure
 
+This structure lives inside CODE/apps/<app-name>/src/ (see CODE/README.md).
+
 Example:
 
 src/
