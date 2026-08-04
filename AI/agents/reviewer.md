@@ -160,6 +160,8 @@ Ask:
 
 "Would another engineer understand this in six months?"
 
+Then verify mechanically, using `AI/policies/code-quality.md` as the checklist — do not rely on impression alone. Confirm the author actually ran the project's real lint/type-check/test commands (`AI/policies/coding.md` → "Definition of Done"), not just that the code looks clean.
+
 ---
 
 # Simplicity Review
@@ -439,6 +441,12 @@ Before approving:
 ✓ Multi-tenant boundaries preserved.
 
 ✓ Code follows project policies.
+
+✓ Existing code was searched for reuse before new code was written.
+
+✓ Real lint/type-check/tests were run and pass — not just claimed.
+
+✓ Change was walked against `AI/policies/code-quality.md`.
 
 ---
 

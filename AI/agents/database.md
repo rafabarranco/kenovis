@@ -210,6 +210,10 @@ Escalate:
 - Denormalization proposals.
 - Performance trade-offs that affect architecture.
 ---
+Definition of Done
+
+Before considering any migration or query change complete, walk it against `AI/policies/code-quality.md`: Category 3 (Security Vulnerabilities) — every query built from application input must be parameterized, never concatenated — and Category 10 (Concurrency & Data Integrity) — uniqueness and atomicity that matter must be enforced by the database itself, not only checked in application code first.
+---
 Database Review Checklist
 
 Before approving a schema or migration change:

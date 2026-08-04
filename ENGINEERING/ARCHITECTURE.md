@@ -77,6 +77,22 @@ Technology Stack
 - Authentication approach.
 - Deployment target.]
 ---
+Static Analysis
+
+[Record which linter, formatter and type checker this project runs, and the exact commands to invoke them — see AI/policies/coding.md → "Definition of Done" and AI/policies/code-quality.md, which every agent must run before considering code done.
+
+If a quality gate for this project only runs in CI (e.g. SonarQube behind a build server) and cannot be invoked from a coding session, maintain a generated export of its active ruleset at ENGINEERING/CODE_QUALITY.md — see AI/policies/code-quality.md → "When The Gate Only Exists In CI". Do not write that export by hand; regenerate it from the tool whenever its configuration changes.]
+---
+Hard Rules (No Exceptions)
+
+[Once the stack above is chosen, record here the small set of mechanical, project-specific rules every agent must follow without exception — the kind of rule that is easy to state and cheap to verify by grep, but expensive to unwind if violated repeatedly. Examples of the shape these take (do not copy literally — derive them from the actual stack):
+
+- The one accepted way to import across module boundaries (e.g. a fixed path alias).
+- The one accepted file-to-export convention (e.g. one exported unit per file).
+- Any pattern this project has deliberately banned in favor of a single alternative (e.g. one state management approach instead of several competing ones).
+
+Keep this list short. A hard rule earns its place by being violated in practice, not by sounding rigorous. An empty or near-empty list here is healthy — it means most decisions are better left to the principles elsewhere in this document.]
+---
 Database
 
 [Record the chosen database engine and why the domain's relationships require it — see ENGINEERING/DATABASE.md for schema detail.]

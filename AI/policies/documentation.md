@@ -350,6 +350,20 @@ Never leave documentation outdated after implementation.
 
 ---
 
+# README Sync — In-Task, Not Post-Hoc
+
+Waiting for review to catch outdated documentation makes it optional in practice — reviews get rushed, sync gets deferred, and it never happens.
+
+Before reporting any code task complete:
+
+1. Ask whether the change affects anything the README documents: setup, architecture, routing, folder structure, scripts, conventions, environment variables.
+2. If yes, update the README in the same task, not a follow-up.
+3. If no, state that explicitly ("No README impact") instead of silently skipping the question.
+
+This applies to the README of whichever unit changed (see `CODE/README.md` for the repository's topology), not only the repository root.
+
+---
+
 # Review Checklist
 
 Before approving work:

@@ -340,9 +340,14 @@ Before coding:
 2. Review requirements.
 3. Understand design intent.
 4. Check architecture impact.
-5. Define implementation approach.
+5. Search for an existing component, hook, or utility that already does this — see `AI/policies/coding.md` → "Reuse Before Creation". Do not skip straight to writing new code.
+6. Define implementation approach.
 
 Then implement.
+---
+Definition of Done
+
+Before considering any frontend change complete, close the mechanical gate in `AI/policies/coding.md` and walk it against `AI/policies/code-quality.md` — Category 7 (Accessibility) applies to every UI change.
 ---
 Pull Request Checklist
 
@@ -359,6 +364,10 @@ Before submitting changes:
 ✓ Accessibility considered.
 
 ✓ No unnecessary complexity introduced.
+
+✓ Existing code was searched for reuse before writing anything new.
+
+✓ Real lint/type-check/tests were run and pass.
 ---
 Forbidden Behaviours
 

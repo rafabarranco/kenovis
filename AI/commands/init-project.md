@@ -155,11 +155,12 @@ Derive entities from the real business, not from the example. If the new product
 PRODUCT/ROADMAP.md
 PRODUCT/FEATURES.md
 PRODUCT/USER_RESEARCH.md
+PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
-USER_RESEARCH.md should be emptied rather than invented. Research that has not happened is not research.
+USER_RESEARCH.md and COMPETITIVE_LANDSCAPE.md should be emptied rather than invented. Research that has not happened is not research. Competitors that have not been verified are not competitors.
 
-Leave it as a structured empty document until real conversations exist.
+Leave both as structured empty documents until real research and real competitor findings exist.
 
 ---
 
@@ -301,7 +302,7 @@ Initialization is complete when:
 
 ✓ DOMAIN/ describes the real business.
 
-✓ PRODUCT/ describes the real roadmap, with research left empty if none exists.
+✓ PRODUCT/ describes the real roadmap, with research and competitive landscape left empty if none exists.
 
 ✓ ENGINEERING/ records real stack, database and tenancy decisions.
 

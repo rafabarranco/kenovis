@@ -134,6 +134,9 @@ Architecture:
 Coding:
 → AI/policies/coding.md
 
+Code Quality:
+→ AI/policies/code-quality.md
+
 Database:
 → AI/policies/database.md
 
