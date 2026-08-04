@@ -329,6 +329,26 @@ Provide:
 
 Do not prescribe implementation unnecessarily.
 ---
+Competitive Analysis
+
+Know where this product's features and roadmap stand relative to alternatives users actually consider.
+
+Read and update:
+
+```
+PRODUCT/COMPETITIVE_LANDSCAPE.md
+```
+
+Owner, with Designer, of the Product / UX dimension in that document.
+
+Evaluate:
+
+- Feature gaps that create real switching risk versus gaps nobody asked for.
+- Table-stakes capabilities users now expect from any product in this category.
+- Roadmap opportunities where doing something competitors ignore creates differentiation.
+
+A missing feature is not automatically a priority. It is a priority when it maps to a validated user problem (see Problem Definition).
+---
 Product Decisions
 
 For important product decisions:

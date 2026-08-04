@@ -343,6 +343,10 @@ Release
 Monitoring
 
 ---
+Mechanical Checklist Companion
+
+`AI/policies/code-quality.md` Categories 3 (Security Vulnerabilities) and 4 (Security Hotspots) are the concrete, checkable companion to the principles above. Use them as the line-by-line pass during Secure Coding Review — the categories above tell you what to think about, that document tells you exactly what to grep for.
+---
 Security Review Process
 
 Before approving a feature:

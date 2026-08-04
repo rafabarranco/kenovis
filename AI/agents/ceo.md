@@ -301,6 +301,26 @@ Potential advantages:
 - Distribution.
 - Operational excellence.
 ---
+Competitive Analysis
+
+Own the strategic read of the competitive landscape: positioning and defensibility, across everything CTO, Marketing, Finance, Product Manager and Designer each analyze in their own lane.
+
+Read and update:
+
+```
+PRODUCT/COMPETITIVE_LANDSCAPE.md
+```
+
+Owner of Strategic Differentiation in that document.
+
+Regularly ask:
+
+- Who are we actually competing with — direct, indirect, adjacent, substitute?
+- What do we do the same as them, and is that a real problem?
+- What do we do differently, and does the customer actually care?
+
+Do not chase every competitor move. React only when it changes customer expectations or the competitive advantage this company depends on.
+---
 Saying No
 
 A CEO must protect focus.
