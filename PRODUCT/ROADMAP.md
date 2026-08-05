@@ -148,6 +148,12 @@ Target users
 
 Software developers and small development teams (COMPANY_OS.md → Initial Market Strategy).
 ---
+Engineering Validation (2026-08-05, via /next)
+
+Smoke-tested end to end against a scratch external-like repository (own README.md, own `src/`): `npx kenovis@0.1.0 init` correctly left the existing README.md and code untouched, wrote `.kenovis/` + `CLAUDE.md` stub, and correctly detected the repository as brownfield (cited `src/` as evidence, suggested `/adopt-project`). `npx kenovis sync` (no `--source`, the real customer path — pulls the published bundle) produced an empty diff on an unchanged version, confirming idempotent mirror-replace with no spurious noise. See AI/memory/learnings.md Learning-004 for a related `--source` footgun found while testing (not customer-facing — only affects the local-dev `--source` escape hatch, not default usage).
+
+This validates the CLI Core Modules below work as documented. Still open for full Success Criteria: a real external team (not this smoke test) completing /init-project and shipping a feature via /feature without help.
+---
 MVP Core Modules
 
 - CLI install command — scaffolds the Framework layer into a target repository.
