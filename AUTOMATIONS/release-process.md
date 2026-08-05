@@ -72,51 +72,55 @@ Monitoring
 ---
 Environment Strategy
 
-The platform uses:
+Kenovis has no hosted environments in v1 — no server to deploy to. "Environments" map instead to:
 
 Development
 
+Local work on the CLI source, and dogfooding directly inside this repository.
+
 Staging
 
+Testing the CLI against a scratch/throwaway target repository before publishing.
+
 Production
+
+The published npm package version customers pull via CLI install/sync.
 
 ---
 Development Environment
 
 Purpose:
 
-Build and experiment.
+Build and experiment on the CLI source, dogfooded inside this repository.
 
 Characteristics:
 
 - Local development.
-- Test data.
+- No hosted infrastructure to provision.
 - Fast iteration.
 ---
 Staging Environment
 
 Purpose:
 
-Validate before production.
+Validate the CLI before publishing.
 
 Characteristics:
 
-- Production-like environment.
-- Realistic workflows.
-- Final verification.
+- Run the CLI against a scratch/throwaway target repository.
+- Verify install and sync both respect RULE-INST-01/02.
 ---
 Production Environment
 
 Purpose:
 
-Serve real customers.
+Serve real customers via the published npm package.
 
 Requirements:
 
-- Stability.
-- Monitoring.
-- Backup strategy.
-- Controlled deployments.
+- Version pinned exactly, published from CI with provenance (ENGINEERING/SECURITY.md → Supply-Chain Security).
+- CHANGELOG.md updated per DECISIONS.md DECISION-011.
+- No backup strategy needed — Kenovis holds no customer data or server state.
 ---
 Feature Development Process
 ---
