@@ -134,10 +134,9 @@ Slice 4 shipped via /next: the `sync` command. `runSync` (`cli/src/application/c
 
 Slice 5 shipped via /next: npm publish wiring. `cli/package.json` gained publish-readiness metadata (`repository`, `homepage`, `bugs`, `keywords`, `prepublishOnly` guard) and `.github/workflows/publish.yml` — triggered by a published GitHub Release, SHA-pinned, builds/tests/typechecks, verifies `cli/package.json`'s version matches the release tag, then `npm publish --provenance --access public` from CI only, per ENGINEERING/SECURITY.md's Supply-Chain Security requirement. `.github/workflows/ci.yml` gained a `cli-tests` job (build/typecheck/test on every push/PR) — previously `cli/` had zero CI coverage. See `cli/README.md` → "Cutting a release" for the tag/release steps.
 
-Explicitly NOT done yet:
-- The actual first publish. Requires an `NPM_TOKEN` repository secret (npm automation token, scoped to the `kenovis` package name — confirmed available on the registry) that only the founder can create and load, and a GitHub Release to be cut to trigger it.
+DONE (2026-08-05) — first publish. `kenovis@0.1.0` is live on the npm registry (published from CI via `.github/workflows/publish.yml`, triggered by the `v0.1.0` GitHub Release on `main`, with provenance). `npx kenovis init` now works for any external repository.
 
-Dependencies: none remaining for items 1-3. First real publish depends on the `NPM_TOKEN` secret being configured.
+Dependencies: none remaining. All three Phase 0 "Immediate Priority" items are complete.
 ---
 Phase 1 — MVP
 
