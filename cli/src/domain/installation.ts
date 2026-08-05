@@ -58,9 +58,16 @@ export class AlreadyInstalledError extends Error {
   constructor(public readonly frameworkDir: string) {
     super(
       `${frameworkDir} already exists. Re-run with --force to overwrite the Framework layer, ` +
-        `or use the sync command once it exists to update in place.`,
+        `or use the sync command to update it in place.`,
     );
     this.name = "AlreadyInstalledError";
+  }
+}
+
+export class NotInstalledError extends Error {
+  constructor(public readonly frameworkDir: string) {
+    super(`${frameworkDir} does not exist. Run \`kenovis init\` first.`);
+    this.name = "NotInstalledError";
   }
 }
 
