@@ -22,31 +22,94 @@ The domain model is the foundation of the entire system.
 ---
 Domain Overview
 
-[No entities defined yet. Describe here what the platform's core domain actually manages, and diagram the primary entities and how they relate. Derive this from the real business — do not copy example entities from elsewhere in this framework.]
+Kenovis's domain is unusual: it is not a typical SaaS business domain (customers, orders, invoices). It is the domain of operating a specialized AI-augmented team inside someone else's codebase.
+
+The core entities are: Customer (Team), Installation, Framework Release, Vertical, and Agent Roster. A Customer runs one or more Installations, each Installation tracks a Framework Release and is scoped to one Vertical, and each Vertical defines an Agent Roster.
 ---
 Domain Philosophy
 
-[State the primary boundary the product is organized around — e.g. everything exists inside the context of an account, a tenant, a project. Name what the system must never assume, given that boundary.]
+Everything exists inside the context of a single Installation — one customer repository running one instance of the Kenovis AI-OS. Kenovis has no runtime access to a customer's Installation once distributed: there is no backend, no telemetry beyond what a customer opts into. The system must never assume it can read from or write to a customer's repository remotely, and every domain fact about an Installation is self-reported, local to that customer's own repo.
 ---
 Core Entities
 
-[For each core entity, document: definition, examples, responsibilities, attributes (conceptually — id, foreign keys, core fields), business rules, and relationships to other entities. Add one section per entity below as the domain is defined.]
+### Customer (Team)
+
+Definition: The human organization or individual who adopts Kenovis.
+
+Attributes (conceptually): name, vertical served (initially Software Development), team size, adoption date.
+
+Relationships: owns one or more Installations.
+
+---
+
+### Installation
+
+Definition: One instance of the Kenovis AI-OS living inside a customer's own repository.
+
+Attributes (conceptually): framework version installed, vertical, product-layer completion status (initialized vs. still example content), install date, last sync date.
+
+Business rules: an Installation's Product layer (COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, CODE/) is fully owned by the customer. Kenovis, and the CLI it distributes, must never overwrite it silently on update. See DOMAIN/BUSINESS_RULES.md RULE-INST-01 and RULE-INST-02.
+
+Relationships: belongs to one Customer; tracks one Framework Release (the one currently synced); scoped to one Vertical.
+
+---
+
+### Framework Release
+
+Definition: A versioned snapshot of the Framework layer (AI/agents/, AI/workflows/, AI/policies/, AI/commands/, AI/templates/, AI/SYSTEM.md) that customers can sync into their Installation.
+
+Attributes (conceptually): version, changelog entries, release date.
+
+Relationships: an Installation tracks the Framework Release it last synced. A Framework Release is defined for exactly one Vertical's Agent Roster (today: Software Development).
+
+---
+
+### Vertical
+
+Definition: A professional practice the Agent Roster is specialized for.
+
+Examples: Software Development (today, and the only one in v1). Legal, Accounting — planned, not yet built. See COMPANY_OS.md → Long-Term Market Vision.
+
+Attributes (conceptually): name, Agent Roster definition, domain glossary.
+
+Relationships: an Installation is scoped to exactly one Vertical. A Vertical defines exactly one Agent Roster per Framework Release.
+
+Business rule: an Agent Roster for one Vertical must never assume another Vertical's domain vocabulary. See DOMAIN/BUSINESS_RULES.md RULE-VERT-01.
+
+---
+
+### Agent Roster
+
+Definition: The set of specialized AI agent role definitions (e.g., for Software Development: CTO, Product Manager, Designer, Frontend, Backend, Security — see AI/agents/) shipped as part of a Framework Release for a given Vertical.
+
+Attributes (conceptually): list of agent role definitions, the workflows and policies each agent operates under.
+
+Relationships: belongs to exactly one Vertical, versioned as part of a Framework Release.
+
 ---
 Domain Relationships Summary
 
-[Diagram or list how the core entities relate once they are defined above.]
+Customer 1—N Installation.
+
+Installation N—1 Framework Release (the one currently tracked).
+
+Installation N—1 Vertical.
+
+Vertical 1—1 Agent Roster (per Framework Release).
 ---
 Domain Invariants
 
 These rules must always be true.
 
-[List the non-negotiable domain-level guarantees — e.g. tenant isolation, historical integrity, calculation transparency — once the domain is defined.]
+- Framework layer and Product layer must never mix. A Framework Release update must never modify a customer's Product-layer files.
+- Kenovis has no runtime access to a customer's Installation in v1 — no backend exists to read from or write to it.
+- A Vertical's Agent Roster must be internally consistent with its own domain vocabulary; no cross-vertical term leakage.
 ---
 Generic Terminology
 
 Avoid vertical-specific naming in the domain model.
 
-Prefer generic operational concepts that could apply to more than one vertical, unless the product is intentionally single-vertical and that trade-off has been made explicitly.
+Prefer generic operational concepts that could apply to more than one vertical, unless the product is intentionally single-vertical and that trade-off has been made explicitly. Kenovis is intentionally single-vertical (Software Development) in v1 — see PRODUCT/ROADMAP.md Phase 3 for when this expands.
 ---
 Domain Evolution Rules
 

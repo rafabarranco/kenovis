@@ -21,11 +21,11 @@ The roadmap exists to protect product focus.
 ---
 Product Vision
 
-[Restate the product vision from COMPANY_OS.md in roadmap terms — what the platform becomes once mature.]
+Kenovis matures into the default operating system a small team installs the moment it decides to build something real — giving that team, from day one, the specialized roles (product, architecture, security, design) it can't yet afford to hire.
 ---
 Product Strategy
 
-[Describe the phased go-to-market approach — e.g. land-and-expand, single-segment-first, platform-later. Name the phases and what each unlocks.]
+Single-segment-first, then land-and-expand across verticals. Phase 0-1 prove the CLI/template distribution model with software development teams (the only Vertical that exists). Phase 2 proves retention and layers the open-core paid tier. Phase 3 extends the same operating model to adjacent professional practices (legal, accounting). Phase 4 becomes shared infrastructure across verticals (marketplace of Agent Rosters, optional hosted layer).
 ---
 Product Development Principles
 
@@ -73,59 +73,64 @@ Phase 0 — Foundation
 
 Objective
 
-Create the company and product foundation.
+Build Kenovis's own Product layer (this document set) and a real CLI installer/sync tool for distributing the Framework layer.
 
 Duration
 
-[Estimate.]
+Not yet estimated.
 
 Users
 
-Internal.
+Internal — Kenovis dogfoods itself on this repository.
 
 Goal
 
-Build the minimum architecture required to start validating.
+Build the minimum CLI tooling required to install and sync the AI-OS into an external repository.
 ---
 Deliverables
 
 Technical:
 
-- Application foundation.
-- Authentication.
-- [Core domain entity from DOMAIN/DOMAIN_MODEL.md].
-- Database foundation.
-- User management.
+- CLI command that scaffolds the Framework layer (AI/, CLAUDE.md, README.md) into a target repository.
+- CLI command that syncs a newer Framework Release into an existing Installation without touching Product-layer files (RULE-INST-01).
+- No database, no authentication, no hosted service (DECISION-013).
 
 Documentation:
 
-- Domain model.
-- Architecture.
-- Development standards.
+- Domain model (done — see DOMAIN/DOMAIN_MODEL.md).
+- Architecture (done — see ENGINEERING/ARCHITECTURE.md).
+- Development standards (existing AI/policies/, unchanged by this initialization).
 ---
 Success Criteria
 
-[What must be true for Phase 0 to be considered done — e.g. the platform supports one real account end to end.]
+A team outside Kenovis can install the CLI, get the Framework layer into their repository, and complete /init-project with their own real answers — end to end, without help.
 ---
 Phase 1 — MVP
 
 Objective
 
-[State the core problem(s) this phase must prove the product solves.]
+Prove that a real external software team can install Kenovis via CLI, complete /init-project for their own product, and ship at least one real feature through the /feature workflow.
 
 Target users
 
-[The first customer segment named in COMPANY_OS.md.]
+Software developers and small development teams (COMPANY_OS.md → Initial Market Strategy).
 ---
 MVP Core Modules
 
-[List the modules that make up the MVP, one per core domain entity. For each: purpose, capabilities, required information, business rules, acceptance criteria — see PRODUCT/FEATURES.md for the detailed spec format.]
+- CLI install command — scaffolds the Framework layer into a target repository.
+- CLI sync/update command — pulls a newer Framework Release, Framework-layer files only.
+- The Software Development Vertical's Agent Roster — already exists (AI/agents/: CTO, Product Manager, Designer, Frontend, Backend, Security, Database, Reviewer).
+
+See PRODUCT/FEATURES.md for the detailed spec format once each module is speced as a FEATURE-NNN.
 ---
 MVP Non Goals
 
 Do NOT build:
 
-[List capabilities deliberately excluded from the MVP and why — this protects scope more than any list of what to build.]
+- Hosted dashboard or web UI — no backend exists in v1 (DECISION-013).
+- Billing or payment processing — open-core tier boundary is documentation-only until Phase 2.
+- Multi-tenant accounts or authentication — there is no shared backend to authenticate against.
+- Additional Verticals (Legal, Accounting) — Phase 3, not before Phase 1 validates the model on Software Development.
 ---
 MVP Success Metrics
 
@@ -133,39 +138,39 @@ The MVP is successful when:
 
 Usage
 
-[Target — e.g. N active accounts.]
+N installations (target not yet set) complete /init-project with real, non-placeholder Product-layer content.
 
 Engagement
 
-[What recurring action indicates real use.]
+Installations run at least one framework workflow (/feature, /bug, /review) after initialization.
 
 Retention
 
-Users return without being reminded.
+Installations still sync new Framework Releases after 30/90 days.
 
 Value
 
-Users report saving meaningful time.
+Customers report the framework caught something — a missed policy, an undocumented decision — that a plain AI coding session would have missed.
 ---
 Phase 2 — Product Market Fit
 
 Objective
 
-Become indispensable for [the target customer].
+Become indispensable for early-adopter software development teams.
 ---
 New Capabilities
 
-[What gets added once the MVP is validated — deeper functionality on existing modules, not new verticals.]
+Paid open-core tier: additional specialized agents, priority support. Lightweight, explicitly opt-in feedback/telemetry loop (no default data collection — see ENGINEERING/SECURITY.md). Richer CLI update ergonomics (diff preview before sync, conflict detection against RULE-INST-01).
 ---
 Phase 2 Success Metrics
 
 Target:
 
-[Numeric target for active accounts/organizations.]
+Not yet set — first real number should come from Phase 1 usage data, not invented here.
 
 Metrics:
 
-[The 3-5 numbers that indicate the product is becoming indispensable.]
+Retained installations, framework workflow invocations per active installation, paid-tier conversion rate, init-project completion rate.
 ---
 Phase 3 — Expansion
 
@@ -175,7 +180,7 @@ Expand beyond the initial customer segment.
 ---
 New Verticals
 
-[Potential adjacent segments — see COMPANY_OS.md Long-Term Market Vision.]
+Legal/abogacía and Accounting/gestoría — see COMPANY_OS.md → Long-Term Market Vision. Each requires its own Agent Roster and glossary, authored from that vertical's real domain per DOMAIN/BUSINESS_RULES.md RULE-VERT-01, not copied from the Software Development roster.
 ---
 Product Adaptation
 
@@ -197,7 +202,7 @@ Become the operational infrastructure for the category.
 ---
 Possible capabilities:
 
-[Longer-horizon bets — integrations, API, automation, AI features — once the core is proven.]
+A marketplace of Vertical Agent Rosters (community and Kenovis-authored). An optional hosted layer for teams that do want a dashboard (only once justified by real demand, not built preemptively — see COMPANY_OS.md → What The Company Will NOT Become). Integrations with existing developer tooling (GitHub, Linear, Slack).
 ---
 Features Backlog Philosophy
 
@@ -264,11 +269,11 @@ Operational usage.
 ---
 North Star Metric
 
-[The single metric that best represents customers achieving real value through the product.]
+Active Installations — repositories with the Kenovis AI-OS installed that ran at least one framework workflow (/feature, /bug, /review, /next) in the last 30 days.
 
 Supporting metrics:
 
-[2-4 metrics that feed the North Star metric.]
+init-project completion rate (installs that reach a real, non-placeholder Product layer), Framework Release sync rate, workflow invocations per active Installation, paid open-core tier conversion rate.
 ---
 Final Product Principle
 

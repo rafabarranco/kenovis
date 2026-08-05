@@ -31,11 +31,11 @@ Initial Market
 
 Primary Market
 
-[The first customer segment named in COMPANY_OS.md.]
+Software developers and small development teams. See COMPANY_OS.md → Initial Market Strategy.
 ---
 Why Start Here
 
-[The reasons this segment was chosen — access, network, clarity of problem, existing workflow to observe.]
+This segment is already fluent in AI-assisted and agentic tooling, adopts CLI/repo-based products with the least friction, can evaluate the framework's engineering rigor firsthand, and gives the fastest, most technical feedback loop. Kenovis also dogfoods the framework on itself, so this segment can be served from day one.
 ---
 Target User Profiles
 

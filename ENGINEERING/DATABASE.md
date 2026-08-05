@@ -38,13 +38,11 @@ Avoid:
 ---
 Database Technology
 
-[No engine chosen yet. Record it here and log the decision in DECISIONS.md — see ENGINEERING/ARCHITECTURE.md.]
+None in v1. Per DECISIONS.md DECISION-013, Kenovis operates no backend and no database in v1 — Installation state lives entirely inside the customer's own repository. This document stays intentionally unpopulated below until a hosted layer is designed (PRODUCT/ROADMAP.md Phase 4). Do not invent a schema ahead of that need.
 ---
 Core Database Principles
 
-Principle 1
-
-[If multi-tenant: every business entity carries the tenant key chosen in ENGINEERING/ARCHITECTURE.md, NOT NULL by default.]
+Not applicable until a database exists. See ENGINEERING/ARCHITECTURE.md → Tenancy Model.
 
 ---
 Principle 2
@@ -125,15 +123,15 @@ deleted_at
 ---
 Schema
 
-[No tables defined yet. Derive the schema from DOMAIN/DOMAIN_MODEL.md — one section per core entity, each documenting: purpose, schema (conceptual column list), constraints, and status/type enums where relevant. Add an audit_logs table if DATA integrity rules in DOMAIN/BUSINESS_RULES.md require traceability.]
+None in v1 — no database exists. DOMAIN/DOMAIN_MODEL.md entities (Customer, Installation, Framework Release, Vertical, Agent Roster) are conceptual only; none are persisted by Kenovis.
 ---
 Indexing Strategy
 
-[Once the schema is defined, list the indexes required by common query patterns — typically the tenant key on every business table, plus foreign keys used in frequent lookups.]
+Not applicable — no database in v1.
 ---
 Row Level Security (RLS)
 
-[If the chosen database and platform support RLS (e.g. Supabase/PostgreSQL) and the product is multi-tenant, RLS is mandatory: every business table must enforce that a user can only access rows belonging to their tenant.]
+Not applicable — no database, and no multi-tenant model, in v1.
 ---
 RLS Principle
 
@@ -198,7 +196,7 @@ Optimize after measuring.
 ---
 Future Considerations
 
-[Note here anything deliberately deferred — e.g. payment provider integration, advanced reporting, a data warehouse — without designing it prematurely.]
+Deliberately deferred, not designed prematurely: a hosted backend + database for the optional dashboard layer (PRODUCT/ROADMAP.md Phase 4), payment provider integration for the paid open-core tier (Phase 2).
 ---
 AI Agent Database Rules
 

@@ -634,6 +634,102 @@ Negative:
 
 ---
 
+# DECISION-013
+
+# Kenovis Product Definition & Initial Distribution Model
+
+Date:
+
+2026-08-05
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-05
+
+---
+
+## Context
+
+This repository carried example/placeholder product-layer content (COMPANY_OS.md, DECISIONS.md, DOMAIN/, PRODUCT/, ENGINEERING/, AUTOMATIONS/, AI/memory/, CODE/). Per `AI/commands/init-project.md`, that content had to be replaced with a real company's context before any product work continues.
+
+The founder confirmed: Kenovis's product is not a separate application built on top of this framework — the product IS the Kenovis AI-OS itself (this repository's Framework layer: `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md`), distributed to other teams. Initial segment: software developers and small dev teams — the segment most likely to adopt agentic tooling with the least friction. The problem solved: a small team lacks a full specialized organization (PM, architect, security reviewer, QA...); Kenovis packages that as a disciplined roster of specialized AI agents. Long-term: the same operating model extends to other professional practices (legal, accounting) beyond software.
+
+---
+
+## Options Considered
+
+### Option A
+
+Build a distinct product on top of the framework (the framework stays purely internal tooling; the product is something else entirely).
+
+Advantages:
+
+- Cleanly separates "tool we use" from "thing we sell."
+
+Disadvantages:
+
+- Not what the founder directed. Would require inventing a product with no basis in the actual conversation.
+- Loses the dogfooding advantage that is Kenovis's strongest structural edge.
+
+---
+
+### Option B
+
+The product IS the AI-OS framework itself, distributed to other teams as a CLI/template (no backend, no hosted service in v1), open-core business model, initial customer segment = software development teams.
+
+Advantages:
+
+- Matches the founder's explicit direction.
+- Maximal dogfooding: this repository is simultaneously the product's own Installation and its reference implementation.
+- No infrastructure required to start — the entire v1 surface is the framework's own markdown plus a CLI installer/sync tool.
+
+Disadvantages:
+
+- Recursive structure requires discipline: agents must distinguish "editing the Framework layer that ships to customers" from "editing Kenovis's own Product layer" (this very document). The two must never be conflated.
+- CODE/ for this product will eventually hold the CLI installer's implementation — itself subject to the framework's own architecture and security policies, which is unusual for a product-layer codebase.
+
+---
+
+## Decision
+
+Adopt Option B.
+
+- Company: Kenovis.
+- Product: the Kenovis AI-OS (this repository's Framework layer), distributed via CLI/template — no backend, no database, no hosted dashboard in v1.
+- Business model: open-core. The base framework is free; advanced agents, support and any future hosted extras are paid.
+- Initial customer segment: software developers and small development teams.
+- Tenancy model: not applicable in v1 — each Installation lives entirely inside a customer's own repository; Kenovis operates no shared backend.
+
+---
+
+## Reason
+
+Explicit founder direction, and the strongest available product-market fit for a team of this size: building what you already use, for the people most like you, with zero infrastructure to operate before the model is even validated.
+
+---
+
+## Consequences
+
+Positive:
+
+- ENGINEERING/ARCHITECTURE.md, DATABASE.md and SECURITY.md for v1 are dramatically simpler — no server, no multi-tenant data model to secure.
+- Every dogfooding session inside this repository (e.g. this initialization itself) is simultaneously real usage of the product.
+
+Negative:
+
+- Every future PR must keep Framework layer changes (which ship to customers) and Product layer changes (Kenovis's own company context) clearly separated — conflating them would corrupt the product being sold.
+- The CLI installer that will eventually live in `CODE/` has no precedent elsewhere in this framework's example content; its architecture must be designed from scratch in Phase 0/1 of `PRODUCT/ROADMAP.md`, not copied from a typical SaaS CRUD app shape.
+
+---
+
 # Future Decisions
 
 Future important decisions should be added here.

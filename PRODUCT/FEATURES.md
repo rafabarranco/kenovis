@@ -23,7 +23,9 @@ A feature is complete when it solves the intended user problem.
 ---
 Product Core
 
-[Diagram or list the fundamental concepts the platform is built around — these should match the entities defined in DOMAIN/DOMAIN_MODEL.md.]
+Customer (Team) → owns → Installation → tracks → Framework Release, scoped to → Vertical → defines → Agent Roster.
+
+See DOMAIN/DOMAIN_MODEL.md for full definitions. Individual FEATURE-NNN specs (CLI install, CLI sync, per-Vertical Agent Roster onboarding, etc.) get added below as they are speced — none exist yet; do not invent them here ahead of real specification.
 ---
 Feature Specification Template
 
@@ -67,7 +69,11 @@ The user can:
 ---
 Features Explicitly Not Included Initially
 
-[List features considered and deliberately excluded, with the reason for each exclusion. Naming exclusions protects scope as much as naming what gets built.]
+- Hosted dashboard / web UI — no backend exists in v1 (DECISIONS.md DECISION-013). Revisit only in PRODUCT/ROADMAP.md Phase 4 if real demand justifies it.
+- Billing / payment processing — the open-core paid tier starts as documentation-only (DOMAIN/BUSINESS_RULES.md RULE-COMM-01), not a metered system, until Phase 2.
+- Multi-tenant accounts or authentication — there is no shared backend to authenticate against; each Installation lives entirely inside the customer's own repository.
+- Non-Software Verticals (Legal, Accounting) — deferred to PRODUCT/ROADMAP.md Phase 3, after the model is validated on Software Development.
+- Telemetry beyond explicit opt-in — see ENGINEERING/SECURITY.md.
 ---
 Feature Development Rules
 
