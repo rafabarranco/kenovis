@@ -26,37 +26,37 @@ The objective is to build a sustainable, valuable and scalable company.
 
 # Company Vision
 
-[What does the company build, and for whom? One or two sentences describing the long-term ambition — the world this company wants to exist once it succeeds.]
+Kenovis gives any small, ambitious team the execution capacity of a full specialized organization. The company builds and distributes the Kenovis AI-OS itself — a documented operating system of specialized AI agents, workflows, policies and decision discipline — starting with software development teams, and eventually extending the same operating model to other professional practices (legal, accounting, and beyond).
 
 ---
 
 # Company Thesis
 
-[Why does this company win where others don't? What belief about the market or the customer justifies building this instead of something else?]
+Most AI coding tools sell raw generation speed on top of chaos: code appears faster, but without the operating discipline a real specialized organization has — product strategy, architecture rigor, security review, documented decisions. Kenovis wins by selling the discipline itself, not just the generation. The product is a company constitution, a decision log, a domain model, enforced policies, and a roster of specialized AI agent roles that any team can install directly into their own repository — and Kenovis is built and run on that exact system, so every improvement is proven on itself before it reaches a customer.
 
 ---
 
 # Initial Market Strategy
 
-[Who is the very first customer segment? Why start there instead of the broader eventual market — access, domain knowledge, feedback speed, existing trust?]
+Software developers and small development teams. This segment is already fluent in AI-assisted and agentic tooling, adopts CLI/repo-based products with the least friction, can evaluate the framework's engineering rigor firsthand, and gives the fastest, most technical feedback loop. Kenovis also already dogfoods the framework on itself — this repository is a live instance of the product — so this segment can be served from day one without inventing a separate workflow.
 
 ---
 
 # Long-Term Market Vision
 
-[After the initial segment, what adjacent segments or use cases could this expand into? What stays constant about the problem being solved as the domain changes?]
+The same operating pattern — constitution, decision log, domain model, policies, and a roster of specialized AI agents — extends to other professional practices where small teams need the leverage of a full specialized organization: accounting/gestoría, legal/abogacía, and other services-based practices. What stays constant across verticals: pairing a human owner with a documented, disciplined AI team, and the mechanics of the operating system itself (Framework layer). What changes per vertical: the specific agent roster, domain vocabulary and policies (Product layer, per-vertical).
 
 ---
 
 # Ideal Customer Profile
 
-[What characteristics define a good-fit customer? Not industry — the underlying operational or business condition that makes this product valuable to them.]
+A small team or solo builder shipping a real product or service who feels the absence of dedicated roles — product manager, architect, security reviewer, QA — but can't yet justify hiring for them, and who is comfortable adopting a CLI/repo-based tool rather than requiring a hosted dashboard from day one.
 
 ---
 
 # Market Exclusions
 
-[What kinds of customers or use cases will the company deliberately NOT optimize for, at least initially? Naming exclusions protects focus.]
+Large enterprises with existing specialized teams and procurement processes, at least initially. Teams looking for a no-code/low-code page builder rather than an engineering operating system. Anyone wanting a chatbot wrapper without the documentation-and-decision discipline that is the actual product.
 
 ---
 
@@ -115,7 +115,11 @@ Every person and AI agent working on the company should act with responsibility 
 
 # Product Philosophy
 
-[What must every feature achieve to justify existing? List the small set of measurable outcomes — e.g. save time, reduce errors, increase transparency — that define product value here.]
+Every feature must make it faster or safer for a small team to operate with the rigor of a full specialized organization. Measured by:
+
+- Time from install to a completed, real (non-placeholder) product-layer.
+- Consistency of documented decisions versus undocumented, ad hoc choices.
+- Cases where the framework caught a missed policy, security gap or undocumented decision that plain AI-assisted coding would have missed.
 
 Features without measurable value should not be built.
 
@@ -340,7 +344,7 @@ Implementation
 
 # Distribution Strategy
 
-[How does the company expect to acquire its first users, and what makes that channel defensible over time — referrals, existing trust networks, community, something else?]
+CLI/template distribution through the software developer community: open-source visibility, word of mouth among developers already using agentic coding tools, and Kenovis's own dogfooded repository as a public reference implementation of the product working on itself. No paid acquisition, no sales team, in the initial phase.
 
 Customer satisfaction is the primary marketing channel.
 
@@ -363,13 +367,13 @@ Customer feedback directly influences product direction.
 
 # Competitive Advantages
 
-[What compounds in the company's favor over time — domain knowledge, workflow ownership, accumulated customer data, trust, switching costs? Name the ones that actually apply.]
+Dogfooding: Kenovis is built and run using its own framework, so every improvement is validated internally before it reaches a customer. Zero central infrastructure to scale: the framework compounds across every customer install without Kenovis operating a backend. Documentation-as-memory discipline (DECISION-009, DECISION-011) compounds each customer's own domain and product knowledge inside their own repository — a switching cost the customer accumulates themselves, not one Kenovis imposes.
 
 ---
 
 # What The Company Will NOT Become
 
-[What adjacent, tempting products or business models will the company deliberately avoid turning into? Naming anti-goals protects scope.]
+A generic AI chatbot or general-purpose coding assistant competing purely on code-generation speed. A heavyweight SaaS platform with mandatory hosted infrastructure before the open-core framework itself has proven value. A project-management tool.
 
 ---
 

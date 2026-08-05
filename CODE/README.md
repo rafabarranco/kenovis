@@ -4,40 +4,36 @@
 
 ## What is this?
 
-This is where the product's actual implementation lives — the software itself, as opposed to the business, product, domain and engineering documentation that lives at the repository root.
+This is where Kenovis's own implementation lives: the CLI that installs and syncs the Kenovis AI-OS (this repository's Framework layer) into a customer's repository. See [DECISIONS.md](../DECISIONS.md) DECISION-013 and [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md) for why this product has no backend or database.
 
-Currently empty. The first roadmap phase (see [PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md)) has not started yet.
+Currently empty. [PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md) Phase 0 (build the CLI installer/sync tool) has not started yet — do not scaffold ahead of that phase.
 
 ## Structure
 
-The repository topology is a product decision, not a framework rule. Record it in [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md) and describe it here.
-
-The example below is one option — a monorepo with several deployables. A single application, a library, or a set of independent services are equally valid, and each produces a different layout.
+A single Node.js/TypeScript npm package — no monorepo needed for a CLI-only product in v1.
 
 ```
 CODE/
-├── apps/        Deployable applications
-├── packages/    Shared code between apps
-└── docs/        Implementation-level docs (local setup, runbooks, migration notes)
+├── src/         CLI implementation (see Layering below)
+├── bin/         CLI entry point (the `kenovis` executable)
+└── docs/        Implementation-level docs (local setup, publish runbook)
 ```
 
-Whatever the topology, keep `CODE/docs/` for implementation details only (how to run something locally, how to apply a migration). Business rules, product direction and architecture reasoning belong in the root-level [DOMAIN/](../DOMAIN/), [PRODUCT/](../PRODUCT/) and [ENGINEERING/](../ENGINEERING/) folders instead — see [AI/policies/documentation.md](../AI/policies/documentation.md).
+Keep `CODE/docs/` for implementation details only (how to run the CLI locally, how to publish a release). Business rules, product direction and architecture reasoning belong in the root-level [DOMAIN/](../DOMAIN/), [PRODUCT/](../PRODUCT/) and [ENGINEERING/](../ENGINEERING/) folders instead — see [AI/policies/documentation.md](../AI/policies/documentation.md).
 
 ## Layering
 
-Code follows the layering defined in [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md).
-
-[AI/policies/architecture.md](../AI/policies/architecture.md) requires business logic to be independent of frameworks, transport and storage. How that separation is expressed on disk is this product's choice — the example below is the layered structure the architecture policy describes:
+Code follows the layering defined in [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md) → Suggested Project Structure, adapted for a CLI with no database or UI:
 
 ```
 src/
-├── domain/           Entities, business rules, invariants
-├── application/      Use cases, workflows
-├── infrastructure/   Database access, external APIs, storage
-└── presentation/     User-facing entry points
+├── domain/           Installation, Framework Release, Vertical, Agent Roster concepts
+├── application/      install / sync / init command use cases
+├── infrastructure/   Filesystem access to the target repo, npm registry checks
+└── cli/              CLI entry point and argument parsing
 ```
 
-Small products may collapse these into fewer directories. The dependency direction still holds: nothing inside `domain/` may import from the layers around it.
+The dependency direction still holds: nothing inside `domain/` may import from the layers around it. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never overwrite a customer's real Product-layer content, never write outside version control's reach.
 
 ## Before adding anything here
 

@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.1
+Version: 2.2
 
 Last updated: —
 
@@ -14,12 +14,13 @@ Last updated: —
 
 Most decisions in this log are product-specific and must be removed when starting a new product.
 
-Four are framework-level and should be carried over:
+Five are framework-level and should be carried over:
 
 - DECISION-001 — AI-Native Company Operating Model.
 - DECISION-009 — Documentation As Company Memory.
 - DECISION-010 — AI Tooling Strategy.
 - DECISION-011 — Framework Contribution & Memory Discipline.
+- DECISION-012 — Graphify Exception To Tool-Agnosticism.
 
 Everything else is product-specific and should be recorded as real decisions get made. See AI/commands/init-project.md.
 
@@ -538,6 +539,194 @@ Negative:
 
 - Slightly more friction on framework PRs (one changelog bullet minimum).
 - `check_changelog.py` needs `fetch-depth: 0` in CI checkout and will need maintenance if GitHub's pull_request event payload shape changes.
+
+---
+
+# DECISION-012
+
+# Graphify Exception To Tool-Agnosticism
+
+Date:
+
+2026-08-05
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2026-11-05
+
+---
+
+## Context
+
+An `/analyze` pass on "how to integrate graphify with Kenovis to save tokens" found that `AI/commands/bootstrap.md` mandates a full read of `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AI/memory/*`, and `CODE/` at the start of every session — roughly 14k tokens of doc corpus alone today, before `CODE/` holds any real implementation. [graphify](https://graphify.net/) (MIT, `Graphify-Labs/graphify`) turns a repo into a queryable knowledge graph (Tree-sitter AST locally for code, LLM semantic extraction for docs/PDF/images) and claims 70-90% token reduction when agents query the graph instead of reading raw files.
+
+Graphify's primary integration surface is per-tool: `graphify install --platform claude` writes a Claude Code skill, a `PreToolUse` hook, and a `## graphify` section into root `CLAUDE.md`. Its query commands (`graphify query`, `graphify explain`, `graphify path`, `graphify affected`, `graphify god-nodes`) are plain CLI, usable from any tool with shell access — but naming them explicitly inside `AI/commands/bootstrap.md` and `AI/workflows/*.md` still couples the framework's own instructions to one specific external CLI existing on disk, which [DECISION-010](DECISIONS.md) reserves for `CLAUDE.md` only.
+
+The founder explicitly directed accepting this coupling for graphify, overriding the default DECISION-010 constraint for this one integration.
+
+---
+
+## Options Considered
+
+### Option A
+
+Keep DECISION-010 strict: describe the pattern generically inside `AI/` ("query a knowledge graph if one exists") without naming graphify or its CLI.
+
+Advantages:
+
+- Zero additional tool lock-in. Fully portable to Maker or any future tool.
+
+Disadvantages:
+
+- No concrete tool actually gets wired up. The token savings stay theoretical until every tool independently builds or configures graph tooling.
+
+---
+
+### Option B
+
+Grant a scoped exception: `AI/commands/bootstrap.md` and `AI/workflows/feature.md`, `bugfix.md`, `review.md` reference graphify's CLI commands directly (`graphify query`, `explain`, `affected`, `god-nodes`) as the preferred path before falling back to full reads. Graphify's Claude Code-specific install (skill, `PreToolUse` hook, `.claude/settings.json`) stays exactly where graphify itself puts it — `CLAUDE.md` and `.claude/`, consistent with where DECISION-010 already confines tool-specific mechanisms.
+
+Advantages:
+
+- Real, measurable token reduction starting now, not after some future multi-tool graph abstraction gets built.
+- The Claude Code-specific half of the install (skill/hook) already lands outside `AI/`, in `CLAUDE.md`/`.claude/` — only the CLI command names leak into `AI/`.
+
+Disadvantages:
+
+- `AI/commands/bootstrap.md` and `AI/workflows/*.md` now assume a specific external binary (`graphify`) may be present on disk. A tool without an equivalent graph CLI gets no benefit and must fall back to the full-read path (which the wording preserves as a fallback, not a hard requirement).
+- Graphify is a young external OSS project (single maintainer at time of writing). If it's abandoned, the graph-query references in `AI/` become dead instructions until reverted or replaced.
+
+---
+
+## Decision
+
+Adopt Option B, scoped strictly to graphify's query CLI referenced from `AI/commands/bootstrap.md` and `AI/workflows/feature.md`, `bugfix.md`, `review.md`. DECISION-010 remains in force for every other tool-specific mechanism — this is a named, single exception, not a reopening of the rule.
+
+`graphify-out/` (the generated graph) is gitignored and regenerated locally per clone; nothing graph-derived is committed.
+
+---
+
+## Reason
+
+Bootstrap fires at the start of every session per its own trigger conditions — the doc-corpus read cost is recurring, not one-time. Waiting for a hypothetical tool-agnostic graph abstraction before capturing that saving was judged not worth the delay, given Claude Code is the primary daily driver today and cross-tool portability (Maker) is not presently being exercised in practice.
+
+---
+
+## Consequences
+
+Positive:
+
+- Bootstrap and workflow context loading drop from full-file reads (~14k tokens for the current doc corpus, growing as `CODE/` fills in) to scoped graph queries (~200 tokens per the tool's own benchmark claim), compounding every session.
+- The Claude Code-specific install mechanics stay correctly scoped to `CLAUDE.md`/`.claude/`, so the `AI/` leak is limited to CLI command names, not hooks or skill definitions.
+
+Negative:
+
+- Running the AI-OS from a tool without `graphify` on `PATH` (or an equivalent) loses the token saving and falls back to full reads — acceptable today, a real cost if Maker (or another tool) becomes primary.
+- New external runtime dependency (`graphifyy` PyPI package) that isn't part of the product's own stack — must be reassessed at the review date for maintenance health.
+
+---
+
+# DECISION-013
+
+# Kenovis Product Definition & Initial Distribution Model
+
+Date:
+
+2026-08-05
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-05
+
+---
+
+## Context
+
+This repository carried example/placeholder product-layer content (COMPANY_OS.md, DECISIONS.md, DOMAIN/, PRODUCT/, ENGINEERING/, AUTOMATIONS/, AI/memory/, CODE/). Per `AI/commands/init-project.md`, that content had to be replaced with a real company's context before any product work continues.
+
+The founder confirmed: Kenovis's product is not a separate application built on top of this framework — the product IS the Kenovis AI-OS itself (this repository's Framework layer: `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md`), distributed to other teams. Initial segment: software developers and small dev teams — the segment most likely to adopt agentic tooling with the least friction. The problem solved: a small team lacks a full specialized organization (PM, architect, security reviewer, QA...); Kenovis packages that as a disciplined roster of specialized AI agents. Long-term: the same operating model extends to other professional practices (legal, accounting) beyond software.
+
+---
+
+## Options Considered
+
+### Option A
+
+Build a distinct product on top of the framework (the framework stays purely internal tooling; the product is something else entirely).
+
+Advantages:
+
+- Cleanly separates "tool we use" from "thing we sell."
+
+Disadvantages:
+
+- Not what the founder directed. Would require inventing a product with no basis in the actual conversation.
+- Loses the dogfooding advantage that is Kenovis's strongest structural edge.
+
+---
+
+### Option B
+
+The product IS the AI-OS framework itself, distributed to other teams as a CLI/template (no backend, no hosted service in v1), open-core business model, initial customer segment = software development teams.
+
+Advantages:
+
+- Matches the founder's explicit direction.
+- Maximal dogfooding: this repository is simultaneously the product's own Installation and its reference implementation.
+- No infrastructure required to start — the entire v1 surface is the framework's own markdown plus a CLI installer/sync tool.
+
+Disadvantages:
+
+- Recursive structure requires discipline: agents must distinguish "editing the Framework layer that ships to customers" from "editing Kenovis's own Product layer" (this very document). The two must never be conflated.
+- CODE/ for this product will eventually hold the CLI installer's implementation — itself subject to the framework's own architecture and security policies, which is unusual for a product-layer codebase.
+
+---
+
+## Decision
+
+Adopt Option B.
+
+- Company: Kenovis.
+- Product: the Kenovis AI-OS (this repository's Framework layer), distributed via CLI/template — no backend, no database, no hosted dashboard in v1.
+- Business model: open-core. The base framework is free; advanced agents, support and any future hosted extras are paid.
+- Initial customer segment: software developers and small development teams.
+- Tenancy model: not applicable in v1 — each Installation lives entirely inside a customer's own repository; Kenovis operates no shared backend.
+
+---
+
+## Reason
+
+Explicit founder direction, and the strongest available product-market fit for a team of this size: building what you already use, for the people most like you, with zero infrastructure to operate before the model is even validated.
+
+---
+
+## Consequences
+
+Positive:
+
+- ENGINEERING/ARCHITECTURE.md, DATABASE.md and SECURITY.md for v1 are dramatically simpler — no server, no multi-tenant data model to secure.
+- Every dogfooding session inside this repository (e.g. this initialization itself) is simultaneously real usage of the product.
+
+Negative:
+
+- Every future PR must keep Framework layer changes (which ship to customers) and Product layer changes (Kenovis's own company context) clearly separated — conflating them would corrupt the product being sold.
+- The CLI installer that will eventually live in `CODE/` has no precedent elsewhere in this framework's example content; its architecture must be designed from scratch in Phase 0/1 of `PRODUCT/ROADMAP.md`, not copied from a typical SaaS CRUD app shape.
 
 ---
 

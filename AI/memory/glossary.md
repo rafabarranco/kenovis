@@ -63,9 +63,63 @@ Domain Terms
 
 PROJECT-SPECIFIC. Everything until the "Framework Terms" heading describes the current product.
 
-No domain terms recorded yet. Populate this section with the vocabulary of the product defined in DOMAIN/DOMAIN_MODEL.md — do not invent terms here before the domain model exists.
-
 Keep the definition format for each term added: name, definition, examples, and any rules attached to the concept.
+---
+Customer (Team)
+
+Definition:
+
+The human organization or individual who adopts Kenovis.
+
+Examples:
+
+A solo developer installing the CLI in a side project. A small software team adopting it for a real product repo.
+---
+Installation
+
+Definition:
+
+One instance of the Kenovis AI-OS living inside a customer's own repository.
+
+Rules:
+
+Its Product layer is fully owned by the customer — Kenovis and its CLI must never overwrite it silently (see DOMAIN/BUSINESS_RULES.md RULE-INST-01).
+---
+Framework Release
+
+Definition:
+
+A versioned snapshot of the Framework layer (AI/agents/, AI/workflows/, AI/policies/, AI/commands/, AI/templates/, AI/SYSTEM.md) that customers can sync into their Installation.
+---
+Vertical
+
+Definition:
+
+A professional practice the Agent Roster is specialized for.
+
+Examples:
+
+Software Development (today). Legal, Accounting (planned — see COMPANY_OS.md → Long-Term Market Vision).
+
+Rules:
+
+An Agent Roster must never leak another Vertical's vocabulary (DOMAIN/BUSINESS_RULES.md RULE-VERT-01).
+---
+Agent Roster
+
+Definition:
+
+The set of specialized AI agent role definitions (see AI/agents/) shipped as part of a Framework Release for a given Vertical.
+---
+Open-Core Tier
+
+Definition:
+
+The boundary between the free base framework and paid capabilities (additional agents, support, future hosted extras).
+
+Rules:
+
+Must be documented explicitly in PRODUCT/FEATURES.md; no silent feature gating (DOMAIN/BUSINESS_RULES.md RULE-COMM-01).
 ---
 Framework Terms
 

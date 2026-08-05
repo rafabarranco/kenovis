@@ -23,31 +23,34 @@ Help users achieve their first success.
 ---
 Activation Definition
 
-[Not defined yet. State precisely what "activated" means for this product — the smallest sequence of actions that proves a customer got real value. Derive it from the core workflow in PRODUCT/ROADMAP.md, not invented in isolation.]
+A customer is activated when they have: installed the Kenovis CLI in a real repository, completed /init-project with real (non-placeholder) answers, and successfully run at least one framework workflow (/feature, /bug, or /review) end to end. See PRODUCT/ROADMAP.md → MVP Success Metrics.
 ---
 Time-To-Value Objective
 
-[Target time from signup to first value moment, once known.]
+From `npx kenovis install` to a completed /init-project run: target under 15 minutes for a solo developer. Not yet measured against real usage.
 ---
 Customer Journey
 
-[No stages defined yet. Map the real journey once the product's core workflow is known — typically: registration → initial setup → first core-entity created → first meaningful action completed → value experienced. For each stage: required information, and what the system automates after completion.]
+Discover (GitHub, word of mouth among developers using agentic tooling) → Install (CLI scaffolds the Framework layer into the repository) → Init (customer runs /init-project, answers real business questions — no invented placeholder content survives) → First Workflow (customer runs /feature or /bug on a real piece of work) → Value (framework catches an undocumented decision or policy gap plain AI-assisted coding would have missed) → Sync (customer pulls the next Framework Release).
 ---
 Onboarding Communication
 
-[No message sequence defined yet. Plan communication around the customer journey above — e.g. welcome message, day-1 nudge, day-3 nudge, day-7 value discovery — once the journey is mapped.]
+None in v1 — there is no backend and no customer email/account to message. Guidance happens inline, printed by the CLI itself (e.g. after install: "next: run /init-project"). Revisit if a hosted layer with accounts is ever built (PRODUCT/ROADMAP.md Phase 4).
 ---
 Automation Tools
 
-[No stack chosen yet. Record here once ENGINEERING/ARCHITECTURE.md settles the stack: auth provider, database, automation/workflow tool, communication provider, analytics platform.]
+None in v1 — no auth provider, database, workflow tool or communication provider exists (DECISIONS.md DECISION-013). Onboarding automation for v1 is documentation plus CLI inline prompts only.
 ---
 Automated Triggers
 
-[No triggers defined yet. Typical shape once the journey is known: signup → welcome + checklist; no progress after N hours → reminder; stalled mid-journey → guidance; inactive account → re-engagement.]
+Deferred — v1 has no backend to run triggers from. The CLI can print contextual next-step reminders inline (e.g. post-install, post-sync) as a substitute.
 ---
 Onboarding Checklist
 
-[Derive a checklist from the customer journey once mapped — one item per required step to reach activation.]
+1. Run CLI install command.
+2. Run /init-project and answer with real business facts (no placeholders).
+3. Run one real workflow (/feature or /bug) against actual work.
+4. Sync the next Framework Release when available.
 ---
 Self-Service Philosophy
 

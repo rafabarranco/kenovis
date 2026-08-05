@@ -29,7 +29,7 @@ Build intentionally.
 ---
 Feedback Sources
 
-[List the real channels once known — e.g. in-app feedback, support messages, interviews, sales conversations.]
+GitHub issues/discussions on the public Kenovis repository. Direct dogfooding inside Kenovis's own Installation (this repository). Early-access conversations with the first software development teams to install the CLI. No in-app feedback widget — there is no app.
 ---
 Feedback Principle
 
@@ -198,25 +198,7 @@ Characteristics:
 ---
 Feedback Database
 
-Recommended structure:
-
-feedback_items
-
-id
-
-[tenant_key, if multi-tenant]
-
-user_id
-
-category
-
-description
-
-status
-
-priority
-
-created_at
+None in v1 — no backend or database exists (DECISIONS.md DECISION-013). GitHub Issues is the feedback system of record: an issue plus a label taxonomy (bug, usability, feature-request, product-insight) substitutes for a `feedback_items` table until a hosted layer exists.
 
 ---
 Feedback Status
@@ -331,7 +313,7 @@ Human judgment is required.
 ---
 Tools Integration
 
-[Record the actual tools once chosen — communication, database, automation, documentation.]
+GitHub Issues/Discussions for feedback collection and triage. No communication, database or automation tooling beyond that in v1 — see AUTOMATIONS/customer-onboarding.md → Automation Tools.
 ---
 First 100 Customers Strategy
 
