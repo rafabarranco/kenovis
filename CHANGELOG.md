@@ -8,6 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ### Added
 
+- `AI/memory/learnings.md` → Learning-004: end-to-end smoke test of the published `kenovis@0.1.0` CLI against a scratch external-like repository confirmed `init`/`sync` behave as documented (brownfield correctly detected, existing README/code untouched, idempotent sync); also found `sync --source <dir>` mirrors an unfiltered directory, a footgun relevant to DECISION-017's planned Phase 2 self-migration.
 - `README.md` → "Getting started" section: documents `npx kenovis init` / `npx kenovis sync` as the actual installation path, ahead of "Starting a new product" / "Adopting an existing product". Closes a gap where the root README never mentioned the published CLI at all, blocking PRODUCT/ROADMAP.md Phase 1 MVP Success Criteria ("a team outside Kenovis can install the CLI... without help") and `AI/policies/documentation.md`'s README requirement to answer "How do I start?".
 - `LICENSE` (Apache 2.0).
 - `CONTRIBUTING.md` — contribution scope and rules for the two-layer repo.
