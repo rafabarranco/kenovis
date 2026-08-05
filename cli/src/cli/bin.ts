@@ -85,10 +85,17 @@ export async function main(argv: string[]): Promise<number> {
         ? "Existing README.md left untouched."
         : "No README.md found — none was created; that stays your decision.",
     );
-    console.log(
-      "\nNext: run /init-project if this is a new product, or /adopt-project " +
-        "if real code already exists here.",
-    );
+    if (result.detectedKind === "brownfield") {
+      console.log(
+        `\nFound existing content here: ${result.detectionEvidence.join(", ")}\n` +
+          "Next: run /adopt-project to reconstruct context from this existing implementation.",
+      );
+    } else {
+      console.log(
+        "\nNo existing implementation detected here.\n" +
+          "Next: run /init-project to define this product from scratch.",
+      );
+    }
     return 0;
   } catch (error) {
     if (error instanceof AlreadyInstalledError) {

@@ -3,8 +3,10 @@ import {
   AlreadyInstalledError,
   claudeStubContent,
   CLAUDE_STUB_FILENAME,
+  detectInstallationKind,
   FRAMEWORK_DIR_NAME,
   TARGET_README_FILENAME,
+  type InstallationKind,
 } from "../../domain/installation.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
 
@@ -22,6 +24,10 @@ export interface InitResult {
   claudeStubWrittenTo: string;
   /** True when the target already had its own README.md — left untouched either way. */
   targetReadmeUntouched: boolean;
+  /** Whether the target repository already held a real implementation before this install. */
+  detectedKind: InstallationKind;
+  /** Target directory entries that count as evidence of a real implementation, empty when greenfield. */
+  detectionEvidence: string[];
 }
 
 /**
@@ -42,6 +48,9 @@ export async function runInit(
     throw new AlreadyInstalledError(frameworkDir);
   }
 
+  const targetDirEntries = await fs.listDir(options.targetDir);
+  const detection = detectInstallationKind(targetDirEntries);
+
   await fs.copyTree(options.frameworkSourceDir, frameworkDir);
 
   const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
@@ -54,5 +63,7 @@ export async function runInit(
     frameworkInstalledTo: frameworkDir,
     claudeStubWrittenTo: claudeStubPath,
     targetReadmeUntouched,
+    detectedKind: detection.kind,
+    detectionEvidence: detection.evidence,
   };
 }

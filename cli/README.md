@@ -6,9 +6,9 @@
 
 This is where Kenovis's own implementation lives: the CLI that installs and syncs the Kenovis AI-OS (this repository's Framework layer) into a customer's repository. See [DECISIONS.md](../DECISIONS.md) DECISION-013 and [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md) for why this product has no backend or database.
 
-[PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is in progress. Shipped so far: the `init` command's install engine, and bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags. Per [DECISIONS.md](../DECISIONS.md) DECISION-016 and DECISION-017.
+[PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is in progress. Shipped so far: the `init` command's install engine, bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags — and greenfield/brownfield auto-detection (`init` inspects the target directory before installing and suggests `/init-project` or `/adopt-project` with the actual evidence found). Per [DECISIONS.md](../DECISIONS.md) DECISION-016 and DECISION-017.
 
-Not yet built: the `sync` command, greenfield/brownfield auto-detection, and npm publishing.
+Not yet built: the `sync` command and npm publishing.
 
 ## Structure
 
@@ -33,7 +33,7 @@ Code follows the layering defined in [ENGINEERING/ARCHITECTURE.md](../ENGINEERIN
 
 ```
 src/
-├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content, AlreadyInstalledError
+├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content, AlreadyInstalledError, greenfield/brownfield detection
 ├── application/commands/init.ts                  install use case: orchestrates the domain rules against a FileSystemPort
 ├── infrastructure/filesystem/
 │   ├── FileSystemPort.ts                         port every layer above depends on, never node:fs directly
@@ -49,7 +49,7 @@ The dependency direction holds: `domain/` imports nothing from the layers around
 ```
 npm install
 npm run build      # bundles Framework layer assets, then compiles TypeScript
-npm test           # 15 tests: domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
+npm test           # 23 tests: domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
 npm run typecheck
 node bin/kenovis.js init <targetDir>                                    # uses the bundled Framework layer
 node bin/kenovis.js init <targetDir> --source <customFrameworkDir>      # or install something else instead
