@@ -132,10 +132,12 @@ Slice 3 shipped via /next: greenfield vs. brownfield auto-detection. `runInit` l
 
 Slice 4 shipped via /next: the `sync` command. `runSync` (`cli/src/application/commands/sync.ts`) requires an existing `.kenovis/` (else `NotInstalledError` pointing at `init`), then mirror-replaces it — `FileSystemPort.removeTree` (new port method, implemented for both `NodeFileSystem` and `InMemoryFileSystem`) followed by `copyTree` — so files removed in a newer Framework Release are actually deleted from the target, not just left stale, and rewrites the `CLAUDE.md` stub. Only `.kenovis/` and the stub are ever touched; RULE-INST-02's reversibility requirement is satisfied by the target's own git history (`.kenovis/` is git-tracked in the customer's repo, so the in-place mirror is reviewable via `git diff` and revertible via `git checkout`) rather than a CLI-side diff preview, which stays deferred to Phase 2's "richer CLI update ergonomics." `kenovis sync <targetDir> [--source <dir>]`, no `--force` (sync's whole point is to overwrite the Framework layer). 33 tests total, manually smoke-tested end to end: init → sync with a different `--source` correctly added a new file, updated a changed file, deleted a stale file, and left the target's `README.md` untouched throughout.
 
-Explicitly NOT done yet — separate follow-up `/next` slice:
-- npm publish under the `kenovis` package name.
+Slice 5 shipped via /next: npm publish wiring. `cli/package.json` gained publish-readiness metadata (`repository`, `homepage`, `bugs`, `keywords`, `prepublishOnly` guard) and `.github/workflows/publish.yml` — triggered by a published GitHub Release, SHA-pinned, builds/tests/typechecks, verifies `cli/package.json`'s version matches the release tag, then `npm publish --provenance --access public` from CI only, per ENGINEERING/SECURITY.md's Supply-Chain Security requirement. `.github/workflows/ci.yml` gained a `cli-tests` job (build/typecheck/test on every push/PR) — previously `cli/` had zero CI coverage. See `cli/README.md` → "Cutting a release" for the tag/release steps.
 
-Dependencies: none remaining for items 1-3. The follow-up above depends on slices 1-4 (done).
+Explicitly NOT done yet:
+- The actual first publish. Requires an `NPM_TOKEN` repository secret (npm automation token, scoped to the `kenovis` package name — confirmed available on the registry) that only the founder can create and load, and a GitHub Release to be cut to trigger it.
+
+Dependencies: none remaining for items 1-3. First real publish depends on the `NPM_TOKEN` secret being configured.
 ---
 Phase 1 — MVP
 
