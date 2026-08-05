@@ -4,7 +4,7 @@ DOMAIN_MODEL.md
 
 Domain Model
 
-Version: 1.0
+Version: 1.2
 ---
 Purpose
 
@@ -48,7 +48,7 @@ Definition: One instance of the Kenovis AI-OS living inside a customer's own rep
 
 Attributes (conceptually): framework version installed, vertical, product-layer completion status (initialized vs. still example content), install date, last sync date.
 
-Business rules: an Installation's Product layer (COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, CODE/) is fully owned by the customer. Kenovis, and the CLI it distributes, must never overwrite it silently on update. See DOMAIN/BUSINESS_RULES.md RULE-INST-01 and RULE-INST-02.
+Business rules: an Installation's Product layer (COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/) plus the customer's own existing code, wherever it lives in their repository, is fully owned by the customer. There is no framework-mandated directory name for it — where the code lives is a per-product choice recorded in that Installation's own ENGINEERING/ARCHITECTURE.md. Kenovis, and the CLI it distributes, must never overwrite any of it silently on update. See DOMAIN/BUSINESS_RULES.md RULE-INST-01 and RULE-INST-02.
 
 Relationships: belongs to one Customer; tracks one Framework Release (the one currently synced); scoped to one Vertical.
 

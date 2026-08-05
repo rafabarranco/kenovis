@@ -30,7 +30,7 @@ AI/agents/, AI/workflows/, AI/policies/, AI/commands/, AI/templates/, AI/SYSTEM.
 
 Product — rewritten for every product:
 
-COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, CODE/
+COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/
 
 Product-layer files start with a `PROJECT-SPECIFIC` HTML comment.
 

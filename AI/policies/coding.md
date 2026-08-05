@@ -1,6 +1,6 @@
 # Coding Policy
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -184,7 +184,7 @@ Wait until duplication becomes meaningful.
 
 Before writing any new component, hook, service, utility, or query:
 
-1. Search the codebase for something that already does this. Use the units and shared locations defined in `CODE/README.md` — grep, or the `Explore` agent for anything non-trivial. Never assume nothing exists; check.
+1. Search the codebase for something that already does this. Use the units and shared locations defined in `ENGINEERING/ARCHITECTURE.md` — grep, or the `Explore` agent for anything non-trivial. Never assume nothing exists; check.
 2. Classify what was found:
 
    - **Already shared** (a common/shared/utils location the whole codebase imports from) → reuse it directly. Do not write new code.
@@ -201,7 +201,7 @@ Skipping this search is how codebases accumulate three slightly different implem
 
 Principles above describe how to write code. They do not, by themselves, verify it. Before declaring any code task complete:
 
-1. Run the project's real static analysis (linter, formatter, type checker) as declared in `ENGINEERING/ARCHITECTURE.md` or `CODE/README.md`. Fix everything it reports. Never state a task is done with known lint or type errors outstanding.
+1. Run the project's real static analysis (linter, formatter, type checker) as declared in `ENGINEERING/ARCHITECTURE.md`. Fix everything it reports. Never state a task is done with known lint or type errors outstanding.
 2. Run the project's real test command for the affected area. A task is not done with failing tests, regardless of whether the failures look related.
 3. Walk the change against `AI/policies/code-quality.md` — the language-agnostic mechanical checklist (correctness, security, maintainability, complexity, accessibility, testing hygiene) that complements whatever the linter catches.
 4. If a quality gate for this project only runs in CI (a SonarQube profile behind a build server, a DAST scan, etc. — not invokable in this session), follow `AI/policies/code-quality.md` → "When The Gate Only Exists In CI" instead of skipping the check.

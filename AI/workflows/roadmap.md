@@ -1,6 +1,6 @@
 # Roadmap Execution Workflow
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -205,7 +205,7 @@ Define:
 Affected areas:
 
 ```
-CODE (the units listed in CODE/README.md)
+CODE (the units listed in ENGINEERING/ARCHITECTURE.md)
 
 DATABASE
 

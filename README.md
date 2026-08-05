@@ -29,7 +29,7 @@ If a file has that marker, it describes the example company and must be replaced
 
 ## Adopting an existing product
 
-If `CODE/` already contains a real implementation that predates the Kenovis AI-OS, do not run `/init-project` — it empties `CODE/` and asks you to decide a stack that is already running.
+If your repository already contains a real implementation that predates the Kenovis AI-OS — wherever it lives — do not run `/init-project`; it asks you to decide a stack that is already running and does not know how to leave existing implementation alone.
 
 Read [AI/commands/adopt-project.md](AI/commands/adopt-project.md) instead. It audits the existing code first, then asks you to confirm or correct what it found, and derives the product layer from that — rather than deciding it from scratch.
 
@@ -72,7 +72,7 @@ Product layer — rewritten per product:
 | [ENGINEERING/](ENGINEERING/) | Architecture, database and security design |
 | [AUTOMATIONS/](AUTOMATIONS/) | Onboarding, release and feedback processes |
 | [AI/memory/](AI/memory/) | Glossary, conventions and learnings accumulated by this product |
-| [CODE/](CODE/) | Actual product implementation, and the repository topology chosen for it (currently empty) |
+| [cli/](cli/) | Actual product implementation. This product chose a top-level `cli/` directory for it — see [ENGINEERING/ARCHITECTURE.md](ENGINEERING/ARCHITECTURE.md) → "Suggested Project Structure". Not a framework requirement: a different product may organize its code anywhere. |
 
 ## Source of truth
 

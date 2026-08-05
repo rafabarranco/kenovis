@@ -2,7 +2,7 @@
 
 ## Which layer
 
-- [ ] Framework (`AI/`, `CLAUDE.md`, `README.md`, `CODE/README.md`)
+- [ ] Framework (`AI/`, `CLAUDE.md`, `README.md`, `cli/README.md`)
 - [ ] Product layer example/scaffolding (rare — see [CONTRIBUTING.md](../CONTRIBUTING.md), most PRs should not touch this)
 
 ## Why

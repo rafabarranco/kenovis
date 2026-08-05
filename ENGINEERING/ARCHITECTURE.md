@@ -4,7 +4,7 @@ ARCHITECTURE.md
 
 Software Architecture
 
-Version: 1.0
+Version: 1.3
 ---
 Purpose
 
@@ -80,15 +80,18 @@ Per DECISIONS.md DECISION-013: no backend, no database, no hosted service in v1.
 ---
 Static Analysis
 
-[Record which linter, formatter and type checker this project runs, and the exact commands to invoke them — see AI/policies/coding.md → "Definition of Done" and AI/policies/code-quality.md, which every agent must run before considering code done.
+Type checker: `npm run typecheck` (`tsc -p tsconfig.json --noEmit`), strict mode on. Run from `cli/`.
 
-If a quality gate for this project only runs in CI (e.g. SonarQube behind a build server) and cannot be invoked from a coding session, maintain a generated export of its active ruleset at ENGINEERING/CODE_QUALITY.md — see AI/policies/code-quality.md → "When The Gate Only Exists In CI". Do not write that export by hand; regenerate it from the tool whenever its configuration changes.]
+Tests: `npm test` (`node --test`, Node's built-in test runner — no test framework dependency added; revisit if assertions/mocking needs outgrow `node:assert/strict`).
+
+No linter or formatter yet. Not an oversight: the codebase is currently 8 small files with `strict` TypeScript already catching the errors a linter would add the most value on. Add one (justified, not by default) once the codebase grows past what code review alone keeps consistent — see AI/policies/architecture.md → "Reuse" and "Simplicity First" before adding it preemptively.
 ---
 Hard Rules (No Exceptions)
 
 - The CLI must never write to a target repository's Product-layer files if they already contain real (non-placeholder) content, without explicit confirmation — see DOMAIN/BUSINESS_RULES.md RULE-INST-01.
 - The CLI must never require network access to a Kenovis-operated server — there is none. Install/sync only touch the npm registry and the local filesystem.
 - The CLI must never execute code found inside the target repository it is installing into.
+- The CLI must write the Framework layer under `.kenovis/` in the target repository (`.kenovis/AI/`, `.kenovis/README.md`), never at repo root — except `CLAUDE.md` (stub loading `.kenovis/AI/SYSTEM.md`) and `.claude/`, which stay at repo root because Claude Code requires it. The CLI must never overwrite, append to, or otherwise touch the target repository's own existing `README.md`, and must never fabricate one if none exists. See DECISIONS.md DECISION-017.
 ---
 Database
 
@@ -173,7 +176,7 @@ Should not contain business rules.
 ---
 Suggested Project Structure
 
-This structure lives inside CODE/src/ (see CODE/README.md). Adapted for a CLI product: no database or API infrastructure, and "presentation" is the CLI command surface, not a UI.
+This structure lives inside cli/src/ (see cli/README.md). Adapted for a CLI product: no database or API infrastructure, and "presentation" is the CLI command surface, not a UI.
 
 src/
 
