@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.0
+Version: 1.1
 ---
 Purpose
 
@@ -92,6 +92,7 @@ Deliverables
 Technical:
 
 - CLI command that scaffolds the Framework layer (AI/, CLAUDE.md, README.md) into a target repository.
+- CLI install command detects whether the target repository is greenfield (empty or no real implementation) or brownfield (CODE/ already holds a real implementation) and points the installation at /init-project or AI/commands/adopt-project.md accordingly, instead of always assuming a blank slate.
 - CLI command that syncs a newer Framework Release into an existing Installation without touching Product-layer files (RULE-INST-01).
 - No database, no authentication, no hosted service (DECISION-013).
 
@@ -103,7 +104,7 @@ Documentation:
 ---
 Success Criteria
 
-A team outside Kenovis can install the CLI, get the Framework layer into their repository, and complete /init-project with their own real answers — end to end, without help.
+A team outside Kenovis can install the CLI, get the Framework layer into their repository, and complete /init-project (greenfield) or /adopt-project (brownfield, existing codebase) with their own real answers — end to end, without help.
 ---
 Phase 1 — MVP
 
