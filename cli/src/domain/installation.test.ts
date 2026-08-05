@@ -5,6 +5,8 @@ import {
   claudeStubContent,
   detectInstallationKind,
   FRAMEWORK_DIR_NAME,
+  InvalidFrameworkSourceError,
+  invalidFrameworkSourceEntries,
 } from "./installation.js";
 
 test("claudeStubContent points at .kenovis/AI/SYSTEM.md", () => {
@@ -48,4 +50,43 @@ test("detectInstallationKind reports brownfield and cites real implementation en
   const result = detectInstallationKind([".git", "README.md", "package.json", "src"]);
   assert.equal(result.kind, "brownfield");
   assert.deepEqual(result.evidence, ["package.json", "src"]);
+});
+
+test("invalidFrameworkSourceEntries accepts a directory containing only AI/ and README.md", () => {
+  const unexpected = invalidFrameworkSourceEntries(["AI", "README.md"]);
+  assert.deepEqual(unexpected, []);
+});
+
+test("invalidFrameworkSourceEntries accepts an empty directory", () => {
+  assert.deepEqual(invalidFrameworkSourceEntries([]), []);
+});
+
+test("invalidFrameworkSourceEntries ignores dotfiles/dot-directories", () => {
+  const unexpected = invalidFrameworkSourceEntries(["AI", "README.md", ".git", ".DS_Store"]);
+  assert.deepEqual(unexpected, []);
+});
+
+test("invalidFrameworkSourceEntries flags Product-layer content mixed alongside AI/", () => {
+  const unexpected = invalidFrameworkSourceEntries([
+    "AI",
+    "README.md",
+    "COMPANY_OS.md",
+    "DECISIONS.md",
+    "DOMAIN",
+    "PRODUCT",
+    "ENGINEERING",
+    "cli",
+  ]);
+  assert.deepEqual(
+    unexpected,
+    ["COMPANY_OS.md", "DECISIONS.md", "DOMAIN", "ENGINEERING", "PRODUCT", "cli"].sort(),
+  );
+});
+
+test("InvalidFrameworkSourceError names the offending directory and unexpected entries", () => {
+  const error = new InvalidFrameworkSourceError("/some/repo", ["DECISIONS.md", "cli"]);
+  assert.equal(error.sourceDir, "/some/repo");
+  assert.deepEqual(error.unexpectedEntries, ["DECISIONS.md", "cli"]);
+  assert.match(error.message, /DECISIONS\.md, cli/);
+  assert.equal(error.name, "InvalidFrameworkSourceError");
 });
