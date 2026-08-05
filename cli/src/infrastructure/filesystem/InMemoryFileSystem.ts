@@ -9,6 +9,7 @@ import type { FileSystemPort } from "./FileSystemPort.js";
 export class InMemoryFileSystem implements FileSystemPort {
   readonly files = new Map<string, string>();
   readonly copiedTrees: Array<{ sourceDir: string; targetDir: string }> = [];
+  readonly removedTrees: string[] = [];
 
   seed(path: string, contents: string): void {
     this.files.set(path, contents);
@@ -25,6 +26,15 @@ export class InMemoryFileSystem implements FileSystemPort {
   async copyTree(sourceDir: string, targetDir: string): Promise<void> {
     this.copiedTrees.push({ sourceDir, targetDir });
     this.files.set(targetDir, `<copied from ${sourceDir}>`);
+  }
+
+  async removeTree(targetPath: string): Promise<void> {
+    this.removedTrees.push(targetPath);
+    for (const filePath of [...this.files.keys()]) {
+      const rel = relative(targetPath, filePath);
+      if (rel.startsWith("..")) continue;
+      this.files.delete(filePath);
+    }
   }
 
   async listDir(dirPath: string): Promise<string[]> {

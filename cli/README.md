@@ -6,9 +6,9 @@
 
 This is where Kenovis's own implementation lives: the CLI that installs and syncs the Kenovis AI-OS (this repository's Framework layer) into a customer's repository. See [DECISIONS.md](../DECISIONS.md) DECISION-013 and [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md) for why this product has no backend or database.
 
-[PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is in progress. Shipped so far: the `init` command's install engine, bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags — and greenfield/brownfield auto-detection (`init` inspects the target directory before installing and suggests `/init-project` or `/adopt-project` with the actual evidence found). Per [DECISIONS.md](../DECISIONS.md) DECISION-016 and DECISION-017.
+[PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is in progress. Shipped so far: the `init` command's install engine, bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags — greenfield/brownfield auto-detection (`init` inspects the target directory before installing and suggests `/init-project` or `/adopt-project` with the actual evidence found), and the `sync` command (updates an existing `.kenovis/` in place to a newer Framework Release — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub, never touches Product-layer files or the customer's own code; reversible via the customer's own `git diff`/`git checkout`, per RULE-INST-02). Per [DECISIONS.md](../DECISIONS.md) DECISION-016 and DECISION-017.
 
-Not yet built: the `sync` command and npm publishing.
+Not yet built: npm publishing under the `kenovis` package name.
 
 ## Structure
 
@@ -33,13 +33,15 @@ Code follows the layering defined in [ENGINEERING/ARCHITECTURE.md](../ENGINEERIN
 
 ```
 src/
-├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content, AlreadyInstalledError, greenfield/brownfield detection
-├── application/commands/init.ts                  install use case: orchestrates the domain rules against a FileSystemPort
+├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content, AlreadyInstalledError/NotInstalledError, greenfield/brownfield detection
+├── application/commands/
+│   ├── init.ts                                   install use case: orchestrates the domain rules against a FileSystemPort
+│   └── sync.ts                                   update use case: mirror-replaces .kenovis/ and the CLAUDE.md stub, nothing else
 ├── infrastructure/filesystem/
 │   ├── FileSystemPort.ts                         port every layer above depends on, never node:fs directly
 │   ├── NodeFileSystem.ts                          real implementation
 │   └── InMemoryFileSystem.ts                      test double used by application-layer unit tests
-└── cli/bin.ts                                     argv parsing, default --source resolution, calls the init use case
+└── cli/bin.ts                                     argv parsing, default --source resolution, calls the init/sync use cases
 ```
 
 The dependency direction holds: `domain/` imports nothing from the layers around it; `application/` depends on the `FileSystemPort` interface, never on `NodeFileSystem` directly. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never touch a customer's own README.md, never write outside version control's reach. `src/application/commands/init.test.ts` asserts this directly against `InMemoryFileSystem`; `src/infrastructure/filesystem/NodeFileSystem.integration.test.ts` asserts it against a real filesystem in a temp directory.
@@ -49,10 +51,11 @@ The dependency direction holds: `domain/` imports nothing from the layers around
 ```
 npm install
 npm run build      # bundles Framework layer assets, then compiles TypeScript
-npm test           # 23 tests: domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
+npm test           # 33 tests: domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
 npm run typecheck
 node bin/kenovis.js init <targetDir>                                    # uses the bundled Framework layer
 node bin/kenovis.js init <targetDir> --source <customFrameworkDir>      # or install something else instead
+node bin/kenovis.js sync <targetDir>                                    # update an existing .kenovis/ in place
 ```
 
 ## Before adding anything here
