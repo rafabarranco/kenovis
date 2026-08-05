@@ -25,6 +25,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 - `AI/commands/adopt-project.md` — brownfield counterpart to `init-project.md`. Audits `cli/` first (stack, DB, auth, tenancy, real domain entities, confidence-tagged with file/line citations) before touching any product-layer document; never empties or rewrites `cli/` beyond its README; verifies completion by contrast against the code instead of by absence of example terms. See [DECISION-014](DECISIONS.md).
 - `.claude/commands/adopt-project.md` — Claude Code slash-command wrapper for `/adopt-project`, same pattern as the existing `/init-project` wrapper.
 - `cli/README.md` — documents the new `sync` command (`kenovis sync <targetDir> [--source <dir>]`): mirror-replaces an existing Installation's `.kenovis/` and rewrites the `CLAUDE.md` stub, deleting files retired in a newer Framework Release rather than leaving them stale, while never touching Product-layer files or the target repository's own code. Reversibility (RULE-INST-02) comes from the target's own git-tracked `.kenovis/`, not a CLI-side diff engine — that ergonomic layer stays scoped to PRODUCT/ROADMAP.md Phase 2.
+- `cli/README.md` → "Cutting a release" — documents the tag/GitHub-Release steps that trigger `.github/workflows/publish.yml`'s `npm publish --provenance` from CI.
 
 ### Changed
 

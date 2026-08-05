@@ -8,7 +8,14 @@ This is where Kenovis's own implementation lives: the CLI that installs and sync
 
 [PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is in progress. Shipped so far: the `init` command's install engine, bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags — greenfield/brownfield auto-detection (`init` inspects the target directory before installing and suggests `/init-project` or `/adopt-project` with the actual evidence found), and the `sync` command (updates an existing `.kenovis/` in place to a newer Framework Release — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub, never touches Product-layer files or the customer's own code; reversible via the customer's own `git diff`/`git checkout`, per RULE-INST-02). Per [DECISIONS.md](../DECISIONS.md) DECISION-016 and DECISION-017.
 
-Not yet built: npm publishing under the `kenovis` package name.
+npm publishing is now wired up (`.github/workflows/publish.yml`): pushing a GitHub Release triggers CI to build, test, typecheck and `npm publish --provenance --access public` the package — never from a developer's local machine, per [ENGINEERING/SECURITY.md](../ENGINEERING/SECURITY.md) → Supply-Chain Security. Requires an `NPM_TOKEN` repository secret (npm automation token for the `kenovis` package/org) to exist before the first release is cut — not yet configured as of this writing.
+
+## Cutting a release
+
+1. Bump `version` in `cli/package.json` (semver) and commit it.
+2. Push a git tag matching the version, e.g. `git tag v0.2.0 && git push origin v0.2.0`.
+3. Publish a GitHub Release from that tag (Release notes, `gh release create v0.2.0 --generate-notes` or the GitHub UI).
+4. CI's `publish` workflow runs automatically, verifies `cli/package.json`'s version matches the release tag, then publishes.
 
 ## Structure
 
