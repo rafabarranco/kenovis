@@ -21,6 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 - `.github/scripts/check_changelog.py` and a CI step enforcing that PRs touching `AI/**`, `CLAUDE.md`, or `README.md` also update this file, with a `[skip changelog]` escape for wording-only changes.
 - `AI/workflows/framework-review.md` — human-triggered periodic audit of the framework layer for stale cross-references and contradictions.
 - `CONTRIBUTING.md` → "Framework Definition of Done" and "Versioning framework files". See [DECISION-011](DECISIONS.md).
+- [DECISION-012](DECISIONS.md) — scoped exception to DECISION-010's tool-agnosticism for `graphify` (knowledge-graph CLI), to cut per-session token cost of `AI/commands/bootstrap.md`'s full-tree reads. `graphify` installed project-scoped (`.claude/skills/graphify/`, `.claude/settings.json` PreToolUse hooks in strict mode, `## graphify` section in `CLAUDE.md`); `graphify-out/` gitignored, regenerated locally. `CONTRIBUTING.md` → "Knowledge graph (graphify)" setup section.
 
 ### Changed
 
@@ -29,6 +30,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 - `AI/agents/designer.md` — added "Adapt To Product Context", explicit WCAG 2.1 AA compliance target, "Design Rigor By Stage", metrics thinking, and backend-collaboration notes.
 - `README.md` — repository map updated to list the `framework-review` workflow.
 - `.github/PULL_REQUEST_TEMPLATE.md` — checklist items for the CHANGELOG/DECISIONS discipline above.
+- `AI/commands/bootstrap.md` (2.0 → 2.1) — Steps 2-4 query the `graphify` knowledge graph before reading `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AI/memory/*`, `CODE/` in full; full read is now the fallback, not the default. See [DECISION-012](DECISIONS.md).
+- `AI/workflows/feature.md` (3.0 → 3.1), `AI/workflows/bugfix.md` (2.0 → 2.1), `AI/workflows/review.md` (2.0 → 2.1) — Phase 1 re-queries the graph instead of re-running a full bootstrap read when one already ran this session; `graphify affected`/`graphify explain` referenced for technical analysis, root-cause tracing, and change-scope review once `CODE/` has content.
+- `CONTRIBUTING.md` — tool-agnostic rule now documents the scoped `graphify` exception ([DECISION-012](DECISIONS.md)); added a "Knowledge graph (graphify)" setup section.
+- `.gitignore` — `graphify-out/` (regenerate locally, never versioned; can exceed the tool's 512MiB `graph.json` cap on large repos).
 
 ## How to add an entry
 

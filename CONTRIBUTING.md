@@ -25,7 +25,7 @@ Before adding a new agent, workflow, policy, or command, check whether an existi
 
 ## Rules
 
-- **Stay tool-agnostic under `AI/`.** Per [DECISION-010](DECISIONS.md), the AI-OS must be followable by any AI tool, not just Claude Code. Tool-specific mechanisms (Skills, hooks, slash-command syntax) belong in the root `CLAUDE.md` only, never inside `AI/`.
+- **Stay tool-agnostic under `AI/`.** Per [DECISION-010](DECISIONS.md), the AI-OS must be followable by any AI tool, not just Claude Code. Tool-specific mechanisms (Skills, hooks, slash-command syntax) belong in the root `CLAUDE.md` only, never inside `AI/`. **Exception:** [DECISION-012](DECISIONS.md) carves out the `graphify` knowledge-graph CLI — `AI/commands/bootstrap.md` and `AI/workflows/*.md` reference `graphify query`/`explain`/`affected`/`god-nodes` directly. This is scoped to that one tool; don't use it as precedent for adding other tool-specific mechanisms inside `AI/`.
 - **Stay domain-agnostic.** Don't bake in assumptions about a specific vertical, stack, or tenancy model. Where a policy needs to reference something product-specific (e.g. a tenant key), it should say "look it up in `ENGINEERING/DATABASE.md`," not assume a name.
 - **No secrets, no real business data.** This applies to examples too — use placeholders, not anything resembling a real customer, company, or dataset.
 - **Keep the `PROJECT-SPECIFIC` marker convention intact.** If you touch a product-layer file, the marker HTML comment on line 1 must survive.
@@ -48,6 +48,23 @@ Files under `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, and `
 - Leave it unchanged for typo/wording-only edits (the same cases that qualify for `[skip changelog]`).
 
 A stale version number next to heavily edited content is worse than no version number — it tells the next reader "unchanged" when it isn't.
+
+## Knowledge graph (graphify)
+
+This repo uses [graphify](https://graphify.net/) to keep context loading (bootstrap, feature/bugfix/review workflows) cheap in tokens — agents query a graph instead of reading the full doc/code tree every session. See [DECISION-012](DECISIONS.md).
+
+Setup, once per clone:
+
+```
+pip install graphifyy   # or: uv tool install graphifyy / pipx install graphifyy
+graphify install --project --strict --platform claude
+graphify extract .      # first build; needs an LLM backend for .md/.pdf/.image files —
+                         # running inside Claude Code reuses your IDE session, no API key needed.
+                         # Headless/CI: set one of GEMINI_API_KEY, ANTHROPIC_API_KEY, OPENAI_API_KEY, etc.,
+                         # or pass --code-only to skip semantic extraction entirely (AST only, no key).
+```
+
+After changing code: `graphify update .` (AST-only, no LLM cost, keeps the graph current). `graphify-out/` is gitignored — regenerate locally, never commit it.
 
 ## Submitting a change
 
