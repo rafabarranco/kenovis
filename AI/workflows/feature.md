@@ -1,6 +1,6 @@
 # Feature Development Workflow
 
-Version: 2.0
+Version: 3.2
 
 ---
 
@@ -60,6 +60,8 @@ Execute:
 ```
 AI/commands/bootstrap.md
 ```
+
+If bootstrap already ran earlier this session and `graphify-out/graph.json` is still fresh, do not re-read the full context tree. Re-query the graph instead (`graphify query "<topic>"`) for whatever this phase needs.
 
 Load:
 
@@ -149,7 +151,30 @@ Define:
 
 ---
 
-# Phase 5 - Technical Analysis
+# Phase 5 - Design Analysis
+
+Optional. Execute when the feature has a user-facing surface (UI, interaction, user-visible flow).
+
+Skip when the feature is purely internal (e.g. background job, infra change, non-UI refactor).
+
+Designer evaluates:
+
+- User flow.
+- Interface states (default, loading, empty, error, success).
+- Accessibility impact.
+- Consistency with existing design system.
+
+Generate:
+
+```
+AI/templates/design-spec.md
+```
+
+Do not proceed to implementation preparation with an unresolved user flow.
+
+---
+
+# Phase 6 - Technical Analysis
 
 CTO evaluates:
 
@@ -159,7 +184,7 @@ CTO evaluates:
 - Risks.
 - Required technical decisions.
 
-Review:
+Review (query the graph first if fresh, e.g. `graphify query "<topic>"`, `graphify explain "<concept>"`; fall back to reading in full otherwise):
 
 ```
 ENGINEERING/ARCHITECTURE.md
@@ -169,7 +194,7 @@ ENGINEERING/SECURITY.md
 
 ---
 
-# Phase 6 - Create Feature Plan
+# Phase 7 - Create Feature Plan
 
 Generate:
 
@@ -191,7 +216,7 @@ Include:
 
 ---
 
-# Phase 7 - Architecture Decisions
+# Phase 8 - Architecture Decisions
 
 If required:
 
@@ -216,14 +241,16 @@ Document:
 
 ---
 
-# Phase 8 - Implementation Preparation
+# Phase 9 - Implementation Preparation
+
+Once the repository has real implementation content: use `graphify affected "<component>"` to find nodes impacted before touching them, instead of grepping the tree cold.
 
 Define:
 
 Affected areas:
 
 ```
-CODE (the units listed in CODE/README.md)
+CODE (the units listed in ENGINEERING/ARCHITECTURE.md)
 
 DATABASE
 
@@ -243,7 +270,7 @@ Identify:
 
 ---
 
-# Phase 9 - Execute Implementation
+# Phase 10 - Execute Implementation
 
 Follow:
 
@@ -276,9 +303,15 @@ Rules:
 
 ---
 
-# Phase 10 - Quality Validation
+# Phase 11 - Quality Validation
 
-Execute:
+Before invoking review, close the mechanical gate defined in `AI/policies/coding.md` → "Definition of Done":
+
+- Run the project's real lint/type-check/test commands. Fix everything they report.
+- Walk the change against `AI/policies/code-quality.md`.
+- Confirm reuse was checked before any new code was written (`AI/policies/coding.md` → "Reuse Before Creation").
+
+Then execute:
 
 ```
 AI/commands/review.md
@@ -295,7 +328,7 @@ Validate:
 
 ---
 
-# Phase 11 - Documentation Update
+# Phase 12 - Documentation Update
 
 Update:
 
@@ -320,7 +353,7 @@ Document:
 
 ---
 
-# Phase 12 - Feature Completion
+# Phase 13 - Feature Completion
 
 Confirm:
 

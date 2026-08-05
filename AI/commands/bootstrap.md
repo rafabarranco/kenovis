@@ -1,6 +1,6 @@
 # Bootstrap Command
 
-Version: 2.0
+Version: 2.4
 
 ---
 
@@ -78,7 +78,18 @@ Understand:
 
 # Step 2 - Load Project Context
 
-Read:
+If `graphify-out/graph.json` exists and is not stale (no code/doc changes since last build):
+
+Query the graph before reading raw files:
+
+```
+graphify query "<topic>"
+graphify explain "<concept>"
+```
+
+Read a file in full only when the graph is absent, stale, or the query result is insufficient.
+
+Otherwise, read:
 
 ```
 PRODUCT/
@@ -111,7 +122,9 @@ Understand:
 
 # Step 3 - Load Active Memory
 
-Read:
+If the graph is available: query it first (`graphify query "<topic>"`, `graphify explain "<concept>"`). Fall back to a full read only if the graph is absent, stale, or insufficient.
+
+Otherwise, read:
 
 ```
 AI/memory/
@@ -137,11 +150,23 @@ Understand:
 
 # Step 4 - Inspect Repository Structure
 
-Product and platform implementation lives under `CODE/`.
+`ENGINEERING/ARCHITECTURE.md` → "Suggested Project Structure" documents where this product's implementation actually lives. There is no framework-mandated directory for it — a literal top-level directory is a layout some products choose (this repository's own product uses `cli/`, for its own reasons — see its `ENGINEERING/ARCHITECTURE.md`), never a requirement every Installation must follow.
 
-Read `CODE/README.md` first. It describes the topology this product actually uses. Do not assume a monorepo, a single app, or any particular directory layout.
+For an Installation scaffolded from scratch by `/init-project` (greenfield), Step 6 decides and records this layout explicitly in `ENGINEERING/ARCHITECTURE.md`.
 
-Then analyze `CODE/` as it exists on disk.
+For an Installation adopted from an existing repository by `/adopt-project` (brownfield), the implementation stays exactly where it already lives — root, `src/`, a monorepo package, anywhere. Adoption never relocates it to fit a Kenovis-chosen layout.
+
+Read `ENGINEERING/ARCHITECTURE.md` first. Do not assume a monorepo, a single app, or any particular directory layout.
+
+If `graphify-out/graph.json` exists and is not stale, query it before walking the tree:
+
+```
+graphify query "<topic>"
+graphify explain "<concept>"
+graphify god-nodes
+```
+
+Fall back to walking the repository on disk only when the graph is absent, stale, or the query result is insufficient.
 
 Identify:
 

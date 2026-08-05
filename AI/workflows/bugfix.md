@@ -1,6 +1,6 @@
 # Bug Fix Workflow
 
-Version: 2.0
+Version: 2.2
 
 ---
 
@@ -60,6 +60,8 @@ Execute:
 ```
 AI/commands/bootstrap.md
 ```
+
+If bootstrap already ran earlier this session and `graphify-out/graph.json` is still fresh, re-query the graph (`graphify query "<topic>"`) instead of re-reading the full context tree.
 
 Load:
 
@@ -128,6 +130,8 @@ Determine:
 ---
 
 ## Root Cause
+
+Once the repository has real implementation content: use `graphify affected "<component>"` and `graphify explain "<concept>"` to trace impacted nodes before grepping the tree cold.
 
 Identify:
 

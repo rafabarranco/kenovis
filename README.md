@@ -27,6 +27,12 @@ Product-layer files carry this marker on their first line:
 
 If a file has that marker, it describes the example company and must be replaced. If it does not, it is framework and should work unchanged.
 
+## Adopting an existing product
+
+If your repository already contains a real implementation that predates the Kenovis AI-OS — wherever it lives — do not run `/init-project`; it asks you to decide a stack that is already running and does not know how to leave existing implementation alone.
+
+Read [AI/commands/adopt-project.md](AI/commands/adopt-project.md) instead. It audits the existing code first, then asks you to confirm or correct what it found, and derives the product layer from that — rather than deciding it from scratch.
+
 ## Working on an existing product
 
 Read in this order, per the Session Initialization Protocol in [AI/SYSTEM.md](AI/SYSTEM.md):
@@ -49,9 +55,9 @@ Framework layer — reusable:
 |---|---|
 | [AI/SYSTEM.md](AI/SYSTEM.md) | How the AI-OS operates. Entry point for non-Claude Code tools |
 | [AI/agents/](AI/agents/) | 12 specialized roles (CEO, CTO, product, design, frontend, backend, database, security, review, marketing, finance, legal) |
-| [AI/workflows/](AI/workflows/) | Execution processes (feature, bugfix, hotfix, architecture, release, review, roadmap) |
+| [AI/workflows/](AI/workflows/) | Execution processes (feature, bugfix, hotfix, architecture, release, review, roadmap, framework-review) |
 | [AI/policies/](AI/policies/) | Non-negotiable rules (architecture, coding, database, security, testing, git, documentation) |
-| [AI/commands/](AI/commands/) | Entry points (init-project, bootstrap, next, feature, bug, review, release, architect, analyze, explain) |
+| [AI/commands/](AI/commands/) | Entry points (init-project, adopt-project, bootstrap, next, feature, bug, review, release, architect, analyze, explain) |
 | [AI/templates/](AI/templates/) | Document templates (ADR, decision, feature plan, bug report, release notes) |
 | [CLAUDE.md](CLAUDE.md) | Constitution auto-loaded by Claude Code |
 
@@ -66,7 +72,7 @@ Product layer — rewritten per product:
 | [ENGINEERING/](ENGINEERING/) | Architecture, database and security design |
 | [AUTOMATIONS/](AUTOMATIONS/) | Onboarding, release and feedback processes |
 | [AI/memory/](AI/memory/) | Glossary, conventions and learnings accumulated by this product |
-| [CODE/](CODE/) | Actual product implementation, and the repository topology chosen for it (currently empty) |
+| [cli/](cli/) | Actual product implementation. This product chose a top-level `cli/` directory for it — see [ENGINEERING/ARCHITECTURE.md](ENGINEERING/ARCHITECTURE.md) → "Suggested Project Structure". Not a framework requirement: a different product may organize its code anywhere. |
 
 ## Source of truth
 

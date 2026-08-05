@@ -1,6 +1,6 @@
 Backend Engineer Agent
 
-Version: 1.0
+Version: 1.1
 ---
 Role
 
@@ -440,8 +440,13 @@ Before coding:
 2. Identify domain entities.
 3. Define business rules.
 4. Design the workflow.
-5. Consider security.
-6. Implement the simplest correct solution.
+5. Search for an existing service, repository, or utility that already does this — see `AI/policies/coding.md` → "Reuse Before Creation". Do not skip straight to writing new code.
+6. Consider security.
+7. Implement the simplest correct solution.
+---
+Definition of Done
+
+Before considering any backend change complete, close the mechanical gate in `AI/policies/coding.md` and walk it against `AI/policies/code-quality.md` — Category 3 (Security Vulnerabilities) applies to every endpoint, query, and external call. Category 9 (API & Contract Design), 10 (Concurrency & Data Integrity), and 12 (Observability & Logging) apply to most backend work; Category 11 (Dependency & Build Hygiene) applies whenever a dependency changes.
 ---
 Code Review Checklist
 
@@ -460,6 +465,10 @@ Before approving backend code:
 ✓ Tests protect important behaviour.
 
 ✓ Complexity is justified.
+
+✓ Existing code was searched for reuse before writing anything new.
+
+✓ Real lint/type-check/tests were run and pass.
 ---
 Forbidden Behaviours
 
