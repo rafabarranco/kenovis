@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.0
+Version: 1.4
 
 ---
 
@@ -37,6 +37,8 @@ Command:
 ```
 
 Do not execute on a repository that already holds a real product. That would destroy its context.
+
+Do not execute on a repository that already contains a real implementation predating the Kenovis AI-OS, wherever that implementation lives — that is an adoption, not an initialization. Use `AI/commands/adopt-project.md` instead: it audits the existing code before touching any product-layer document, instead of asking the human to decide a stack that is already running.
 
 ---
 
@@ -155,11 +157,12 @@ Derive entities from the real business, not from the example. If the new product
 PRODUCT/ROADMAP.md
 PRODUCT/FEATURES.md
 PRODUCT/USER_RESEARCH.md
+PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
-USER_RESEARCH.md should be emptied rather than invented. Research that has not happened is not research.
+USER_RESEARCH.md and COMPETITIVE_LANDSCAPE.md should be emptied rather than invented. Research that has not happened is not research. Competitors that have not been verified are not competitors.
 
-Leave it as a structured empty document until real conversations exist.
+Leave both as structured empty documents until real research and real competitor findings exist.
 
 ---
 
@@ -205,12 +208,19 @@ Replace the Domain Terms section with the vocabulary of the new product.
 
 Leave the Framework Terms section untouched.
 
+Before touching `conventions.md` and `learnings.md`, run the Review Process from `AI/memory/learnings.md` first:
+
+1. List every recorded learning marked Critical or Important.
+2. For each one, ask: is this reusable across any product built on this framework, or specific to the product being reset?
+3. Reusable ones must be promoted before deletion — a permanent rule moves to `AI/policies/`, a naming rule moves to the Framework Terms section of `conventions.md`, domain knowledge moves nowhere (it dies with the product it described).
+4. Do this promotion now. Do not defer it — after Step 8 completes, the source learning is gone.
+
 ```
 AI/memory/conventions.md
 AI/memory/learnings.md
 ```
 
-Keep the rules. Delete every recorded convention and learning. They belong to the previous product.
+Keep the rules. Delete every recorded convention and learning that was not promoted in the previous step. They belong to the previous product.
 
 ---
 
@@ -226,15 +236,13 @@ In the STACK-SPECIFIC block, delete every entry that does not match the stack ch
 
 ---
 
-# Step 10 - Empty The Code Directory
+# Step 10 - Clear Any Leftover Implementation
 
-```
-CODE/
-```
+If this repository already ran `/init-project` for a different product before (a pivot, not a first install), delete whatever implementation that previous product left behind, wherever it lived — there is no framework-mandated location for it.
 
-Delete any implementation left from the previous product.
+For a genuinely first-time install there is nothing to delete.
 
-Rewrite CODE/README.md to describe the repository topology chosen in Step 6. It is product-layer: the example monorepo layout is a placeholder, not a rule.
+`ENGINEERING/ARCHITECTURE.md` → "Suggested Project Structure" (Step 6) records whatever layout this product chooses going forward. A dedicated top-level directory for the implementation is one valid choice, not a rule every product must follow — Step 6 decides it explicitly, it is never a framework default.
 
 Do not scaffold anything yet. Scaffolding is the first roadmap item, not part of initialization.
 
@@ -301,7 +309,7 @@ Initialization is complete when:
 
 ✓ DOMAIN/ describes the real business.
 
-✓ PRODUCT/ describes the real roadmap, with research left empty if none exists.
+✓ PRODUCT/ describes the real roadmap, with research and competitive landscape left empty if none exists.
 
 ✓ ENGINEERING/ records real stack, database and tenancy decisions.
 
@@ -311,7 +319,7 @@ Initialization is complete when:
 
 ✓ .gitignore matches the chosen stack.
 
-✓ CODE/ is empty, and its README describes this product's topology.
+✓ No implementation survives from a previous product, and ENGINEERING/ARCHITECTURE.md describes this product's chosen topology.
 
 ✓ No term from the example company survives.
 

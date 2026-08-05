@@ -4,7 +4,7 @@ ARCHITECTURE.md
 
 Software Architecture
 
-Version: 1.0
+Version: 1.3
 ---
 Purpose
 
@@ -69,17 +69,33 @@ External Services
 ---
 Technology Stack
 
-[No stack chosen yet. Decide and record here, then log the decision in DECISIONS.md per AI/commands/init-project.md Step 6:
+Per DECISIONS.md DECISION-013: no backend, no database, no hosted service in v1. The product is the Framework layer itself, distributed as a CLI.
 
-- Frontend (web / mobile).
-- Backend / API layer.
-- Database engine.
-- Authentication approach.
-- Deployment target.]
+- Frontend (web / mobile): none. No UI in v1 — CLI only.
+- CLI/tooling layer: Node.js + TypeScript, distributed as an npm package, invoked via `npx` — an assumption carried over from this initialization, not yet independently confirmed; revisit if it doesn't hold.
+- Backend / API layer: none. No server component in v1.
+- Database engine: none. Installation state lives entirely inside the customer's own repository (framework version marker, Product-layer files) — never in a Kenovis-operated database. See ENGINEERING/DATABASE.md.
+- Authentication approach: none. No accounts, no login. Distribution auth is the npm registry / GitHub, not an application-level identity system.
+- Deployment target: npm registry (public package) plus GitHub (source, releases, CHANGELOG.md).
+---
+Static Analysis
+
+Type checker: `npm run typecheck` (`tsc -p tsconfig.json --noEmit`), strict mode on. Run from `cli/`.
+
+Tests: `npm test` (`node --test`, Node's built-in test runner — no test framework dependency added; revisit if assertions/mocking needs outgrow `node:assert/strict`).
+
+No linter or formatter yet. Not an oversight: the codebase is currently 8 small files with `strict` TypeScript already catching the errors a linter would add the most value on. Add one (justified, not by default) once the codebase grows past what code review alone keeps consistent — see AI/policies/architecture.md → "Reuse" and "Simplicity First" before adding it preemptively.
+---
+Hard Rules (No Exceptions)
+
+- The CLI must never write to a target repository's Product-layer files if they already contain real (non-placeholder) content, without explicit confirmation — see DOMAIN/BUSINESS_RULES.md RULE-INST-01.
+- The CLI must never require network access to a Kenovis-operated server — there is none. Install/sync only touch the npm registry and the local filesystem.
+- The CLI must never execute code found inside the target repository it is installing into.
+- The CLI must write the Framework layer under `.kenovis/` in the target repository (`.kenovis/AI/`, `.kenovis/README.md`), never at repo root — except `CLAUDE.md` (stub loading `.kenovis/AI/SYSTEM.md`) and `.claude/`, which stay at repo root because Claude Code requires it. The CLI must never overwrite, append to, or otherwise touch the target repository's own existing `README.md`, and must never fabricate one if none exists. See DECISIONS.md DECISION-017.
 ---
 Database
 
-[Record the chosen database engine and why the domain's relationships require it — see ENGINEERING/DATABASE.md for schema detail.]
+None in v1 — see ENGINEERING/DATABASE.md. No database engine is chosen until a hosted layer is designed (PRODUCT/ROADMAP.md Phase 4).
 ---
 Authentication
 
@@ -96,11 +112,11 @@ Authentication is separate from authorization.
 ---
 Authorization Model
 
-[Describe how permissions are structured — e.g. role-based, scoped to an account/organization, resource-level.]
+Not applicable in v1 — there are no accounts and no shared backend to authorize against. Each Installation runs entirely inside the customer's own repository, under the customer's own filesystem/git permissions.
 ---
 Tenancy Model
 
-[Decide explicitly: single-tenant or multi-tenant. If multi-tenant, name the tenant key (e.g. organization_id, account_id) here — AI/policies/database.md and AI/agents/database.md look it up from this document and must not invent one.]
+Not applicable in v1. Every Installation is single-tenant by construction — it is a customer's own repository, not a row in a shared database. There is no tenant key because there is no shared backend to key against. Revisit only if/when a hosted layer is built (PRODUCT/ROADMAP.md Phase 4); AI/policies/database.md and AI/agents/database.md must keep treating this product as tenantless until this section is explicitly updated.
 ---
 Domain Architecture
 
@@ -160,42 +176,34 @@ Should not contain business rules.
 ---
 Suggested Project Structure
 
-This structure lives inside CODE/apps/<app-name>/src/ (see CODE/README.md).
-
-Example:
+This structure lives inside cli/src/ (see cli/README.md). Adapted for a CLI product: no database or API infrastructure, and "presentation" is the CLI command surface, not a UI.
 
 src/
 
 ├── domain/
 
-│   ├── [entity]/
+│   ├── installation/         Installation, Framework Release concepts
 
-│   └── ...
+│   └── vertical/              Vertical, Agent Roster concepts
 
 
 ├── application/
 
-│   ├── use-cases/
+│   ├── commands/               install, sync, init use cases
 
 │   └── services/
 
 
 ├── infrastructure/
 
-│   ├── database/
+│   ├── filesystem/             reading/writing the target repo
 
-│   ├── api/
-
-│   └── storage/
+│   └── registry/                npm registry / version checks
 
 
-└── presentation/
+└── cli/
 
-    ├── components/
-
-    ├── screens/
-
-    └── hooks/
+    └── bin/                     CLI entry point
 
 ---
 Feature-Based Organization

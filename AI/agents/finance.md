@@ -1,6 +1,6 @@
 # Finance Agent
 
-Version: 1.0
+Version: 1.1
 
 ---
 
@@ -184,6 +184,28 @@ Avoid:
 - Excessive complexity.
 - Pricing that limits expansion.
 - Underpricing valuable solutions.
+
+---
+
+# Competitive Benchmarking
+
+Pricing decisions require knowing what alternatives customers are comparing against.
+
+Read and update:
+
+```
+PRODUCT/COMPETITIVE_LANDSCAPE.md
+```
+
+Owner, with CEO, of the Business Model dimension in that document.
+
+Evaluate:
+
+- Competitor pricing tiers and what they gate (usage, seats, features).
+- Apparent unit economics implied by their pricing (only what is inferable, not assumed).
+- Whether our price maps to more, less, or different value than competitors.
+
+Do not price to match competitors. Price to reflect the value this product creates, informed by what the market already accepts as reasonable.
 
 ---
 

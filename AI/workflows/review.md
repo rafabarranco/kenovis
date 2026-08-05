@@ -1,6 +1,6 @@
 # Code Review Workflow
 
-Version: 2.0
+Version: 2.2
 
 ---
 
@@ -61,6 +61,8 @@ Execute:
 AI/commands/bootstrap.md
 ```
 
+If bootstrap already ran earlier this session and `graphify-out/graph.json` is still fresh, re-query the graph (`graphify query "<topic>"`) instead of re-reading the full context tree.
+
 Load:
 
 - Product requirements.
@@ -72,6 +74,8 @@ Load:
 ---
 
 # Phase 2 - Understand Change Scope
+
+Once the repository has real implementation content: use `graphify query "<topic>"` and `graphify affected "<component>"` to scope impact instead of reading changed files cold.
 
 Review:
 

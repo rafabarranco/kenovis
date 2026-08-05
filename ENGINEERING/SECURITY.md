@@ -12,7 +12,7 @@ This document defines the security principles, requirements and practices of the
 
 Security is a fundamental product requirement.
 
-[List here what categories of sensitive data the platform will actually handle — e.g. personal information, financial data, health data — once known.]
+Kenovis v1 handles no customer personal data, no payment data, and hosts no customer content — there is no backend. The only sensitive material in scope is the contents of a customer's own repository while the CLI operates on it locally; that content must never leave the customer's machine.
 
 Security failures can damage user trust and business viability.
 ---
@@ -111,15 +111,15 @@ Authorization answers:
 ---
 Authorization Model
 
-[Describe the roles/permissions model — see ENGINEERING/ARCHITECTURE.md Authorization Model and DOMAIN/DOMAIN_MODEL.md for the entities involved.]
+Not applicable in v1 — no accounts, no shared backend. See ENGINEERING/ARCHITECTURE.md → Authorization Model.
 ---
 Multi-Tenant Security
 
-[If the product is multi-tenant, per ENGINEERING/ARCHITECTURE.md: a user must never access another tenant's data. State the enforcement layers — database, backend, frontend — and the mandatory technique (e.g. RLS) from ENGINEERING/DATABASE.md.]
+Not applicable in v1 — no shared backend exists, so there is no cross-tenant boundary to enforce. See ENGINEERING/ARCHITECTURE.md → Tenancy Model.
 ---
 Personal Data Protection
 
-[List the categories of personal data the platform will actually store, once known.]
+None stored by Kenovis in v1 — no accounts, no backend. Any future opt-in telemetry (PRODUCT/ROADMAP.md Phase 2) must be scoped and documented here before it collects anything.
 ---
 Data Minimization
 
@@ -132,7 +132,7 @@ Avoid collecting:
 ---
 Data Classification
 
-[Classify the product's data once known — e.g. public, internal, personal, sensitive business data — with an example of each.]
+Public: the Framework layer / CLI source code itself (open-core). Customer-private: the contents of a customer's repository while the CLI installs/syncs — must never be transmitted off the customer's machine, logged, or cached by Kenovis.
 ---
 Personal Data Rules
 
@@ -163,13 +163,11 @@ AI assistance is useful for preparation but does not replace legal advice.
 ---
 Sensitive Operations
 
-[If the product handles money or other high-stakes operations, state the extra rules here: permission-controlled, history maintained, auditable, no silent modifications.]
+The CLI writing to a customer's filesystem is itself the sensitive operation. It must never overwrite existing Product-layer content without explicit confirmation (DOMAIN/BUSINESS_RULES.md RULE-INST-01), must produce a reviewable diff rather than a silent rewrite (RULE-INST-02), and must never execute code found inside the target repository.
 ---
 Audit System
 
-Critical actions should create audit records.
-
-[List the action types worth auditing once the domain is defined — e.g. ENTITY_CREATED, ENTITY_UPDATED, PAYMENT_CONFIRMED.]
+Not applicable in v1 — no backend exists to hold audit records. The customer's own git history is the audit trail for what the CLI changed in their repository.
 ---
 Logging
 
@@ -235,6 +233,10 @@ Check:
 - Maintenance.
 - Security history.
 - Community adoption.
+---
+Supply-Chain Security
+
+Kenovis ships as an npm package that customers run directly against their own repository — supply-chain integrity matters more than for an internal app. Pin dependency versions exactly. No `postinstall` scripts executing unreviewed code. Publish from CI with provenance, not from a developer's local machine.
 ---
 Secrets Management
 

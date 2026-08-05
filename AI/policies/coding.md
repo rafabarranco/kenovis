@@ -1,6 +1,6 @@
 # Coding Policy
 
-Version: 2.0
+Version: 2.2
 
 ---
 
@@ -175,6 +175,38 @@ Avoid duplicated knowledge.
 Do not extract abstractions too early.
 
 Wait until duplication becomes meaningful.
+
+---
+
+# Reuse Before Creation
+
+`AI/policies/architecture.md` → "Reuse" already asks whether something similar exists before creating new code. This section makes that check mandatory and mechanical, not a judgment call to remember.
+
+Before writing any new component, hook, service, utility, or query:
+
+1. Search the codebase for something that already does this. Use the units and shared locations defined in `ENGINEERING/ARCHITECTURE.md` — grep, or the `Explore` agent for anything non-trivial. Never assume nothing exists; check.
+2. Classify what was found:
+
+   - **Already shared** (a common/shared/utils location the whole codebase imports from) → reuse it directly. Do not write new code.
+   - **Exists, but isolated inside one feature or file** → extract it to the shared location this project's conventions define, generalize it (parameters instead of hardcoded feature logic), rewire the original call site to the extracted version, then use it for the new need too.
+   - **Nothing found** → write new code following existing conventions.
+
+3. Do not extract code duplicated across multiple existing places as a side effect of this check — that is a separate, deliberate refactor (see `# Refactoring`), not implied by finding one isolated match.
+
+Skipping this search is how codebases accumulate three slightly different implementations of the same thing. That is not a style problem — it is the most visible symptom of a codebase nobody is maintaining carefully.
+
+---
+
+# Definition of Done — Mechanical Gate
+
+Principles above describe how to write code. They do not, by themselves, verify it. Before declaring any code task complete:
+
+1. Run the project's real static analysis (linter, formatter, type checker) as declared in `ENGINEERING/ARCHITECTURE.md`. Fix everything it reports. Never state a task is done with known lint or type errors outstanding.
+2. Run the project's real test command for the affected area. A task is not done with failing tests, regardless of whether the failures look related.
+3. Walk the change against `AI/policies/code-quality.md` — the language-agnostic mechanical checklist (correctness, security, maintainability, complexity, accessibility, testing hygiene) that complements whatever the linter catches.
+4. If a quality gate for this project only runs in CI (a SonarQube profile behind a build server, a DAST scan, etc. — not invokable in this session), follow `AI/policies/code-quality.md` → "When The Gate Only Exists In CI" instead of skipping the check.
+
+If no tooling is configured yet for this project (early-stage placeholder architecture), state that explicitly instead of silently skipping the gate — this step still applies the moment real tooling exists.
 
 ---
 
@@ -369,6 +401,12 @@ Before considering work complete:
 ✓ Existing conventions were followed.
 
 ✓ Code became simpler, not more complex.
+
+✓ Existing code was searched for reuse before writing anything new.
+
+✓ The project's real lint/type-check/test commands were run and pass.
+
+✓ The change was walked against `AI/policies/code-quality.md`.
 
 ---
 

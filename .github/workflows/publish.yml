@@ -1,0 +1,53 @@
+name: Publish CLI to npm
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Build, test and publish cli/ to npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        working-directory: cli
+        run: npm ci
+
+      - name: Type check
+        working-directory: cli
+        run: npm run typecheck
+
+      - name: Test
+        working-directory: cli
+        run: npm test
+
+      - name: Verify package.json version matches release tag
+        working-directory: cli
+        run: |
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "cli/package.json version ($PKG_VERSION) does not match release tag ($GITHUB_REF_NAME)"
+            exit 1
+          fi
+
+      - name: Publish to npm with provenance
+        working-directory: cli
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
