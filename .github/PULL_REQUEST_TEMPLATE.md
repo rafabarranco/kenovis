@@ -16,3 +16,5 @@ Explain the reasoning, not just the change — this framework runs on documented
 - [ ] `PROJECT-SPECIFIC` markers untouched or intact where applicable
 - [ ] No secrets, no real business/customer data, anywhere including examples
 - [ ] Links checked (relative paths resolve)
+- [ ] `CHANGELOG.md` updated under `[Unreleased]`, or `[skip changelog]` in this PR's title/description (typo/wording-only) — see [CONTRIBUTING.md](../CONTRIBUTING.md) → "Framework Definition of Done"
+- [ ] `DECISIONS.md` entry added if this changes an agent's responsibilities, a workflow's phases, or a policy's mechanics

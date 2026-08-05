@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.0
+Version: 1.1
 
 ---
 
@@ -206,12 +206,19 @@ Replace the Domain Terms section with the vocabulary of the new product.
 
 Leave the Framework Terms section untouched.
 
+Before touching `conventions.md` and `learnings.md`, run the Review Process from `AI/memory/learnings.md` first:
+
+1. List every recorded learning marked Critical or Important.
+2. For each one, ask: is this reusable across any product built on this framework, or specific to the product being reset?
+3. Reusable ones must be promoted before deletion — a permanent rule moves to `AI/policies/`, a naming rule moves to the Framework Terms section of `conventions.md`, domain knowledge moves nowhere (it dies with the product it described).
+4. Do this promotion now. Do not defer it — after Step 8 completes, the source learning is gone.
+
 ```
 AI/memory/conventions.md
 AI/memory/learnings.md
 ```
 
-Keep the rules. Delete every recorded convention and learning. They belong to the previous product.
+Keep the rules. Delete every recorded convention and learning that was not promoted in the previous step. They belong to the previous product.
 
 ---
 

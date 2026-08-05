@@ -14,11 +14,12 @@ Last updated: —
 
 Most decisions in this log are product-specific and must be removed when starting a new product.
 
-Three are framework-level and should be carried over:
+Four are framework-level and should be carried over:
 
 - DECISION-001 — AI-Native Company Operating Model.
 - DECISION-009 — Documentation As Company Memory.
 - DECISION-010 — AI Tooling Strategy.
+- DECISION-011 — Framework Contribution & Memory Discipline.
 
 Everything else is product-specific and should be recorded as real decisions get made. See AI/commands/init-project.md.
 
@@ -437,6 +438,106 @@ Positive:
 Negative:
 
 - Tool-specific optimizations (e.g. Claude Code Skills) must live outside AI/, which may duplicate some setup per tool.
+
+---
+
+# DECISION-011
+
+# Framework Contribution & Memory Discipline
+
+Date:
+
+2026-08-05
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-01-01
+
+---
+
+## Context
+
+A self-analysis of the framework (`/analyze cómo podría kenovis mejorarse a sí mismo?`) found that the framework mandates documentation-as-memory discipline for products (`AI/policies/documentation.md`, `AI/memory/learnings.md`) but did not apply the same discipline to itself:
+
+- Framework-layer PRs had no mechanical or process requirement to update `CHANGELOG.md` or `DECISIONS.md`, even though both documents state that rule in prose.
+- `AI/commands/init-project.md` Step 8 deleted `AI/memory/learnings.md` and `conventions.md` on every reset with no checkpoint to promote reusable learnings first — despite `learnings.md`'s own "Review Process" describing exactly that promotion step.
+- CI (`.github/workflows/ci.yml`) checked markdown links and the `PROJECT-SPECIFIC` marker convention, but nothing about changelog or decision discipline.
+- Per-file `Version: X.Y` headers under `AI/` had no convention for when to bump, making them unreliable as a signal of what actually changed.
+
+---
+
+## Options Considered
+
+### Option A
+
+Leave the rules as prose-only guidance ("should" without enforcement), same as before.
+
+Advantages:
+
+- Zero implementation cost.
+
+Disadvantages:
+
+- Exactly the failure mode the framework's own `code-quality.md` names: mechanics without verification gets skipped under fatigue, especially on "small" framework PRs.
+- The framework does not compound knowledge across products the way `learnings.md` claims it does — reset silently loses anything not proactively promoted.
+
+---
+
+### Option B
+
+Add a mechanical gate: CHANGELOG requirement enforced by CI, a DECISIONS requirement kept as reviewer judgment (not everything checkable by a script), an explicit review-before-delete checkpoint in `init-project.md`, and a lightweight versioning convention.
+
+Advantages:
+
+- Framework holds itself to the same bar it sets for products (mirrors DECISION-009).
+- CHANGELOG discipline becomes enforced, not aspirational.
+- Cross-product learnings get a real chance to survive a reset instead of depending on someone remembering to promote them.
+
+Disadvantages:
+
+- Minor process overhead on every framework PR (one CHANGELOG bullet, occasionally a DECISIONS entry).
+- One more CI script to maintain.
+
+---
+
+## Decision
+
+Adopt Option B:
+
+- `CONTRIBUTING.md` → "Framework Definition of Done": framework-layer PRs (`AI/`, `CLAUDE.md`, `README.md`) require a `CHANGELOG.md` bullet, with a `[skip changelog]` escape for wording/typo-only changes; a `DECISIONS.md` entry when the change alters agent responsibilities, workflow phases, or policy mechanics.
+- `.github/scripts/check_changelog.py` + `.github/workflows/ci.yml`: CI fails a PR that touches `AI/**`, `CLAUDE.md`, or `README.md` without also touching `CHANGELOG.md`, unless `[skip changelog]` is present in the PR title/description.
+- `AI/commands/init-project.md` Step 8: before deleting `AI/memory/learnings.md` and `conventions.md`, run `learnings.md`'s own Review Process and promote anything Critical/Important and reusable to `AI/policies/` or `conventions.md`'s Framework Terms section first.
+- `CONTRIBUTING.md` → "Versioning framework files": bump a file's minor version on any change that also earns a changelog bullet, major version on a breaking restructure, leave unchanged for typo/wording edits.
+- `AI/workflows/framework-review.md` (new): a human-triggered, non-per-feature workflow to periodically audit the framework layer for stale cross-references and contradictions as it grows.
+
+---
+
+## Reason
+
+DECISION-009 already established documentation as company memory. This decision closes the gap where that principle applied to every layer except the one enforcing it. A framework cannot credibly demand mechanical rigor from products while exempting its own PRs from the same discipline.
+
+---
+
+## Consequences
+
+Positive:
+
+- Framework-layer changes accumulate an honest history instead of relying on commit messages alone.
+- Cross-product learnings compound across `init-project.md` resets instead of resetting to zero every time.
+- Version headers become a trustworthy signal again.
+
+Negative:
+
+- Slightly more friction on framework PRs (one changelog bullet minimum).
+- `check_changelog.py` needs `fetch-depth: 0` in CI checkout and will need maintenance if GitHub's pull_request event payload shape changes.
 
 ---
 

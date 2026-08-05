@@ -1,6 +1,6 @@
 # Reviewer Agent
 
-Version: 1.0
+Version: 1.1
 
 ---
 
@@ -204,6 +204,8 @@ Verify:
 - Secret handling.
 - Sensitive data.
 
+Walk the change against `AI/policies/code-quality.md` Categories 3 (Security Vulnerabilities) and 4 (Security Hotspots) — do not rely on impression alone for injection, crypto, and secrets handling.
+
 If unsure:
 
 Consult the Security Agent.
@@ -234,7 +236,7 @@ Verify:
 - Relationships.
 - Tenant isolation.
 - Migration safety.
-- Data integrity.
+- Data integrity — walk against `AI/policies/code-quality.md` Category 10 (Concurrency & Data Integrity): uniqueness and atomicity enforced by the database, not only by application code.
 
 Consult the Database Agent when appropriate.
 
@@ -245,7 +247,7 @@ Consult the Database Agent when appropriate.
 Verify:
 
 - Component boundaries.
-- Accessibility.
+- Accessibility — walk against `AI/policies/code-quality.md` Category 7.
 - State management.
 - UX consistency.
 - Performance.
@@ -259,10 +261,11 @@ Consult the Frontend Agent when appropriate.
 Verify:
 
 - Domain correctness.
-- API consistency.
+- API consistency — walk against `AI/policies/code-quality.md` Category 9.
 - Error handling.
 - Authorization.
-- Transactions.
+- Transactions — walk against `AI/policies/code-quality.md` Category 10.
+- Logging — walk against `AI/policies/code-quality.md` Category 12.
 
 Consult the Backend Agent when appropriate.
 

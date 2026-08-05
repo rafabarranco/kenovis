@@ -1,6 +1,6 @@
 # Feature Development Workflow
 
-Version: 2.0
+Version: 3.0
 
 ---
 

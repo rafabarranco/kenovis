@@ -30,12 +30,31 @@ Before adding a new agent, workflow, policy, or command, check whether an existi
 - **No secrets, no real business data.** This applies to examples too — use placeholders, not anything resembling a real customer, company, or dataset.
 - **Keep the `PROJECT-SPECIFIC` marker convention intact.** If you touch a product-layer file, the marker HTML comment on line 1 must survive.
 
+## Framework Definition of Done
+
+The framework asks products to keep a changelog and a decision log (`AI/policies/documentation.md`, `AI/memory/learnings.md`). It must hold itself to the same standard — a framework that only documents other people's decisions is not practicing what it enforces.
+
+Before a framework-layer PR (touching `AI/`, `CLAUDE.md`, or `README.md`) is considered done:
+
+- **CHANGELOG.md** — add a bullet under `[Unreleased]` describing what changed. CI checks this automatically for any PR touching `AI/**`, `CLAUDE.md`, or `README.md`. If the change is wording/typo-only and doesn't alter behavior, include `[skip changelog]` in the PR title or description instead.
+- **DECISIONS.md** — add an entry when the change alters an agent's responsibilities, a workflow's phases, or a policy's mechanics (not for wording clarity or typo fixes). This is a judgment call, not CI-enforced — explain the reasoning in the PR description either way, per the rule below.
+
+## Versioning framework files
+
+Files under `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, and `AI/templates/` carry a `Version: X.Y` header. Keep it honest:
+
+- Bump the **minor** version when the file's content changes in a way that also earns a `CHANGELOG.md` bullet.
+- Bump the **major** version on a breaking restructure of the file — a full rewrite, a renumbered set of phases/sections, or a change that invalidates how other files reference it.
+- Leave it unchanged for typo/wording-only edits (the same cases that qualify for `[skip changelog]`).
+
+A stale version number next to heavily edited content is worse than no version number — it tells the next reader "unchanged" when it isn't.
+
 ## Submitting a change
 
 1. Fork the repo and branch from `main`.
 2. Make the change, scoped to one concern (one agent, one policy, one fix).
 3. If the change affects how agents behave, explain the reasoning in the PR description — this framework runs on documented decisions, not silent preference changes.
-4. Open a PR. CI checks markdown links and the `PROJECT-SPECIFIC` marker convention.
+4. Open a PR. CI checks markdown links, the `PROJECT-SPECIFIC` marker convention, and (for framework-layer PRs) that `CHANGELOG.md` was updated.
 
 ## Reporting issues
 
