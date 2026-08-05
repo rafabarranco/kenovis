@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.1
+Version: 1.2
 
 ---
 
@@ -37,6 +37,8 @@ Command:
 ```
 
 Do not execute on a repository that already holds a real product. That would destroy its context.
+
+Do not execute on a repository where `CODE/` already contains a real implementation predating the Kenovis AI-OS — that is an adoption, not an initialization. Use `AI/commands/adopt-project.md` instead: it audits the existing code before touching any product-layer document, instead of emptying `CODE/` and asking the human to decide a stack that is already running.
 
 ---
 

@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.2
+Version: 2.3
 
 Last updated: —
 
@@ -21,6 +21,7 @@ Five are framework-level and should be carried over:
 - DECISION-010 — AI Tooling Strategy.
 - DECISION-011 — Framework Contribution & Memory Discipline.
 - DECISION-012 — Graphify Exception To Tool-Agnosticism.
+- DECISION-014 — Brownfield Adoption Path: adopt-project Command.
 
 Everything else is product-specific and should be recorded as real decisions get made. See AI/commands/init-project.md.
 
@@ -727,6 +728,101 @@ Negative:
 
 - Every future PR must keep Framework layer changes (which ship to customers) and Product layer changes (Kenovis's own company context) clearly separated — conflating them would corrupt the product being sold.
 - The CLI installer that will eventually live in `CODE/` has no precedent elsewhere in this framework's example content; its architecture must be designed from scratch in Phase 0/1 of `PRODUCT/ROADMAP.md`, not copied from a typical SaaS CRUD app shape.
+
+---
+
+# DECISION-014
+
+# Brownfield Adoption Path: adopt-project Command
+
+Date:
+
+2026-08-05
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-05
+
+---
+
+## Context
+
+`AI/commands/init-project.md` assumes a blank slate: it asks the human to decide a stack, empties `CODE/` (Step 10), and forces fresh decisions on things a running codebase may have already settled (Step 6). That assumption breaks the moment a team wants to adopt the Kenovis AI-OS on top of a repository that already has a real, half-built or fully-built product in `CODE/` — a very likely path for the actual target segment (COMPANY_OS.md → software development teams), most of whom are not starting from zero.
+
+Running `/init-project` unmodified against such a repository would: delete real code (Step 10), force the human to re-decide a stack and tenancy model the code already implements (Step 6), and leave `PRODUCT/USER_RESEARCH.md` / `COMPETITIVE_LANDSCAPE.md` empty even where real, undocumented team knowledge exists — losing context instead of capturing it.
+
+---
+
+## Options Considered
+
+### Option A
+
+Extend `/init-project` itself with a brownfield branch (detect `CODE/` is non-empty, skip Step 10, ask fewer questions).
+
+Advantages:
+
+- One command instead of two.
+
+Disadvantages:
+
+- Conflates two different epistemics in one document: "nothing exists, decide" vs "something exists, discover." The steps that make sense for one actively harm the other (Step 10's deletion, Step 6's "decide explicitly").
+- Makes `init-project.md` longer and more conditional, harder to follow correctly under either scenario.
+
+---
+
+### Option B
+
+Add a distinct command, `AI/commands/adopt-project.md`, mirroring `init-project.md`'s structure but built around auditing `CODE/` first (with confidence-tagged findings) and never touching `CODE/` beyond its README.
+
+Advantages:
+
+- Each command stays a single, coherent epistemic model: `init-project` decides, `adopt-project` discovers-then-confirms.
+- `init-project.md` stays simple for the true-greenfield case it was designed for; a one-line pointer in its Trigger section routes brownfield repositories to the new command instead of silently mishandling them.
+- Matches how the framework already treats reconstructed vs. decided context elsewhere (e.g. DECISION-012's confidence framing).
+
+Disadvantages:
+
+- A second command to maintain and keep in sync with `init-project.md` when the shared parts (Steps 3, 6 vision/strategy, memory reset) change.
+
+---
+
+## Decision
+
+Adopt Option B.
+
+- New command: `AI/commands/adopt-project.md` (v1.0). Audits `CODE/` before touching any product-layer document, tags every reconstructed fact with a confidence level (High/Medium/Low) and a file/line citation, never empties or rewrites `CODE/` beyond its README, and verifies completion by contrast against the code rather than by absence of example terms.
+- `AI/commands/init-project.md` Trigger section (1.1 → 1.2) now explicitly routes repositories where `CODE/` already holds a real implementation to `adopt-project.md` instead.
+- `AI/SYSTEM.md` (1.0 → 1.1) lists `/adopt-project` alongside `/init-project` as one of the two possible first commands in a repository.
+- `README.md` gains an "Adopting an existing product" section and the repository map lists the new command.
+- `PRODUCT/ROADMAP.md` (1.0 → 1.1) Phase 0 CLI install command is scoped to detect greenfield vs. brownfield target repositories and route accordingly, rather than always assuming a blank slate.
+
+---
+
+## Reason
+
+The framework's own source-of-truth hierarchy (`AI/SYSTEM.md`) ranks real business rules and domain models above AI suggestions and above implementation code for conflicts — but a command that deletes the code before anyone reads it never gives that hierarchy a chance to apply. Kenovis's own target segment (small dev teams, COMPANY_OS.md) will disproportionately already have code. A framework that only knows how to onboard empty repositories doesn't fit the segment it says it's for.
+
+---
+
+## Consequences
+
+Positive:
+
+- Brownfield adoption no longer risks destroying real code or forcing redundant re-decisions on a running stack.
+- Reconstructed facts carry confidence markers and citations, so the resulting `ENGINEERING/`/`DOMAIN/` documents are verifiable against the code instead of merely plausible.
+- Phase 0's CLI installer (not yet built) has an explicit requirement to route correctly instead of discovering the gap after ship.
+
+Negative:
+
+- Two command documents now share structure (vision/strategy steps, memory-reset review process) that must be kept consistent by hand — a future framework-review pass (`AI/workflows/framework-review.md`) should check both stay in sync when either changes.
 
 ---
 
