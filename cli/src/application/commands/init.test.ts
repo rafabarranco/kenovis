@@ -81,3 +81,41 @@ test("runInit overwrites an existing .kenovis/ when --force is passed", async ()
   assert.equal(result.frameworkInstalledTo, join("/repo", ".kenovis"));
   assert.equal(fs.copiedTrees.length, 1);
 });
+
+test("runInit detects greenfield when the target has no pre-existing implementation", async () => {
+  const fs = new InMemoryFileSystem();
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+  });
+
+  assert.equal(result.detectedKind, "greenfield");
+  assert.deepEqual(result.detectionEvidence, []);
+});
+
+test("runInit detects brownfield when the target already has real files, citing them as evidence", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", "package.json"), "{}");
+  fs.seed(join("/repo", "src", "index.ts"), "// real code");
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+  });
+
+  assert.equal(result.detectedKind, "brownfield");
+  assert.deepEqual(result.detectionEvidence, ["package.json", "src"]);
+});
+
+test("runInit does not count an existing target README.md as brownfield evidence", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", "README.md"), "# My Real Product");
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+  });
+
+  assert.equal(result.detectedKind, "greenfield");
+});

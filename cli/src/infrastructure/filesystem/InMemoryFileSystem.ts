@@ -1,3 +1,4 @@
+import { relative, sep } from "node:path";
 import type { FileSystemPort } from "./FileSystemPort.js";
 
 /**
@@ -24,5 +25,15 @@ export class InMemoryFileSystem implements FileSystemPort {
   async copyTree(sourceDir: string, targetDir: string): Promise<void> {
     this.copiedTrees.push({ sourceDir, targetDir });
     this.files.set(targetDir, `<copied from ${sourceDir}>`);
+  }
+
+  async listDir(dirPath: string): Promise<string[]> {
+    const entries = new Set<string>();
+    for (const filePath of this.files.keys()) {
+      const rel = relative(dirPath, filePath);
+      if (rel.startsWith("..") || rel === "") continue;
+      entries.add(rel.split(sep)[0]);
+    }
+    return [...entries];
   }
 }

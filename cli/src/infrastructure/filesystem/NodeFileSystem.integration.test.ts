@@ -57,3 +57,29 @@ test("runInit against a real filesystem refuses a second install without --force
     await assert.rejects(() => runInit(fs, { frameworkSourceDir: sourceDir, targetDir }));
   });
 });
+
+test("runInit against a real filesystem detects brownfield from real pre-existing files", async () => {
+  await withTempDirs(async (sourceDir, targetDir) => {
+    await writeFile(join(sourceDir, "README.md"), "# Framework explanation\n");
+    await writeFile(join(targetDir, "package.json"), "{}");
+    await mkdir(join(targetDir, "src"), { recursive: true });
+
+    const fs = new NodeFileSystem();
+    const result = await runInit(fs, { frameworkSourceDir: sourceDir, targetDir });
+
+    assert.equal(result.detectedKind, "brownfield");
+    assert.deepEqual(result.detectionEvidence, ["package.json", "src"]);
+  });
+});
+
+test("runInit against a real filesystem detects greenfield for an empty target", async () => {
+  await withTempDirs(async (sourceDir, targetDir) => {
+    await writeFile(join(sourceDir, "README.md"), "# Framework explanation\n");
+
+    const fs = new NodeFileSystem();
+    const result = await runInit(fs, { frameworkSourceDir: sourceDir, targetDir });
+
+    assert.equal(result.detectedKind, "greenfield");
+    assert.deepEqual(result.detectionEvidence, []);
+  });
+});

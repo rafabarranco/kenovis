@@ -128,12 +128,13 @@ Slice 1 shipped via /next: the `init` command's install engine (cli/src/domain, 
 
 Slice 2 shipped via /next: `cli/scripts/bundle-framework-assets.mjs` bundles this repository's real Framework layer (`AI/` minus `memory/`) plus a newly hand-authored, customer-facing `cli/assets/framework/README.md` (distinct from this repository's own root README.md, which mixes Kenovis-specific detail unsuitable for verbatim distribution) into `dist/framework-assets/` at build time. `kenovis init <targetDir>` now works with zero required flags — `--source` is optional, defaulting to the bundled assets. 15 tests total (unit + real-filesystem integration + CLI arg parsing), manually smoke-tested end to end with and without `--source`.
 
+Slice 3 shipped via /next: greenfield vs. brownfield auto-detection. `runInit` lists the target directory's top-level entries before installing (`FileSystemPort.listDir`, implemented for both `NodeFileSystem` and `InMemoryFileSystem`) and filters out trivial/framework-owned names (`.git`, `README.md`, `LICENSE`, `.kenovis`, `CLAUDE.md`, `.claude`, ...) via `cli/src/domain/installation.ts` → `detectInstallationKind`. Anything left over is cited as evidence and `kenovis init` now prints an evidence-based suggestion — `/adopt-project` with the actual files found, or `/init-project` when nothing real is there — instead of always naming both options. Filesystem-only, never inspects file contents or executes target-repo code (ENGINEERING/ARCHITECTURE.md Hard Rules). 23 tests total, manually smoke-tested end to end against both an empty and a `package.json`+`src/`-seeded scratch directory.
+
 Explicitly NOT done yet — separate follow-up `/next` slices, in roughly this order:
-- Greenfield vs. brownfield auto-detection, so install can suggest `/init-project` vs `/adopt-project` with evidence instead of just naming both options.
 - `sync` command (update an existing `.kenovis/` to a newer Framework Release, diff-reviewable per RULE-INST-02).
 - npm publish under the `kenovis` package name.
 
-Dependencies: none remaining for items 1 and 2. The follow-ups above depend on slices 1-2 (done) but not on each other in a strict order.
+Dependencies: none remaining for items 1-3. The follow-ups above depend on slices 1-3 (done) but not on each other in a strict order.
 ---
 Phase 1 — MVP
 

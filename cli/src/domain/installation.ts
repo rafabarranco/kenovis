@@ -11,6 +11,49 @@ export const FRAMEWORK_DIR_NAME = ".kenovis";
 export const CLAUDE_STUB_FILENAME = "CLAUDE.md";
 export const TARGET_README_FILENAME = "README.md";
 
+/**
+ * Entries that do not count as evidence of a real, pre-existing implementation:
+ * either trivial (nothing to adopt) or written by this CLI itself (so a re-run,
+ * e.g. with --force, does not mistake its own prior install for the customer's code).
+ */
+const NON_EVIDENCE_ENTRIES = new Set([
+  ".git",
+  ".gitignore",
+  ".gitattributes",
+  ".DS_Store",
+  "README.md",
+  "LICENSE",
+  "LICENSE.md",
+  FRAMEWORK_DIR_NAME,
+  CLAUDE_STUB_FILENAME,
+  ".claude",
+]);
+
+export type InstallationKind = "greenfield" | "brownfield";
+
+export interface DetectionResult {
+  kind: InstallationKind;
+  /** Target directory entries that count as evidence, empty when greenfield. */
+  evidence: string[];
+}
+
+/**
+ * Distinguishes an empty/near-empty target repository (greenfield — no real
+ * implementation to adopt) from one that already holds real code (brownfield).
+ * Filesystem-only: never inspects file contents or executes anything found in
+ * the target repository (ENGINEERING/ARCHITECTURE.md Hard Rules).
+ */
+export function detectInstallationKind(targetDirEntries: string[]): DetectionResult {
+  const evidence = targetDirEntries
+    .filter((entry) => !NON_EVIDENCE_ENTRIES.has(entry))
+    .sort();
+
+  return {
+    kind: evidence.length > 0 ? "brownfield" : "greenfield",
+    evidence,
+  };
+}
+
 export class AlreadyInstalledError extends Error {
   constructor(public readonly frameworkDir: string) {
     super(
