@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.1
+Version: 2.2
 
 Last updated: —
 
@@ -14,12 +14,13 @@ Last updated: —
 
 Most decisions in this log are product-specific and must be removed when starting a new product.
 
-Four are framework-level and should be carried over:
+Five are framework-level and should be carried over:
 
 - DECISION-001 — AI-Native Company Operating Model.
 - DECISION-009 — Documentation As Company Memory.
 - DECISION-010 — AI Tooling Strategy.
 - DECISION-011 — Framework Contribution & Memory Discipline.
+- DECISION-012 — Graphify Exception To Tool-Agnosticism.
 
 Everything else is product-specific and should be recorded as real decisions get made. See AI/commands/init-project.md.
 
@@ -538,6 +539,98 @@ Negative:
 
 - Slightly more friction on framework PRs (one changelog bullet minimum).
 - `check_changelog.py` needs `fetch-depth: 0` in CI checkout and will need maintenance if GitHub's pull_request event payload shape changes.
+
+---
+
+# DECISION-012
+
+# Graphify Exception To Tool-Agnosticism
+
+Date:
+
+2026-08-05
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2026-11-05
+
+---
+
+## Context
+
+An `/analyze` pass on "how to integrate graphify with Kenovis to save tokens" found that `AI/commands/bootstrap.md` mandates a full read of `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AI/memory/*`, and `CODE/` at the start of every session — roughly 14k tokens of doc corpus alone today, before `CODE/` holds any real implementation. [graphify](https://graphify.net/) (MIT, `Graphify-Labs/graphify`) turns a repo into a queryable knowledge graph (Tree-sitter AST locally for code, LLM semantic extraction for docs/PDF/images) and claims 70-90% token reduction when agents query the graph instead of reading raw files.
+
+Graphify's primary integration surface is per-tool: `graphify install --platform claude` writes a Claude Code skill, a `PreToolUse` hook, and a `## graphify` section into root `CLAUDE.md`. Its query commands (`graphify query`, `graphify explain`, `graphify path`, `graphify affected`, `graphify god-nodes`) are plain CLI, usable from any tool with shell access — but naming them explicitly inside `AI/commands/bootstrap.md` and `AI/workflows/*.md` still couples the framework's own instructions to one specific external CLI existing on disk, which [DECISION-010](DECISIONS.md) reserves for `CLAUDE.md` only.
+
+The founder explicitly directed accepting this coupling for graphify, overriding the default DECISION-010 constraint for this one integration.
+
+---
+
+## Options Considered
+
+### Option A
+
+Keep DECISION-010 strict: describe the pattern generically inside `AI/` ("query a knowledge graph if one exists") without naming graphify or its CLI.
+
+Advantages:
+
+- Zero additional tool lock-in. Fully portable to Maker or any future tool.
+
+Disadvantages:
+
+- No concrete tool actually gets wired up. The token savings stay theoretical until every tool independently builds or configures graph tooling.
+
+---
+
+### Option B
+
+Grant a scoped exception: `AI/commands/bootstrap.md` and `AI/workflows/feature.md`, `bugfix.md`, `review.md` reference graphify's CLI commands directly (`graphify query`, `explain`, `affected`, `god-nodes`) as the preferred path before falling back to full reads. Graphify's Claude Code-specific install (skill, `PreToolUse` hook, `.claude/settings.json`) stays exactly where graphify itself puts it — `CLAUDE.md` and `.claude/`, consistent with where DECISION-010 already confines tool-specific mechanisms.
+
+Advantages:
+
+- Real, measurable token reduction starting now, not after some future multi-tool graph abstraction gets built.
+- The Claude Code-specific half of the install (skill/hook) already lands outside `AI/`, in `CLAUDE.md`/`.claude/` — only the CLI command names leak into `AI/`.
+
+Disadvantages:
+
+- `AI/commands/bootstrap.md` and `AI/workflows/*.md` now assume a specific external binary (`graphify`) may be present on disk. A tool without an equivalent graph CLI gets no benefit and must fall back to the full-read path (which the wording preserves as a fallback, not a hard requirement).
+- Graphify is a young external OSS project (single maintainer at time of writing). If it's abandoned, the graph-query references in `AI/` become dead instructions until reverted or replaced.
+
+---
+
+## Decision
+
+Adopt Option B, scoped strictly to graphify's query CLI referenced from `AI/commands/bootstrap.md` and `AI/workflows/feature.md`, `bugfix.md`, `review.md`. DECISION-010 remains in force for every other tool-specific mechanism — this is a named, single exception, not a reopening of the rule.
+
+`graphify-out/` (the generated graph) is gitignored and regenerated locally per clone; nothing graph-derived is committed.
+
+---
+
+## Reason
+
+Bootstrap fires at the start of every session per its own trigger conditions — the doc-corpus read cost is recurring, not one-time. Waiting for a hypothetical tool-agnostic graph abstraction before capturing that saving was judged not worth the delay, given Claude Code is the primary daily driver today and cross-tool portability (Maker) is not presently being exercised in practice.
+
+---
+
+## Consequences
+
+Positive:
+
+- Bootstrap and workflow context loading drop from full-file reads (~14k tokens for the current doc corpus, growing as `CODE/` fills in) to scoped graph queries (~200 tokens per the tool's own benchmark claim), compounding every session.
+- The Claude Code-specific install mechanics stay correctly scoped to `CLAUDE.md`/`.claude/`, so the `AI/` leak is limited to CLI command names, not hooks or skill definitions.
+
+Negative:
+
+- Running the AI-OS from a tool without `graphify` on `PATH` (or an equivalent) loses the token saving and falls back to full reads — acceptable today, a real cost if Maker (or another tool) becomes primary.
+- New external runtime dependency (`graphifyy` PyPI package) that isn't part of the product's own stack — must be reassessed at the review date for maintenance health.
 
 ---
 

@@ -1,6 +1,6 @@
 # Bootstrap Command
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -78,7 +78,18 @@ Understand:
 
 # Step 2 - Load Project Context
 
-Read:
+If `graphify-out/graph.json` exists and is not stale (no code/doc changes since last build):
+
+Query the graph before reading raw files:
+
+```
+graphify query "<topic>"
+graphify explain "<concept>"
+```
+
+Read a file in full only when the graph is absent, stale, or the query result is insufficient.
+
+Otherwise, read:
 
 ```
 PRODUCT/
@@ -111,7 +122,9 @@ Understand:
 
 # Step 3 - Load Active Memory
 
-Read:
+If the graph is available: query it first (`graphify query "<topic>"`, `graphify explain "<concept>"`). Fall back to a full read only if the graph is absent, stale, or insufficient.
+
+Otherwise, read:
 
 ```
 AI/memory/
@@ -141,7 +154,15 @@ Product and platform implementation lives under `CODE/`.
 
 Read `CODE/README.md` first. It describes the topology this product actually uses. Do not assume a monorepo, a single app, or any particular directory layout.
 
-Then analyze `CODE/` as it exists on disk.
+If `graphify-out/graph.json` exists and is not stale, query it before walking the tree:
+
+```
+graphify query "<topic>"
+graphify explain "<concept>"
+graphify god-nodes
+```
+
+Fall back to walking `CODE/` on disk only when the graph is absent, stale, or the query result is insufficient.
 
 Identify:
 

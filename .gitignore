@@ -49,6 +49,10 @@ Thumbs.db
 *.tsbuildinfo
 .eslintcache
 
+# Graphify knowledge graph — regenerate locally with `graphify extract .`
+# (can exceed the 512MiB graph.json cap on large repos; never versioned)
+graphify-out/
+
 # =============================================================
 # STACK-SPECIFIC — PROJECT-SPECIFIC: keep only the blocks that
 # match the stack chosen in ENGINEERING/ARCHITECTURE.md.

@@ -1,6 +1,6 @@
 # Feature Development Workflow
 
-Version: 3.0
+Version: 3.1
 
 ---
 
@@ -60,6 +60,8 @@ Execute:
 ```
 AI/commands/bootstrap.md
 ```
+
+If bootstrap already ran earlier this session and `graphify-out/graph.json` is still fresh, do not re-read the full context tree. Re-query the graph instead (`graphify query "<topic>"`) for whatever this phase needs.
 
 Load:
 
@@ -182,7 +184,7 @@ CTO evaluates:
 - Risks.
 - Required technical decisions.
 
-Review:
+Review (query the graph first if fresh, e.g. `graphify query "<topic>"`, `graphify explain "<concept>"`; fall back to reading in full otherwise):
 
 ```
 ENGINEERING/ARCHITECTURE.md
@@ -240,6 +242,8 @@ Document:
 ---
 
 # Phase 9 - Implementation Preparation
+
+Once `CODE/` has real content: use `graphify affected "<component>"` to find nodes impacted before touching them, instead of grepping the tree cold.
 
 Define:
 
