@@ -1,6 +1,6 @@
 # Bug Fix Workflow
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -131,7 +131,7 @@ Determine:
 
 ## Root Cause
 
-Once `CODE/` has real content: use `graphify affected "<component>"` and `graphify explain "<concept>"` to trace impacted nodes before grepping the tree cold.
+Once the repository has real implementation content: use `graphify affected "<component>"` and `graphify explain "<concept>"` to trace impacted nodes before grepping the tree cold.
 
 Identify:
 

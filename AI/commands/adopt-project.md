@@ -1,12 +1,12 @@
 # Adopt Project Command
 
-Version: 1.0
+Version: 1.3
 
 ---
 
 # Purpose
 
-Turn this repository's product layer into a real product's context when a real product already exists in `CODE/` — written before the Kenovis AI-OS was installed.
+Turn this repository's product layer into a real product's context when a real product already exists — wherever its implementation actually lives — written before the Kenovis AI-OS was installed.
 
 This is the brownfield counterpart to `AI/commands/init-project.md`.
 
@@ -16,7 +16,7 @@ The difference is not cosmetic:
 
 `/adopt-project` assumes the code already decided most of this. It reads the code first, then asks the human only to confirm or correct what it found — not to decide from scratch.
 
-Treating an adoption like an initialization destroys a working product: `/init-project` Step 10 empties `CODE/`, Step 6 asks the human to "decide" a stack that is already running, and Step 5 leaves research empty even when real, if undocumented, market context exists in the team's heads.
+Treating an adoption like an initialization destroys a working product: `/init-project` Step 10 deletes leftover implementation on the assumption of a pivot, Step 6 asks the human to "decide" a stack that is already running, and Step 5 leaves research empty even when real, if undocumented, market context exists in the team's heads.
 
 ---
 
@@ -24,8 +24,8 @@ Treating an adoption like an initialization destroys a working product: `/init-p
 
 Execute when:
 
-- `CODE/` already contains a real implementation that predates the Kenovis AI-OS.
-- Product-layer files (`COMPANY_OS.md`, `DECISIONS.md`, `DOMAIN/`, `PRODUCT/`, `ENGINEERING/`) still carry example/placeholder content, but the actual product is running in `CODE/`.
+- The target repository already contains a real implementation that predates the Kenovis AI-OS — wherever it actually lives (repo root, `src/`, a monorepo package). It never needs to be moved into any particular folder for this command to apply.
+- Product-layer files (`COMPANY_OS.md`, `DECISIONS.md`, `DOMAIN/`, `PRODUCT/`, `ENGINEERING/`) still carry example/placeholder content, but the actual product is running somewhere in the repository.
 
 Command:
 
@@ -55,7 +55,7 @@ A fact reconstructed from code and confirmed by a human is trustworthy. A fact i
 grep -rl "PROJECT-SPECIFIC" . --include="*.md" --include=".gitignore"
 ```
 
-If that still lists the product-layer files (unrewritten) AND `CODE/` is non-empty, this is an adoption, not an initialization.
+If that still lists the product-layer files (unrewritten) AND the repository already has a real implementation somewhere — whatever the repository's actual layout is — this is an adoption, not an initialization.
 
 ---
 
@@ -81,7 +81,7 @@ Tag every finding with a confidence level:
 - **Medium** — inferred from a consistent pattern across multiple files.
 - **Low** — guessed from partial or contradictory evidence.
 
-Do not modify `CODE/` during this step. This is a read-only audit.
+Do not modify the customer's existing code during this step. This is a read-only audit.
 
 ---
 
@@ -225,17 +225,17 @@ In the STACK-SPECIFIC block, reconcile against the stack found in Step 1 — the
 
 ---
 
-# Step 11 - Do Not Touch CODE/
+# Step 11 - Do Not Touch The Customer's Existing Code
 
-`CODE/` holds the real product. Never delete or empty it.
+The customer's implementation holds the real product, wherever in the repository it lives. Never delete, empty, or relocate it — not even into a Kenovis-preferred layout.
 
 Rewrite only:
 
 ```
-CODE/README.md
+ENGINEERING/ARCHITECTURE.md
 ```
 
-Describe the actual repository topology found in Step 1 — the real layout, not a placeholder.
+Describe the actual repository topology found in Step 1 — the real layout, not a placeholder. There is no requirement to introduce any particular top-level directory; document the layout the repository already uses.
 
 ---
 
@@ -243,10 +243,10 @@ Describe the actual repository topology found in Step 1 — the real layout, not
 
 This is not the `init-project.md` Step 11 check for zero matches of example terms — adoption doesn't start from an example, it starts from real code that must not be contradicted.
 
-For every factual claim written into `ENGINEERING/*.md` and `DOMAIN/*.md`, confirm it matches something observable in `CODE/`:
+For every factual claim written into `ENGINEERING/*.md` and `DOMAIN/*.md`, confirm it matches something observable in the customer's actual code:
 
 ```
-For each claim: does CODE/ support it? Cite file/line, or mark it explicitly as inferred / Low confidence and unverified.
+For each claim: does the code support it? Cite file/line, or mark it explicitly as inferred / Low confidence and unverified.
 ```
 
 A claim with no code evidence and no explicit Low-confidence marker is a defect in this adoption, not an acceptable gap.
@@ -276,7 +276,7 @@ This is the first decision of the adopted product's Kenovis-tracked history — 
 
 Never:
 
-- Delete, empty, or rewrite anything under `CODE/` other than `CODE/README.md`.
+- Delete, empty, relocate, or rewrite any of the customer's existing code. `ENGINEERING/ARCHITECTURE.md` is the only file this command writes to describe it.
 - Modify anything under `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/templates/` or `AI/commands/` during adoption. If a framework file blocks adoption, that is a framework defect — fix it as its own change, not silently during this command.
 - Treat "the code does X" as proof X is the right pattern going forward. Document what exists; flag anti-patterns to the human separately from recording them as the current state.
 - Write a fact into `ENGINEERING/` or `DOMAIN/` without either a file/line citation or an explicit Low-confidence marker.
@@ -303,7 +303,7 @@ Adoption is complete when:
 
 ✓ PRODUCT/ describes the real roadmap; FEATURES.md reflects what is actually shipped; research and competitive landscape are left empty if none exists.
 
-✓ ENGINEERING/ describes what CODE/ actually does — verified by contrast against the code, not decided fresh.
+✓ ENGINEERING/ describes what the customer's actual code does — verified by contrast against it, not decided fresh.
 
 ✓ AUTOMATIONS/ describes real processes, derived from evidence where it exists.
 
@@ -311,7 +311,7 @@ Adoption is complete when:
 
 ✓ .gitignore is reconciled with the real stack, not overwritten.
 
-✓ CODE/ is byte-identical to before, except CODE/README.md.
+✓ The customer's existing code is byte-identical to before this command ran, in its original location.
 
 ✓ Every factual claim in ENGINEERING/ and DOMAIN/ has a code citation or an explicit Low-confidence marker.
 

@@ -1,6 +1,6 @@
 # Code Review Workflow
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -75,7 +75,7 @@ Load:
 
 # Phase 2 - Understand Change Scope
 
-Once `CODE/` has real content: use `graphify query "<topic>"` and `graphify affected "<component>"` to scope impact instead of reading changed files cold.
+Once the repository has real implementation content: use `graphify query "<topic>"` and `graphify affected "<component>"` to scope impact instead of reading changed files cold.
 
 Review:
 

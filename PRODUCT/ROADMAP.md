@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.1
+Version: 1.8
 ---
 Purpose
 
@@ -92,7 +92,7 @@ Deliverables
 Technical:
 
 - CLI command that scaffolds the Framework layer (AI/, CLAUDE.md, README.md) into a target repository.
-- CLI install command detects whether the target repository is greenfield (empty or no real implementation) or brownfield (CODE/ already holds a real implementation) and points the installation at /init-project or AI/commands/adopt-project.md accordingly, instead of always assuming a blank slate.
+- CLI install command detects whether the target repository is greenfield (empty or no real implementation) or brownfield (a real implementation already exists in the target repository) and points the installation at /init-project or AI/commands/adopt-project.md accordingly, instead of always assuming a blank slate.
 - CLI command that syncs a newer Framework Release into an existing Installation without touching Product-layer files (RULE-INST-01).
 - No database, no authentication, no hosted service (DECISION-013).
 
@@ -105,6 +105,35 @@ Documentation:
 Success Criteria
 
 A team outside Kenovis can install the CLI, get the Framework layer into their repository, and complete /init-project (greenfield) or /adopt-project (brownfield, existing codebase) with their own real answers — end to end, without help.
+---
+Phase 0 — Immediate Priority (added 2026-08-05, from /analyze on distribution friction)
+
+Founder-flagged blocker: today, "installing" Kenovis means manually copy-pasting this repo's structure into a target repository, and adopting an existing product means copy-pasting the customer's own code into this repo's own implementation directory to run /adopt-project — backwards from how a real install should work, and not viable for "usable by anyone." This is the highest-priority work in Phase 0, ahead of any other Phase 0/1 item, until all three land.
+
+Execute in this order:
+
+1. DONE (2026-08-05) — Architecture decision: Framework layer physical packaging (visible/invisible footprint).
+
+Ran /architect. Decided: CLI writes the Framework layer under `.kenovis/` in the target repository (hidden, dot-directory convention); `CLAUDE.md` (stub) and `.claude/` stay at repo root, forced by Claude Code autoload; the target repository's own existing `README.md` is never touched by install or sync — Kenovis's explanatory README lives at `.kenovis/README.md` instead. Product layer stays fully visible at repo root, unchanged. See DECISION-017. `ENGINEERING/ARCHITECTURE.md` → "Hard Rules" now states this explicitly for item 3 to build against.
+
+2. DONE (2026-08-05) — Fix /adopt-project's install-direction assumption.
+
+AI/commands/adopt-project.md Trigger/Step 1 assumed the customer's code already sat inside this repo's own implementation directory. Fixed via /next: no Installation is required to have any particular directory name for its code — adoption never relocates the customer's implementation, and ENGINEERING/ARCHITECTURE.md (not a separate per-implementation README) is the single place that documents where it lives. See DECISION-016 (supersedes DECISION-015). Manual adoption (hand-copying AI/ + CLAUDE.md into an existing repo) is unblocked today, without waiting on item 3.
+
+3. IN PROGRESS (2026-08-05) — Build the CLI installer/sync tool.
+
+Per this Phase 0's existing "Deliverables" above and ENGINEERING/ARCHITECTURE.md's already-specified layering (Node.js/TypeScript, npm/npx, filesystem-only, RULE-INST-01/02). Applies the `.kenovis/` packaging decision from item 1 (DECISION-017), and the never-relocate-customer-code / no-mandatory-directory-name rule from item 2 (DECISION-016).
+
+Slice 1 shipped via /next: the `init` command's install engine (cli/src/domain, application, infrastructure, cli — see cli/README.md). `kenovis init <targetDir> --source <frameworkSourceDir>` writes `.kenovis/` + a `CLAUDE.md` stub, never touches an existing target `README.md`, refuses to reinstall over an existing `.kenovis/` without `--force`.
+
+Slice 2 shipped via /next: `cli/scripts/bundle-framework-assets.mjs` bundles this repository's real Framework layer (`AI/` minus `memory/`) plus a newly hand-authored, customer-facing `cli/assets/framework/README.md` (distinct from this repository's own root README.md, which mixes Kenovis-specific detail unsuitable for verbatim distribution) into `dist/framework-assets/` at build time. `kenovis init <targetDir>` now works with zero required flags — `--source` is optional, defaulting to the bundled assets. 15 tests total (unit + real-filesystem integration + CLI arg parsing), manually smoke-tested end to end with and without `--source`.
+
+Explicitly NOT done yet — separate follow-up `/next` slices, in roughly this order:
+- Greenfield vs. brownfield auto-detection, so install can suggest `/init-project` vs `/adopt-project` with evidence instead of just naming both options.
+- `sync` command (update an existing `.kenovis/` to a newer Framework Release, diff-reviewable per RULE-INST-02).
+- npm publish under the `kenovis` package name.
+
+Dependencies: none remaining for items 1 and 2. The follow-ups above depend on slices 1-2 (done) but not on each other in a strict order.
 ---
 Phase 1 — MVP
 

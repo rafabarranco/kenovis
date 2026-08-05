@@ -1,0 +1,28 @@
+{
+  "name": "kenovis",
+  "version": "0.1.0",
+  "description": "CLI that installs and syncs the Kenovis AI-OS Framework layer into a target repository.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "bin": {
+    "kenovis": "./bin/kenovis.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "bundle": "node scripts/bundle-framework-assets.mjs",
+    "build": "npm run bundle && tsc -p tsconfig.json",
+    "pretest": "npm run build",
+    "test": "node --test",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "typescript": "^5.6.0"
+  }
+}

@@ -8,8 +8,8 @@ This repository has two layers — see [README.md](README.md) and [CLAUDE.md](CL
 
 | Layer | Path | Accepts contributions? |
 |---|---|---|
-| **Framework** | `AI/`, `CLAUDE.md`, `README.md`, `CODE/README.md` | Yes — this is what the project is |
-| **Product** | `COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/`, `CODE/` | No — this is placeholder content showing the expected shape for someone starting their own product |
+| **Framework** | `AI/`, `CLAUDE.md`, `README.md`, `cli/README.md` | Yes — this is what the project is |
+| **Product** | `COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/`, `cli/` | No — this is placeholder content showing the expected shape for someone starting their own product |
 
 PRs that fill in the product layer with a real or fictional business will be closed. That layer is meant to stay empty scaffolding — see [AI/commands/init-project.md](AI/commands/init-project.md).
 

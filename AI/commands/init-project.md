@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.2
+Version: 1.4
 
 ---
 
@@ -38,7 +38,7 @@ Command:
 
 Do not execute on a repository that already holds a real product. That would destroy its context.
 
-Do not execute on a repository where `CODE/` already contains a real implementation predating the Kenovis AI-OS — that is an adoption, not an initialization. Use `AI/commands/adopt-project.md` instead: it audits the existing code before touching any product-layer document, instead of emptying `CODE/` and asking the human to decide a stack that is already running.
+Do not execute on a repository that already contains a real implementation predating the Kenovis AI-OS, wherever that implementation lives — that is an adoption, not an initialization. Use `AI/commands/adopt-project.md` instead: it audits the existing code before touching any product-layer document, instead of asking the human to decide a stack that is already running.
 
 ---
 
@@ -236,15 +236,13 @@ In the STACK-SPECIFIC block, delete every entry that does not match the stack ch
 
 ---
 
-# Step 10 - Empty The Code Directory
+# Step 10 - Clear Any Leftover Implementation
 
-```
-CODE/
-```
+If this repository already ran `/init-project` for a different product before (a pivot, not a first install), delete whatever implementation that previous product left behind, wherever it lived — there is no framework-mandated location for it.
 
-Delete any implementation left from the previous product.
+For a genuinely first-time install there is nothing to delete.
 
-Rewrite CODE/README.md to describe the repository topology chosen in Step 6. It is product-layer: the example monorepo layout is a placeholder, not a rule.
+`ENGINEERING/ARCHITECTURE.md` → "Suggested Project Structure" (Step 6) records whatever layout this product chooses going forward. A dedicated top-level directory for the implementation is one valid choice, not a rule every product must follow — Step 6 decides it explicitly, it is never a framework default.
 
 Do not scaffold anything yet. Scaffolding is the first roadmap item, not part of initialization.
 
@@ -321,7 +319,7 @@ Initialization is complete when:
 
 ✓ .gitignore matches the chosen stack.
 
-✓ CODE/ is empty, and its README describes this product's topology.
+✓ No implementation survives from a previous product, and ENGINEERING/ARCHITECTURE.md describes this product's chosen topology.
 
 ✓ No term from the example company survives.
 

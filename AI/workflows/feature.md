@@ -1,6 +1,6 @@
 # Feature Development Workflow
 
-Version: 3.1
+Version: 3.2
 
 ---
 
@@ -243,14 +243,14 @@ Document:
 
 # Phase 9 - Implementation Preparation
 
-Once `CODE/` has real content: use `graphify affected "<component>"` to find nodes impacted before touching them, instead of grepping the tree cold.
+Once the repository has real implementation content: use `graphify affected "<component>"` to find nodes impacted before touching them, instead of grepping the tree cold.
 
 Define:
 
 Affected areas:
 
 ```
-CODE (the units listed in CODE/README.md)
+CODE (the units listed in ENGINEERING/ARCHITECTURE.md)
 
 DATABASE
 

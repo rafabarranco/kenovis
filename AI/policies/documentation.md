@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -360,7 +360,7 @@ Before reporting any code task complete:
 2. If yes, update the README in the same task, not a follow-up.
 3. If no, state that explicitly ("No README impact") instead of silently skipping the question.
 
-This applies to the README of whichever unit changed (see `CODE/README.md` for the repository's topology), not only the repository root.
+This applies to the README of whichever unit changed (see `ENGINEERING/ARCHITECTURE.md` for the repository's topology), not only the repository root.
 
 ---
 

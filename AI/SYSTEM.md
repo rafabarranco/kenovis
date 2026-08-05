@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.1
+Version: 1.3
 ---
 Purpose
 
@@ -95,7 +95,7 @@ Examples:
 
 /bug
 
-/init-project is the first command ever run in a fresh repository. It replaces the example product layer with a real one. /adopt-project is its brownfield counterpart — used when `CODE/` already holds a real implementation predating the AI-OS, so the product layer is reconstructed from the code instead of decided from scratch. Every other command assumes one of the two has already happened.
+/init-project is the first command ever run in a fresh repository. It replaces the example product layer with a real one. /adopt-project is its brownfield counterpart — used when the target repository already holds a real implementation predating the AI-OS, wherever that implementation actually lives (documented via ENGINEERING/ARCHITECTURE.md, never relocated to fit a Kenovis-chosen layout), so the product layer is reconstructed from the code instead of decided from scratch. Every other command assumes one of the two has already happened.
 
 Commands do not contain complex logic.
 
@@ -196,8 +196,6 @@ ENGINEERING/
 AUTOMATIONS/
 
 AI/memory/
-
-CODE/README.md
 
 Project context defines the specific company and product.
 
