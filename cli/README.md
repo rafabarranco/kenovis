@@ -40,7 +40,7 @@ Code follows the layering defined in [ENGINEERING/ARCHITECTURE.md](../ENGINEERIN
 
 ```
 src/
-├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content, AlreadyInstalledError/NotInstalledError, greenfield/brownfield detection
+├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content, AlreadyInstalledError/NotInstalledError/InvalidFrameworkSourceError, greenfield/brownfield detection
 ├── application/commands/
 │   ├── init.ts                                   install use case: orchestrates the domain rules against a FileSystemPort
 │   └── sync.ts                                   update use case: mirror-replaces .kenovis/ and the CLAUDE.md stub, nothing else
@@ -52,6 +52,8 @@ src/
 ```
 
 The dependency direction holds: `domain/` imports nothing from the layers around it; `application/` depends on the `FileSystemPort` interface, never on `NodeFileSystem` directly. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never touch a customer's own README.md, never write outside version control's reach. `src/application/commands/init.test.ts` asserts this directly against `InMemoryFileSystem`; `src/infrastructure/filesystem/NodeFileSystem.integration.test.ts` asserts it against a real filesystem in a temp directory.
+
+Both `init` and `sync` also validate `--source` itself before touching anything: its top level must contain only `AI/` and `README.md` (the shape `scripts/bundle-framework-assets.mjs` produces), or they throw `InvalidFrameworkSourceError` instead of copying. This guards a real footgun found by end-to-end testing — pointing `--source` at a full product repository checkout (e.g. this one) silently mirrored its Product-layer content (`COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, ...) into the target's `.kenovis/`. The check only ever inspects the local, operator-supplied `--source` path — never the target repository, which may legitimately contain a directory or file with any name at all (DECISION-016).
 
 ## Running it locally
 
