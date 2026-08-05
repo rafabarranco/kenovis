@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -27,3 +29,6 @@ jobs:
 
       - name: Check PROJECT-SPECIFIC marker convention
         run: python3 .github/scripts/check_markers.py
+
+      - name: Check framework-layer changes update CHANGELOG.md
+        run: python3 .github/scripts/check_changelog.py

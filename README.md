@@ -49,7 +49,7 @@ Framework layer — reusable:
 |---|---|
 | [AI/SYSTEM.md](AI/SYSTEM.md) | How the AI-OS operates. Entry point for non-Claude Code tools |
 | [AI/agents/](AI/agents/) | 12 specialized roles (CEO, CTO, product, design, frontend, backend, database, security, review, marketing, finance, legal) |
-| [AI/workflows/](AI/workflows/) | Execution processes (feature, bugfix, hotfix, architecture, release, review, roadmap) |
+| [AI/workflows/](AI/workflows/) | Execution processes (feature, bugfix, hotfix, architecture, release, review, roadmap, framework-review) |
 | [AI/policies/](AI/policies/) | Non-negotiable rules (architecture, coding, database, security, testing, git, documentation) |
 | [AI/commands/](AI/commands/) | Entry points (init-project, bootstrap, next, feature, bug, review, release, architect, analyze, explain) |
 | [AI/templates/](AI/templates/) | Document templates (ADR, decision, feature plan, bug report, release notes) |
