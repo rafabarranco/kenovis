@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.13
+Version: 1.17
 ---
 Purpose
 
@@ -163,6 +163,30 @@ A rename-the-injected-file approach was considered and rejected: infeasible for 
 Target design (no ADR needed — a command-instruction change, not an architecture decision): each Step in `init-project.md`/`adopt-project.md` that rewrites a Product-layer file first checks whether that file already exists without the `PROJECT-SPECIFIC` marker. If so, stop and ask the human to confirm before overwriting (or move it aside) — the same resolution `ExistingClaudeMdError` already gives for `CLAUDE.md`, applied as an explicit gate instead of an informational aside.
 
 Shipped: `AI/commands/init-project.md` (1.5 → 1.6) and `AI/commands/adopt-project.md` (1.4 → 1.5) each gained a "Collision Guard" section (placed after "How To Recognise..."), referenced by every Step that rewrites a Product-layer file (init-project.md Steps 2-7, adopt-project.md Steps 3-8) instead of repeating the full check seven times per command. Both commands' Completion Criteria gained "No unmarked pre-existing file was overwritten without the human confirming." See DECISION-019.
+
+6. DONE (2026-08-06, via /next) — added 2026-08-06, from /analyze on the v0.1.0/v0.2.0 → v0.3.0 upgrade path, founder-flagged maximum priority — ahead of any other Phase 0/1 item.
+
+Founder-flagged blocker: `/analyze` on "what happens to a customer already running kenovis@0.1.0 or kenovis@0.2.0 when they upgrade to 0.3.0" found the underlying `sync` mechanics are sound (mirror-replace since the 0.3.0 fix, never touches Product-layer or the customer's own code — RULE-INST-01/02), but three real gaps sit around that mechanism:
+
+- No version-discovery path. Nothing in the CLI or the installed `.kenovis/` tells an existing customer a newer Framework Release exists — `sync` works correctly only if someone already knows to run it. `cli/README.md` has no "Upgrading" section documenting the steps (reinstall the CLI, run `kenovis sync <targetDir>`, review with `git diff`).
+- `sync.ts` (`runSync`) rewrites the target's root `CLAUDE.md` via an unconditional `writeFile`, with no `isKenovisManagedClaudeStub` check — unlike `init`/`add`, which refuse via `ExistingClaudeMdError` when the existing file isn't Kenovis's own. This is the exact asymmetry `AI/memory/learnings.md` Learning-006 already found and fixed for `init`'s `--force` path, but the fix was never carried over to `sync`. A customer who added their own notes to `CLAUDE.md` (plausible — COMPANY_OS.md's Ideal Customer Profile is developers already fluent in agentic tooling) loses them silently on the next `sync`, protected only by "review your `git diff` before committing," which nothing enforces.
+- No end-to-end smoke test exists for the real upgrade path itself. `AI/memory/learnings.md` Learning-004 smoke-tested `kenovis@0.1.0` install/sync same-day against itself; nothing has smoke-tested installing an older published version (`kenovis@0.1.0` or `kenovis@0.2.0`) and then syncing it forward to a newer one — the exact sequence a real upgrading customer runs.
+
+Founder decision (2026-08-06, via /next): `sync`'s `CLAUDE.md` behavior on divergence is reject-like `init`/`add` — refuse with the existing `ExistingClaudeMdError`, bypassable with `--force`. Chosen for symmetry with the already-shipped, already-tested `init`/`add` pattern rather than inventing a new resolution shape.
+
+Shipped: `cli/README.md` gained an "Upgrading" section. `sync.ts` gained a `force?: boolean` option and the same `isKenovisManagedClaudeStub`/`ExistingClaudeMdError` check `runInit` already had, run before the mirror-replace so a rejected sync leaves `.kenovis/` untouched; `bin.ts`'s `sync` command now accepts `--force` and prints the same error shape as `init`/`add`. 8 new tests (in-memory unit + real-filesystem integration), 75 total in `cli/`, all passing, typecheck clean.
+
+Real upgrade-path smoke test run: `npx kenovis@0.2.0 init` against a scratch git repository (own `README.md`, own `src/`) correctly detected brownfield and left both untouched; `kenovis sync` (local dev build as `--source`) then applied the 0.2.0 → dev-build diff cleanly (`AI/SYSTEM.md`, `init-project.md`, `adopt-project.md` picked up DECISION-018/019 content; `README.md`/`src/` untouched; `CLAUDE.md` unchanged, confirming idempotency) — the documented upgrade path works as described.
+
+The smoke test also found a real, previously-undocumented gap, not a regression from this change: `isKenovisManagedClaudeStub` checks only the file's first line, so a customer who *appends* their own notes below Kenovis's existing stub content (marker line untouched) still loses those notes silently on `sync` — the new guard only catches a `CLAUDE.md` that isn't Kenovis-managed at all, e.g. authored independently before adopting Kenovis. `init`/`add` have carried this exact gap since it was introduced (Learning-006); this round didn't introduce it, but did discover and document it via the smoke test that was this item's own scope. Recorded as `AI/memory/learnings.md` Learning-007; `cli/README.md`'s Upgrading section states the limitation explicitly rather than overstating the guard's coverage. Closing it properly (hash/diff the stub's known content instead of a prefix check, or require customer notes live in a separate file) is a follow-up, not done here — out of this item's scope, which was porting the existing guard pattern to `sync`, not redesigning it.
+
+Dependencies: none remaining. All of Phase 0 item 6 is complete except the deferred version-discovery active check, which Phase 2 → New Capabilities already scopes separately (not blocking here — `cli/README.md`'s "Upgrading" section covers the same discovery gap today at near-zero cost, per that Phase 2 note).
+
+7. DONE (2026-08-06, via /next) — close the Learning-007 follow-up: the CLAUDE.md guard's append-content blind spot.
+
+Founder chose this as the next item once Phase 0 items 1-6 were confirmed complete and Phase 1's own success criteria already validated (no other unscheduled roadmap item existed) — see this session's /next run.
+
+Shipped: `cli/src/domain/installation.ts` gained `hashClaudeMdContent`/`isClaudeMdSafeToOverwrite` and the `CLAUDE_MD_HASH_FILENAME` (`.kenovis/.claude-md.sha256`) sidecar, recorded by every `init`/`add`/`sync` alongside the stub it writes. The guard now compares the on-disk CLAUDE.md against that recorded hash — byte-identical or refuse — instead of only checking the marker line's prefix, so content appended below an otherwise-untouched stub is caught too. An Installation with no recorded hash yet (predates this fix) falls back to the old prefix check for its next transition only. 8 new tests (75 → 83 total in `cli/`), typecheck/build clean, real end-to-end smoke test (`kenovis init` → `sync` → append notes → `sync` refuses → `sync --force` overwrites) confirmed the exact Learning-007 scenario is now caught. Recorded as `AI/memory/learnings.md` Learning-008.
 ---
 Phase 1 — MVP
 
@@ -229,7 +253,9 @@ Become indispensable for early-adopter software development teams.
 ---
 New Capabilities
 
-Paid open-core tier: additional specialized agents, priority support. Lightweight, explicitly opt-in feedback/telemetry loop (no default data collection — see ENGINEERING/SECURITY.md). Richer CLI update ergonomics (diff preview before sync, conflict detection against RULE-INST-01).
+Paid open-core tier: additional specialized agents, priority support. Lightweight, explicitly opt-in feedback/telemetry loop (no default data collection — see ENGINEERING/SECURITY.md). Richer CLI update ergonomics (diff preview before sync, conflict detection against RULE-INST-01, an active version-check — e.g. `kenovis --version`/`kenovis init`/`sync` querying the npm registry to tell an installed customer a newer Framework Release exists, allowed under ENGINEERING/ARCHITECTURE.md's Hard Rules since it only touches the npm registry, not a Kenovis-operated server).
+
+Flagged 2026-08-06, via /analyze on the v0.1.0/v0.2.0 → v0.3.0 upgrade path: deliberately not Phase 0 work. Priority formula score is low today (Pain/Frequency/Business Impact unvalidated against ~1 external team so far; Cost is real — first network dependency in the CLI's core logic, new failure modes to handle offline/registry-down/rate-limits). Phase 0 item 6's `cli/README.md` "Upgrading" section covers the same discovery gap at near-zero cost in the meantime. Revisit once Phase 2 has real Frequency/Pain data to size this against.
 
 Prerequisite (flagged 2026-08-06, via /analyze on `.kenovis/` distribution packaging): before this tier ships, run /architect for an ADR on the actual gating mechanism for premium agent content — a real check (backend + license key) at the moment it's built, not cosmetic obfuscation of the free base tier. The base tier's plain, human/AI-readable markdown distribution is an intentional commitment (DECISION-010 tool-agnosticism, DECISION-013 open-core) and should not be reversed to simulate protection it doesn't provide. Blocks "additional specialized agents" until resolved.
 ---

@@ -3,7 +3,15 @@ import assert from "node:assert/strict";
 import { join } from "node:path";
 import { runSync } from "./sync.js";
 import { InMemoryFileSystem } from "../../infrastructure/filesystem/InMemoryFileSystem.js";
-import { InvalidFrameworkSourceError, NotInstalledError } from "../../domain/installation.js";
+import {
+  CLAUDE_MD_HASH_FILENAME,
+  claudeStubContent,
+  ExistingClaudeMdError,
+  FRAMEWORK_DIR_NAME,
+  hashClaudeMdContent,
+  InvalidFrameworkSourceError,
+  NotInstalledError,
+} from "../../domain/installation.js";
 
 test("runSync refuses to run when .kenovis/ does not exist", async () => {
   const fs = new InMemoryFileSystem();
@@ -81,4 +89,98 @@ test("runSync reports the .kenovis/ path it synced", async () => {
   const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
 
   assert.equal(result.frameworkSyncedTo, join("/repo", ".kenovis"));
+});
+
+test("runSync refuses to overwrite a CLAUDE.md that isn't Kenovis-managed, leaving .kenovis/ untouched", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+  fs.seed(claudeMdPath, "# My own project instructions\n\nDo not touch this.");
+
+  await assert.rejects(
+    () => runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" }),
+    ExistingClaudeMdError,
+  );
+  assert.equal(fs.files.get(claudeMdPath), "# My own project instructions\n\nDo not touch this.");
+  assert.equal(fs.removedTrees.length, 0);
+  assert.equal(fs.copiedTrees.length, 0);
+});
+
+test("runSync --force overwrites a CLAUDE.md that isn't Kenovis-managed", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+  fs.seed(claudeMdPath, "# My own project instructions");
+
+  await runSync(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+    force: true,
+  });
+
+  assert.notEqual(fs.files.get(claudeMdPath), "# My own project instructions");
+});
+
+test("runSync proceeds without --force when the existing CLAUDE.md is already Kenovis-managed", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+  fs.seed(claudeMdPath, claudeStubContent({ pending: false }));
+
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(result.claudeStubWrittenTo, claudeMdPath);
+});
+
+test("runSync records a content hash of the CLAUDE.md stub it writes", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  const hashPath = join("/repo", FRAMEWORK_DIR_NAME, CLAUDE_MD_HASH_FILENAME);
+  const writtenClaudeMd = fs.files.get(join("/repo", "CLAUDE.md"))!;
+  assert.equal(fs.files.get(hashPath), hashClaudeMdContent(writtenClaudeMd));
+});
+
+test("runSync succeeds again on a CLAUDE.md left unchanged since the last sync", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(result.claudeStubWrittenTo, join("/repo", "CLAUDE.md"));
+});
+
+test("runSync refuses content appended below an otherwise-untouched stub, even though the marker line is intact (Learning-007)", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+
+  // First sync establishes the recorded hash for what this CLI actually wrote.
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  const withAppendedNotes = `${fs.files.get(claudeMdPath)}\nMy own notes below the stub.\n`;
+  fs.seed(claudeMdPath, withAppendedNotes);
+
+  await assert.rejects(
+    () => runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" }),
+    ExistingClaudeMdError,
+  );
+  assert.equal(fs.files.get(claudeMdPath), withAppendedNotes);
+});
+
+test("runSync --force overwrites content appended below an otherwise-untouched stub", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+  const withAppendedNotes = `${fs.files.get(claudeMdPath)}\nMy own notes below the stub.\n`;
+  fs.seed(claudeMdPath, withAppendedNotes);
+
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo", force: true });
+
+  assert.notEqual(fs.files.get(claudeMdPath), withAppendedNotes);
 });
