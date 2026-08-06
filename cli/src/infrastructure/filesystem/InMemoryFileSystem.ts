@@ -19,6 +19,14 @@ export class InMemoryFileSystem implements FileSystemPort {
     return this.files.has(targetPath);
   }
 
+  async readFile(targetPath: string): Promise<string> {
+    const contents = this.files.get(targetPath);
+    if (contents === undefined) {
+      throw new Error(`InMemoryFileSystem: no file at ${targetPath}`);
+    }
+    return contents;
+  }
+
   async writeFile(targetPath: string, contents: string): Promise<void> {
     this.files.set(targetPath, contents);
   }

@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.5
+Version: 2.6
 
 Last updated: —
 
@@ -23,6 +23,7 @@ Seven are framework-level and should be carried over:
 - DECISION-012 — Graphify Exception To Tool-Agnosticism.
 - DECISION-014 — Brownfield Adoption Path: adopt-project Command.
 - DECISION-016 — No Framework-Mandated Directory Name For Customer Code (supersedes DECISION-015).
+- DECISION-019 — Collision Guard Against Silent Product-Layer Overwrite In init-project/adopt-project.
 
 Everything else is product-specific and should be recorded as real decisions get made. See AI/commands/init-project.md.
 
@@ -1125,6 +1126,208 @@ Phase 1 (with PRODUCT/ROADMAP.md Phase 0 item 3): CLI `install`/`init` writes th
 Phase 2: this repository migrates its own Framework layer from root into `.kenovis/`, re-pathing its internal cross-references, using the CLI's own sync mechanism on itself — the dogfooding validation that the mechanism works, not just that the documentation describes it.
 
 Phase 3: CLI sync gains diff-preview before applying (already scoped in PRODUCT/ROADMAP.md Phase 2 — Product Market Fit).
+
+---
+
+# DECISION-018
+
+# Auto-Trigger init-project/adopt-project Without A Manual Slash Command
+
+Date:
+
+2026-08-06
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-06
+
+---
+
+## Context
+
+PRODUCT/ROADMAP.md's Phase 0 "Immediate Priority" item 4 (added 2026-08-06, from `/analyze` on install-flow friction) required an ADR before implementation: today `npx kenovis init` scaffolds `.kenovis/` correctly but only prints a suggestion ("Next: run /init-project") — the customer must still manually type the slash command in a separate step, which the founder flagged as backwards for "usable by anyone."
+
+`/analyze` traced the root cause: this repository's own root `CLAUDE.md` carries a "Session Initialization Protocol" precondition — placeholder product layer → stop → run `/init-project` — that makes this repository self-trigger, without a manual command, because Claude Code autoloads `CLAUDE.md` every session (DECISION-010). But `cli/scripts/bundle-framework-assets.mjs` only bundles `AI/` (minus `memory/`) into the package a customer installs — it never bundles this repository's own root `CLAUDE.md`. The stub `CLAUDE.md` a customer's install actually gets (`claudeStubContent()`, `cli/src/domain/installation.ts`) is minimal and passive: it only points at `.kenovis/AI/SYSTEM.md`, which carries no equivalent trigger.
+
+Hard constraints going in: must not shell out to any AI CLI binary at install time — DECISION-010 explicitly commits the AI-OS to remaining "plain, tool-agnostic markdown, readable and followable by any AI tool," and `cli/assets/framework/README.md` → "Tool compatibility" already makes that same promise to customers. `init-project.md` and `adopt-project.md` are conversational — both refuse to continue without human answers ("Do not continue without answers," "Never invent a company") — so no non-interactive process can complete them on a customer's behalf. Must also fold in the rest of Phase 0 item 4's scope: a new `kenovis add` command (adopt-project's counterpart to `init`), cross-detection errors (`init` on a detected-brownfield target refuses and points at `add`; `add` on a detected-greenfield target refuses and points at `init`), and a bare `npx kenovis` (no subcommand) that autodetects and dispatches.
+
+---
+
+## Options Considered
+
+### Option A
+
+Shell out to an AI CLI binary (`claude -p "/init-project"` or similar) at the end of `kenovis init`/`kenovis add`, if found on `PATH`.
+
+Advantages: closest to literal "auto-runs the command," no changes needed to `AI/commands/*.md` or `AI/SYSTEM.md`.
+
+Disadvantages: directly breaks DECISION-010 — couples the CLI to one AI tool's binary being installed and authenticated on the customer's machine, with no fallback for any other tool. `init-project`/`adopt-project` are conversational (ask the human, refuse to invent answers); a headless, non-interactive invocation either hangs waiting for input it can't receive, or is forced to invent answers, which both commands' Rules explicitly forbid. Silent dependency on an external, unversioned runtime the CLI does not control.
+
+---
+
+### Option B
+
+Marker file only: write `.kenovis/.setup-pending` (contents: `init-project` or `adopt-project`) at install time. Add an instruction to `AI/SYSTEM.md` → "Context Loading Rules" telling any agent to check for it and act on it. Leave the `CLAUDE.md` stub unchanged (passive, points at `AI/SYSTEM.md`).
+
+Advantages: keeps the stub simple; the trigger logic lives in one tool-agnostic place (`AI/SYSTEM.md`), consumable identically regardless of which AI tool eventually reads it.
+
+Disadvantages: `AI/SYSTEM.md` is not itself autoloaded by anything — DECISION-010 already established that only root `CLAUDE.md` gets automatic loading (Claude Code) and every other tool must be manually pointed at `AI/SYSTEM.md`. A marker only `AI/SYSTEM.md` knows to check is invisible until an agent already decided, on its own, to open that file — the exact manual step this decision exists to remove.
+
+---
+
+### Option C
+
+Combine a marker file with an imperative directive in the `CLAUDE.md` stub itself. `claudeStubContent()` (`cli/src/domain/installation.ts`) becomes parametrized by `InstallationKind`: while `.kenovis/.setup-pending` exists, the stub's first instruction is "Before doing anything else this session, run `AI/commands/init-project.md`" (or `adopt-project.md` for brownfield) — with the detection result the CLI already computed at install time (`detectInstallationKind`) baked in, so the agent never has to re-detect. The marker file itself carries the same information in structured form, so `AI/SYSTEM.md` → "Context Loading Rules" can also point at it for any tool that loads `AI/SYSTEM.md` manually (DECISION-010's existing path for non-Claude-Code tools). `init-project.md` Step 12 and `adopt-project.md` Step 13 ("Record the Initialization/Adoption") gain a closing sub-step: delete `.kenovis/.setup-pending` and rewrite the `CLAUDE.md` stub back to its passive, steady-state form.
+
+Advantages: uses the one channel DECISION-010 already guarantees autoloads (root `CLAUDE.md`, for the primary tool) instead of inventing a new one; degrades gracefully for other tools via the existing manual-`AI/SYSTEM.md` path, unchanged from today; self-clearing (survives an interrupted first session — the marker persists until the command's own completion criteria remove it, so a cut-short session correctly re-triggers next time instead of silently going stale); no new runtime dependency, no code execution, filesystem-only (`ENGINEERING/ARCHITECTURE.md` Hard Rules).
+
+Disadvantages: `claudeStubContent()` and its call sites (`init.ts`, the new `add.ts`) need a second parameter (`InstallationKind`, pending/steady-state) and a second write path (the completion-time rewrite), a little more surface than Option B alone. Still no guaranteed autoload for tools other than Claude Code — that gap is pre-existing (DECISION-010's already-accepted negative consequence), not created or worsened by this decision.
+
+---
+
+## Decision
+
+Adopt Option C, plus the rest of Phase 0 item 4's scope:
+
+- `claudeStubContent()` takes the `InstallationKind` (`greenfield` | `brownfield`) and a `pending: boolean` flag. When `pending` is true, the stub opens with an imperative first-session directive naming the exact command to run (`AI/commands/init-project.md` or `AI/commands/adopt-project.md`) before anything else. When `pending` is false (steady state, post-completion), the stub is exactly today's passive text.
+- `kenovis init`/`kenovis add` write `.kenovis/.setup-pending` alongside the stub, containing the resolved command name.
+- `AI/commands/init-project.md` Step 12 and `AI/commands/adopt-project.md` Step 13 gain a closing sub-step: delete `.kenovis/.setup-pending` and rewrite `CLAUDE.md` via `claudeStubContent()` with `pending: false`.
+- `AI/SYSTEM.md` → "Context Loading Rules" gains one line: if `.kenovis/.setup-pending` exists, run the command it names before any other action, regardless of how the session was entered.
+- New `kenovis add <targetDir>` command: same install engine as `init` (`runInit`, `cli/src/application/commands/init.ts` — reused, not duplicated, since the only difference is which command the stub/marker point at), wired to the `adopt-project` outcome.
+- Cross-detection becomes a hard refusal, not just a printed suggestion: `init` on a target `detectInstallationKind` reports as `brownfield` throws a new `BrownfieldDetectedError` (nothing is written) unless `--force` is passed; `add` on a target reported `greenfield` throws a new `GreenfieldDetectedError` symmetrically. Both errors name the correct command to run instead, matching the existing `AlreadyInstalledError`/`NotInstalledError` pattern in `cli/src/domain/installation.ts`.
+- Bare `npx kenovis` (no subcommand) runs `detectInstallationKind` against the target directory itself and dispatches internally to the `init` or `add` path — it never throws the cross-detection error, since it is the one caller that decides for itself.
+
+---
+
+## Reason
+
+Option A was rejected outright: it is the one option that actually contradicts an existing Accepted decision (DECISION-010) rather than trading off against it, and it cannot honor `init-project.md`/`adopt-project.md`'s own Rules ("Never invent a company," "Do not continue without answers") in a non-interactive invocation. Between B and C, C was chosen because DECISION-010 already draws the exact line this decision needs to reuse: `CLAUDE.md` is the one file the primary tool autoloads, everything else is manual-load. A trigger that only lives in the manual-load file (`AI/SYSTEM.md`, Option B) does not remove the manual step for Claude Code, the tool that matters for the customer segment PRODUCT/ROADMAP.md Phase 1 targets today (COMPANY_OS.md → Initial Market Strategy). Paying the small extra surface of a parametrized stub plus a marker (Option C) is justified because it actually achieves the founder's ask for the tool that is used by essentially all of today's target customers, while leaving the non-Claude-Code path exactly as capable as DECISION-010 already left it.
+
+---
+
+## Consequences
+
+Positive:
+
+- `npx kenovis init`/`npx kenovis add` in Claude Code go from "scaffold + printed suggestion the human must act on" to "scaffold + the very next agent turn runs the correct command" — no typed slash command required.
+- Self-clearing via the marker: an interrupted first session does not leave the repository in a state that silently skips initialization/adoption forever, and does not keep re-prompting after real completion either.
+- Reuses `detectInstallationKind` and the existing `AlreadyInstalledError`/`NotInstalledError` error-shape convention rather than inventing new patterns — consistent with `cli/src/domain/installation.ts` as it stands today.
+- Does not weaken DECISION-010: no AI-tool-specific syntax enters `AI/`, `CLAUDE.md` remains the only tool-specific file, exactly as that decision already scoped it.
+
+Negative:
+
+- `init` now refuses to install on a detected-brownfield target without `--force` — a breaking change from today's always-install-plus-suggest behavior. Anyone currently scripting `kenovis init` against a non-empty directory on purpose needs `--force` after this ships; `CHANGELOG.md` must call this out explicitly as breaking, not additive.
+- Two additional errors (`BrownfieldDetectedError`, `GreenfieldDetectedError`) and a second stub-write path (completion-time rewrite) add surface to `cli/src/domain/installation.ts` and to `init-project.md`/`adopt-project.md`'s own completion steps — small, but real maintenance cost.
+- Still does not solve auto-trigger for AI tools other than Claude Code — unchanged from DECISION-010's already-accepted gap, but worth restating so it isn't mistaken for newly solved here.
+- Needs a real end-to-end smoke test inside actual Claude Code (not just unit tests against `InMemoryFileSystem`) before publish, since the mechanism's entire value depends on Claude Code's autoload behavior working exactly as assumed — the same discipline Learning-004 already established for `--source`.
+
+---
+
+## Implementation Strategy
+
+Phase 1: `cli/src/domain/installation.ts` — parametrize `claudeStubContent()`, add `.kenovis/.setup-pending` read/write helpers, add `BrownfieldDetectedError`/`GreenfieldDetectedError`. `cli/src/application/commands/init.ts` — apply the cross-detection refusal and the pending-marker write; extract the shared install engine so `add.ts` can reuse it. `cli/src/application/commands/add.ts` — new, thin wrapper around the shared engine pointed at `adopt-project`. `cli/src/cli/bin.ts` — wire the `add` subcommand and the bare (no-subcommand) autodetect-and-dispatch path.
+
+Phase 2: `AI/commands/init-project.md` Step 12 and `AI/commands/adopt-project.md` Step 13 — add the marker-deletion and stub-rewrite closing sub-step. `AI/SYSTEM.md` → "Context Loading Rules" — add the one-line marker check. These are framework-layer files; per both commands' own Rules ("Never modify anything under AI/agents/... or AI/commands/ during initialization/adoption" is about *not touching them mid-run* — this is a separate, deliberate framework change, made and reasoned here, not silently during a run).
+
+Phase 3: manual end-to-end smoke test in real Claude Code — `npx kenovis init` against an empty scratch directory, confirm the very next agent turn runs `/init-project` unprompted; `npx kenovis add` against a seeded scratch directory, confirm `/adopt-project` runs unprompted; confirm an interrupted session followed by a fresh session still triggers; confirm post-completion the stub reverts to passive and does not re-trigger. `CHANGELOG.md` documents the `init`-on-brownfield breaking change.
+
+---
+
+# DECISION-019
+
+# Collision Guard Against Silent Product-Layer Overwrite In init-project/adopt-project
+
+Date:
+
+2026-08-06
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-06
+
+---
+
+## Context
+
+PRODUCT/ROADMAP.md's Phase 0 "Immediate Priority" item 5 (flagged 2026-08-06, from `/analyze` on file/directory name collisions between Kenovis and a target repository) found a gap: `cli/src/domain/installation.ts` guards exactly one file it writes — root `CLAUDE.md` (`ExistingClaudeMdError`, `isKenovisManagedClaudeStub`) — against silently discarding a customer's own pre-existing content there (AI/memory/learnings.md Learning-006). No equivalent guard exists for the Product-layer files `/init-project` and `/adopt-project` write (`COMPANY_OS.md`, `DECISIONS.md`, `DOMAIN/*.md`, `PRODUCT/*.md`, `ENGINEERING/*.md`, `AUTOMATIONS/*.md`): protection was textual only ("How To Recognise The Product Layer" — grep the `PROJECT-SPECIFIC` marker), never an enforced gate before writing. A target repository with its own unrelated file at one of those exact paths could be silently overwritten while the agent followed the command's own instructions correctly.
+
+---
+
+## Options Considered
+
+### Option A
+
+Rename the files Kenovis injects, so a collision at a customer's exact path becomes structurally impossible.
+
+Advantages:
+
+- Removes the collision class entirely rather than gating it.
+
+Disadvantages:
+
+- Infeasible for `CLAUDE.md` — Claude Code only autoloads that literal filename at repo root (DECISION-010).
+- For the rest, requires a persisted name-mapping manifest nothing in the system has today, plus updating the 23+ framework files that already reference these paths by hardcoded name — disproportionate to the problem.
+
+---
+
+### Option B
+
+Add a `Collision Guard` section to both commands (placed after their existing "How To Recognise..." section), referenced by every Step that rewrites a Product-layer file: before writing, check the file's first line for the `PROJECT-SPECIFIC` marker; if absent, stop and ask the human to confirm overwrite or move the file aside first. Mirrors `ExistingClaudeMdError`'s resolution, expressed as command prose instead of code since these are conversational commands with no CLI code path of their own.
+
+Advantages:
+
+- Matches the existing, already-proven pattern (`ExistingClaudeMdError`) instead of inventing a new resolution shape.
+- A single shared section referenced seven-plus times per command avoids repeating the same paragraph in every Step (`AI/policies/architecture.md` → Single Responsibility / Reuse, the same reasoning DECISION-016 already applied to collapse a different redundancy).
+- No ADR-level architecture change — no code, no new CLI mechanism, purely a stronger instruction gate on an already-conversational, human-confirms process.
+
+Disadvantages:
+
+- Enforcement depends on the agent actually following the instruction — unlike `ExistingClaudeMdError`, there is no code path to make the check unconditional. Acceptable because `/init-project` and `/adopt-project` are already fully conversational and human-gated end to end (both commands' Rules already say "do not continue without answers").
+
+---
+
+## Decision
+
+Adopt Option B.
+
+- `AI/commands/init-project.md` (1.5 → 1.6): new "Collision Guard" section; referenced by Steps 2-7 (every step rewriting a Product-layer file); Completion Criteria gained "No unmarked pre-existing file was overwritten without the human confirming."
+- `AI/commands/adopt-project.md` (1.4 → 1.5): same shape — new "Collision Guard" section referenced by Steps 3-8; same Completion Criteria addition.
+- `PRODUCT/ROADMAP.md` (1.10 → 1.11): Phase 0 item 5 marked DONE.
+
+---
+
+## Reason
+
+`AI/policies/architecture.md`'s Single Responsibility / Reuse principles argue against duplicating the same check seven times per command when one referenced section does the job — the same reasoning DECISION-016 already used to collapse a different redundancy in this framework. Option A was rejected because it solves a smaller problem (Kenovis's own path names) at a much larger cost (a mapping manifest and 23+ file updates) than the actual risk (an unmarked file silently overwritten) justifies.
+
+---
+
+## Consequences
+
+Positive:
+
+- `/init-project` and `/adopt-project` now carry the same "don't discard what might not be ours" discipline `ExistingClaudeMdError` already gives `CLAUDE.md` installs, closing the gap Learning-006 identified for the CLI's own code.
+- The guard is documented once and referenced, not repeated — consistent with how the framework already resolved an analogous redundancy in DECISION-016.
+
+Negative:
+
+- The guard's enforcement is instruction-only, not code-enforced — an agent that skips reading the "Collision Guard" section could still overwrite a file. No CLI code path exists for these two commands to make this unconditional; the same conversational, human-gated nature that makes the commands safe by design (they already refuse to continue without human answers) is also why this can't be a hard code guarantee today.
 
 ---
 
