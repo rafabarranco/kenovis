@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { join } from "node:path";
 import { runInit } from "./init.js";
 import { InMemoryFileSystem } from "../../infrastructure/filesystem/InMemoryFileSystem.js";
-import { AlreadyInstalledError } from "../../domain/installation.js";
+import { AlreadyInstalledError, InvalidFrameworkSourceError } from "../../domain/installation.js";
 
 test("runInit copies the framework source into <target>/.kenovis", async () => {
   const fs = new InMemoryFileSystem();
@@ -106,6 +106,20 @@ test("runInit detects brownfield when the target already has real files, citing 
 
   assert.equal(result.detectedKind, "brownfield");
   assert.deepEqual(result.detectionEvidence, ["package.json", "src"]);
+});
+
+test("runInit refuses a --source directory mixed with Product-layer content, without copying anything", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed("/repo-checkout/AI/SYSTEM.md", "# System");
+  fs.seed("/repo-checkout/README.md", "# Framework explanation");
+  fs.seed("/repo-checkout/COMPANY_OS.md", "# Real company context — never meant to leave this repo");
+  fs.seed("/repo-checkout/DECISIONS.md", "# Real decisions");
+
+  await assert.rejects(
+    () => runInit(fs, { frameworkSourceDir: "/repo-checkout", targetDir: "/repo" }),
+    InvalidFrameworkSourceError,
+  );
+  assert.equal(fs.copiedTrees.length, 0);
 });
 
 test("runInit does not count an existing target README.md as brownfield evidence", async () => {
