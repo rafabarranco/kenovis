@@ -1,6 +1,6 @@
 # Git Policy
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -100,6 +100,12 @@ hotfix/login-error
 refactor/<module>-<what-changes>
 
 docs/api-reference
+
+release/<version>
+
+release/v0.2.0
+
+Used for release-prep work (version bumps, CHANGELOG cuts) — same flow as `feature/XXXX` (branch from `development`, PR back into it), just a naming specialization so a release-prep branch reads as what it is instead of as a feature.
 
 Avoid:
 
