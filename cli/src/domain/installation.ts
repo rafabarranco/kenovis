@@ -7,10 +7,13 @@
  * so they are enforced in code, not just described in docs.
  */
 
+import { createHash } from "node:crypto";
+
 export const FRAMEWORK_DIR_NAME = ".kenovis";
 export const CLAUDE_STUB_FILENAME = "CLAUDE.md";
 export const TARGET_README_FILENAME = "README.md";
 export const SETUP_PENDING_FILENAME = ".setup-pending";
+export const CLAUDE_MD_HASH_FILENAME = ".claude-md.sha256";
 
 /**
  * Entries that do not count as evidence of a real, pre-existing implementation:
@@ -120,16 +123,55 @@ export function isKenovisManagedClaudeStub(existingClaudeMdContent: string): boo
 }
 
 /**
- * Thrown when a target's existing root CLAUDE.md was not written by this
- * CLI (per `isKenovisManagedClaudeStub`). Install must not silently discard
- * a customer's own CLAUDE.md content — bypassable with --force, same escape
- * hatch as AlreadyInstalledError/BrownfieldDetectedError/GreenfieldDetectedError.
+ * Hex-encoded SHA-256 of a CLAUDE.md stub's exact content, recorded to
+ * `${FRAMEWORK_DIR_NAME}/${CLAUDE_MD_HASH_FILENAME}` every time this CLI
+ * writes the stub. Comparing against it on the next run answers "is this
+ * file byte-for-byte what we last wrote" — a stricter question than
+ * `isKenovisManagedClaudeStub`'s "does it start with our marker line", which
+ * cannot see content appended below an otherwise-untouched stub. See
+ * AI/memory/learnings.md Learning-007.
+ */
+export function hashClaudeMdContent(content: string): string {
+  return createHash("sha256").update(content, "utf8").digest("hex");
+}
+
+/**
+ * Whether an existing root CLAUDE.md is safe to overwrite without discarding
+ * something the customer wrote.
+ *
+ * `recordedHash` is the content of this Installation's
+ * `${CLAUDE_MD_HASH_FILENAME}` sidecar, if any: present, it means a prior
+ * install/sync by this same Installation recorded exactly what it wrote, so
+ * an exact hash match is both necessary and sufficient — it also correctly
+ * catches content appended below the marker line, which a prefix check
+ * cannot. `null` means no sidecar was ever recorded (an Installation created
+ * before this check existed, or a CLAUDE.md that predates Kenovis entirely)
+ * — falls back to the older, weaker `isKenovisManagedClaudeStub` prefix
+ * check so upgrading from a pre-fix Installation does not spuriously refuse.
+ */
+export function isClaudeMdSafeToOverwrite(
+  existingClaudeMdContent: string,
+  recordedHash: string | null,
+): boolean {
+  if (recordedHash !== null) {
+    return hashClaudeMdContent(existingClaudeMdContent) === recordedHash;
+  }
+  return isKenovisManagedClaudeStub(existingClaudeMdContent);
+}
+
+/**
+ * Thrown when a target's existing root CLAUDE.md is not safe to overwrite
+ * (per `isClaudeMdSafeToOverwrite`) — either it was never written by this
+ * CLI, or its content has diverged from what this Installation last wrote
+ * (e.g. a customer's own notes appended below the stub). Install/sync must
+ * not silently discard it — bypassable with --force, same escape hatch as
+ * AlreadyInstalledError/BrownfieldDetectedError/GreenfieldDetectedError.
  */
 export class ExistingClaudeMdError extends Error {
   constructor(public readonly claudeMdPath: string) {
     super(
-      `${claudeMdPath} already exists and doesn't look like a Kenovis-managed stub — ` +
-        `refusing to overwrite it. Move your existing CLAUDE.md aside first, or ` +
+      `${claudeMdPath} already exists and doesn't look like an untouched Kenovis-managed ` +
+        `stub — refusing to overwrite it. Move your existing CLAUDE.md aside first, or ` +
         `re-run with --force to overwrite it anyway.`,
     );
     this.name = "ExistingClaudeMdError";

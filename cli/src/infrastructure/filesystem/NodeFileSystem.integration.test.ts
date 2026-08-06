@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { NodeFileSystem } from "./NodeFileSystem.js";
 import { runInit } from "../../application/commands/init.js";
+import { runSync } from "../../application/commands/sync.js";
 import { ExistingClaudeMdError } from "../../domain/installation.js";
 
 async function withTempDirs(
@@ -144,5 +145,70 @@ test("runInit --force against a real filesystem mirror-replaces .kenovis/, remov
     await assert.rejects(() => access(join(targetDir, ".kenovis", "AI", "old-agent.md")));
     const systemMd = await readFile(join(targetDir, ".kenovis", "AI", "SYSTEM.md"), "utf8");
     assert.equal(systemMd, "# System v2\n");
+  });
+});
+
+test("runSync against a real filesystem refuses to overwrite a CLAUDE.md the customer edited by hand, leaving .kenovis/ untouched", async () => {
+  await withTempDirs(async (sourceDir, targetDir) => {
+    await mkdir(join(sourceDir, "AI"), { recursive: true });
+    await writeFile(join(sourceDir, "AI", "SYSTEM.md"), "# System\n");
+    await writeFile(join(sourceDir, "README.md"), "# Framework explanation\n");
+
+    const fs = new NodeFileSystem();
+    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir, invokedAs: "init" });
+
+    await writeFile(join(targetDir, "CLAUDE.md"), "# My Project\n\nMy own added notes.\n");
+
+    await assert.rejects(
+      () => runSync(fs, { frameworkSourceDir: sourceDir, targetDir }),
+      ExistingClaudeMdError,
+    );
+
+    const claudeMd = await readFile(join(targetDir, "CLAUDE.md"), "utf8");
+    assert.equal(claudeMd, "# My Project\n\nMy own added notes.\n");
+  });
+});
+
+test("runSync against a real filesystem overwrites a customer-edited CLAUDE.md when --force is passed", async () => {
+  await withTempDirs(async (sourceDir, targetDir) => {
+    await mkdir(join(sourceDir, "AI"), { recursive: true });
+    await writeFile(join(sourceDir, "AI", "SYSTEM.md"), "# System v2\n");
+    await writeFile(join(sourceDir, "README.md"), "# Framework explanation v2\n");
+
+    const fs = new NodeFileSystem();
+    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir, invokedAs: "init" });
+    await writeFile(join(targetDir, "CLAUDE.md"), "# My own hand-edited stub\n");
+
+    await runSync(fs, { frameworkSourceDir: sourceDir, targetDir, force: true });
+
+    const claudeMd = await readFile(join(targetDir, "CLAUDE.md"), "utf8");
+    assert.match(claudeMd, /Kenovis AI-OS/);
+  });
+});
+
+test("runSync against a real filesystem refuses notes appended below an otherwise-untouched stub (Learning-007)", async () => {
+  await withTempDirs(async (sourceDir, targetDir) => {
+    await mkdir(join(sourceDir, "AI"), { recursive: true });
+    await writeFile(join(sourceDir, "AI", "SYSTEM.md"), "# System\n");
+    await writeFile(join(sourceDir, "README.md"), "# Framework explanation\n");
+
+    const fs = new NodeFileSystem();
+    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir, invokedAs: "init" });
+    // First sync establishes the recorded hash of what this CLI actually wrote.
+    await runSync(fs, { frameworkSourceDir: sourceDir, targetDir });
+
+    const syncedClaudeMd = await readFile(join(targetDir, "CLAUDE.md"), "utf8");
+    await writeFile(
+      join(targetDir, "CLAUDE.md"),
+      `${syncedClaudeMd}\nMy own notes appended below the stub.\n`,
+    );
+
+    await assert.rejects(
+      () => runSync(fs, { frameworkSourceDir: sourceDir, targetDir }),
+      ExistingClaudeMdError,
+    );
+
+    const claudeMd = await readFile(join(targetDir, "CLAUDE.md"), "utf8");
+    assert.match(claudeMd, /My own notes appended below the stub\./);
   });
 });

@@ -61,7 +61,7 @@ function printUsage(): void {
   console.log(`kenovis <targetDir> [--source <frameworkSourceDir>] [--force]
 kenovis init <targetDir> [--source <frameworkSourceDir>] [--force]
 kenovis add <targetDir> [--source <frameworkSourceDir>] [--force]
-kenovis sync <targetDir> [--source <frameworkSourceDir>]
+kenovis sync <targetDir> [--source <frameworkSourceDir>] [--force]
 
 The bare form (no subcommand) detects whether <targetDir> already holds a
 real implementation and dispatches to init or add accordingly — it never
@@ -90,7 +90,9 @@ from an older Framework Release behind.
 sync updates an existing <targetDir>/.kenovis/ to a newer Framework Release
 in place. Only .kenovis/ and the CLAUDE.md stub are touched — Product-layer
 files and your own code are never read or written. Review the change with
-\`git diff\` before committing (RULE-INST-02).
+\`git diff\` before committing (RULE-INST-02). If a CLAUDE.md already exists
+at <targetDir> and wasn't written by this CLI, sync refuses to overwrite it
+unless --force is passed, same as init/add.
 
 --source defaults to this package's own bundled Framework layer. Pass it
 explicitly to install or sync a different or custom Framework layer instead.
@@ -222,6 +224,7 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
     const result = await runSync(fs, {
       targetDir: resolve(args.targetDir),
       frameworkSourceDir,
+      force: args.force,
     });
 
     console.log(`Framework layer synced to ${result.frameworkSyncedTo}`);
@@ -229,7 +232,11 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
     console.log("\nReview the change with `git diff` before committing.");
     return 0;
   } catch (error) {
-    if (error instanceof NotInstalledError || error instanceof InvalidFrameworkSourceError) {
+    if (
+      error instanceof NotInstalledError ||
+      error instanceof InvalidFrameworkSourceError ||
+      error instanceof ExistingClaudeMdError
+    ) {
       console.error(`Error: ${error.message}`);
       return 1;
     }
