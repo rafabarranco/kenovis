@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.10
+Version: 1.13
 ---
 Purpose
 
@@ -138,7 +138,31 @@ DONE (2026-08-05) — first publish. `kenovis@0.1.0` is live on the npm registry
 
 DONE (2026-08-06) — second publish. `kenovis@0.2.0` closes the `--source` footgun found during Learning-004 smoke testing (`init`/`sync` now validate `--source` before touching anything) and documents `npx kenovis init`/`sync` in the root README's "Getting started" section. `CHANGELOG.md` cuts the framework layer's first versioned release, `[0.2.0]`, aligned with the npm package version rather than a separate number — the framework ships embedded inside the `kenovis` package, not through an independent channel.
 
+DONE (2026-08-06) — third publish. `kenovis@0.3.0` ships DECISION-018 (`kenovis add`, auto-trigger `init-project`/`adopt-project`, cross-detection refusal, bare autodetect dispatch) and DECISION-019 (Collision Guard against silent Product-layer overwrite) together — both had landed on `development` since 0.2.0 but not yet been promoted through `preproduction`/`main` or tagged. `CHANGELOG.md` cuts `[0.3.0]`. Also the first release validated end to end by a real external team (see Phase 1 → "Real External Validation" below), not just this repository's own smoke tests.
+
 Dependencies: none remaining. All three Phase 0 "Immediate Priority" items are complete.
+
+4. DONE (2026-08-06) — Architecture decision and CLI implementation, both shipped via /next. (added 2026-08-06, from /analyze on install-flow friction, founder-flagged highest priority — ahead of Phase 1) — Auto-trigger `/init-project` / `/adopt-project` without a manual slash-command step, plus a new `kenovis add` command, cross-detection errors, and a bare `kenovis` autodetect dispatch.
+
+Ran /architect. Decided (DECISION-018): the `CLAUDE.md` stub the CLI writes becomes parametrized by installation kind and a pending/steady-state flag — while a new `.kenovis/.setup-pending` marker file exists, the stub opens with an imperative directive to run `/init-project` or `/adopt-project` before anything else in the session; `init-project.md`/`adopt-project.md` delete the marker and revert the stub on their own completion. No AI-tool binary is ever shelled out to (would have broken DECISION-010's tool-agnosticism). `kenovis init` now refuses (not just suggests) on a detected-brownfield target without `--force`, pointing at the new `kenovis add`; `add` refuses symmetrically on greenfield; bare `kenovis` autodetects and dispatches. See DECISION-018 for the full options analysis and `ENGINEERING/ARCHITECTURE.md` → Hard Rules for the resulting enforceable rule.
+
+Founder-flagged blocker: `npx kenovis init` today scaffolds `.kenovis/` correctly but only prints a suggestion ("Next: run /init-project") — the customer must still manually type the slash command in a separate step. Root cause found by /analyze: this repository's own root `CLAUDE.md` carries a "Session Initialization Protocol" precondition (placeholder product layer → stop → run `/init-project`) that makes this repository self-trigger, tool-agnostically, on any AI agent's first session — but `cli/scripts/bundle-framework-assets.mjs` only bundles `AI/` (minus `memory/`), never this repository's own root `CLAUDE.md`, so the customer's installed `AI/SYSTEM.md` never carries that trigger. Explicitly rejected as a fix: shelling out to a `claude` binary at install time — breaks DECISION-010 tool-agnosticism (this framework is distributed as plain markdown any AI tool can read, per `cli/assets/framework/README.md` → "Tool compatibility"), and both commands are conversational (they ask the human, refuse to invent answers) so no script can execute them without an LLM in the loop anyway.
+
+Target design (needs an ADR via /architect before implementation, same pattern as DECISION-016/017): (a) the `CLAUDE.md` stub `kenovis init`/`kenovis add` writes carries an imperative first-session directive — run init-project or adopt-project now, with the greenfield/brownfield result the CLI already computed (`detectInstallationKind`, `cli/src/domain/installation.ts`) embedded, so no agent re-detection or manual command is needed; (b) new `kenovis add` command, same install engine as `init`, wired to adopt-project instead; (c) cross-detection errors — `init` on a detected-brownfield target refuses to install and points at `kenovis add`; `add` on a detected-greenfield target refuses and points at `kenovis init`; both bypassable with `--force`; (d) bare `npx kenovis` (no subcommand) detects the target directory itself and dispatches to `init` or `add` internally — never errors, since it chooses.
+
+Open risk to resolve in the ADR: `init` refusing to install on brownfield without `--force` is a breaking change from today's always-install-plus-suggest behavior. Resolved: shipped as a documented breaking change in `CHANGELOG.md`'s `[Unreleased]` section, not silently.
+
+CLI implementation shipped: `cli/src/domain/installation.ts` gained `BrownfieldDetectedError`/`GreenfieldDetectedError`, `SETUP_PENDING_FILENAME`, `setupPendingContent`, and `claudeStubContent` became a `{ pending, kind }`-parametrized state machine. `cli/src/application/commands/init.ts` gained `invokedAs: "init" | "add"` and the cross-detection refusal; `add.ts` (new) is a thin `runInit` wrapper. `cli/src/cli/bin.ts` gained the `add` subcommand and a bare-invocation autodetect dispatch. `AI/commands/init-project.md` Step 12 and `adopt-project.md` Step 13 now delete `.kenovis/.setup-pending` and revert the stub on completion; `AI/SYSTEM.md` → "Context Loading Rules" checks for the marker. 25 new/updated tests (58 total in `cli/`), manually smoke-tested end to end (greenfield/brownfield `init`, `add`, `--force` bypass, bare dispatch). Smoke testing itself found and fixed a footgun — an unrecognized flag like `--help` fell through to the bare autodetect path and ran a real install against cwd; `main()` now checks `--help`/`-h` first. Recorded as `AI/memory/learnings.md` Learning-005.
+
+5. DONE (2026-08-06, via /next) — Guard Product-layer files against silent overwrite during /init-project and /adopt-project, mirroring the ExistingClaudeMdError pattern.
+
+Gap found: `CLAUDE.md` is the only file Kenovis writes that has a code-level collision guard (`isKenovisManagedClaudeStub`/`ExistingClaudeMdError`, `cli/src/domain/installation.ts`). The Product-layer files `/init-project` and `/adopt-project` write (`COMPANY_OS.md`, `DECISIONS.md`, `DOMAIN/DOMAIN_MODEL.md`, `DOMAIN/BUSINESS_RULES.md`, `PRODUCT/*.md`, `ENGINEERING/*.md`, `AUTOMATIONS/*.md`) have no equivalent guard — protection is textual only ("How To Recognise The Product Layer": grep the `PROJECT-SPECIFIC` marker), never enforced as a gate before writing. If a target repository already has its own file at one of those exact paths, unrelated to Kenovis, the agent can silently overwrite it while following the command's own instructions.
+
+A rename-the-injected-file approach was considered and rejected: infeasible for `CLAUDE.md` (Claude Code only autoloads that literal filename at repo root — DECISION-010), and for the rest would require a persisted name-mapping manifest that no part of the system has today, plus updating the 23 framework files that reference these paths by hardcoded name — disproportionate to the problem.
+
+Target design (no ADR needed — a command-instruction change, not an architecture decision): each Step in `init-project.md`/`adopt-project.md` that rewrites a Product-layer file first checks whether that file already exists without the `PROJECT-SPECIFIC` marker. If so, stop and ask the human to confirm before overwriting (or move it aside) — the same resolution `ExistingClaudeMdError` already gives for `CLAUDE.md`, applied as an explicit gate instead of an informational aside.
+
+Shipped: `AI/commands/init-project.md` (1.5 → 1.6) and `AI/commands/adopt-project.md` (1.4 → 1.5) each gained a "Collision Guard" section (placed after "How To Recognise..."), referenced by every Step that rewrites a Product-layer file (init-project.md Steps 2-7, adopt-project.md Steps 3-8) instead of repeating the full check seven times per command. Both commands' Completion Criteria gained "No unmarked pre-existing file was overwritten without the human confirming." See DECISION-019.
 ---
 Phase 1 — MVP
 
@@ -154,7 +178,11 @@ Engineering Validation (2026-08-05, via /next)
 
 Smoke-tested end to end against a scratch external-like repository (own README.md, own `src/`): `npx kenovis@0.1.0 init` correctly left the existing README.md and code untouched, wrote `.kenovis/` + `CLAUDE.md` stub, and correctly detected the repository as brownfield (cited `src/` as evidence, suggested `/adopt-project`). `npx kenovis sync` (no `--source`, the real customer path — pulls the published bundle) produced an empty diff on an unchanged version, confirming idempotent mirror-replace with no spurious noise. See AI/memory/learnings.md Learning-004 for a related `--source` footgun found while testing (not customer-facing — only affects the local-dev `--source` escape hatch, not default usage).
 
-This validates the CLI Core Modules below work as documented. Still open for full Success Criteria: a real external team (not this smoke test) completing /init-project and shipping a feature via /feature without help.
+This validates the CLI Core Modules below work as documented. Full Success Criteria closed below.
+---
+Real External Validation (2026-08-06)
+
+An external team (identity not disclosed) completed `/init-project` unassisted and shipped a real feature through the `/feature` workflow the same day, with no help from Kenovis. Nothing noteworthy to record as a learning this round — no framework gap surfaced. This satisfies Phase 0's own Success Criteria above and Phase 1's Objective/Success Criteria below: the first real (non-smoke-test) end-to-end validation of the install → init-project → feature workflow chain.
 ---
 MVP Core Modules
 

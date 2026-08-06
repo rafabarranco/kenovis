@@ -1,15 +1,23 @@
 import { resolve, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { runInit } from "../application/commands/init.js";
+import { runInit, type InitResult } from "../application/commands/init.js";
+import { runAdd } from "../application/commands/add.js";
 import { runSync } from "../application/commands/sync.js";
 import { NodeFileSystem } from "../infrastructure/filesystem/NodeFileSystem.js";
 import {
   AlreadyInstalledError,
+  BrownfieldDetectedError,
+  detectInstallationKind,
+  ExistingClaudeMdError,
+  GreenfieldDetectedError,
   InvalidFrameworkSourceError,
   NotInstalledError,
 } from "../domain/installation.js";
 
+const KNOWN_COMMANDS = new Set(["init", "add", "sync"]);
+
 export interface ParsedArgs {
+  /** "" means no recognized subcommand — dispatched via autodetection. */
   command: string;
   targetDir: string;
   sourceDir?: string;
@@ -17,7 +25,10 @@ export interface ParsedArgs {
 }
 
 export function parseArgs(argv: string[]): ParsedArgs {
-  const [command, ...rest] = argv;
+  const isKnownCommand = argv.length > 0 && KNOWN_COMMANDS.has(argv[0]);
+  const command = isKnownCommand ? argv[0] : "";
+  const rest = isKnownCommand ? argv.slice(1) : argv;
+
   let targetDir: string | undefined;
   let sourceDir: string | undefined;
   let force = false;
@@ -33,7 +44,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     }
   }
 
-  return { command: command ?? "", targetDir: targetDir ?? ".", sourceDir, force };
+  return { command, targetDir: targetDir ?? ".", sourceDir, force };
 }
 
 /**
@@ -47,12 +58,34 @@ export function defaultFrameworkSourceDir(): string {
 }
 
 function printUsage(): void {
-  console.log(`kenovis init <targetDir> [--source <frameworkSourceDir>] [--force]
+  console.log(`kenovis <targetDir> [--source <frameworkSourceDir>] [--force]
+kenovis init <targetDir> [--source <frameworkSourceDir>] [--force]
+kenovis add <targetDir> [--source <frameworkSourceDir>] [--force]
 kenovis sync <targetDir> [--source <frameworkSourceDir>]
 
-init installs the Kenovis AI-OS Framework layer into <targetDir> under
-.kenovis/, and writes a CLAUDE.md stub at <targetDir>'s root. Never touches
-an existing README.md in <targetDir> (DECISION-017).
+The bare form (no subcommand) detects whether <targetDir> already holds a
+real implementation and dispatches to init or add accordingly — it never
+refuses.
+
+init installs the Kenovis AI-OS Framework layer into an empty <targetDir>
+under .kenovis/, and writes a CLAUDE.md stub at <targetDir>'s root. Refuses
+on a target that already has real content unless --force is passed — use
+\`add\` there instead. Never touches an existing README.md in <targetDir>
+(DECISION-017).
+
+add is init's counterpart for a <targetDir> that already holds a real
+implementation to adopt. Refuses on an empty target unless --force is
+passed — use \`init\` there instead.
+
+Either way, the CLAUDE.md stub carries a first-session directive naming the
+right command (init-project or adopt-project) so the next AI session runs it
+automatically, no manual slash command required (DECISION-018). If a CLAUDE.md
+already exists at <targetDir> and wasn't written by this CLI, both commands
+refuse to overwrite it unless --force is passed.
+
+Re-running init/add with --force over an existing .kenovis/ mirror-replaces
+it (removes then reinstalls) — never a merge that could leave files retired
+from an older Framework Release behind.
 
 sync updates an existing <targetDir>/.kenovis/ to a newer Framework Release
 in place. Only .kenovis/ and the CLAUDE.md stub are touched — Product-layer
@@ -60,7 +93,27 @@ files and your own code are never read or written. Review the change with
 \`git diff\` before committing (RULE-INST-02).
 
 --source defaults to this package's own bundled Framework layer. Pass it
-explicitly to install or sync a different or custom Framework layer instead.`);
+explicitly to install or sync a different or custom Framework layer instead.
+
+--help/-h prints this message and exits, regardless of other arguments.`);
+}
+
+function printInstallResult(result: InitResult): void {
+  console.log(`Framework layer installed to ${result.frameworkInstalledTo}`);
+  console.log(`CLAUDE.md stub written to ${result.claudeStubWrittenTo}`);
+  console.log(
+    result.targetReadmeUntouched
+      ? "Existing README.md left untouched."
+      : "No README.md found — none was created; that stays your decision.",
+  );
+
+  const command = result.detectedKind === "brownfield" ? "adopt-project" : "init-project";
+  const evidence =
+    result.detectionEvidence.length > 0 ? ` (${result.detectionEvidence.join(", ")})` : "";
+  console.log(
+    `\nDetected ${result.detectedKind}${evidence}. The next AI session in this repository ` +
+      `will run ${command} automatically — no manual slash command needed.`,
+  );
 }
 
 async function resolveFrameworkSourceDir(
@@ -89,29 +142,71 @@ async function runInitCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
       targetDir: resolve(args.targetDir),
       frameworkSourceDir,
       force: args.force,
+      invokedAs: "init",
     });
-
-    console.log(`Framework layer installed to ${result.frameworkInstalledTo}`);
-    console.log(`CLAUDE.md stub written to ${result.claudeStubWrittenTo}`);
-    console.log(
-      result.targetReadmeUntouched
-        ? "Existing README.md left untouched."
-        : "No README.md found — none was created; that stays your decision.",
-    );
-    if (result.detectedKind === "brownfield") {
-      console.log(
-        `\nFound existing content here: ${result.detectionEvidence.join(", ")}\n` +
-          "Next: run /adopt-project to reconstruct context from this existing implementation.",
-      );
-    } else {
-      console.log(
-        "\nNo existing implementation detected here.\n" +
-          "Next: run /init-project to define this product from scratch.",
-      );
-    }
+    printInstallResult(result);
     return 0;
   } catch (error) {
-    if (error instanceof AlreadyInstalledError || error instanceof InvalidFrameworkSourceError) {
+    if (
+      error instanceof AlreadyInstalledError ||
+      error instanceof InvalidFrameworkSourceError ||
+      error instanceof BrownfieldDetectedError ||
+      error instanceof ExistingClaudeMdError
+    ) {
+      console.error(`Error: ${error.message}`);
+      return 1;
+    }
+    throw error;
+  }
+}
+
+async function runAddCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<number> {
+  const frameworkSourceDir = await resolveFrameworkSourceDir(fs, args.sourceDir);
+  if (frameworkSourceDir === null) return 1;
+
+  try {
+    const result = await runAdd(fs, {
+      targetDir: resolve(args.targetDir),
+      frameworkSourceDir,
+      force: args.force,
+    });
+    printInstallResult(result);
+    return 0;
+  } catch (error) {
+    if (
+      error instanceof AlreadyInstalledError ||
+      error instanceof InvalidFrameworkSourceError ||
+      error instanceof GreenfieldDetectedError ||
+      error instanceof ExistingClaudeMdError
+    ) {
+      console.error(`Error: ${error.message}`);
+      return 1;
+    }
+    throw error;
+  }
+}
+
+async function runAutoCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<number> {
+  const frameworkSourceDir = await resolveFrameworkSourceDir(fs, args.sourceDir);
+  if (frameworkSourceDir === null) return 1;
+
+  const targetDir = resolve(args.targetDir);
+  const targetDirEntries = (await fs.exists(targetDir)) ? await fs.listDir(targetDir) : [];
+  const detection = detectInstallationKind(targetDirEntries);
+
+  try {
+    const result =
+      detection.kind === "brownfield"
+        ? await runAdd(fs, { targetDir, frameworkSourceDir, force: args.force })
+        : await runInit(fs, { targetDir, frameworkSourceDir, force: args.force, invokedAs: "init" });
+    printInstallResult(result);
+    return 0;
+  } catch (error) {
+    if (
+      error instanceof AlreadyInstalledError ||
+      error instanceof InvalidFrameworkSourceError ||
+      error instanceof ExistingClaudeMdError
+    ) {
       console.error(`Error: ${error.message}`);
       return 1;
     }
@@ -143,11 +238,18 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
 }
 
 export async function main(argv: string[]): Promise<number> {
+  if (argv.includes("--help") || argv.includes("-h")) {
+    printUsage();
+    return 0;
+  }
+
   const args = parseArgs(argv);
   const fs = new NodeFileSystem();
 
   if (args.command === "init") return runInitCommand(fs, args);
+  if (args.command === "add") return runAddCommand(fs, args);
   if (args.command === "sync") return runSyncCommand(fs, args);
+  if (args.command === "") return runAutoCommand(fs, args);
 
   printUsage();
   return 1;
