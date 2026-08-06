@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.5
+Version: 1.6
 
 ---
 
@@ -70,6 +70,22 @@ grep -rl "PROJECT-SPECIFIC" . --include="*.md" --include=".gitignore"
 
 ---
 
+# Collision Guard
+
+Before rewriting any Product-layer file in Steps 2-7, check it:
+
+```
+head -1 <file>
+```
+
+If the marker is missing, the file predates this command and may not be Kenovis's to overwrite — this repository's own product layer is not necessarily the only content that could sit at that path. Stop. Ask the human: overwrite it, or move it aside first. Do not write that file until answered.
+
+Same escape-hatch shape as `ExistingClaudeMdError` in `cli/src/domain/installation.ts` — a file this command is allowed to own is not the same guarantee as a file it may discard sight unseen (AI/memory/learnings.md Learning-006).
+
+Files that already carry the marker need no confirmation — that is the expected, normal case.
+
+---
+
 # Step 1 - Confirm Intent
 
 Ask the human:
@@ -98,6 +114,8 @@ Order matters. Everything below depends on what is written here.
 COMPANY_OS.md
 ```
 
+Collision guard applies (see above).
+
 Rewrite completely:
 
 - Company vision.
@@ -122,6 +140,8 @@ Keep the section structure. Replace every sentence about the example company.
 DECISIONS.md
 ```
 
+Collision guard applies (see above).
+
 Keep:
 
 - The decision format.
@@ -145,6 +165,8 @@ DOMAIN/DOMAIN_MODEL.md
 DOMAIN/BUSINESS_RULES.md
 ```
 
+Collision guard applies (see above).
+
 This is the layer most likely to be copied by accident, because the example entities look generic.
 
 Derive entities from the real business, not from the example. If the new product genuinely needs an entity that also exists in the example, define it from scratch and confirm the meaning matches.
@@ -160,6 +182,8 @@ PRODUCT/USER_RESEARCH.md
 PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
+Collision guard applies (see above).
+
 USER_RESEARCH.md and COMPETITIVE_LANDSCAPE.md should be emptied rather than invented. Research that has not happened is not research. Competitors that have not been verified are not competitors.
 
 Leave both as structured empty documents until real research and real competitor findings exist.
@@ -173,6 +197,8 @@ ENGINEERING/ARCHITECTURE.md
 ENGINEERING/DATABASE.md
 ENGINEERING/SECURITY.md
 ```
+
+Collision guard applies (see above).
 
 Decide explicitly and record in DECISIONS.md:
 
@@ -193,6 +219,8 @@ AUTOMATIONS/customer-onboarding.md
 AUTOMATIONS/release-process.md
 AUTOMATIONS/user-feedback.md
 ```
+
+Collision guard applies (see above).
 
 Onboarding depends on what "activated customer" means for this product. Do not carry over the example definition.
 
@@ -327,6 +355,8 @@ Initialization is complete when:
 ✓ No implementation survives from a previous product, and ENGINEERING/ARCHITECTURE.md describes this product's chosen topology.
 
 ✓ No term from the example company survives.
+
+✓ No unmarked pre-existing file was overwritten without the human confirming.
 
 ✓ Framework files are byte-identical to before.
 

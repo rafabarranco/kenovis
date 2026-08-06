@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.5
+Version: 2.6
 
 Last updated: —
 
@@ -23,6 +23,7 @@ Seven are framework-level and should be carried over:
 - DECISION-012 — Graphify Exception To Tool-Agnosticism.
 - DECISION-014 — Brownfield Adoption Path: adopt-project Command.
 - DECISION-016 — No Framework-Mandated Directory Name For Customer Code (supersedes DECISION-015).
+- DECISION-019 — Collision Guard Against Silent Product-Layer Overwrite In init-project/adopt-project.
 
 Everything else is product-specific and should be recorded as real decisions get made. See AI/commands/init-project.md.
 
@@ -1237,6 +1238,96 @@ Phase 1: `cli/src/domain/installation.ts` — parametrize `claudeStubContent()`,
 Phase 2: `AI/commands/init-project.md` Step 12 and `AI/commands/adopt-project.md` Step 13 — add the marker-deletion and stub-rewrite closing sub-step. `AI/SYSTEM.md` → "Context Loading Rules" — add the one-line marker check. These are framework-layer files; per both commands' own Rules ("Never modify anything under AI/agents/... or AI/commands/ during initialization/adoption" is about *not touching them mid-run* — this is a separate, deliberate framework change, made and reasoned here, not silently during a run).
 
 Phase 3: manual end-to-end smoke test in real Claude Code — `npx kenovis init` against an empty scratch directory, confirm the very next agent turn runs `/init-project` unprompted; `npx kenovis add` against a seeded scratch directory, confirm `/adopt-project` runs unprompted; confirm an interrupted session followed by a fresh session still triggers; confirm post-completion the stub reverts to passive and does not re-trigger. `CHANGELOG.md` documents the `init`-on-brownfield breaking change.
+
+---
+
+# DECISION-019
+
+# Collision Guard Against Silent Product-Layer Overwrite In init-project/adopt-project
+
+Date:
+
+2026-08-06
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-06
+
+---
+
+## Context
+
+PRODUCT/ROADMAP.md's Phase 0 "Immediate Priority" item 5 (flagged 2026-08-06, from `/analyze` on file/directory name collisions between Kenovis and a target repository) found a gap: `cli/src/domain/installation.ts` guards exactly one file it writes — root `CLAUDE.md` (`ExistingClaudeMdError`, `isKenovisManagedClaudeStub`) — against silently discarding a customer's own pre-existing content there (AI/memory/learnings.md Learning-006). No equivalent guard exists for the Product-layer files `/init-project` and `/adopt-project` write (`COMPANY_OS.md`, `DECISIONS.md`, `DOMAIN/*.md`, `PRODUCT/*.md`, `ENGINEERING/*.md`, `AUTOMATIONS/*.md`): protection was textual only ("How To Recognise The Product Layer" — grep the `PROJECT-SPECIFIC` marker), never an enforced gate before writing. A target repository with its own unrelated file at one of those exact paths could be silently overwritten while the agent followed the command's own instructions correctly.
+
+---
+
+## Options Considered
+
+### Option A
+
+Rename the files Kenovis injects, so a collision at a customer's exact path becomes structurally impossible.
+
+Advantages:
+
+- Removes the collision class entirely rather than gating it.
+
+Disadvantages:
+
+- Infeasible for `CLAUDE.md` — Claude Code only autoloads that literal filename at repo root (DECISION-010).
+- For the rest, requires a persisted name-mapping manifest nothing in the system has today, plus updating the 23+ framework files that already reference these paths by hardcoded name — disproportionate to the problem.
+
+---
+
+### Option B
+
+Add a `Collision Guard` section to both commands (placed after their existing "How To Recognise..." section), referenced by every Step that rewrites a Product-layer file: before writing, check the file's first line for the `PROJECT-SPECIFIC` marker; if absent, stop and ask the human to confirm overwrite or move the file aside first. Mirrors `ExistingClaudeMdError`'s resolution, expressed as command prose instead of code since these are conversational commands with no CLI code path of their own.
+
+Advantages:
+
+- Matches the existing, already-proven pattern (`ExistingClaudeMdError`) instead of inventing a new resolution shape.
+- A single shared section referenced seven-plus times per command avoids repeating the same paragraph in every Step (`AI/policies/architecture.md` → Single Responsibility / Reuse, the same reasoning DECISION-016 already applied to collapse a different redundancy).
+- No ADR-level architecture change — no code, no new CLI mechanism, purely a stronger instruction gate on an already-conversational, human-confirms process.
+
+Disadvantages:
+
+- Enforcement depends on the agent actually following the instruction — unlike `ExistingClaudeMdError`, there is no code path to make the check unconditional. Acceptable because `/init-project` and `/adopt-project` are already fully conversational and human-gated end to end (both commands' Rules already say "do not continue without answers").
+
+---
+
+## Decision
+
+Adopt Option B.
+
+- `AI/commands/init-project.md` (1.5 → 1.6): new "Collision Guard" section; referenced by Steps 2-7 (every step rewriting a Product-layer file); Completion Criteria gained "No unmarked pre-existing file was overwritten without the human confirming."
+- `AI/commands/adopt-project.md` (1.4 → 1.5): same shape — new "Collision Guard" section referenced by Steps 3-8; same Completion Criteria addition.
+- `PRODUCT/ROADMAP.md` (1.10 → 1.11): Phase 0 item 5 marked DONE.
+
+---
+
+## Reason
+
+`AI/policies/architecture.md`'s Single Responsibility / Reuse principles argue against duplicating the same check seven times per command when one referenced section does the job — the same reasoning DECISION-016 already used to collapse a different redundancy in this framework. Option A was rejected because it solves a smaller problem (Kenovis's own path names) at a much larger cost (a mapping manifest and 23+ file updates) than the actual risk (an unmarked file silently overwritten) justifies.
+
+---
+
+## Consequences
+
+Positive:
+
+- `/init-project` and `/adopt-project` now carry the same "don't discard what might not be ours" discipline `ExistingClaudeMdError` already gives `CLAUDE.md` installs, closing the gap Learning-006 identified for the CLI's own code.
+- The guard is documented once and referenced, not repeated — consistent with how the framework already resolved an analogous redundancy in DECISION-016.
+
+Negative:
+
+- The guard's enforcement is instruction-only, not code-enforced — an agent that skips reading the "Collision Guard" section could still overwrite a file. No CLI code path exists for these two commands to make this unconditional; the same conversational, human-gated nature that makes the commands safe by design (they already refuse to continue without human answers) is also why this can't be a hard code guarantee today.
 
 ---
 

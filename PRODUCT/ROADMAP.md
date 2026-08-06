@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.10
+Version: 1.12
 ---
 Purpose
 
@@ -152,7 +152,7 @@ Open risk to resolve in the ADR: `init` refusing to install on brownfield withou
 
 CLI implementation shipped: `cli/src/domain/installation.ts` gained `BrownfieldDetectedError`/`GreenfieldDetectedError`, `SETUP_PENDING_FILENAME`, `setupPendingContent`, and `claudeStubContent` became a `{ pending, kind }`-parametrized state machine. `cli/src/application/commands/init.ts` gained `invokedAs: "init" | "add"` and the cross-detection refusal; `add.ts` (new) is a thin `runInit` wrapper. `cli/src/cli/bin.ts` gained the `add` subcommand and a bare-invocation autodetect dispatch. `AI/commands/init-project.md` Step 12 and `adopt-project.md` Step 13 now delete `.kenovis/.setup-pending` and revert the stub on completion; `AI/SYSTEM.md` → "Context Loading Rules" checks for the marker. 25 new/updated tests (58 total in `cli/`), manually smoke-tested end to end (greenfield/brownfield `init`, `add`, `--force` bypass, bare dispatch). Smoke testing itself found and fixed a footgun — an unrecognized flag like `--help` fell through to the bare autodetect path and ran a real install against cwd; `main()` now checks `--help`/`-h` first. Recorded as `AI/memory/learnings.md` Learning-005.
 
-5. PROPOSED (2026-08-06, from /analyze on file/directory name collisions between Kenovis and the target repository) — Guard Product-layer files against silent overwrite during /init-project and /adopt-project, mirroring the ExistingClaudeMdError pattern.
+5. DONE (2026-08-06, via /next) — Guard Product-layer files against silent overwrite during /init-project and /adopt-project, mirroring the ExistingClaudeMdError pattern.
 
 Gap found: `CLAUDE.md` is the only file Kenovis writes that has a code-level collision guard (`isKenovisManagedClaudeStub`/`ExistingClaudeMdError`, `cli/src/domain/installation.ts`). The Product-layer files `/init-project` and `/adopt-project` write (`COMPANY_OS.md`, `DECISIONS.md`, `DOMAIN/DOMAIN_MODEL.md`, `DOMAIN/BUSINESS_RULES.md`, `PRODUCT/*.md`, `ENGINEERING/*.md`, `AUTOMATIONS/*.md`) have no equivalent guard — protection is textual only ("How To Recognise The Product Layer": grep the `PROJECT-SPECIFIC` marker), never enforced as a gate before writing. If a target repository already has its own file at one of those exact paths, unrelated to Kenovis, the agent can silently overwrite it while following the command's own instructions.
 
@@ -160,7 +160,7 @@ A rename-the-injected-file approach was considered and rejected: infeasible for 
 
 Target design (no ADR needed — a command-instruction change, not an architecture decision): each Step in `init-project.md`/`adopt-project.md` that rewrites a Product-layer file first checks whether that file already exists without the `PROJECT-SPECIFIC` marker. If so, stop and ask the human to confirm before overwriting (or move it aside) — the same resolution `ExistingClaudeMdError` already gives for `CLAUDE.md`, applied as an explicit gate instead of an informational aside.
 
-Not yet implemented.
+Shipped: `AI/commands/init-project.md` (1.5 → 1.6) and `AI/commands/adopt-project.md` (1.4 → 1.5) each gained a "Collision Guard" section (placed after "How To Recognise..."), referenced by every Step that rewrites a Product-layer file (init-project.md Steps 2-7, adopt-project.md Steps 3-8) instead of repeating the full check seven times per command. Both commands' Completion Criteria gained "No unmarked pre-existing file was overwritten without the human confirming." See DECISION-019.
 ---
 Phase 1 — MVP
 
@@ -176,7 +176,11 @@ Engineering Validation (2026-08-05, via /next)
 
 Smoke-tested end to end against a scratch external-like repository (own README.md, own `src/`): `npx kenovis@0.1.0 init` correctly left the existing README.md and code untouched, wrote `.kenovis/` + `CLAUDE.md` stub, and correctly detected the repository as brownfield (cited `src/` as evidence, suggested `/adopt-project`). `npx kenovis sync` (no `--source`, the real customer path — pulls the published bundle) produced an empty diff on an unchanged version, confirming idempotent mirror-replace with no spurious noise. See AI/memory/learnings.md Learning-004 for a related `--source` footgun found while testing (not customer-facing — only affects the local-dev `--source` escape hatch, not default usage).
 
-This validates the CLI Core Modules below work as documented. Still open for full Success Criteria: a real external team (not this smoke test) completing /init-project and shipping a feature via /feature without help.
+This validates the CLI Core Modules below work as documented. Full Success Criteria closed below.
+---
+Real External Validation (2026-08-06)
+
+An external team (identity not disclosed) completed `/init-project` unassisted and shipped a real feature through the `/feature` workflow the same day, with no help from Kenovis. Nothing noteworthy to record as a learning this round — no framework gap surfaced. This satisfies Phase 0's own Success Criteria above and Phase 1's Objective/Success Criteria below: the first real (non-smoke-test) end-to-end validation of the install → init-project → feature workflow chain.
 ---
 MVP Core Modules
 
