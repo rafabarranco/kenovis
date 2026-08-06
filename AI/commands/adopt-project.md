@@ -1,6 +1,6 @@
 # Adopt Project Command
 
-Version: 1.3
+Version: 1.4
 
 ---
 
@@ -269,6 +269,11 @@ Add a decision to `DECISIONS.md` recording:
 - The stack, database engine, tenancy model and confidence levels established in Step 7.
 
 This is the first decision of the adopted product's Kenovis-tracked history — not the first decision of the product itself, which predates this adoption.
+
+If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis add` install, per DECISIONS.md DECISION-018):
+
+- Delete `.kenovis/.setup-pending`.
+- Rewrite the root `CLAUDE.md` stub back to its passive, steady-state form (no first-session directive).
 
 ---
 

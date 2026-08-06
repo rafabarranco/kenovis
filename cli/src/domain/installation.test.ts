@@ -2,21 +2,76 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   AlreadyInstalledError,
+  BrownfieldDetectedError,
   claudeStubContent,
   detectInstallationKind,
+  ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
+  GreenfieldDetectedError,
   InvalidFrameworkSourceError,
   invalidFrameworkSourceEntries,
+  isKenovisManagedClaudeStub,
+  setupPendingContent,
 } from "./installation.js";
 
 test("claudeStubContent points at .kenovis/AI/SYSTEM.md", () => {
-  const content = claudeStubContent();
+  const content = claudeStubContent({ pending: false });
   assert.match(content, /\.kenovis\/AI\/SYSTEM\.md/);
 });
 
 test("claudeStubContent references the actual framework directory name", () => {
-  const content = claudeStubContent();
+  const content = claudeStubContent({ pending: false });
   assert.ok(content.includes(FRAMEWORK_DIR_NAME));
+});
+
+test("claudeStubContent, when pending and greenfield, directs the next session to init-project", () => {
+  const content = claudeStubContent({ pending: true, kind: "greenfield" });
+  assert.match(content, /Before doing anything else this session, run/);
+  assert.match(content, /\.kenovis\/AI\/commands\/init-project\.md/);
+});
+
+test("claudeStubContent, when pending and brownfield, directs the next session to adopt-project", () => {
+  const content = claudeStubContent({ pending: true, kind: "brownfield" });
+  assert.match(content, /\.kenovis\/AI\/commands\/adopt-project\.md/);
+});
+
+test("setupPendingContent resolves greenfield to init-project and brownfield to adopt-project", () => {
+  assert.equal(setupPendingContent("greenfield"), "init-project");
+  assert.equal(setupPendingContent("brownfield"), "adopt-project");
+});
+
+test("BrownfieldDetectedError cites the evidence and points at kenovis add", () => {
+  const error = new BrownfieldDetectedError(["package.json", "src"]);
+  assert.deepEqual(error.evidence, ["package.json", "src"]);
+  assert.match(error.message, /package\.json, src/);
+  assert.match(error.message, /kenovis add/);
+  assert.match(error.message, /--force/);
+  assert.equal(error.name, "BrownfieldDetectedError");
+});
+
+test("GreenfieldDetectedError points at kenovis init", () => {
+  const error = new GreenfieldDetectedError();
+  assert.match(error.message, /kenovis init/);
+  assert.match(error.message, /--force/);
+  assert.equal(error.name, "GreenfieldDetectedError");
+});
+
+test("isKenovisManagedClaudeStub recognizes both pending and steady-state stub content", () => {
+  assert.ok(isKenovisManagedClaudeStub(claudeStubContent({ pending: false })));
+  assert.ok(isKenovisManagedClaudeStub(claudeStubContent({ pending: true, kind: "greenfield" })));
+  assert.ok(isKenovisManagedClaudeStub(claudeStubContent({ pending: true, kind: "brownfield" })));
+});
+
+test("isKenovisManagedClaudeStub rejects a customer's own unrelated CLAUDE.md", () => {
+  assert.equal(isKenovisManagedClaudeStub("# My Project\n\nDo whatever you want, agent.\n"), false);
+  assert.equal(isKenovisManagedClaudeStub(""), false);
+});
+
+test("ExistingClaudeMdError names the path and mentions --force", () => {
+  const error = new ExistingClaudeMdError("/repo/CLAUDE.md");
+  assert.equal(error.claudeMdPath, "/repo/CLAUDE.md");
+  assert.match(error.message, /--force/);
+  assert.equal(error.name, "ExistingClaudeMdError");
 });
 
 test("AlreadyInstalledError carries the conflicting directory and mentions --force", () => {

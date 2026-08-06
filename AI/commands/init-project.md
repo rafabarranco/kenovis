@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.4
+Version: 1.5
 
 ---
 
@@ -279,6 +279,11 @@ Add a decision to DECISIONS.md recording:
 - The stack and tenancy model chosen in Step 6.
 
 This is the first decision of the new product.
+
+If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis init` install, per DECISIONS.md DECISION-018):
+
+- Delete `.kenovis/.setup-pending`.
+- Rewrite the root `CLAUDE.md` stub back to its passive, steady-state form (no first-session directive).
 
 ---
 
