@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-06
+
+First versioned release of the framework layer, aligned with the `kenovis` npm package's own version — the framework ships embedded inside that package (`cli/scripts/bundle-framework-assets.mjs` bundles `AI/` into `dist/framework-assets/` at build time), so there is no separate distribution channel to version independently. See `cli/package.json` and `cli/README.md` → "Cutting a release".
+
 ### Added
 
 - `AI/memory/learnings.md` → Learning-004: end-to-end smoke test of the published `kenovis@0.1.0` CLI against a scratch external-like repository confirmed `init`/`sync` behave as documented (brownfield correctly detected, existing README/code untouched, idempotent sync); also found `sync --source <dir>` mirrors an unfiltered directory, a footgun relevant to DECISION-017's planned Phase 2 self-migration.
