@@ -3,14 +3,16 @@ import {
   AlreadyInstalledError,
   BrownfieldDetectedError,
   claudeStubContent,
+  CLAUDE_MD_HASH_FILENAME,
   CLAUDE_STUB_FILENAME,
   detectInstallationKind,
   ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
   GreenfieldDetectedError,
+  hashClaudeMdContent,
   InvalidFrameworkSourceError,
   invalidFrameworkSourceEntries,
-  isKenovisManagedClaudeStub,
+  isClaudeMdSafeToOverwrite,
   SETUP_PENDING_FILENAME,
   setupPendingContent,
   TARGET_README_FILENAME,
@@ -53,9 +55,11 @@ export interface InitResult {
  * target repository's own README.md is never read, written, or overwritten —
  * this function does not even open it, only checks whether it exists so the
  * result can report that it was left alone. The same protection extends to
- * an existing CLAUDE.md that isn't already Kenovis-managed (checked via
- * `isKenovisManagedClaudeStub`) — refuses with ExistingClaudeMdError instead
- * of silently discarding a customer's own file, unless --force is passed.
+ * an existing CLAUDE.md that isn't safe to overwrite (checked via
+ * `isClaudeMdSafeToOverwrite` — a recorded content hash when available,
+ * falling back to the `isKenovisManagedClaudeStub` marker-prefix check
+ * otherwise) — refuses with ExistingClaudeMdError instead of silently
+ * discarding a customer's own file, unless --force is passed.
  *
  * A --force re-install always mirror-replaces .kenovis/ (removeTree then
  * copyTree), matching runSync's semantics — never a merge that could leave
@@ -97,9 +101,11 @@ export async function runInit(
   }
 
   const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
+  const hashPath = join(frameworkDir, CLAUDE_MD_HASH_FILENAME);
   if (!options.force && (await fs.exists(claudeStubPath))) {
     const existingClaudeMd = await fs.readFile(claudeStubPath);
-    if (!isKenovisManagedClaudeStub(existingClaudeMd)) {
+    const recordedHash = (await fs.exists(hashPath)) ? await fs.readFile(hashPath) : null;
+    if (!isClaudeMdSafeToOverwrite(existingClaudeMd, recordedHash)) {
       throw new ExistingClaudeMdError(claudeStubPath);
     }
   }
@@ -113,7 +119,9 @@ export async function runInit(
   const setupPendingPath = join(frameworkDir, SETUP_PENDING_FILENAME);
   await fs.writeFile(setupPendingPath, setupPendingContent(detection.kind));
 
-  await fs.writeFile(claudeStubPath, claudeStubContent({ pending: true, kind: detection.kind }));
+  const claudeMdContent = claudeStubContent({ pending: true, kind: detection.kind });
+  await fs.writeFile(claudeStubPath, claudeMdContent);
+  await fs.writeFile(hashPath, hashClaudeMdContent(claudeMdContent));
 
   const targetReadmePath = join(options.targetDir, TARGET_README_FILENAME);
   const targetReadmeUntouched = await fs.exists(targetReadmePath);

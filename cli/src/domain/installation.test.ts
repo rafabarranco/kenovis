@@ -8,8 +8,10 @@ import {
   ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
   GreenfieldDetectedError,
+  hashClaudeMdContent,
   InvalidFrameworkSourceError,
   invalidFrameworkSourceEntries,
+  isClaudeMdSafeToOverwrite,
   isKenovisManagedClaudeStub,
   setupPendingContent,
 } from "./installation.js";
@@ -65,6 +67,33 @@ test("isKenovisManagedClaudeStub recognizes both pending and steady-state stub c
 test("isKenovisManagedClaudeStub rejects a customer's own unrelated CLAUDE.md", () => {
   assert.equal(isKenovisManagedClaudeStub("# My Project\n\nDo whatever you want, agent.\n"), false);
   assert.equal(isKenovisManagedClaudeStub(""), false);
+});
+
+test("hashClaudeMdContent is deterministic and sensitive to every byte", () => {
+  const content = claudeStubContent({ pending: false });
+  assert.equal(hashClaudeMdContent(content), hashClaudeMdContent(content));
+  assert.notEqual(hashClaudeMdContent(content), hashClaudeMdContent(`${content}\n`));
+  assert.match(hashClaudeMdContent(content), /^[0-9a-f]{64}$/);
+});
+
+test("isClaudeMdSafeToOverwrite with a recorded hash: only an exact match is safe, even with an intact marker line", () => {
+  const content = claudeStubContent({ pending: false });
+  const recordedHash = hashClaudeMdContent(content);
+
+  assert.ok(isClaudeMdSafeToOverwrite(content, recordedHash));
+  // Marker line untouched, content appended below it — the exact scenario
+  // isKenovisManagedClaudeStub cannot catch (Learning-007).
+  assert.equal(isClaudeMdSafeToOverwrite(`${content}\nMy own notes.\n`, recordedHash), false);
+  assert.equal(isClaudeMdSafeToOverwrite("# My Project\n", recordedHash), false);
+});
+
+test("isClaudeMdSafeToOverwrite with no recorded hash falls back to the marker-prefix check", () => {
+  const content = claudeStubContent({ pending: false });
+  assert.ok(isClaudeMdSafeToOverwrite(content, null));
+  // Pre-fix Installation: no hash was ever recorded, so appended content is
+  // still invisible here — the documented, intentional fallback behavior.
+  assert.ok(isClaudeMdSafeToOverwrite(`${content}\nMy own notes.\n`, null));
+  assert.equal(isClaudeMdSafeToOverwrite("# My Project\n", null), false);
 });
 
 test("ExistingClaudeMdError names the path and mentions --force", () => {

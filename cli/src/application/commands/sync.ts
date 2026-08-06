@@ -1,12 +1,14 @@
 import { join } from "node:path";
 import {
+  CLAUDE_MD_HASH_FILENAME,
   CLAUDE_STUB_FILENAME,
   claudeStubContent,
   ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
+  hashClaudeMdContent,
   InvalidFrameworkSourceError,
   invalidFrameworkSourceEntries,
-  isKenovisManagedClaudeStub,
+  isClaudeMdSafeToOverwrite,
   NotInstalledError,
 } from "../../domain/installation.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
@@ -50,6 +52,12 @@ export interface SyncResult {
  * discarding a customer's own edits on every sync. See AI/memory/learnings.md
  * Learning-006, which found and fixed this exact asymmetry for init's
  * --force path but never carried the fix over to sync.
+ *
+ * The guard compares against a recorded content hash
+ * (`${FRAMEWORK_DIR_NAME}/${CLAUDE_MD_HASH_FILENAME}`, written by the prior
+ * install/sync) rather than only a marker-prefix check, so content appended
+ * below the stub is caught too, not just a CLAUDE.md that isn't Kenovis's at
+ * all — see isClaudeMdSafeToOverwrite and AI/memory/learnings.md Learning-007.
  */
 export async function runSync(
   fs: FileSystemPort,
@@ -68,9 +76,11 @@ export async function runSync(
   }
 
   const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
+  const hashPath = join(frameworkDir, CLAUDE_MD_HASH_FILENAME);
   if (!options.force && (await fs.exists(claudeStubPath))) {
     const existingClaudeMd = await fs.readFile(claudeStubPath);
-    if (!isKenovisManagedClaudeStub(existingClaudeMd)) {
+    const recordedHash = (await fs.exists(hashPath)) ? await fs.readFile(hashPath) : null;
+    if (!isClaudeMdSafeToOverwrite(existingClaudeMd, recordedHash)) {
       throw new ExistingClaudeMdError(claudeStubPath);
     }
   }
@@ -78,7 +88,9 @@ export async function runSync(
   await fs.removeTree(frameworkDir);
   await fs.copyTree(options.frameworkSourceDir, frameworkDir);
 
-  await fs.writeFile(claudeStubPath, claudeStubContent({ pending: false }));
+  const newClaudeMdContent = claudeStubContent({ pending: false });
+  await fs.writeFile(claudeStubPath, newClaudeMdContent);
+  await fs.writeFile(hashPath, hashClaudeMdContent(newClaudeMdContent));
 
   return {
     frameworkSyncedTo: frameworkDir,
