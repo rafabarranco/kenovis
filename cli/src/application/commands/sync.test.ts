@@ -3,7 +3,12 @@ import assert from "node:assert/strict";
 import { join } from "node:path";
 import { runSync } from "./sync.js";
 import { InMemoryFileSystem } from "../../infrastructure/filesystem/InMemoryFileSystem.js";
-import { InvalidFrameworkSourceError, NotInstalledError } from "../../domain/installation.js";
+import {
+  claudeStubContent,
+  ExistingClaudeMdError,
+  InvalidFrameworkSourceError,
+  NotInstalledError,
+} from "../../domain/installation.js";
 
 test("runSync refuses to run when .kenovis/ does not exist", async () => {
   const fs = new InMemoryFileSystem();
@@ -81,4 +86,45 @@ test("runSync reports the .kenovis/ path it synced", async () => {
   const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
 
   assert.equal(result.frameworkSyncedTo, join("/repo", ".kenovis"));
+});
+
+test("runSync refuses to overwrite a CLAUDE.md that isn't Kenovis-managed, leaving .kenovis/ untouched", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+  fs.seed(claudeMdPath, "# My own project instructions\n\nDo not touch this.");
+
+  await assert.rejects(
+    () => runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" }),
+    ExistingClaudeMdError,
+  );
+  assert.equal(fs.files.get(claudeMdPath), "# My own project instructions\n\nDo not touch this.");
+  assert.equal(fs.removedTrees.length, 0);
+  assert.equal(fs.copiedTrees.length, 0);
+});
+
+test("runSync --force overwrites a CLAUDE.md that isn't Kenovis-managed", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+  fs.seed(claudeMdPath, "# My own project instructions");
+
+  await runSync(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+    force: true,
+  });
+
+  assert.notEqual(fs.files.get(claudeMdPath), "# My own project instructions");
+});
+
+test("runSync proceeds without --force when the existing CLAUDE.md is already Kenovis-managed", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+  fs.seed(claudeMdPath, claudeStubContent({ pending: false }));
+
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(result.claudeStubWrittenTo, claudeMdPath);
 });

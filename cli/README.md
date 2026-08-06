@@ -12,6 +12,16 @@ Phase 0 item 4 (auto-trigger `init-project`/`adopt-project`, per [DECISIONS.md](
 
 npm publishing is wired up (`.github/workflows/publish.yml`): pushing a GitHub Release triggers CI to build, test, typecheck and `npm publish --provenance --access public` the package — never from a developer's local machine, per [ENGINEERING/SECURITY.md](../ENGINEERING/SECURITY.md) → Supply-Chain Security. Latest publish: [`kenovis@0.2.0`](https://www.npmjs.com/package/kenovis) shipped from the `v0.2.0` GitHub Release, with provenance — closes the `--source` footgun found during Learning-004 smoke testing (`init`/`sync` now validate `--source` before touching anything). `npx kenovis init` now works against any external repository with no local setup.
 
+## Upgrading
+
+An existing Installation does not auto-detect a newer Framework Release today (PRODUCT/ROADMAP.md Phase 2 — an active version-check is deferred, low priority against ~1 external team's data so far). To upgrade by hand:
+
+1. Reinstall the CLI: `npx kenovis@latest <targetDir>` doesn't upgrade in place — instead run `npm i -g kenovis@latest` (or just let `npx kenovis@latest ...` resolve the latest each time).
+2. Run `kenovis sync <targetDir>` — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub to the new Framework Release, same as any other sync.
+3. Review the change with `git diff` before committing (RULE-INST-02) — this is the same review step any sync needs, not upgrade-specific.
+
+If your root `CLAUDE.md` was never written by this CLI at all (predates adopting Kenovis, or you replaced its content), `sync` refuses to overwrite it unless `--force` is passed — same guard `init`/`add` already give. This check only looks at the file's first line, so it does **not** catch notes appended below Kenovis's own stub content while that first line is untouched — those are silently overwritten on sync today. Keep any of your own `CLAUDE.md` notes in a separate file (or below a clear divider you check by hand before syncing) until this is closed — see `AI/memory/learnings.md` Learning-007.
+
 ## Cutting a release
 
 1. Bump `version` in `cli/package.json` (semver) and commit it.
@@ -54,7 +64,7 @@ src/
 └── cli/bin.ts                                     argv parsing, default --source resolution, calls the init/add/sync use cases, bare-invocation autodetect dispatch
 ```
 
-The dependency direction holds: `domain/` imports nothing from the layers around it; `application/` depends on the `FileSystemPort` interface, never on `NodeFileSystem` directly. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never touch a customer's own README.md, never write outside version control's reach. The same protection extends to a customer's own pre-existing root `CLAUDE.md`: `init`/`add` refuse to overwrite one that isn't already Kenovis-managed unless `--force` is passed (`ExistingClaudeMdError`) — a real risk given the target segment already uses agentic tooling (COMPANY_OS.md), so a pre-Kenovis `CLAUDE.md` is a realistic case, not an edge case. `src/application/commands/init.test.ts` asserts this directly against `InMemoryFileSystem`; `src/infrastructure/filesystem/NodeFileSystem.integration.test.ts` asserts it against a real filesystem in a temp directory.
+The dependency direction holds: `domain/` imports nothing from the layers around it; `application/` depends on the `FileSystemPort` interface, never on `NodeFileSystem` directly. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never touch a customer's own README.md, never write outside version control's reach. The same protection extends to a customer's own pre-existing root `CLAUDE.md`: `init`/`add`/`sync` all refuse to overwrite one that isn't already Kenovis-managed unless `--force` is passed (`ExistingClaudeMdError`) — a real risk given the target segment already uses agentic tooling (COMPANY_OS.md), so a pre-Kenovis or hand-edited `CLAUDE.md` is a realistic case, not an edge case. `sync`'s guard was added later than `init`/`add`'s — see `AI/memory/learnings.md` Learning-006 for the gap it closes. `src/application/commands/init.test.ts`/`sync.test.ts` assert this directly against `InMemoryFileSystem`; `src/infrastructure/filesystem/NodeFileSystem.integration.test.ts` asserts it against a real filesystem in a temp directory.
 
 A `--force` re-install always mirror-replaces `.kenovis/` (`removeTree` then `copyTree`), the same semantics `sync` already used — never a merge that could leave a file retired from an older Framework Release behind.
 
@@ -65,7 +75,7 @@ Both `init` and `sync` also validate `--source` itself before touching anything:
 ```
 npm install
 npm run build      # bundles Framework layer assets, then compiles TypeScript
-npm test           # 33 tests: domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
+npm test           # 75 tests: domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
 npm run typecheck
 node bin/kenovis.js init <targetDir>                                    # uses the bundled Framework layer
 node bin/kenovis.js init <targetDir> --source <customFrameworkDir>      # or install something else instead

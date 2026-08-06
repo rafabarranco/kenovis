@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.1
+Version: 1.2
 ---
 Scope
 
@@ -144,6 +144,35 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — a startsWith check only proves "not a foreign file," not "nothing appended"
+
+## Learning-007
+
+Date:
+2026-08-06
+
+Category:
+Engineering
+
+Context:
+End-to-end smoke test of the real v0.1.0/v0.2.0 → dev-build upgrade path (PRODUCT/ROADMAP.md Phase 0 item 6): installed a real published `kenovis@0.2.0` into a scratch repository, then ran `kenovis sync` — first with the CLAUDE.md stub untouched (should pass), then again after appending a line of "customer" content below the stub's existing marker line (should now be caught by the new `ExistingClaudeMdError` guard just added to `sync`).
+
+Problem:
+The append case was not caught. `sync` silently overwrote the CLAUDE.md and discarded the appended line, even though the new guard (this same round of work) was built specifically to stop `sync` from silently discarding customer content.
+
+What happened:
+`isKenovisManagedClaudeStub` (`cli/src/domain/installation.ts`) checks `content.startsWith(CLAUDE_STUB_MARKER)` — true for "this file's first line is Kenovis's own," which is also true for "Kenovis's stub plus anything appended after it." The check answers "did Kenovis originate this file," not "is everything currently in this file Kenovis's own content." `init`/`add` have carried this same gap since Learning-006 introduced the check; `sync` just inherited it by reusing the identical function, so the smoke test exposed a pre-existing limitation, not a new regression from this round's change.
+
+Root cause:
+A prefix check is the right tool for "was this file ever touched by us at all" but the wrong tool for "is this file's current content entirely ours" — those are different questions, and the guard was written to answer the first while being relied on (by this session, in cli/README.md's first draft of the Upgrading section) to answer the second.
+
+Learning:
+When a "did we write this" check is a prefix/marker match rather than a full-content hash or diff, its guarantee stops at "we wrote the beginning" — appended content downstream of the marker is invisible to it. Before documenting a guard's coverage (e.g. "sync won't lose your notes"), test the specific case of *appending* to an otherwise-recognized file, not just replacing it outright — the two produce different, easily-conflated results against a prefix check.
+
+Future action:
+Closing this gap properly (e.g. hashing/diffing the stub's own known content against what's on disk, or requiring customer notes to live in a separate file) is scoped as a real backlog item, not silently fixed inside this round's work — see PRODUCT/ROADMAP.md Phase 0 item 6 follow-up. Until then, `cli/README.md` documents the limitation explicitly instead of overstating the guard's coverage.
 
 ---
 Example: Project — a "forced" file-write path was never audited against a file the CLI doesn't fully own

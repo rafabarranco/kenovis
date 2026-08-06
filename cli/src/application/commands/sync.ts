@@ -2,9 +2,11 @@ import { join } from "node:path";
 import {
   CLAUDE_STUB_FILENAME,
   claudeStubContent,
+  ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
   InvalidFrameworkSourceError,
   invalidFrameworkSourceEntries,
+  isKenovisManagedClaudeStub,
   NotInstalledError,
 } from "../../domain/installation.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
@@ -14,6 +16,8 @@ export interface SyncOptions {
   frameworkSourceDir: string;
   /** Repository holding the existing Installation to update. */
   targetDir: string;
+  /** Overwrite a CLAUDE.md that isn't already Kenovis-managed instead of refusing. */
+  force?: boolean;
 }
 
 export interface SyncResult {
@@ -39,6 +43,13 @@ export interface SyncResult {
  * throws InvalidFrameworkSourceError instead of touching the existing
  * .kenovis/ — see runInit's equivalent check for why this only ever inspects
  * the operator-supplied --source path, never the target repository.
+ *
+ * Also guards the CLAUDE.md stub the same way runInit does: refuses with
+ * ExistingClaudeMdError (bypassable with --force) if the target's existing
+ * CLAUDE.md isn't already a Kenovis-managed stub, instead of silently
+ * discarding a customer's own edits on every sync. See AI/memory/learnings.md
+ * Learning-006, which found and fixed this exact asymmetry for init's
+ * --force path but never carried the fix over to sync.
  */
 export async function runSync(
   fs: FileSystemPort,
@@ -56,10 +67,17 @@ export async function runSync(
     throw new NotInstalledError(frameworkDir);
   }
 
+  const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
+  if (!options.force && (await fs.exists(claudeStubPath))) {
+    const existingClaudeMd = await fs.readFile(claudeStubPath);
+    if (!isKenovisManagedClaudeStub(existingClaudeMd)) {
+      throw new ExistingClaudeMdError(claudeStubPath);
+    }
+  }
+
   await fs.removeTree(frameworkDir);
   await fs.copyTree(options.frameworkSourceDir, frameworkDir);
 
-  const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
   await fs.writeFile(claudeStubPath, claudeStubContent({ pending: false }));
 
   return {
