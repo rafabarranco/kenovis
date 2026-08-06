@@ -5,6 +5,8 @@
  */
 export interface FileSystemPort {
   exists(targetPath: string): Promise<boolean>;
+  /** Reads a file's full contents. Only call after confirming it exists. */
+  readFile(targetPath: string): Promise<string>;
   writeFile(targetPath: string, contents: string): Promise<void>;
   copyTree(sourceDir: string, targetDir: string): Promise<void>;
   /** Recursively deletes targetPath. No-op if it does not exist. */

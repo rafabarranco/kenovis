@@ -92,6 +92,7 @@ Hard Rules (No Exceptions)
 - The CLI must never require network access to a Kenovis-operated server — there is none. Install/sync only touch the npm registry and the local filesystem.
 - The CLI must never execute code found inside the target repository it is installing into.
 - The CLI must write the Framework layer under `.kenovis/` in the target repository (`.kenovis/AI/`, `.kenovis/README.md`), never at repo root — except `CLAUDE.md` (stub loading `.kenovis/AI/SYSTEM.md`) and `.claude/`, which stay at repo root because Claude Code requires it. The CLI must never overwrite, append to, or otherwise touch the target repository's own existing `README.md`, and must never fabricate one if none exists. See DECISIONS.md DECISION-017.
+- The CLI must never shell out to an AI tool's binary (`claude` or otherwise) to auto-run `/init-project` or `/adopt-project`. Auto-triggering those commands is achieved only through the `CLAUDE.md` stub's content (parametrized by pending/steady-state) and the `.kenovis/.setup-pending` marker file — both plain, tool-agnostic filesystem artifacts, never a spawned external process. See DECISIONS.md DECISION-018.
 ---
 Database
 
