@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { join } from "node:path";
 import { runSync } from "./sync.js";
 import { InMemoryFileSystem } from "../../infrastructure/filesystem/InMemoryFileSystem.js";
-import { NotInstalledError } from "../../domain/installation.js";
+import { InvalidFrameworkSourceError, NotInstalledError } from "../../domain/installation.js";
 
 test("runSync refuses to run when .kenovis/ does not exist", async () => {
   const fs = new InMemoryFileSystem();
@@ -13,6 +13,21 @@ test("runSync refuses to run when .kenovis/ does not exist", async () => {
     NotInstalledError,
   );
   assert.equal(fs.copiedTrees.length, 0);
+});
+
+test("runSync refuses a --source directory mixed with Product-layer content, leaving the existing .kenovis/ untouched", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  fs.seed("/repo-checkout/AI/SYSTEM.md", "# System");
+  fs.seed("/repo-checkout/PRODUCT/ROADMAP.md", "# Real roadmap — never meant to leave this repo");
+
+  await assert.rejects(
+    () => runSync(fs, { frameworkSourceDir: "/repo-checkout", targetDir: "/repo" }),
+    InvalidFrameworkSourceError,
+  );
+  assert.equal(fs.removedTrees.length, 0);
+  assert.equal(fs.copiedTrees.length, 0);
+  assert.ok(fs.files.has(join("/repo", ".kenovis")));
 });
 
 test("runSync removes the existing .kenovis/ before copying the new Framework Release in", async () => {

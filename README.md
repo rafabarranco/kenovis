@@ -15,6 +15,24 @@ The repository contains **two layers**:
 
 Everything in the product layer is currently a **placeholder** describing an example company. It is there to show the expected shape and depth of each document, not to define your product.
 
+## Getting started
+
+Install the Framework layer into your own repository with the CLI ([`kenovis` on npm](https://www.npmjs.com/package/kenovis)):
+
+```
+npx kenovis init
+```
+
+This writes the Framework layer into `.kenovis/` and a `CLAUDE.md` stub — never touches your existing `README.md` or code (DECISIONS.md → DECISION-016, DECISION-017). It inspects your repository first and tells you whether to follow "Starting a new product" (below) or "Adopting an existing product", based on what it actually finds — no flags required.
+
+To pull a newer Framework Release into an Installation later:
+
+```
+npx kenovis sync
+```
+
+`sync` mirror-replaces `.kenovis/` only. Product-layer files and your own code are never touched. Reversible via your repository's own `git diff` / `git checkout`. See [cli/README.md](cli/README.md) for the full command reference.
+
 ## Starting a new product
 
 Read [AI/commands/init-project.md](AI/commands/init-project.md). It lists exactly which files to empty and rewrite, in which order, and what to leave untouched.

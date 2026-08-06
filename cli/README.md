@@ -6,9 +6,9 @@
 
 This is where Kenovis's own implementation lives: the CLI that installs and syncs the Kenovis AI-OS (this repository's Framework layer) into a customer's repository. See [DECISIONS.md](../DECISIONS.md) DECISION-013 and [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md) for why this product has no backend or database.
 
-[PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is in progress. Shipped so far: the `init` command's install engine, bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags — greenfield/brownfield auto-detection (`init` inspects the target directory before installing and suggests `/init-project` or `/adopt-project` with the actual evidence found), and the `sync` command (updates an existing `.kenovis/` in place to a newer Framework Release — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub, never touches Product-layer files or the customer's own code; reversible via the customer's own `git diff`/`git checkout`, per RULE-INST-02). Per [DECISIONS.md](../DECISIONS.md) DECISION-016 and DECISION-017.
+[PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is done. Shipped: the `init` command's install engine, bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags — greenfield/brownfield auto-detection (`init` inspects the target directory before installing and suggests `/init-project` or `/adopt-project` with the actual evidence found), and the `sync` command (updates an existing `.kenovis/` in place to a newer Framework Release — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub, never touches Product-layer files or the customer's own code; reversible via the customer's own `git diff`/`git checkout`, per RULE-INST-02). Per [DECISIONS.md](../DECISIONS.md) DECISION-016 and DECISION-017.
 
-npm publishing is now wired up (`.github/workflows/publish.yml`): pushing a GitHub Release triggers CI to build, test, typecheck and `npm publish --provenance --access public` the package — never from a developer's local machine, per [ENGINEERING/SECURITY.md](../ENGINEERING/SECURITY.md) → Supply-Chain Security. Requires an `NPM_TOKEN` repository secret (npm automation token for the `kenovis` package/org) to exist before the first release is cut — not yet configured as of this writing.
+npm publishing is wired up (`.github/workflows/publish.yml`): pushing a GitHub Release triggers CI to build, test, typecheck and `npm publish --provenance --access public` the package — never from a developer's local machine, per [ENGINEERING/SECURITY.md](../ENGINEERING/SECURITY.md) → Supply-Chain Security. Latest publish: [`kenovis@0.2.0`](https://www.npmjs.com/package/kenovis) shipped from the `v0.2.0` GitHub Release, with provenance — closes the `--source` footgun found during Learning-004 smoke testing (`init`/`sync` now validate `--source` before touching anything). `npx kenovis init` now works against any external repository with no local setup.
 
 ## Cutting a release
 
@@ -40,7 +40,7 @@ Code follows the layering defined in [ENGINEERING/ARCHITECTURE.md](../ENGINEERIN
 
 ```
 src/
-├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content, AlreadyInstalledError/NotInstalledError, greenfield/brownfield detection
+├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content, AlreadyInstalledError/NotInstalledError/InvalidFrameworkSourceError, greenfield/brownfield detection
 ├── application/commands/
 │   ├── init.ts                                   install use case: orchestrates the domain rules against a FileSystemPort
 │   └── sync.ts                                   update use case: mirror-replaces .kenovis/ and the CLAUDE.md stub, nothing else
@@ -52,6 +52,8 @@ src/
 ```
 
 The dependency direction holds: `domain/` imports nothing from the layers around it; `application/` depends on the `FileSystemPort` interface, never on `NodeFileSystem` directly. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never touch a customer's own README.md, never write outside version control's reach. `src/application/commands/init.test.ts` asserts this directly against `InMemoryFileSystem`; `src/infrastructure/filesystem/NodeFileSystem.integration.test.ts` asserts it against a real filesystem in a temp directory.
+
+Both `init` and `sync` also validate `--source` itself before touching anything: its top level must contain only `AI/` and `README.md` (the shape `scripts/bundle-framework-assets.mjs` produces), or they throw `InvalidFrameworkSourceError` instead of copying. This guards a real footgun found by end-to-end testing — pointing `--source` at a full product repository checkout (e.g. this one) silently mirrored its Product-layer content (`COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, ...) into the target's `.kenovis/`. The check only ever inspects the local, operator-supplied `--source` path — never the target repository, which may legitimately contain a directory or file with any name at all (DECISION-016).
 
 ## Running it locally
 

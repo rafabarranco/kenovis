@@ -3,7 +3,11 @@ import { fileURLToPath } from "node:url";
 import { runInit } from "../application/commands/init.js";
 import { runSync } from "../application/commands/sync.js";
 import { NodeFileSystem } from "../infrastructure/filesystem/NodeFileSystem.js";
-import { AlreadyInstalledError, NotInstalledError } from "../domain/installation.js";
+import {
+  AlreadyInstalledError,
+  InvalidFrameworkSourceError,
+  NotInstalledError,
+} from "../domain/installation.js";
 
 export interface ParsedArgs {
   command: string;
@@ -107,7 +111,7 @@ async function runInitCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
     }
     return 0;
   } catch (error) {
-    if (error instanceof AlreadyInstalledError) {
+    if (error instanceof AlreadyInstalledError || error instanceof InvalidFrameworkSourceError) {
       console.error(`Error: ${error.message}`);
       return 1;
     }
@@ -130,7 +134,7 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
     console.log("\nReview the change with `git diff` before committing.");
     return 0;
   } catch (error) {
-    if (error instanceof NotInstalledError) {
+    if (error instanceof NotInstalledError || error instanceof InvalidFrameworkSourceError) {
       console.error(`Error: ${error.message}`);
       return 1;
     }

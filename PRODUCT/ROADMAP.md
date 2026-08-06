@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.8
+Version: 1.10
 ---
 Purpose
 
@@ -134,10 +134,11 @@ Slice 4 shipped via /next: the `sync` command. `runSync` (`cli/src/application/c
 
 Slice 5 shipped via /next: npm publish wiring. `cli/package.json` gained publish-readiness metadata (`repository`, `homepage`, `bugs`, `keywords`, `prepublishOnly` guard) and `.github/workflows/publish.yml` — triggered by a published GitHub Release, SHA-pinned, builds/tests/typechecks, verifies `cli/package.json`'s version matches the release tag, then `npm publish --provenance --access public` from CI only, per ENGINEERING/SECURITY.md's Supply-Chain Security requirement. `.github/workflows/ci.yml` gained a `cli-tests` job (build/typecheck/test on every push/PR) — previously `cli/` had zero CI coverage. See `cli/README.md` → "Cutting a release" for the tag/release steps.
 
-Explicitly NOT done yet:
-- The actual first publish. Requires an `NPM_TOKEN` repository secret (npm automation token, scoped to the `kenovis` package name — confirmed available on the registry) that only the founder can create and load, and a GitHub Release to be cut to trigger it.
+DONE (2026-08-05) — first publish. `kenovis@0.1.0` is live on the npm registry (published from CI via `.github/workflows/publish.yml`, triggered by the `v0.1.0` GitHub Release on `main`, with provenance). `npx kenovis init` now works for any external repository.
 
-Dependencies: none remaining for items 1-3. First real publish depends on the `NPM_TOKEN` secret being configured.
+DONE (2026-08-06) — second publish. `kenovis@0.2.0` closes the `--source` footgun found during Learning-004 smoke testing (`init`/`sync` now validate `--source` before touching anything) and documents `npx kenovis init`/`sync` in the root README's "Getting started" section. `CHANGELOG.md` cuts the framework layer's first versioned release, `[0.2.0]`, aligned with the npm package version rather than a separate number — the framework ships embedded inside the `kenovis` package, not through an independent channel.
+
+Dependencies: none remaining. All three Phase 0 "Immediate Priority" items are complete.
 ---
 Phase 1 — MVP
 
@@ -148,6 +149,12 @@ Prove that a real external software team can install Kenovis via CLI, complete /
 Target users
 
 Software developers and small development teams (COMPANY_OS.md → Initial Market Strategy).
+---
+Engineering Validation (2026-08-05, via /next)
+
+Smoke-tested end to end against a scratch external-like repository (own README.md, own `src/`): `npx kenovis@0.1.0 init` correctly left the existing README.md and code untouched, wrote `.kenovis/` + `CLAUDE.md` stub, and correctly detected the repository as brownfield (cited `src/` as evidence, suggested `/adopt-project`). `npx kenovis sync` (no `--source`, the real customer path — pulls the published bundle) produced an empty diff on an unchanged version, confirming idempotent mirror-replace with no spurious noise. See AI/memory/learnings.md Learning-004 for a related `--source` footgun found while testing (not customer-facing — only affects the local-dev `--source` escape hatch, not default usage).
+
+This validates the CLI Core Modules below work as documented. Still open for full Success Criteria: a real external team (not this smoke test) completing /init-project and shipping a feature via /feature without help.
 ---
 MVP Core Modules
 
@@ -195,6 +202,8 @@ Become indispensable for early-adopter software development teams.
 New Capabilities
 
 Paid open-core tier: additional specialized agents, priority support. Lightweight, explicitly opt-in feedback/telemetry loop (no default data collection — see ENGINEERING/SECURITY.md). Richer CLI update ergonomics (diff preview before sync, conflict detection against RULE-INST-01).
+
+Prerequisite (flagged 2026-08-06, via /analyze on `.kenovis/` distribution packaging): before this tier ships, run /architect for an ADR on the actual gating mechanism for premium agent content — a real check (backend + license key) at the moment it's built, not cosmetic obfuscation of the free base tier. The base tier's plain, human/AI-readable markdown distribution is an intentional commitment (DECISION-010 tool-agnosticism, DECISION-013 open-core) and should not be reversed to simulate protection it doesn't provide. Blocks "additional specialized agents" until resolved.
 ---
 Phase 2 Success Metrics
 

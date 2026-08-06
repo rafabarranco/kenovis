@@ -8,6 +8,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ### Added
 
+- `AI/policies/git.md` (2.0 → 2.1) → "Branch Naming" — documents `release/<version>` (e.g. `release/v0.2.0`) as the naming convention for release-prep branches, alongside the existing `feature/`, `bugfix/`, `hotfix/`, `refactor/`, `docs/` patterns. Same flow as `feature/XXXX` (branch from `development`, PR back into it) — a naming specialization, not a new flow.
+
+## [0.2.0] - 2026-08-06
+
+First versioned release of the framework layer, aligned with the `kenovis` npm package's own version — the framework ships embedded inside that package (`cli/scripts/bundle-framework-assets.mjs` bundles `AI/` into `dist/framework-assets/` at build time), so there is no separate distribution channel to version independently. See `cli/package.json` and `cli/README.md` → "Cutting a release".
+
+### Added
+
+- `AI/memory/learnings.md` → Learning-004: end-to-end smoke test of the published `kenovis@0.1.0` CLI against a scratch external-like repository confirmed `init`/`sync` behave as documented (brownfield correctly detected, existing README/code untouched, idempotent sync); also found `sync --source <dir>` mirrors an unfiltered directory, a footgun relevant to DECISION-017's planned Phase 2 self-migration.
+- `README.md` → "Getting started" section: documents `npx kenovis init` / `npx kenovis sync` as the actual installation path, ahead of "Starting a new product" / "Adopting an existing product". Closes a gap where the root README never mentioned the published CLI at all, blocking PRODUCT/ROADMAP.md Phase 1 MVP Success Criteria ("a team outside Kenovis can install the CLI... without help") and `AI/policies/documentation.md`'s README requirement to answer "How do I start?".
 - `LICENSE` (Apache 2.0).
 - `CONTRIBUTING.md` — contribution scope and rules for the two-layer repo.
 - `.github/ISSUE_TEMPLATE/` (bug report, feature request) and `.github/PULL_REQUEST_TEMPLATE.md`.
@@ -29,6 +39,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ### Changed
 
+- `cli/README.md` — documents that `init`/`sync` now validate `--source` itself before touching anything (must contain only `AI/` and `README.md`, or `InvalidFrameworkSourceError`), closing a footgun where `--source` pointed at a full product repository checkout silently mirrored its Product-layer content into a target's `.kenovis/`. Found via end-to-end smoke testing (`AI/memory/learnings.md` Learning-004).
+- `cli/README.md` — Phase 0 item 3 marked done (was "in progress"); NPM_TOKEN paragraph corrected to state `kenovis@0.1.0` is live on npm instead of "not yet configured as of this writing", which was stale since the DONE (2026-08-05) publish entry landed in PRODUCT/ROADMAP.md.
 - `ENGINEERING/ARCHITECTURE.md` (1.0 → 1.1) → "Hard Rules": the CLI must write the Framework layer under `.kenovis/` in the target repository (hidden, dot-directory convention), never at repo root — except `CLAUDE.md` (stub) and `.claude/`, forced there by Claude Code autoload. The CLI must never touch a target repository's own existing `README.md`; Kenovis's explanatory README lives at `.kenovis/README.md` instead. See [DECISION-017](DECISIONS.md), the ADR that unblocks PRODUCT/ROADMAP.md Phase 0 item 3 (the CLI build).
 - No framework-mandated directory name for any Installation's code. `AI/commands/bootstrap.md` (2.1 → 2.4), `AI/commands/adopt-project.md` (1.0 → 1.3), `AI/commands/init-project.md` (1.2 → 1.4), `AI/SYSTEM.md` (1.1 → 1.3), `AI/workflows/architecture.md` (2.0 → 2.1), `AI/workflows/roadmap.md` (2.0 → 2.1), `AI/workflows/feature.md` (3.1 → 3.2), `AI/workflows/bugfix.md` (2.1 → 2.2), `AI/workflows/review.md` (2.1 → 2.2), `AI/policies/coding.md` (2.1 → 2.2), `AI/policies/documentation.md` (2.1 → 2.2), `README.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `.github/PULL_REQUEST_TEMPLATE.md`, `DOMAIN/DOMAIN_MODEL.md` (1.0 → 1.2), `DOMAIN/BUSINESS_RULES.md` (1.0 → 1.1) — removed a latent self-contradiction (`bootstrap.md` stated implementation "lives under a dedicated directory" as a hard rule while also saying "do not assume any particular directory layout") and retired a dedicated per-implementation `README.md` as a framework-referenced concept in favor of the single existing pointer, `ENGINEERING/ARCHITECTURE.md` → "Suggested Project Structure". Adoption never relocates a customer's existing implementation, and no Installation is required to have a directory with any specific name. See [DECISION-016](DECISIONS.md) (supersedes DECISION-015, same day).
 - Product-layer files (`COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/glossary.md`) reset from a fleshed-out example business to instructional placeholder scaffolding, ahead of the framework's first public release.
