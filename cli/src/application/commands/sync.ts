@@ -1,10 +1,14 @@
 import { join } from "node:path";
 import {
+  CLAUDE_MD_HASH_FILENAME,
   CLAUDE_STUB_FILENAME,
   claudeStubContent,
+  ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
+  hashClaudeMdContent,
   InvalidFrameworkSourceError,
   invalidFrameworkSourceEntries,
+  isClaudeMdSafeToOverwrite,
   NotInstalledError,
 } from "../../domain/installation.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
@@ -14,6 +18,8 @@ export interface SyncOptions {
   frameworkSourceDir: string;
   /** Repository holding the existing Installation to update. */
   targetDir: string;
+  /** Overwrite a CLAUDE.md that isn't already Kenovis-managed instead of refusing. */
+  force?: boolean;
 }
 
 export interface SyncResult {
@@ -39,6 +45,19 @@ export interface SyncResult {
  * throws InvalidFrameworkSourceError instead of touching the existing
  * .kenovis/ — see runInit's equivalent check for why this only ever inspects
  * the operator-supplied --source path, never the target repository.
+ *
+ * Also guards the CLAUDE.md stub the same way runInit does: refuses with
+ * ExistingClaudeMdError (bypassable with --force) if the target's existing
+ * CLAUDE.md isn't already a Kenovis-managed stub, instead of silently
+ * discarding a customer's own edits on every sync. See AI/memory/learnings.md
+ * Learning-006, which found and fixed this exact asymmetry for init's
+ * --force path but never carried the fix over to sync.
+ *
+ * The guard compares against a recorded content hash
+ * (`${FRAMEWORK_DIR_NAME}/${CLAUDE_MD_HASH_FILENAME}`, written by the prior
+ * install/sync) rather than only a marker-prefix check, so content appended
+ * below the stub is caught too, not just a CLAUDE.md that isn't Kenovis's at
+ * all — see isClaudeMdSafeToOverwrite and AI/memory/learnings.md Learning-007.
  */
 export async function runSync(
   fs: FileSystemPort,
@@ -56,11 +75,22 @@ export async function runSync(
     throw new NotInstalledError(frameworkDir);
   }
 
+  const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
+  const hashPath = join(frameworkDir, CLAUDE_MD_HASH_FILENAME);
+  if (!options.force && (await fs.exists(claudeStubPath))) {
+    const existingClaudeMd = await fs.readFile(claudeStubPath);
+    const recordedHash = (await fs.exists(hashPath)) ? await fs.readFile(hashPath) : null;
+    if (!isClaudeMdSafeToOverwrite(existingClaudeMd, recordedHash)) {
+      throw new ExistingClaudeMdError(claudeStubPath);
+    }
+  }
+
   await fs.removeTree(frameworkDir);
   await fs.copyTree(options.frameworkSourceDir, frameworkDir);
 
-  const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
-  await fs.writeFile(claudeStubPath, claudeStubContent({ pending: false }));
+  const newClaudeMdContent = claudeStubContent({ pending: false });
+  await fs.writeFile(claudeStubPath, newClaudeMdContent);
+  await fs.writeFile(hashPath, hashClaudeMdContent(newClaudeMdContent));
 
   return {
     frameworkSyncedTo: frameworkDir,
