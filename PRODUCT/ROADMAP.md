@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.12
+Version: 1.13
 ---
 Purpose
 
@@ -137,6 +137,8 @@ Slice 5 shipped via /next: npm publish wiring. `cli/package.json` gained publish
 DONE (2026-08-05) — first publish. `kenovis@0.1.0` is live on the npm registry (published from CI via `.github/workflows/publish.yml`, triggered by the `v0.1.0` GitHub Release on `main`, with provenance). `npx kenovis init` now works for any external repository.
 
 DONE (2026-08-06) — second publish. `kenovis@0.2.0` closes the `--source` footgun found during Learning-004 smoke testing (`init`/`sync` now validate `--source` before touching anything) and documents `npx kenovis init`/`sync` in the root README's "Getting started" section. `CHANGELOG.md` cuts the framework layer's first versioned release, `[0.2.0]`, aligned with the npm package version rather than a separate number — the framework ships embedded inside the `kenovis` package, not through an independent channel.
+
+DONE (2026-08-06) — third publish. `kenovis@0.3.0` ships DECISION-018 (`kenovis add`, auto-trigger `init-project`/`adopt-project`, cross-detection refusal, bare autodetect dispatch) and DECISION-019 (Collision Guard against silent Product-layer overwrite) together — both had landed on `development` since 0.2.0 but not yet been promoted through `preproduction`/`main` or tagged. `CHANGELOG.md` cuts `[0.3.0]`. Also the first release validated end to end by a real external team (see Phase 1 → "Real External Validation" below), not just this repository's own smoke tests.
 
 Dependencies: none remaining. All three Phase 0 "Immediate Priority" items are complete.
 
