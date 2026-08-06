@@ -6,6 +6,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-08-06
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0]/[0.3.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release".
+
+### Added
+
+- `cli/README.md` — "Upgrading" section documenting the manual upgrade path for an existing Installation (reinstall the CLI, `kenovis sync <targetDir>`, review with `git diff`).
+
+### Changed (Breaking)
+
+- `kenovis sync` on a target whose root `CLAUDE.md` isn't a Kenovis-managed stub at all (e.g. authored independently before adopting Kenovis) now **refuses** instead of silently overwriting it — pass `--force` to overwrite anyway. Anyone scripting `kenovis sync` against such a target on purpose needs `--force` after this ships. As of this same release, this also refuses on notes appended below an otherwise-intact Kenovis stub, closing the gap Learning-007 found — see Learning-008.
+
+### Fixed
+
+- `cli/src/application/commands/sync.ts` — `sync` no longer silently discards a customer's own edits to the root `CLAUDE.md` stub. New `ExistingClaudeMdError`/`isKenovisManagedClaudeStub` check, same pattern `init`/`add` already had (`ExistingClaudeMdError`, bypassable with `--force`) — this exact asymmetry was found and fixed for `init`'s `--force` path by `AI/memory/learnings.md` Learning-006 but never carried over to `sync`. Found via `/analyze` on the v0.1.0/v0.2.0 → v0.3.0 upgrade path (PRODUCT/ROADMAP.md Phase 0 item 6).
+- `cli/src/domain/installation.ts` — `init`/`add`/`sync`'s CLAUDE.md guard now also catches content appended below an otherwise-untouched stub, which the marker-prefix check (`isKenovisManagedClaudeStub`) could not see. New `isClaudeMdSafeToOverwrite` compares against a recorded content hash (`.kenovis/.claude-md.sha256`, written by every install/sync) when one exists, falling back to the prefix check only for an Installation that predates this fix and has no recorded hash yet. Closes Learning-007.
+
 ## [0.3.0] - 2026-08-06
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release".

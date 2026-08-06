@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.1
+Version: 1.3
 ---
 Scope
 
@@ -144,6 +144,66 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — a startsWith check only proves "not a foreign file," not "nothing appended"
+
+## Learning-007
+
+Date:
+2026-08-06
+
+Category:
+Engineering
+
+Context:
+End-to-end smoke test of the real v0.1.0/v0.2.0 → dev-build upgrade path (PRODUCT/ROADMAP.md Phase 0 item 6): installed a real published `kenovis@0.2.0` into a scratch repository, then ran `kenovis sync` — first with the CLAUDE.md stub untouched (should pass), then again after appending a line of "customer" content below the stub's existing marker line (should now be caught by the new `ExistingClaudeMdError` guard just added to `sync`).
+
+Problem:
+The append case was not caught. `sync` silently overwrote the CLAUDE.md and discarded the appended line, even though the new guard (this same round of work) was built specifically to stop `sync` from silently discarding customer content.
+
+What happened:
+`isKenovisManagedClaudeStub` (`cli/src/domain/installation.ts`) checks `content.startsWith(CLAUDE_STUB_MARKER)` — true for "this file's first line is Kenovis's own," which is also true for "Kenovis's stub plus anything appended after it." The check answers "did Kenovis originate this file," not "is everything currently in this file Kenovis's own content." `init`/`add` have carried this same gap since Learning-006 introduced the check; `sync` just inherited it by reusing the identical function, so the smoke test exposed a pre-existing limitation, not a new regression from this round's change.
+
+Root cause:
+A prefix check is the right tool for "was this file ever touched by us at all" but the wrong tool for "is this file's current content entirely ours" — those are different questions, and the guard was written to answer the first while being relied on (by this session, in cli/README.md's first draft of the Upgrading section) to answer the second.
+
+Learning:
+When a "did we write this" check is a prefix/marker match rather than a full-content hash or diff, its guarantee stops at "we wrote the beginning" — appended content downstream of the marker is invisible to it. Before documenting a guard's coverage (e.g. "sync won't lose your notes"), test the specific case of *appending* to an otherwise-recognized file, not just replacing it outright — the two produce different, easily-conflated results against a prefix check.
+
+Future action:
+Closing this gap properly (e.g. hashing/diffing the stub's own known content against what's on disk, or requiring customer notes to live in a separate file) is scoped as a real backlog item, not silently fixed inside this round's work — see PRODUCT/ROADMAP.md Phase 0 item 6 follow-up. Until then, `cli/README.md` documents the limitation explicitly instead of overstating the guard's coverage.
+
+Closed by Learning-008: a recorded content hash replaces the prefix check as the primary signal.
+
+---
+Example: Project — a prefix check and a full-content hash answer different questions; know which one a guard actually needs
+
+## Learning-008
+
+Date:
+2026-08-06
+
+Category:
+Engineering
+
+Context:
+Closing the backlog item Learning-007 scoped: replace the `isKenovisManagedClaudeStub` prefix check with something that also catches content appended below an otherwise-untouched CLAUDE.md stub, without breaking the normal upgrade path (a customer syncing across Framework Releases whose stub *wording itself* has changed between versions — DECISION-018 already changed it once).
+
+Problem:
+A full-content hash of the *current* version's `claudeStubContent()` output would have made every cross-version upgrade fail the guard — an Installation's on-disk CLAUDE.md was written by whatever version wrote it last, not necessarily the version now running `sync`, so its exact text can legitimately differ from what the current code would generate. Comparing "what's on disk" to "what we'd write today" conflates two different questions.
+
+What was built:
+`hashClaudeMdContent` hashes content (SHA-256) as a pure function; `isClaudeMdSafeToOverwrite(existingContent, recordedHash)` compares the on-disk file against a hash *recorded at the time it was written*, not against the current code's output. Every `init`/`add`/`sync` writes `.kenovis/.claude-md.sha256` alongside the CLAUDE.md stub, capturing exactly what that run wrote. The next run reads that sidecar (if present) and requires an exact match — byte-identical, so append is caught — before treating the existing file as safe to overwrite. No sidecar (an Installation from before this fix) falls back to the old prefix check, unchanged from today's behavior, until that Installation's next successful install/sync records one.
+
+Root cause of the near-miss:
+The initial instinct — "compare against what the current stub template generates" — reused the same shape of mistake the prefix check itself made: matching against a fixed reference is invisible to legitimate drift the reference itself doesn't yet know about (there, appended content after the marker; here, a stub written by an older code version). A hash *recorded at write time* rather than *computed from current code* sidesteps this because it never claims to know what content should look like — only whether today's file matches what was actually left there last.
+
+Learning:
+When replacing a weak "did we write this" check, ask what the new check's reference point is: the *current* code's output (breaks the moment that output legitimately changes across versions) or a *fact recorded at the time of the original write* (survives that same evolution because it never re-derives the expectation, it stores it). The second is more code (a sidecar to write and read) but is the only one that's actually correct across releases — the extra state was the point, not overhead to trim.
+
+Future action:
+None — this closes Learning-007. The remaining, explicitly accepted gap: an Installation that has never run install/sync under this fix has no recorded hash yet, so its very next sync still relies on the prefix check for that one transition, same limitation as before. Documented in `cli/README.md`'s Upgrading section rather than silently assumed away.
 
 ---
 Example: Project — a "forced" file-write path was never audited against a file the CLI doesn't fully own
