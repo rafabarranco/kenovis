@@ -1,6 +1,6 @@
 # Adopt Project Command
 
-Version: 1.4
+Version: 1.5
 
 ---
 
@@ -59,6 +59,22 @@ If that still lists the product-layer files (unrewritten) AND the repository alr
 
 ---
 
+# Collision Guard
+
+Before rewriting any Product-layer file in Steps 3-8, check it:
+
+```
+head -1 <file>
+```
+
+If the marker is missing, the file predates this command and may not be Kenovis's to overwrite — a brownfield target is exactly the case most likely to already have its own file at that path. Stop. Ask the human: overwrite it, or move it aside first. Do not write that file until answered.
+
+Same escape-hatch shape as `ExistingClaudeMdError` in `cli/src/domain/installation.ts` — a file this command is allowed to own is not the same guarantee as a file it may discard sight unseen (AI/memory/learnings.md Learning-006).
+
+Files that already carry the marker need no confirmation — that is the expected, normal case.
+
+---
+
 # Step 1 - Audit The Existing Code
 
 Before asking the human anything, discover what the code already says.
@@ -111,6 +127,8 @@ Do not continue without answers. Never invent a company. Never keep example cont
 COMPANY_OS.md
 ```
 
+Collision guard applies (see above).
+
 Same as `init-project.md` Step 2: vision, thesis, market strategy, ideal customer profile, principles, competitive advantages, definition of success.
 
 Code has no opinion on this layer. It depends entirely on the Step 2 answers.
@@ -122,6 +140,8 @@ Code has no opinion on this layer. It depends entirely on the Step 2 answers.
 ```
 DECISIONS.md
 ```
+
+Collision guard applies (see above).
 
 Keep the same framework decisions `init-project.md` Step 3 keeps. Delete every other inherited decision.
 
@@ -143,6 +163,8 @@ DOMAIN/DOMAIN_MODEL.md
 DOMAIN/BUSINESS_RULES.md
 ```
 
+Collision guard applies (see above).
+
 Derive entities and rules from the real models/schemas found in Step 1, not from the example content and not invented.
 
 Where the code's entity names or relationships are ambiguous, confirm meaning with the human rather than guessing. Where a business rule is enforced in code (a validation, a constraint) but its business reason isn't obvious from the code alone, ask why — the code shows *what*, not always *why*.
@@ -157,6 +179,8 @@ PRODUCT/FEATURES.md
 PRODUCT/USER_RESEARCH.md
 PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
+
+Collision guard applies (see above).
 
 Vision and strategy need human input — code cannot supply them. Rewrite with the human, same as `init-project.md` Step 5.
 
@@ -174,6 +198,8 @@ ENGINEERING/DATABASE.md
 ENGINEERING/SECURITY.md
 ```
 
+Collision guard applies (see above).
+
 Unlike `init-project.md` Step 6, do not "decide explicitly." Fill these from the Step 1 audit: the stack, database engine, tenancy model, authentication approach, and deployment target the code already runs.
 
 The human's role here is to confirm or correct the audit, not to choose from a blank slate. If the human wants to change something the code currently does differently, that is a new decision going forward — record it as such in DECISIONS.md, separate from the reconstruction entries.
@@ -187,6 +213,8 @@ AUTOMATIONS/customer-onboarding.md
 AUTOMATIONS/release-process.md
 AUTOMATIONS/user-feedback.md
 ```
+
+Collision guard applies (see above).
 
 Where the repository already has evidence of these processes (a CI/CD pipeline, an onboarding script, a support inbox integration), derive from that evidence and confirm with the human. Where no evidence exists, this needs human input the same as `init-project.md` Step 7 — do not invent a process to fill the document.
 
@@ -319,6 +347,8 @@ Adoption is complete when:
 ✓ The customer's existing code is byte-identical to before this command ran, in its original location.
 
 ✓ Every factual claim in ENGINEERING/ and DOMAIN/ has a code citation or an explicit Low-confidence marker.
+
+✓ No unmarked pre-existing file was overwritten without the human confirming.
 
 ✓ Framework files are byte-identical to before.
 
