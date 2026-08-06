@@ -185,3 +185,30 @@ test("runSync against a real filesystem overwrites a customer-edited CLAUDE.md w
     assert.match(claudeMd, /Kenovis AI-OS/);
   });
 });
+
+test("runSync against a real filesystem refuses notes appended below an otherwise-untouched stub (Learning-007)", async () => {
+  await withTempDirs(async (sourceDir, targetDir) => {
+    await mkdir(join(sourceDir, "AI"), { recursive: true });
+    await writeFile(join(sourceDir, "AI", "SYSTEM.md"), "# System\n");
+    await writeFile(join(sourceDir, "README.md"), "# Framework explanation\n");
+
+    const fs = new NodeFileSystem();
+    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir, invokedAs: "init" });
+    // First sync establishes the recorded hash of what this CLI actually wrote.
+    await runSync(fs, { frameworkSourceDir: sourceDir, targetDir });
+
+    const syncedClaudeMd = await readFile(join(targetDir, "CLAUDE.md"), "utf8");
+    await writeFile(
+      join(targetDir, "CLAUDE.md"),
+      `${syncedClaudeMd}\nMy own notes appended below the stub.\n`,
+    );
+
+    await assert.rejects(
+      () => runSync(fs, { frameworkSourceDir: sourceDir, targetDir }),
+      ExistingClaudeMdError,
+    );
+
+    const claudeMd = await readFile(join(targetDir, "CLAUDE.md"), "utf8");
+    assert.match(claudeMd, /My own notes appended below the stub\./);
+  });
+});

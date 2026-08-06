@@ -20,7 +20,7 @@ An existing Installation does not auto-detect a newer Framework Release today (P
 2. Run `kenovis sync <targetDir>` — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub to the new Framework Release, same as any other sync.
 3. Review the change with `git diff` before committing (RULE-INST-02) — this is the same review step any sync needs, not upgrade-specific.
 
-If your root `CLAUDE.md` was never written by this CLI at all (predates adopting Kenovis, or you replaced its content), `sync` refuses to overwrite it unless `--force` is passed — same guard `init`/`add` already give. This check only looks at the file's first line, so it does **not** catch notes appended below Kenovis's own stub content while that first line is untouched — those are silently overwritten on sync today. Keep any of your own `CLAUDE.md` notes in a separate file (or below a clear divider you check by hand before syncing) until this is closed — see `AI/memory/learnings.md` Learning-007.
+If your root `CLAUDE.md` was never written by this CLI at all (predates adopting Kenovis, or you replaced its content), or if you've added your own notes below Kenovis's own stub content, `init --force`/`add --force`/`sync` refuse to overwrite it unless `--force` is passed — a recorded content hash (`.kenovis/.claude-md.sha256`) catches both cases, not just the first (closes the gap `AI/memory/learnings.md` Learning-007 documented; see Learning-008 for the fix). An Installation that predates this fix falls back to the older, weaker first-line check until its next successful install/sync records a hash.
 
 ## Cutting a release
 
@@ -52,7 +52,7 @@ Code follows the layering defined in [ENGINEERING/ARCHITECTURE.md](../ENGINEERIN
 
 ```
 src/
-├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content (pending/steady-state), .setup-pending naming, AlreadyInstalledError/NotInstalledError/InvalidFrameworkSourceError/BrownfieldDetectedError/GreenfieldDetectedError/ExistingClaudeMdError, greenfield/brownfield detection, isKenovisManagedClaudeStub
+├── domain/installation.ts                       .kenovis/ naming, CLAUDE.md stub content (pending/steady-state), .setup-pending naming, AlreadyInstalledError/NotInstalledError/InvalidFrameworkSourceError/BrownfieldDetectedError/GreenfieldDetectedError/ExistingClaudeMdError, greenfield/brownfield detection, isKenovisManagedClaudeStub/isClaudeMdSafeToOverwrite/hashClaudeMdContent
 ├── application/commands/
 │   ├── init.ts                                   install use case: orchestrates the domain rules against a FileSystemPort, refuses on a detected-brownfield target unless invoked as "add" or given --force
 │   ├── add.ts                                     thin wrapper reusing init.ts's runInit with invokedAs: "add" — refuses symmetrically on a detected-greenfield target
@@ -64,7 +64,7 @@ src/
 └── cli/bin.ts                                     argv parsing, default --source resolution, calls the init/add/sync use cases, bare-invocation autodetect dispatch
 ```
 
-The dependency direction holds: `domain/` imports nothing from the layers around it; `application/` depends on the `FileSystemPort` interface, never on `NodeFileSystem` directly. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never touch a customer's own README.md, never write outside version control's reach. The same protection extends to a customer's own pre-existing root `CLAUDE.md`: `init`/`add`/`sync` all refuse to overwrite one that isn't already Kenovis-managed unless `--force` is passed (`ExistingClaudeMdError`) — a real risk given the target segment already uses agentic tooling (COMPANY_OS.md), so a pre-Kenovis or hand-edited `CLAUDE.md` is a realistic case, not an edge case. `sync`'s guard was added later than `init`/`add`'s — see `AI/memory/learnings.md` Learning-006 for the gap it closes. `src/application/commands/init.test.ts`/`sync.test.ts` assert this directly against `InMemoryFileSystem`; `src/infrastructure/filesystem/NodeFileSystem.integration.test.ts` asserts it against a real filesystem in a temp directory.
+The dependency direction holds: `domain/` imports nothing from the layers around it; `application/` depends on the `FileSystemPort` interface, never on `NodeFileSystem` directly. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never touch a customer's own README.md, never write outside version control's reach. The same protection extends to a customer's own pre-existing root `CLAUDE.md`: `init`/`add`/`sync` all refuse to overwrite one that isn't safe to overwrite unless `--force` is passed (`ExistingClaudeMdError`) — a real risk given the target segment already uses agentic tooling (COMPANY_OS.md), so a pre-Kenovis or hand-edited `CLAUDE.md` is a realistic case, not an edge case. `isClaudeMdSafeToOverwrite` compares against a recorded content hash (`.kenovis/.claude-md.sha256`, written by the prior install/sync) when one exists, so content appended below an otherwise-intact stub is caught too, not just a file that was never Kenovis's — falls back to the older `isKenovisManagedClaudeStub` marker-prefix check for an Installation with no recorded hash yet. `sync`'s guard was added later than `init`/`add`'s — see `AI/memory/learnings.md` Learning-006/007/008 for the gaps found and closed. `src/application/commands/init.test.ts`/`sync.test.ts` assert this directly against `InMemoryFileSystem`; `src/infrastructure/filesystem/NodeFileSystem.integration.test.ts` asserts it against a real filesystem in a temp directory.
 
 A `--force` re-install always mirror-replaces `.kenovis/` (`removeTree` then `copyTree`), the same semantics `sync` already used — never a merge that could leave a file retired from an older Framework Release behind.
 
@@ -75,7 +75,7 @@ Both `init` and `sync` also validate `--source` itself before touching anything:
 ```
 npm install
 npm run build      # bundles Framework layer assets, then compiles TypeScript
-npm test           # 75 tests: domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
+npm test           # 83 tests: domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
 npm run typecheck
 node bin/kenovis.js init <targetDir>                                    # uses the bundled Framework layer
 node bin/kenovis.js init <targetDir> --source <customFrameworkDir>      # or install something else instead

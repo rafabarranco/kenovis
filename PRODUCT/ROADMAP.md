@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.16
+Version: 1.17
 ---
 Purpose
 
@@ -181,6 +181,12 @@ Real upgrade-path smoke test run: `npx kenovis@0.2.0 init` against a scratch git
 The smoke test also found a real, previously-undocumented gap, not a regression from this change: `isKenovisManagedClaudeStub` checks only the file's first line, so a customer who *appends* their own notes below Kenovis's existing stub content (marker line untouched) still loses those notes silently on `sync` — the new guard only catches a `CLAUDE.md` that isn't Kenovis-managed at all, e.g. authored independently before adopting Kenovis. `init`/`add` have carried this exact gap since it was introduced (Learning-006); this round didn't introduce it, but did discover and document it via the smoke test that was this item's own scope. Recorded as `AI/memory/learnings.md` Learning-007; `cli/README.md`'s Upgrading section states the limitation explicitly rather than overstating the guard's coverage. Closing it properly (hash/diff the stub's known content instead of a prefix check, or require customer notes live in a separate file) is a follow-up, not done here — out of this item's scope, which was porting the existing guard pattern to `sync`, not redesigning it.
 
 Dependencies: none remaining. All of Phase 0 item 6 is complete except the deferred version-discovery active check, which Phase 2 → New Capabilities already scopes separately (not blocking here — `cli/README.md`'s "Upgrading" section covers the same discovery gap today at near-zero cost, per that Phase 2 note).
+
+7. DONE (2026-08-06, via /next) — close the Learning-007 follow-up: the CLAUDE.md guard's append-content blind spot.
+
+Founder chose this as the next item once Phase 0 items 1-6 were confirmed complete and Phase 1's own success criteria already validated (no other unscheduled roadmap item existed) — see this session's /next run.
+
+Shipped: `cli/src/domain/installation.ts` gained `hashClaudeMdContent`/`isClaudeMdSafeToOverwrite` and the `CLAUDE_MD_HASH_FILENAME` (`.kenovis/.claude-md.sha256`) sidecar, recorded by every `init`/`add`/`sync` alongside the stub it writes. The guard now compares the on-disk CLAUDE.md against that recorded hash — byte-identical or refuse — instead of only checking the marker line's prefix, so content appended below an otherwise-untouched stub is caught too. An Installation with no recorded hash yet (predates this fix) falls back to the old prefix check for its next transition only. 8 new tests (75 → 83 total in `cli/`), typecheck/build clean, real end-to-end smoke test (`kenovis init` → `sync` → append notes → `sync` refuses → `sync --force` overwrites) confirmed the exact Learning-007 scenario is now caught. Recorded as `AI/memory/learnings.md` Learning-008.
 ---
 Phase 1 — MVP
 
