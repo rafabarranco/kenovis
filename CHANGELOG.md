@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Added
+
+- `AI/policies/git.md` (2.0 → 2.1) → "Branch Naming" — documents `release/<version>` (e.g. `release/v0.2.0`) as the naming convention for release-prep branches, alongside the existing `feature/`, `bugfix/`, `hotfix/`, `refactor/`, `docs/` patterns. Same flow as `feature/XXXX` (branch from `development`, PR back into it) — a naming specialization, not a new flow.
+
 ## [0.2.0] - 2026-08-06
 
 First versioned release of the framework layer, aligned with the `kenovis` npm package's own version — the framework ships embedded inside that package (`cli/scripts/bundle-framework-assets.mjs` bundles `AI/` into `dist/framework-assets/` at build time), so there is no separate distribution channel to version independently. See `cli/package.json` and `cli/README.md` → "Cutting a release".
