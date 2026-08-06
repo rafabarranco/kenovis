@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { NodeFileSystem } from "./NodeFileSystem.js";
 import { runInit } from "../../application/commands/init.js";
 import { runSync } from "../../application/commands/sync.js";
-import { NotInstalledError } from "../../domain/installation.js";
+import { InvalidFrameworkSourceError, NotInstalledError } from "../../domain/installation.js";
 
 async function withTempDirs(
   run: (sourceDir: string, targetDir: string) => Promise<void>,
@@ -58,6 +58,30 @@ test("runSync against a real filesystem replaces stale files from an older relea
     assert.equal(newAgent, "# Added in v2\n");
 
     await assert.rejects(() => access(join(targetDir, ".kenovis", "AI", "old-agent.md")));
+  });
+});
+
+test("runSync against a real filesystem refuses --source pointed at a whole product repo checkout (the found footgun), leaving .kenovis/ untouched", async () => {
+  await withTempDirs(async (sourceDir, targetDir) => {
+    await writeFile(join(sourceDir, "README.md"), "# Framework explanation v1\n");
+    const fs = new NodeFileSystem();
+    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir });
+
+    // Simulate --source pointed at a full repo checkout instead of the bundled
+    // dist/framework-assets/ — this reproduces the smoke-test finding recorded
+    // in AI/memory/learnings.md Learning-004.
+    await mkdir(join(sourceDir, "PRODUCT"), { recursive: true });
+    await writeFile(join(sourceDir, "COMPANY_OS.md"), "# Real company context\n");
+    await writeFile(join(sourceDir, "PRODUCT", "ROADMAP.md"), "# Real roadmap\n");
+
+    await assert.rejects(
+      () => runSync(fs, { frameworkSourceDir: sourceDir, targetDir }),
+      InvalidFrameworkSourceError,
+    );
+
+    const systemReadme = await readFile(join(targetDir, ".kenovis", "README.md"), "utf8");
+    assert.equal(systemReadme, "# Framework explanation v1\n");
+    await assert.rejects(() => access(join(targetDir, ".kenovis", "COMPANY_OS.md")));
   });
 });
 

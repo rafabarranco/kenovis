@@ -72,6 +72,47 @@ export class NotInstalledError extends Error {
 }
 
 /**
+ * Top-level entries a legitimate Framework-layer source directory may
+ * contain, mirroring scripts/bundle-framework-assets.mjs's own output shape
+ * (AI/ minus memory/, plus README.md) — the one shape Kenovis itself defines
+ * for a Framework bundle. This is deliberately an allowlist of that known
+ * shape, not a blocklist of Product-layer-looking names: --source is a local,
+ * operator-supplied path (the bundled package assets, or a custom directory
+ * for local testing per cli/README.md), never the target repository — which
+ * may legitimately contain files or directories with any name at all
+ * (DECISION-016), so no name-based rule may ever be applied to the target.
+ */
+const FRAMEWORK_SOURCE_ALLOWED_ENTRIES = new Set(["AI", TARGET_README_FILENAME]);
+
+export class InvalidFrameworkSourceError extends Error {
+  constructor(
+    public readonly sourceDir: string,
+    public readonly unexpectedEntries: string[],
+  ) {
+    super(
+      `${sourceDir} does not look like a Framework-layer bundle: found ` +
+        `${unexpectedEntries.join(", ")} at its top level. A Framework source ` +
+        `directory must contain only AI/ and README.md (see ` +
+        `scripts/bundle-framework-assets.mjs). Pointing --source at something wider ` +
+        `— e.g. a full product repository — would copy its Product-layer content ` +
+        `into the target's ${FRAMEWORK_DIR_NAME}/.`,
+    );
+    this.name = "InvalidFrameworkSourceError";
+  }
+}
+
+/**
+ * Entries in a --source directory that fall outside the known Framework
+ * bundle shape. Dotfiles/dot-directories (.git, .DS_Store, .github, ...) are
+ * ignored — harmless local artifacts, never Product-layer content.
+ */
+export function invalidFrameworkSourceEntries(sourceDirEntries: string[]): string[] {
+  return sourceDirEntries
+    .filter((entry) => !entry.startsWith(".") && !FRAMEWORK_SOURCE_ALLOWED_ENTRIES.has(entry))
+    .sort();
+}
+
+/**
  * The stub written to the target repository's root CLAUDE.md. Kept minimal —
  * Claude Code requires CLAUDE.md at repo root to autoload it (DECISION-010),
  * but everything it needs is in .kenovis/AI/SYSTEM.md.
