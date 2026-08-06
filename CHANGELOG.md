@@ -6,13 +6,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-08-06
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0]/[0.3.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release".
+
 ### Added
 
 - `cli/README.md` — "Upgrading" section documenting the manual upgrade path for an existing Installation (reinstall the CLI, `kenovis sync <targetDir>`, review with `git diff`).
 
 ### Changed (Breaking)
 
-- `kenovis sync` on a target whose root `CLAUDE.md` isn't a Kenovis-managed stub at all (e.g. authored independently before adopting Kenovis) now **refuses** instead of silently overwriting it — pass `--force` to overwrite anyway. Anyone scripting `kenovis sync` against such a target on purpose needs `--force` after this ships. As of this same `[Unreleased]` cycle, this also refuses on notes appended below an otherwise-intact Kenovis stub, closing the gap Learning-007 found — see Learning-008.
+- `kenovis sync` on a target whose root `CLAUDE.md` isn't a Kenovis-managed stub at all (e.g. authored independently before adopting Kenovis) now **refuses** instead of silently overwriting it — pass `--force` to overwrite anyway. Anyone scripting `kenovis sync` against such a target on purpose needs `--force` after this ships. As of this same release, this also refuses on notes appended below an otherwise-intact Kenovis stub, closing the gap Learning-007 found — see Learning-008.
 
 ### Fixed
 
