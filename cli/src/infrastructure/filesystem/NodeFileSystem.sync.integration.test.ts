@@ -43,7 +43,7 @@ test("runSync against a real filesystem replaces stale files from an older relea
     await writeFile(join(sourceDir, "README.md"), "# Framework explanation v1\n");
 
     const fs = new NodeFileSystem();
-    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir });
+    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir, invokedAs: "init" });
 
     await rm(join(sourceDir, "AI", "old-agent.md"));
     await writeFile(join(sourceDir, "AI", "SYSTEM.md"), "# System v2\n");
@@ -65,7 +65,7 @@ test("runSync against a real filesystem refuses --source pointed at a whole prod
   await withTempDirs(async (sourceDir, targetDir) => {
     await writeFile(join(sourceDir, "README.md"), "# Framework explanation v1\n");
     const fs = new NodeFileSystem();
-    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir });
+    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir, invokedAs: "init" });
 
     // Simulate --source pointed at a full repo checkout instead of the bundled
     // dist/framework-assets/ — this reproduces the smoke-test finding recorded
@@ -89,7 +89,7 @@ test("runSync against a real filesystem never touches the target's own README.md
   await withTempDirs(async (sourceDir, targetDir) => {
     await writeFile(join(sourceDir, "README.md"), "# Framework explanation v1\n");
     const fs = new NodeFileSystem();
-    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir });
+    await runInit(fs, { frameworkSourceDir: sourceDir, targetDir, invokedAs: "init" });
 
     await writeFile(join(targetDir, "README.md"), "# Customer's real product\n");
     await writeFile(join(targetDir, "COMPANY_OS.md"), "# Real company context\n");

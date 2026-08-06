@@ -146,6 +146,64 @@ Future action:
 Use adapters for external integrations.
 
 ---
+Example: Project — a "forced" file-write path was never audited against a file the CLI doesn't fully own
+
+## Learning-006
+
+Date:
+2026-08-06
+
+Category:
+Architecture
+
+Context:
+`/analyze` immediately after DECISION-018 shipped (auto-trigger `init-project`/`adopt-project` via a `.kenovis/.setup-pending` marker and a parametrized `CLAUDE.md` stub), asking specifically whether `kenovis init --force` on an existing project would overwrite the customer's own files.
+
+Problem:
+`runInit` always wrote the root `CLAUDE.md` stub via an unconditional `writeFile`, with no check for whether a file already existed there — and if it did, whether it was Kenovis's own. `kenovis add`, the *correct, documented, non-force* command for an existing project, silently discarded a customer's own pre-existing `CLAUDE.md` on every normal run.
+
+What happened:
+DECISION-017 established `CLAUDE.md` as "the one file Kenovis is forced to write at repo root" (Claude Code's autoload requirement) and reasoned carefully about never touching the customer's `README.md` — but never asked the symmetric question about `CLAUDE.md` itself: what if the customer already has one, unrelated to Kenovis? COMPANY_OS.md's own Ideal Customer Profile — developers "already fluent in agentic tooling" — makes a pre-existing `CLAUDE.md` a realistic case, not a hypothetical one. Separately, the same audit found `init --force` re-installing over an existing `.kenovis/` merged instead of mirror-replaced (Node's `fs.cp` defaults to overwrite-in-place, not wipe-then-copy) — `sync` already did this correctly (`removeTree` then `copyTree`) but `init`'s `--force` path never reused that pattern.
+
+Root cause:
+A file being "forced"/owned by the tool (CLAUDE.md) was treated as equivalent to "safe to always overwrite," collapsing two different questions: *whose file is the CLI allowed to write to* (yes, CLAUDE.md, by design) vs. *whose content is currently sitting there* (unknown, never checked). The `--force` reinstall path was implemented by a different code path than `sync`'s mirror-replace, so the two silently drifted even though they solve the same problem.
+
+Learning:
+"This tool is allowed to own this file" and "this tool may discard whatever's already in this file" are different guarantees — the first doesn't imply the second. When a file is forced to a fixed path for tooling reasons (autoload, convention, etc.), still check what's already there before overwriting, the same way an already-established pattern (README.md protection) already does elsewhere in the same codebase. Also: when two code paths solve the same underlying problem (`sync`'s mirror-replace, `init --force`'s reinstall), a divergence between them is itself a bug waiting to be found, even if neither path is wrong in isolation.
+
+Future action:
+When adding a new "CLI writes to a fixed, tool-owned path" pattern in the future, explicitly design the "what if something is already there and it isn't ours" case up front — do not let it wait for a follow-up `/analyze`. Cross-check new `--force`/overwrite code paths against existing ones (`sync`) for behavioral parity before shipping.
+
+---
+Example: Project — an unrecognized CLI flag silently fell through to a real install against cwd
+
+## Learning-005
+
+Date:
+2026-08-06
+
+Category:
+Engineering
+
+Context:
+Manual end-to-end smoke test of the `kenovis add` / bare-autodetect mechanism built for DECISIONS.md DECISION-018 (auto-trigger `init-project`/`adopt-project` without a manual slash command), run per that decision's own Phase 3 verification step, before considering the CLI implementation done.
+
+Problem:
+Testing `kenovis --help` (a plausible first thing a real user tries) actually ran a full install against the current working directory instead of printing usage.
+
+What happened:
+`--help` isn't `init`/`add`/`sync`, so `parseArgs` treated it as a bare invocation (DECISION-018's autodetect dispatch, which "never refuses" by design). Its own arg-parsing loop then skipped `--help` because it starts with `--`, leaving `targetDir` at its default of `.` — so the bare path ran a real `runAdd`/`runInit` against the shell's cwd, which happened to be this repository's own `cli/` directory during testing, writing a stray `.kenovis/` and `CLAUDE.md` into a real, git-tracked source tree.
+
+Root cause:
+The bare-dispatch design (any invocation without a recognized subcommand + a chosen target, "never refuses") was correct for its intended case (`kenovis <targetDir>`) but had no reserved space for flag-only invocations that aren't asking for an install at all.
+
+Learning:
+A catch-all "no subcommand means bare mode" dispatch needs its flag/help handling checked *before* it, not folded into the same fallback path — otherwise every not-yet-implemented flag silently becomes "install here." Same root shape as Learning-004's `--source` footgun: an intentionally permissive path (mirror whatever `--source` says / install wherever bare mode is pointed) has no safeguard against a caller who didn't mean to trigger it at all.
+
+Future action:
+When adding new bare-dispatch or mirror-whatever-you're-given CLI paths in the future, explicitly enumerate what should NOT reach that path (here: `--help`/`-h`) before wiring the fallback, rather than discovering the gap via smoke testing after the fact. `cli/src/cli/bin.ts`'s `main()` now checks `--help`/`-h` first, unconditionally.
+
+---
 Example: Project — `sync --source` mirrors whatever directory it's pointed at, unfiltered
 
 ## Learning-004

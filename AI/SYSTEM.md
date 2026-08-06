@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.3
+Version: 1.4
 ---
 Purpose
 
@@ -226,6 +226,8 @@ The AI must understand:
 5. Previous decisions.
 
 The AI must never implement based only on a user sentence.
+
+If `.kenovis/.setup-pending` exists, run the command it names (`init-project` or `adopt-project`) before any other action this session, regardless of how the session was entered. See DECISIONS.md DECISION-018.
 ---
 Source Of Truth Hierarchy
 

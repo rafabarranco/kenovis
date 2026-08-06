@@ -1,4 +1,12 @@
-import { mkdir, cp, rm, writeFile as fsWriteFile, access, readdir } from "node:fs/promises";
+import {
+  mkdir,
+  cp,
+  rm,
+  writeFile as fsWriteFile,
+  readFile as fsReadFile,
+  access,
+  readdir,
+} from "node:fs/promises";
 import { dirname } from "node:path";
 import type { FileSystemPort } from "./FileSystemPort.js";
 
@@ -10,6 +18,10 @@ export class NodeFileSystem implements FileSystemPort {
     } catch {
       return false;
     }
+  }
+
+  async readFile(targetPath: string): Promise<string> {
+    return fsReadFile(targetPath, "utf8");
   }
 
   async listDir(dirPath: string): Promise<string[]> {

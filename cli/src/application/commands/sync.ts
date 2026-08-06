@@ -60,7 +60,7 @@ export async function runSync(
   await fs.copyTree(options.frameworkSourceDir, frameworkDir);
 
   const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
-  await fs.writeFile(claudeStubPath, claudeStubContent());
+  await fs.writeFile(claudeStubPath, claudeStubContent({ pending: false }));
 
   return {
     frameworkSyncedTo: frameworkDir,

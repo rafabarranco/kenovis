@@ -9,6 +9,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 ### Added
 
 - `AI/policies/git.md` (2.0 → 2.1) → "Branch Naming" — documents `release/<version>` (e.g. `release/v0.2.0`) as the naming convention for release-prep branches, alongside the existing `feature/`, `bugfix/`, `hotfix/`, `refactor/`, `docs/` patterns. Same flow as `feature/XXXX` (branch from `development`, PR back into it) — a naming specialization, not a new flow.
+- New `kenovis add <targetDir>` command — `init`'s counterpart for a target that already holds a real implementation to adopt. A bare `kenovis <targetDir>` (no subcommand) autodetects and dispatches to `init` or `add` internally, never refusing.
+- Auto-trigger for `init-project`/`adopt-project`: `init`/`add` now write a `.kenovis/.setup-pending` marker naming the right command, and a `CLAUDE.md` stub carrying a first-session imperative directive to run it — the very next AI session in Claude Code runs the correct command automatically, no manual slash command required. `init-project.md` Step 12 and `adopt-project.md` Step 13 delete the marker and revert the stub to its passive form on completion. `AI/SYSTEM.md` → "Context Loading Rules" gains the one-line marker check. See [DECISION-018](DECISIONS.md).
+- `cli/src/domain/installation.ts` — `BrownfieldDetectedError`/`GreenfieldDetectedError`: `init` now refuses on a detected-brownfield target unless `--force` is passed (points at `kenovis add` instead); `add` refuses symmetrically on a detected-greenfield target (points at `kenovis init`).
+- `cli/src/cli/bin.ts` — `--help`/`-h`. Found via manual smoke testing of this same release: an unrecognized flag (e.g. a typo'd `--help`) previously fell through to the new bare-invocation autodetect path with no target directory given, silently defaulting to `.` — running a real install against the current working directory. `--help`/`-h` are now checked before any dispatch.
+
+### Changed (Breaking)
+
+- `kenovis init` on a target directory that already holds real content now **refuses** instead of installing-and-suggesting — use the new `kenovis add` there, or pass `--force` to keep the old behavior. Anyone scripting `kenovis init` against a non-empty directory on purpose needs `--force` after this ships. See [DECISION-018](DECISIONS.md).
+
+### Fixed
+
+- `cli/src/domain/installation.ts`/`init.ts` — `init`/`add` no longer silently overwrite a customer's own pre-existing root `CLAUDE.md`. New `ExistingClaudeMdError` (same escape-hatch pattern as `AlreadyInstalledError`/`BrownfieldDetectedError`, bypassable with `--force`) fires unless the existing file is already a Kenovis-managed stub (`isKenovisManagedClaudeStub`). `FileSystemPort` gained `readFile` to support the check. Found via `/analyze` right after DECISION-018 shipped: the target customer segment is "already fluent in agentic tooling" (COMPANY_OS.md), so a pre-existing customer `CLAUDE.md` predating Kenovis adoption is a realistic, not hypothetical, case.
+- `cli/src/application/commands/init.ts` — a `--force` re-install over an existing `.kenovis/` now mirror-replaces it (`removeTree` then `copyTree`, matching `runSync`) instead of merging, so files retired from an older Framework Release are actually removed instead of accumulating as stale cruft. Same `/analyze` pass.
 
 ## [0.2.0] - 2026-08-06
 
