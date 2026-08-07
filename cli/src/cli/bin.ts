@@ -49,7 +49,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
 
 /**
  * dist/cli/bin.js -> dist/framework-assets, bundled at build time by
- * scripts/bundle-framework-assets.mjs from this repository's own AI/.
+ * scripts/bundle-framework-assets.mjs from this repository's own .kenovis/AI/.
  * Never re-reads ../AI at runtime — only this frozen, already-copied output.
  */
 export function defaultFrameworkSourceDir(): string {

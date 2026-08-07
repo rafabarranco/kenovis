@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: accumulates per-product knowledge. Reset the recorded entries when starting a new product, keep the rules. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: accumulates per-product knowledge. Reset the recorded entries when starting a new product, keep the rules. See .kenovis/AI/commands/init-project.md -->
 
 AI Learnings
 
@@ -144,6 +144,35 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — `sync` silently disarms the first-session auto-trigger it never installed
+
+## Learning-010
+
+Date:
+2026-08-07
+
+Category:
+Process
+
+Context:
+Smoke-testing the `.kenovis/` self-migration (DECISION-020, ROADMAP Phase 0 item 8) against a scratch brownfield repository: `kenovis add` → commit → `kenovis sync`, expecting an empty diff to confirm the relocated Framework layer bundles identically.
+
+Problem:
+The diff was not empty. `sync` deleted `.kenovis/.setup-pending` and rewrote `CLAUDE.md` from the pending stub back to the steady-state stub — silently disarming DECISION-018's first-session auto-trigger on an Installation that had never run `/adopt-project` yet.
+
+What happened:
+`runSync` mirror-replaces `.kenovis/` from the bundle, which correctly never contains `.setup-pending` (that marker is written by `runInit`, not shipped), then writes the stub unconditionally in its steady-state form. Neither step asks whether setup is still pending. A customer who installs and syncs before their first AI session loses the auto-trigger and is back to needing a manual `/init-project`/`/adopt-project` — the exact friction DECISION-018 existed to remove.
+
+Root cause:
+DECISION-018 designed the pending state as an `init`/`add`-time artifact and reasoned about the commands that *set* it. `sync` predates that marker and was never revisited against it — it treats `.kenovis/` as fully bundle-derived, which is true for every file except the two pieces of local state (`.setup-pending`, `.claude-md.sha256`) that install-time writes.
+
+Learning:
+Pre-existing, not a regression from this round — but it means "mirror-replace" and "local state living inside the mirrored directory" are in direct conflict. Any state the CLI writes into `.kenovis/` that is *not* part of the bundle needs an explicit preserve-or-recompute rule in `sync`, or the next sync erases it. `.claude-md.sha256` survives only because `sync` rewrites it after the mirror; `.setup-pending` has no such step.
+
+Future action:
+Backlog item, not fixed here (out of this migration's scope): `runSync` should preserve `.setup-pending` when it exists, and write the pending-form stub in that case, so syncing never advances an Installation past a setup it hasn't done. Verify against the smoke-test sequence above.
 
 ---
 Example: Project — a packaging rule designed for "customer vs. framework" breaks on the one Installation where they're the same thing
@@ -448,7 +477,7 @@ If a learning becomes a permanent rule:
 
 Move it to:
 
-AI/policies/
+.kenovis/AI/policies/
 
 If a learning becomes a naming rule:
 

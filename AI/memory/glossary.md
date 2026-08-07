@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: the Domain Terms section is placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: the Domain Terms section is placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
 
 AI Glossary
 
@@ -89,7 +89,7 @@ Framework Release
 
 Definition:
 
-A versioned snapshot of the Framework layer (AI/agents/, AI/workflows/, AI/policies/, AI/commands/, AI/templates/, AI/SYSTEM.md) that customers can sync into their Installation.
+A versioned snapshot of the Framework layer (.kenovis/AI/agents/, .kenovis/AI/workflows/, .kenovis/AI/policies/, .kenovis/AI/commands/, .kenovis/AI/templates/, .kenovis/AI/SYSTEM.md) that customers can sync into their Installation.
 ---
 Vertical
 
@@ -109,7 +109,7 @@ Agent Roster
 
 Definition:
 
-The set of specialized AI agent role definitions (see AI/agents/) shipped as part of a Framework Release for a given Vertical.
+The set of specialized AI agent role definitions (see .kenovis/AI/agents/) shipped as part of a Framework Release for a given Vertical.
 ---
 Open-Core Tier
 

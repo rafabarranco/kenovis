@@ -1,10 +1,10 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
 
 ROADMAP.md
 
 Product Roadmap
 
-Version: 1.18
+Version: 1.19
 ---
 Purpose
 
@@ -188,11 +188,17 @@ Founder chose this as the next item once Phase 0 items 1-6 were confirmed comple
 
 Shipped: `cli/src/domain/installation.ts` gained `hashClaudeMdContent`/`isClaudeMdSafeToOverwrite` and the `CLAUDE_MD_HASH_FILENAME` (`.kenovis/.claude-md.sha256`) sidecar, recorded by every `init`/`add`/`sync` alongside the stub it writes. The guard now compares the on-disk CLAUDE.md against that recorded hash — byte-identical or refuse — instead of only checking the marker line's prefix, so content appended below an otherwise-untouched stub is caught too. An Installation with no recorded hash yet (predates this fix) falls back to the old prefix check for its next transition only. 8 new tests (75 → 83 total in `cli/`), typecheck/build clean, real end-to-end smoke test (`kenovis init` → `sync` → append notes → `sync` refuses → `sync --force` overwrites) confirmed the exact Learning-007 scenario is now caught. Recorded as `AI/memory/learnings.md` Learning-008.
 
-8. ADR DONE (2026-08-06, via /next), migration NOT YET STARTED — DECISION-017's own deferred Phase 2: this repository migrates its own Framework layer (`AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md`) into `.kenovis/AI/`, the same packaging every customer Installation already gets.
+8. DONE (2026-08-07, via /next) — DECISION-017's own deferred Phase 2: this repository migrates its own Framework layer (`AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md`) into `.kenovis/AI/`, the same packaging every customer Installation already gets.
 
 Founder chose this as the next item once Phase 0 items 1-7 were confirmed complete and Phase 1/2 had no other unscheduled, unblocked item — see this session's `/next` run. Starting the migration surfaced a gap DECISION-017 never resolved: this repository's root `README.md`/`CLAUDE.md` are simultaneously "Kenovis's own explanation" and "the Installation's pre-existing content" — the same two things DECISION-017's B1 resolution assumed were always different documents. Ran `/architect` before touching any file. See DECISION-020: root `README.md` and root `CLAUDE.md` are a documented exception, staying hand-authored at repo root; only the five `AI/` subdirectories plus `AI/SYSTEM.md` actually relocate. `ENGINEERING/ARCHITECTURE.md` → Hard Rules states the exception.
 
-Remaining work (not done in this round — ADR only): relocate the six paths above into `.kenovis/AI/`; repoint every cross-reference in `README.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `.claude/commands/*.md`, `.github/scripts/check_changelog.py`, `.github/scripts/check_markers.py`, `.github/PULL_REQUEST_TEMPLATE.md`, `.github/ISSUE_TEMPLATE/*.md`, and inside the relocated files themselves; re-run the Learning-004 scratch-repo smoke test against the result; update `CHANGELOG.md` (CI's changelog gate applies — this touches `AI/**`/`CLAUDE.md`/`README.md`) and mark this item DONE.
+Migration shipped (2026-08-07, via /next): the six paths relocated into `.kenovis/AI/` with `git mv`; `AI/memory/` stayed at the repository root. Cross-references repointed in `README.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `.gitignore`, `.claude/commands/*.md`, `.github/PULL_REQUEST_TEMPLATE.md`, `.github/ISSUE_TEMPLATE/*.md`, `.github/scripts/check_changelog.py`, `COMPANY_OS.md`, `DOMAIN/`, `PRODUCT/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/`, `cli/README.md`, two `cli/src` comments, and inside the relocated tree itself. `.github/scripts/check_markers.py` needed no change — every path it guards is Product layer, which did not move.
+
+Scoping rule applied, worth stating because it recurs: navigational references (documents that tell a reader or agent where a file is *now*) were repointed; historical narrative in `DECISIONS.md`, `CHANGELOG.md` and this document's own completed entries was left as written, since those record what was true at the time. The one exception was a markdown *link* in `CHANGELOG.md`'s header — CI's `check_links.py` requires links to resolve, and a header is current-state, not history.
+
+`cli/scripts/bundle-framework-assets.mjs` now sources from `.kenovis/AI/` and dropped its now-meaningless `memory/` exclusion. `.github/scripts/check_changelog.py`'s watched prefix became `.kenovis/AI/` — previously `AI/` also matched Product-layer `AI/memory/`, firing the changelog gate on changes it never covered.
+
+Validated: 83 `cli/` tests pass, typecheck and build clean, `check_links.py` and `check_markers.py` pass, and the Learning-004 scratch-repo smoke test re-run against the post-migration bundle (brownfield `kenovis add` → commit → `kenovis sync`) left the target's own `README.md`, `src/` and `package.json` untouched and produced a byte-identical `.kenovis/AI/` on sync. That smoke test also surfaced a pre-existing gap unrelated to this migration — `sync` deletes `.kenovis/.setup-pending` and reverts the `CLAUDE.md` stub to steady state, disarming DECISION-018's first-session auto-trigger on an Installation that has not completed setup. Recorded as `AI/memory/learnings.md` Learning-010, left as a backlog item rather than fixed inside this item's scope.
 ---
 Phase 1 — MVP
 

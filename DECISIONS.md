@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
 
 # DECISIONS.md
 
@@ -25,7 +25,7 @@ Seven are framework-level and should be carried over:
 - DECISION-016 — No Framework-Mandated Directory Name For Customer Code (supersedes DECISION-015).
 - DECISION-019 — Collision Guard Against Silent Product-Layer Overwrite In init-project/adopt-project.
 
-Everything else is product-specific and should be recorded as real decisions get made. See AI/commands/init-project.md.
+Everything else is product-specific and should be recorded as real decisions get made. See .kenovis/AI/commands/init-project.md.
 
 ---
 
