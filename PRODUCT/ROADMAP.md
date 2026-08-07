@@ -226,13 +226,17 @@ Adjacent gap found while fixing, and fixed in the same round because it sits in 
 
 Validated: 95 `cli/` tests pass, typecheck and build clean, plus the smoke sequence that found the bug — `kenovis add` → commit → `kenovis sync` left `git status` completely clean (marker intact, stub unchanged, target's `README.md`/`src/`/`package.json` untouched) while still updating the Framework layer; and the completed-setup path (marker + sidecar deleted, stub reverted) syncs without refusing and stays in steady state.
 
-2. NOT STARTED — promote `development` → `preproduction` → `main` and cut the next release.
+2. DONE (2026-08-07, via /next) — promote `development` → `preproduction` → `main` and cut the next release.
 
-`CHANGELOG.md`'s `[Unreleased]` has accumulated DECISION-020 and the `.kenovis/` self-migration since `kenovis@0.4.0`, plus item 1 above once it lands. Follow `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release": PR through the protected branches, align `cli/package.json`'s version with the release tag, cut the `CHANGELOG.md` section, publish from CI via `.github/workflows/publish.yml` (GitHub Release triggered, provenance, never from a laptop — ENGINEERING/SECURITY.md → Supply-Chain Security).
+`CHANGELOG.md`'s `[Unreleased]` had accumulated DECISION-020 and the `.kenovis/` self-migration since `kenovis@0.4.0`, plus item 1 above once it landed. Followed `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release": PR through the protected branches, align `cli/package.json`'s version with the release tag, cut the `CHANGELOG.md` section, publish from CI via `.github/workflows/publish.yml` (GitHub Release triggered, provenance, never from a laptop — ENGINEERING/SECURITY.md → Supply-Chain Security).
 
-Version call, to be confirmed when cutting: item 1 is a bug fix and the migration does not change the published package's contents or shape, so a patch release is defensible. Minor is the safer default given the framework files themselves moved inside this repository and the changelog gate's watched prefix changed — decide explicitly at release time rather than by habit, and record the reasoning in `CHANGELOG.md`.
+Version call, decided at cut time: **minor, `kenovis@0.5.0`**, not patch. Patch was defensible on the CLI side alone — item 1 is a bug fix and the `.kenovis/` migration does not change the published package's shape — but this package bundles the framework files themselves, and two of them changed behaviour for customers (`init-project.md`/`adopt-project.md` now delete `.kenovis/.claude-md.sha256` on completion, Learning-011). An Installation syncing to this release gets more than a CLI bug fix, so minor. Reasoning recorded in `CHANGELOG.md`'s `[0.5.0]` header, per this item's own instruction not to decide by habit.
 
-Dependency: item 1 first, so a single release carries both. Not a hard block — if item 1 stalls, cut the release without it rather than letting `[Unreleased]` keep growing.
+Dependency: item 1 first, so a single release carries both. Satisfied — item 1 merged (PR #37) before the release branch was cut.
+
+Shipped: `cli/package.json`/`package-lock.json` 0.4.0 → 0.5.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.5.0] - 2026-08-07`. Promoted `development` → `preproduction` → `main` and published `kenovis@0.5.0` from CI with provenance.
+
+Phase 1's Immediate Priority block is closed. Both items DONE; the next `/next` run selects from Phase 1 MVP / Phase 2 rather than this block.
 ---
 Phase 1 — MVP
 
