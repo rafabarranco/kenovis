@@ -234,7 +234,9 @@ Version call, decided at cut time: **minor, `kenovis@0.5.0`**, not patch. Patch 
 
 Dependency: item 1 first, so a single release carries both. Satisfied — item 1 merged (PR #37) before the release branch was cut.
 
-Shipped: `cli/package.json`/`package-lock.json` 0.4.0 → 0.5.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.5.0] - 2026-08-07`. Promoted `development` → `preproduction` → `main` and published `kenovis@0.5.0` from CI with provenance.
+Shipped: `cli/package.json`/`package-lock.json` 0.4.0 → 0.5.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.5.0] - 2026-08-07`. Promoted `development` → `preproduction` → `main` (PRs #38, #39, #40) and published `kenovis@0.5.0` from CI with provenance; verified live on the registry (`npm view kenovis version` → `0.5.0`).
+
+Recurring cost found and named: the promotion needed the same content-sync branch procedure used for `kenovis@0.2.0` and `0.4.0`, which each round had treated as a one-off repair of historical drift. It is not — the sync commit that fix creates lives only on the downstream branch, which is exactly what makes the next rebase-replay diverge. The chain is permanently in content-sync mode, and that is acceptable (branches end byte-identical, which is the property that matters). Recorded as `AI/memory/learnings.md` Learning-012 with the exact procedure, so future releases follow it instead of re-investigating.
 
 Phase 1's Immediate Priority block is closed. Both items DONE; the next `/next` run selects from Phase 1 MVP / Phase 2 rather than this block.
 ---
