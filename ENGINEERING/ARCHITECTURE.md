@@ -4,7 +4,7 @@ ARCHITECTURE.md
 
 Software Architecture
 
-Version: 1.3
+Version: 1.4
 ---
 Purpose
 
@@ -93,6 +93,7 @@ Hard Rules (No Exceptions)
 - The CLI must never execute code found inside the target repository it is installing into.
 - The CLI must write the Framework layer under `.kenovis/` in the target repository (`.kenovis/AI/`, `.kenovis/README.md`), never at repo root — except `CLAUDE.md` (stub loading `.kenovis/AI/SYSTEM.md`) and `.claude/`, which stay at repo root because Claude Code requires it. The CLI must never overwrite, append to, or otherwise touch the target repository's own existing `README.md`, and must never fabricate one if none exists. See DECISIONS.md DECISION-017.
 - The CLI must never shell out to an AI tool's binary (`claude` or otherwise) to auto-run `/init-project` or `/adopt-project`. Auto-triggering those commands is achieved only through the `CLAUDE.md` stub's content (parametrized by pending/steady-state) and the `.kenovis/.setup-pending` marker file — both plain, tool-agnostic filesystem artifacts, never a spawned external process. See DECISIONS.md DECISION-018.
+- Exception to the rule above: this repository's own root `README.md` and root `CLAUDE.md` are never written or overwritten by `kenovis init`/`add`/`sync`, even if one of those commands is ever run against this repository's own working tree. Both stay hand-authored at repo root — this repository is the Framework layer's origin and its own dogfooded product simultaneously, not a generic Installation, and its root README/CLAUDE.md carry real content (public landing page; repo-specific Role/Layers/Source-Of-Truth/graphify prose) a generated stub would discard. Only `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md` relocate to `.kenovis/AI/` for this repository. See DECISIONS.md DECISION-020.
 ---
 Database
 
