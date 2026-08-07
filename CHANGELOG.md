@@ -6,6 +6,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Added
+
+- Every Installation now records which Framework Release it tracks, in `.kenovis/.framework-version`. `cli/scripts/bundle-framework-assets.mjs` stamps the bundle with the npm package's own version at build time, so the mirror-replace `init`/`add`/`sync` already perform installs and update it — the CLI only reads it back and never maintains a second copy of the same fact (deliberately *not* an `INSTALL_TIME_OWNED_ENTRIES` member; that parallel bookkeeping is the failure mode `AI/memory/learnings.md` Learning-010/011 record). This closes a standing gap between `DOMAIN/DOMAIN_MODEL.md` → Installation ("framework version installed"; "an Installation tracks one Framework Release") and the code, which tracked nothing.
+- `kenovis init`/`add` print the Framework Release they installed; `kenovis sync` prints the transition (`0.3.0 -> 0.5.0`, `0.5.0 -> 0.5.0 (already up to date)`, or `unknown -> 0.5.0` for an Installation predating the stamp — which that same sync fixes). An unstamped bundle or a hand-assembled `--source` directory reports `unknown` rather than being inferred from the running CLI's version, the same "recorded fact, not re-derived expectation" distinction Learning-008 established for the CLAUDE.md hash sidecar.
+- `kenovis --version`/`-v` prints the CLI's own version. Checked before any dispatch, alongside `--help`, so it can never fall through to the bare autodetect path and install against the current directory (Learning-005).
+
+### Changed
+
+- `cli/assets/framework/README.md` → "Updating" no longer says `kenovis sync` is a future command — it has shipped since `0.1.0`. The section now describes the real command and points at `.kenovis/.framework-version`.
+- `cli/README.md` → "Upgrading" documents how to tell which Framework Release an Installation is on, offline and with no network dependency; "Structure" fixes the `bundle-framework-assets.mjs` description, which still described the pre-`.kenovis/` source path.
+
 ## [0.5.0] - 2026-08-07
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0]/[0.3.0]/[0.4.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch: the framework files this package bundles changed behaviour (`init-project.md`/`adopt-project.md` now clear the `CLAUDE.md` hash sidecar on completion), so an Installation that syncs to this release gets more than a CLI bug fix.

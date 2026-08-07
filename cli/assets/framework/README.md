@@ -26,10 +26,12 @@ infrastructure; your repository root is yours.
 
 ## Updating
 
-Once the `kenovis sync` command exists, it updates this directory to a newer
-Framework Release without ever touching anything outside `.kenovis/` or your
-repository root's `CLAUDE.md` stub. Until then, treat this directory as installed
-by `kenovis init` — re-run that command with `--force` to update manually.
+`kenovis sync` updates this directory to a newer Framework Release without ever
+touching anything outside `.kenovis/` or your repository root's `CLAUDE.md` stub.
+Review the change with `git diff` before committing — that is your rollback.
+
+The Framework Release you are on is recorded in `.kenovis/.framework-version`.
+`sync` prints the transition it applied (e.g. `0.3.0 -> 0.5.0`).
 
 ## Tool compatibility
 

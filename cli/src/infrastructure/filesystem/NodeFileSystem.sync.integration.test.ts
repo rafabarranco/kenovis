@@ -9,6 +9,7 @@ import { runSync } from "../../application/commands/sync.js";
 import {
   claudeStubContent,
   CLAUDE_MD_HASH_FILENAME,
+  FRAMEWORK_VERSION_FILENAME,
   InvalidFrameworkSourceError,
   NotInstalledError,
   SETUP_PENDING_FILENAME,
@@ -162,5 +163,57 @@ test("runSync against a real filesystem never touches the target's own README.md
 
     const companyOs = await readFile(join(targetDir, "COMPANY_OS.md"), "utf8");
     assert.equal(companyOs, "# Real company context\n");
+  });
+});
+
+test("the bundle's Framework Release stamp reaches the Installation on init and is replaced on sync — no CLI-side bookkeeping", async () => {
+  await withTempDirs(async (sourceDir, targetDir) => {
+    await mkdir(join(sourceDir, "AI"), { recursive: true });
+    await writeFile(join(sourceDir, "AI", "SYSTEM.md"), "# System\n");
+    await writeFile(join(sourceDir, "README.md"), "# Framework explanation\n");
+    await writeFile(join(sourceDir, FRAMEWORK_VERSION_FILENAME), "0.5.0\n");
+
+    const fs = new NodeFileSystem();
+    const initResult = await runInit(fs, {
+      frameworkSourceDir: sourceDir,
+      targetDir,
+      invokedAs: "init",
+    });
+
+    // The dotfile stamp survives the copy — the whole design depends on this.
+    const stampPath = join(targetDir, ".kenovis", FRAMEWORK_VERSION_FILENAME);
+    assert.equal(await readFile(stampPath, "utf8"), "0.5.0\n");
+    assert.equal(initResult.frameworkVersion, "0.5.0");
+
+    await writeFile(join(sourceDir, FRAMEWORK_VERSION_FILENAME), "0.6.0\n");
+    const syncResult = await runSync(fs, { frameworkSourceDir: sourceDir, targetDir });
+
+    assert.equal(syncResult.previousFrameworkVersion, "0.5.0");
+    assert.equal(syncResult.frameworkVersion, "0.6.0");
+    assert.equal(await readFile(stampPath, "utf8"), "0.6.0\n");
+  });
+});
+
+test("an Installation from an unstamped bundle picks up a stamp on its next sync", async () => {
+  await withTempDirs(async (sourceDir, targetDir) => {
+    await writeFile(join(sourceDir, "README.md"), "# Framework explanation\n");
+
+    const fs = new NodeFileSystem();
+    const initResult = await runInit(fs, {
+      frameworkSourceDir: sourceDir,
+      targetDir,
+      invokedAs: "init",
+    });
+    assert.equal(initResult.frameworkVersion, null);
+
+    await writeFile(join(sourceDir, FRAMEWORK_VERSION_FILENAME), "0.6.0\n");
+    const syncResult = await runSync(fs, { frameworkSourceDir: sourceDir, targetDir });
+
+    assert.equal(syncResult.previousFrameworkVersion, null);
+    assert.equal(syncResult.frameworkVersion, "0.6.0");
+    assert.equal(
+      await readFile(join(targetDir, ".kenovis", FRAMEWORK_VERSION_FILENAME), "utf8"),
+      "0.6.0\n",
+    );
   });
 });
