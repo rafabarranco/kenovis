@@ -146,6 +146,35 @@ Future action:
 Use adapters for external integrations.
 
 ---
+Example: Project — the fix for branch drift is itself a source of branch drift
+
+## Learning-012
+
+Date:
+2026-08-07
+
+Category:
+Process
+
+Context:
+Promoting `development` → `preproduction` → `main` for the `kenovis@0.5.0` release (`PRODUCT/ROADMAP.md` Phase 1 item 2), via `/next`.
+
+Problem:
+The promotion chain had drifted again — `preproduction` and `main` each held commits `development` did not, so a rebase-merge would replay `development`'s 26 commits against content those branches already had under different hashes. The identical situation was hit and fixed during `kenovis@0.2.0` (PRs #23/#24) and again during `0.4.0` (PRs #33/#34), each time believed to be a one-off cleanup of historical drift.
+
+What happened:
+Both downstream branches were verified as strict, older snapshots: `git diff origin/main dceece7` (the 0.4.0 cut) was empty, and the same held for `preproduction`. No content divergence at all. The only unique commits on each were the synthetic "Sync X content with Y" commits produced by the previous promotion's own fix.
+
+Root cause:
+The content-sync fix creates one commit on the *downstream* branch that the upstream branch will never contain. That commit is precisely what makes the next promotion's rebase-replay diverge. Each application of the fix guarantees the next release needs it again — it is a steady state, not a cleanup. Calling it "a deliberate one-time trade" (as the 0.2.0 round did) was wrong: the trade recurs every release.
+
+Learning:
+A promotion chain of protected branches merged with "Rebase and Merge" only cannot stay history-aligned if any step ever introduces a downstream-only commit. Either every promotion is a true fast-forward, or the chain is permanently in content-sync mode. Kenovis is in the second mode, and that is fine — the branches are byte-identical after every promotion, which is the property that actually matters. What is not fine is rediscovering this each release and spending the investigation again.
+
+Future action:
+Treat the content-sync branch as the *standard* promotion procedure for this repository, not an exceptional repair. Each release: verify the downstream tree is a strict older snapshot (`git diff origin/<downstream> <last-release-cut-commit>` empty, nothing unique downstream), then `git read-tree -u --reset origin/<upstream>` on a `sync/<downstream>-to-<upstream>-<version>` branch, confirm `git diff origin/<upstream> HEAD` is empty, PR and rebase-merge. `read-tree --reset` is the correct primitive — `git checkout <ref> -- .` does not delete files removed upstream, which matters whenever a release moves or retires paths (as the `.kenovis/` migration did).
+
+---
 Example: Project — a guard's own bookkeeping outlives the state it described
 
 ## Learning-011
