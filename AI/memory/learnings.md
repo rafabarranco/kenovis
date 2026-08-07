@@ -1,8 +1,8 @@
-<!-- PROJECT-SPECIFIC: accumulates per-product knowledge. Reset the recorded entries when starting a new product, keep the rules. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: accumulates per-product knowledge. Reset the recorded entries when starting a new product, keep the rules. See .kenovis/AI/commands/init-project.md -->
 
 AI Learnings
 
-Version: 1.3
+Version: 1.4
 ---
 Scope
 
@@ -144,6 +144,95 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — a guard's own bookkeeping outlives the state it described
+
+## Learning-011
+
+Date:
+2026-08-07
+
+Category:
+Technical
+
+Context:
+Fixing Learning-010 (`sync` must preserve `.setup-pending` and the pending stub) via `/next`, `PRODUCT/ROADMAP.md` Phase 1 item 1.
+
+Problem:
+Tracing the pending → steady-state transition end to end surfaced a second, unreported defect: after `/init-project` or `/adopt-project` completed correctly, the very next `kenovis sync` refused with `ExistingClaudeMdError` on a `CLAUDE.md` those commands had just legitimately rewritten.
+
+What happened:
+Every install/sync records `.kenovis/.claude-md.sha256` — the hash of the stub the CLI wrote, i.e. the *pending* one. The commands' completion step deletes `.setup-pending` and reverts the stub to steady state, but never touched that sidecar, so the recorded hash described a file that no longer existed. `isClaudeMdSafeToOverwrite` correctly saw a mismatch and correctly refused — on a change Kenovis's own instructions had made.
+
+Root cause:
+The hash sidecar (Phase 0 item 7, closing Learning-007) was designed against "the customer edited CLAUDE.md" and never revisited against "a Kenovis command edited CLAUDE.md." Two mechanisms wrote the same file; only one of them maintained the record of what was written.
+
+Learning:
+A guard that compares against recorded state has two obligations, not one: detect foreign changes, and stay accurate across every *sanctioned* change. Any other actor allowed to modify the guarded file — including the framework's own markdown commands, which no compiler or test reaches — must update or invalidate that record in the same step. This is the same class of defect as Learning-010: state written by one part of the system, invisibly invalidated by another.
+
+Future action:
+When adding a recorded-state guard, enumerate every writer of the guarded file, framework commands included, and give each an explicit update-or-invalidate step. Cheapest correct option is usually invalidate (delete the record) and let the next CLI run re-record it, rather than teaching a markdown command to compute a hash.
+
+---
+Example: Project — `sync` silently disarms the first-session auto-trigger it never installed
+
+## Learning-010
+
+Date:
+2026-08-07
+
+Category:
+Process
+
+Context:
+Smoke-testing the `.kenovis/` self-migration (DECISION-020, ROADMAP Phase 0 item 8) against a scratch brownfield repository: `kenovis add` → commit → `kenovis sync`, expecting an empty diff to confirm the relocated Framework layer bundles identically.
+
+Problem:
+The diff was not empty. `sync` deleted `.kenovis/.setup-pending` and rewrote `CLAUDE.md` from the pending stub back to the steady-state stub — silently disarming DECISION-018's first-session auto-trigger on an Installation that had never run `/adopt-project` yet.
+
+What happened:
+`runSync` mirror-replaces `.kenovis/` from the bundle, which correctly never contains `.setup-pending` (that marker is written by `runInit`, not shipped), then writes the stub unconditionally in its steady-state form. Neither step asks whether setup is still pending. A customer who installs and syncs before their first AI session loses the auto-trigger and is back to needing a manual `/init-project`/`/adopt-project` — the exact friction DECISION-018 existed to remove.
+
+Root cause:
+DECISION-018 designed the pending state as an `init`/`add`-time artifact and reasoned about the commands that *set* it. `sync` predates that marker and was never revisited against it — it treats `.kenovis/` as fully bundle-derived, which is true for every file except the two pieces of local state (`.setup-pending`, `.claude-md.sha256`) that install-time writes.
+
+Learning:
+Pre-existing, not a regression from this round — but it means "mirror-replace" and "local state living inside the mirrored directory" are in direct conflict. Any state the CLI writes into `.kenovis/` that is *not* part of the bundle needs an explicit preserve-or-recompute rule in `sync`, or the next sync erases it. `.claude-md.sha256` survives only because `sync` rewrites it after the mirror; `.setup-pending` has no such step.
+
+Future action:
+Backlog item, not fixed here (out of this migration's scope): `runSync` should preserve `.setup-pending` when it exists, and write the pending-form stub in that case, so syncing never advances an Installation past a setup it hasn't done. Verify against the smoke-test sequence above.
+
+Closed 2026-08-07 via `/next` (ROADMAP Phase 1 item 1): `runSync` now does exactly that, and `INSTALL_TIME_OWNED_ENTRIES` (`cli/src/domain/installation.ts`) makes the general rule explicit — every CLI-written file inside `.kenovis/` is tagged `preserved` or `rewritten`, so the next one is not a third coincidence. Fixing it surfaced Learning-011, the same failure mode one layer up.
+
+---
+Example: Project — a packaging rule designed for "customer vs. framework" breaks on the one Installation where they're the same thing
+
+## Learning-009
+
+Date:
+2026-08-06
+
+Category:
+Architecture
+
+Context:
+Starting DECISION-017's own deferred Phase 2 (this repository migrates its own Framework layer into `.kenovis/`, using the packaging rule already decided for every customer Installation) via `/next`.
+
+Problem:
+DECISION-017's B1 resolution — Kenovis's own explanatory README moves to `.kenovis/README.md`; the customer's own pre-existing root README is never touched — silently assumed those are always two different documents. Applied literally to this repository, it would hide this project's own GitHub/npm-facing landing page inside a directory GitHub doesn't auto-render, and replace this repository's hand-authored root `CLAUDE.md` (Role, Layers, Source Of Truth, graphify wiring) with the generic customer stub.
+
+What happened:
+This repository is the one Installation where "Kenovis's own explanation" and "the Installation's pre-existing content" are the same document — it is simultaneously the framework's origin and its own dogfooded product (DECISION-013). A packaging rule written for the general case (any two Installations have unrelated README/CLAUDE.md content) doesn't have a case for the specific Installation that authored the rule.
+
+Root cause:
+DECISION-017 was scoped and reasoned entirely from the perspective of a third-party customer's repository. It never asked "what happens when this rule is applied to the repository that IS the framework" — a blind spot that only surfaces when the self-referential case is actually attempted, not when the rule is merely described.
+
+Learning:
+When a packaging/distribution rule is designed by reasoning about "the customer," explicitly check whether the tool's own origin repository is itself a customer of that rule (true here, per DECISION-013's maximal-dogfooding stance) — and if so, walk the rule through that specific case before considering the design complete. A rule that's correct for every *other* Installation can still be wrong for the one that's self-referential.
+
+Future action:
+See DECISIONS.md DECISION-020 — root `README.md`/`CLAUDE.md` are now a documented, standing exception for this repository specifically. When designing a future rule that treats "the framework" and "an Installation" as distinct parties, add a checklist item: does this repository's own dual nature (framework origin + dogfooded product) break the assumption?
 
 ---
 Example: Project — a startsWith check only proves "not a foreign file," not "nothing appended"
@@ -419,7 +508,7 @@ If a learning becomes a permanent rule:
 
 Move it to:
 
-AI/policies/
+.kenovis/AI/policies/
 
 If a learning becomes a naming rule:
 

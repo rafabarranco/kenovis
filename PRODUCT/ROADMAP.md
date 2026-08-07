@@ -1,10 +1,10 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
 
 ROADMAP.md
 
 Product Roadmap
 
-Version: 1.17
+Version: 1.20
 ---
 Purpose
 
@@ -187,6 +187,56 @@ Dependencies: none remaining. All of Phase 0 item 6 is complete except the defer
 Founder chose this as the next item once Phase 0 items 1-6 were confirmed complete and Phase 1's own success criteria already validated (no other unscheduled roadmap item existed) — see this session's /next run.
 
 Shipped: `cli/src/domain/installation.ts` gained `hashClaudeMdContent`/`isClaudeMdSafeToOverwrite` and the `CLAUDE_MD_HASH_FILENAME` (`.kenovis/.claude-md.sha256`) sidecar, recorded by every `init`/`add`/`sync` alongside the stub it writes. The guard now compares the on-disk CLAUDE.md against that recorded hash — byte-identical or refuse — instead of only checking the marker line's prefix, so content appended below an otherwise-untouched stub is caught too. An Installation with no recorded hash yet (predates this fix) falls back to the old prefix check for its next transition only. 8 new tests (75 → 83 total in `cli/`), typecheck/build clean, real end-to-end smoke test (`kenovis init` → `sync` → append notes → `sync` refuses → `sync --force` overwrites) confirmed the exact Learning-007 scenario is now caught. Recorded as `AI/memory/learnings.md` Learning-008.
+
+8. DONE (2026-08-07, via /next) — DECISION-017's own deferred Phase 2: this repository migrates its own Framework layer (`AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md`) into `.kenovis/AI/`, the same packaging every customer Installation already gets.
+
+Founder chose this as the next item once Phase 0 items 1-7 were confirmed complete and Phase 1/2 had no other unscheduled, unblocked item — see this session's `/next` run. Starting the migration surfaced a gap DECISION-017 never resolved: this repository's root `README.md`/`CLAUDE.md` are simultaneously "Kenovis's own explanation" and "the Installation's pre-existing content" — the same two things DECISION-017's B1 resolution assumed were always different documents. Ran `/architect` before touching any file. See DECISION-020: root `README.md` and root `CLAUDE.md` are a documented exception, staying hand-authored at repo root; only the five `AI/` subdirectories plus `AI/SYSTEM.md` actually relocate. `ENGINEERING/ARCHITECTURE.md` → Hard Rules states the exception.
+
+Migration shipped (2026-08-07, via /next): the six paths relocated into `.kenovis/AI/` with `git mv`; `AI/memory/` stayed at the repository root. Cross-references repointed in `README.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `.gitignore`, `.claude/commands/*.md`, `.github/PULL_REQUEST_TEMPLATE.md`, `.github/ISSUE_TEMPLATE/*.md`, `.github/scripts/check_changelog.py`, `COMPANY_OS.md`, `DOMAIN/`, `PRODUCT/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/`, `cli/README.md`, two `cli/src` comments, and inside the relocated tree itself. `.github/scripts/check_markers.py` needed no change — every path it guards is Product layer, which did not move.
+
+Scoping rule applied, worth stating because it recurs: navigational references (documents that tell a reader or agent where a file is *now*) were repointed; historical narrative in `DECISIONS.md`, `CHANGELOG.md` and this document's own completed entries was left as written, since those record what was true at the time. The one exception was a markdown *link* in `CHANGELOG.md`'s header — CI's `check_links.py` requires links to resolve, and a header is current-state, not history.
+
+`cli/scripts/bundle-framework-assets.mjs` now sources from `.kenovis/AI/` and dropped its now-meaningless `memory/` exclusion. `.github/scripts/check_changelog.py`'s watched prefix became `.kenovis/AI/` — previously `AI/` also matched Product-layer `AI/memory/`, firing the changelog gate on changes it never covered.
+
+Validated: 83 `cli/` tests pass, typecheck and build clean, `check_links.py` and `check_markers.py` pass, and the Learning-004 scratch-repo smoke test re-run against the post-migration bundle (brownfield `kenovis add` → commit → `kenovis sync`) left the target's own `README.md`, `src/` and `package.json` untouched and produced a byte-identical `.kenovis/AI/` on sync. That smoke test also surfaced a pre-existing gap unrelated to this migration — `sync` deletes `.kenovis/.setup-pending` and reverts the `CLAUDE.md` stub to steady state, disarming DECISION-018's first-session auto-trigger on an Installation that has not completed setup. Recorded as `AI/memory/learnings.md` Learning-010, left as a backlog item rather than fixed inside this item's scope.
+
+Phase 0 is closed. All eight "Immediate Priority" items are DONE, and Phase 0's own Success Criteria were satisfied by the Real External Validation recorded under Phase 1 below. Work continues in the Phase 1 priority block that follows.
+---
+Phase 1 — Immediate Priority (added 2026-08-07, from /next after Phase 0 closed)
+
+Two items, in this order. Neither is blocked. Ordering matters: item 1 lands a real customer-facing bug fix, item 2 packages it — doing them in this order means one release carries both instead of cutting two.
+
+1. DONE (2026-08-07, via /next) — close Learning-010: `sync` disarms DECISION-018's first-session auto-trigger.
+
+Found 2026-08-07 by the scratch-repo smoke test that closed Phase 0 item 8, not by a customer report. `runSync` mirror-replaces `.kenovis/` from the bundle — which correctly never ships `.kenovis/.setup-pending`, since `runInit`/`runAdd` write that marker at install time — and then rewrites `CLAUDE.md` in its steady-state form unconditionally. Neither step asks whether setup is still pending. A customer who installs and then syncs before their first AI session loses the auto-trigger and is back to typing `/init-project` or `/adopt-project` by hand: exactly the friction DECISION-018 was built to remove.
+
+Pre-existing since `sync` and the pending marker were designed in separate rounds — `sync` predates the marker and was never revisited against it. Not a regression from the `.kenovis/` migration.
+
+Target design (no ADR needed — this restores DECISION-018's already-decided behavior, it does not decide anything new): `runSync` detects `.kenovis/.setup-pending` before the mirror-replace, and if present, re-writes it afterwards and emits the pending-form stub instead of the steady-state one. Sync must never advance an Installation past a setup it has not completed.
+
+Generalize while fixing, per Learning-010's own framing: "mirror-replace" and "local state living inside the mirrored directory" are in direct conflict. `.claude-md.sha256` survives today only because `sync` happens to rewrite it after the mirror. Any future CLI-written file under `.kenovis/` that is not part of the bundle needs an explicit preserve-or-recompute rule in `runSync`, or the next sync erases it silently. Make that rule explicit in code (a single named set of install-time-owned paths) rather than leaving it as two independent coincidences.
+
+Validation: unit tests for both branches (pending present → preserved and pending stub written; pending absent → today's behavior unchanged), plus the smoke-test sequence that found it — `kenovis add` → commit → `kenovis sync` → assert `.setup-pending` still present and `CLAUDE.md` unchanged.
+
+Priority rationale: Customer Pain is real but currently unreported (one external team so far, and it only bites the install-then-sync-before-first-session ordering); Frequency is low today; Implementation Cost is small and the fix is well understood. Scheduled ahead of item 2 because it is cheap and because shipping it first means the next release carries a fix rather than only a repository reorganization.
+
+Shipped: `runSync` reads `.kenovis/.setup-pending` before the mirror-replace and, when present, rewrites it afterwards (canonically, via `setupPendingContent`, so a corrupted marker can never disagree with the stub's directive) and emits the pending-form stub instead of the steady-state one. `SyncResult` gained `setupStillPending`; `bin.ts` says so on stdout. The generalization the item asked for landed as `INSTALL_TIME_OWNED_ENTRIES` in `cli/src/domain/installation.ts` — a single named set of the files the CLI writes inside `.kenovis/` that the bundle never ships, each tagged `preserved` or `rewritten`, so the next such file is not a third silent coincidence. New `installationKindFromSetupPending` is the inverse of `setupPendingContent`; an unrecognised marker falls back to re-detecting the kind from the target rather than guessing. 12 new tests (83 → 95 total), typecheck and build clean.
+
+Adjacent gap found while fixing, and fixed in the same round because it sits in the same pending → steady-state transition: `init-project.md`/`adopt-project.md` revert the `CLAUDE.md` stub on completion but never touched `.kenovis/.claude-md.sha256`, which still recorded the *pending* stub's hash — so the very next `kenovis sync` refused (`ExistingClaudeMdError`) to overwrite a `CLAUDE.md` those commands had just legitimately rewritten. Introduced by Phase 0 item 7's hash sidecar, which never revisited DECISION-018's completion step. Both commands now delete the sidecar alongside the marker; the next install/sync records it again. Recorded as Learning-011.
+
+Validated: 95 `cli/` tests pass, typecheck and build clean, plus the smoke sequence that found the bug — `kenovis add` → commit → `kenovis sync` left `git status` completely clean (marker intact, stub unchanged, target's `README.md`/`src/`/`package.json` untouched) while still updating the Framework layer; and the completed-setup path (marker + sidecar deleted, stub reverted) syncs without refusing and stays in steady state.
+
+2. DONE (2026-08-07, via /next) — promote `development` → `preproduction` → `main` and cut the next release.
+
+`CHANGELOG.md`'s `[Unreleased]` had accumulated DECISION-020 and the `.kenovis/` self-migration since `kenovis@0.4.0`, plus item 1 above once it landed. Followed `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release": PR through the protected branches, align `cli/package.json`'s version with the release tag, cut the `CHANGELOG.md` section, publish from CI via `.github/workflows/publish.yml` (GitHub Release triggered, provenance, never from a laptop — ENGINEERING/SECURITY.md → Supply-Chain Security).
+
+Version call, decided at cut time: **minor, `kenovis@0.5.0`**, not patch. Patch was defensible on the CLI side alone — item 1 is a bug fix and the `.kenovis/` migration does not change the published package's shape — but this package bundles the framework files themselves, and two of them changed behaviour for customers (`init-project.md`/`adopt-project.md` now delete `.kenovis/.claude-md.sha256` on completion, Learning-011). An Installation syncing to this release gets more than a CLI bug fix, so minor. Reasoning recorded in `CHANGELOG.md`'s `[0.5.0]` header, per this item's own instruction not to decide by habit.
+
+Dependency: item 1 first, so a single release carries both. Satisfied — item 1 merged (PR #37) before the release branch was cut.
+
+Shipped: `cli/package.json`/`package-lock.json` 0.4.0 → 0.5.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.5.0] - 2026-08-07`. Promoted `development` → `preproduction` → `main` and published `kenovis@0.5.0` from CI with provenance.
+
+Phase 1's Immediate Priority block is closed. Both items DONE; the next `/next` run selects from Phase 1 MVP / Phase 2 rather than this block.
 ---
 Phase 1 — MVP
 

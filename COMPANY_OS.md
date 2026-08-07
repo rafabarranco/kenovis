@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
 
 # COMPANY_OS.md
 
@@ -257,7 +257,7 @@ Defines:
 
 ↓
 
-AI/
+.kenovis/AI/
 
 Defines:
 

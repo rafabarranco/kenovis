@@ -11,6 +11,8 @@ import {
   hashClaudeMdContent,
   InvalidFrameworkSourceError,
   NotInstalledError,
+  SETUP_PENDING_FILENAME,
+  setupPendingContent,
 } from "../../domain/installation.js";
 
 test("runSync refuses to run when .kenovis/ does not exist", async () => {
@@ -183,4 +185,85 @@ test("runSync --force overwrites content appended below an otherwise-untouched s
   await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo", force: true });
 
   assert.notEqual(fs.files.get(claudeMdPath), withAppendedNotes);
+});
+
+const setupPendingPath = join("/repo", FRAMEWORK_DIR_NAME, SETUP_PENDING_FILENAME);
+
+test("runSync preserves a .setup-pending marker the mirror-replace would otherwise erase (Learning-010)", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", FRAMEWORK_DIR_NAME), "<old install>");
+  fs.seed(setupPendingPath, setupPendingContent("brownfield"));
+
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(fs.files.get(setupPendingPath), setupPendingContent("brownfield"));
+  assert.equal(result.setupStillPending, true);
+});
+
+test("runSync keeps the CLAUDE.md stub in its pending form while setup is pending", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", FRAMEWORK_DIR_NAME), "<old install>");
+  fs.seed(setupPendingPath, setupPendingContent("brownfield"));
+
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(
+    fs.files.get(join("/repo", "CLAUDE.md")),
+    claudeStubContent({ pending: true, kind: "brownfield" }),
+  );
+});
+
+test("runSync writes the greenfield pending stub for a greenfield marker", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", FRAMEWORK_DIR_NAME), "<old install>");
+  fs.seed(setupPendingPath, setupPendingContent("greenfield"));
+
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(
+    fs.files.get(join("/repo", "CLAUDE.md")),
+    claudeStubContent({ pending: true, kind: "greenfield" }),
+  );
+});
+
+test("runSync re-detects the kind when the .setup-pending marker is unrecognised", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", FRAMEWORK_DIR_NAME), "<old install>");
+  fs.seed(setupPendingPath, "something this CLI never wrote");
+  fs.seed(join("/repo", "src", "index.ts"), "export const real = true;");
+
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(
+    fs.files.get(join("/repo", "CLAUDE.md")),
+    claudeStubContent({ pending: true, kind: "brownfield" }),
+  );
+  // Rewritten canonically, so marker and stub directive cannot disagree.
+  assert.equal(fs.files.get(setupPendingPath), setupPendingContent("brownfield"));
+});
+
+test("runSync leaves an already-set-up Installation in its steady state", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", FRAMEWORK_DIR_NAME), "<old install>");
+
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(result.setupStillPending, false);
+  assert.equal(fs.files.get(join("/repo", "CLAUDE.md")), claudeStubContent({ pending: false }));
+  assert.equal(fs.files.has(setupPendingPath), false);
+});
+
+test("runSync records the hash of the pending stub it wrote, so the next sync is not refused", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", FRAMEWORK_DIR_NAME), "<old install>");
+  fs.seed(setupPendingPath, setupPendingContent("brownfield"));
+
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(result.setupStillPending, true);
+  assert.equal(
+    fs.files.get(join("/repo", FRAMEWORK_DIR_NAME, CLAUDE_MD_HASH_FILENAME)),
+    hashClaudeMdContent(claudeStubContent({ pending: true, kind: "brownfield" })),
+  );
 });
