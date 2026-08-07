@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
 
 DOMAIN_MODEL.md
 
@@ -56,7 +56,7 @@ Relationships: belongs to one Customer; tracks one Framework Release (the one cu
 
 ### Framework Release
 
-Definition: A versioned snapshot of the Framework layer (AI/agents/, AI/workflows/, AI/policies/, AI/commands/, AI/templates/, AI/SYSTEM.md) that customers can sync into their Installation.
+Definition: A versioned snapshot of the Framework layer (.kenovis/AI/agents/, .kenovis/AI/workflows/, .kenovis/AI/policies/, .kenovis/AI/commands/, .kenovis/AI/templates/, .kenovis/AI/SYSTEM.md) that customers can sync into their Installation.
 
 Attributes (conceptually): version, changelog entries, release date.
 
@@ -80,7 +80,7 @@ Business rule: an Agent Roster for one Vertical must never assume another Vertic
 
 ### Agent Roster
 
-Definition: The set of specialized AI agent role definitions (e.g., for Software Development: CTO, Product Manager, Designer, Frontend, Backend, Security — see AI/agents/) shipped as part of a Framework Release for a given Vertical.
+Definition: The set of specialized AI agent role definitions (e.g., for Software Development: CTO, Product Manager, Designer, Frontend, Backend, Security — see .kenovis/AI/agents/) shipped as part of a Framework Release for a given Vertical.
 
 Attributes (conceptually): list of agent role definitions, the workflows and policies each agent operates under.
 

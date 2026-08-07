@@ -10,9 +10,13 @@ import {
   GreenfieldDetectedError,
   hashClaudeMdContent,
   InvalidFrameworkSourceError,
+  installationKindFromSetupPending,
+  INSTALL_TIME_OWNED_ENTRIES,
   invalidFrameworkSourceEntries,
   isClaudeMdSafeToOverwrite,
   isKenovisManagedClaudeStub,
+  CLAUDE_MD_HASH_FILENAME,
+  SETUP_PENDING_FILENAME,
   setupPendingContent,
 } from "./installation.js";
 
@@ -40,6 +44,25 @@ test("claudeStubContent, when pending and brownfield, directs the next session t
 test("setupPendingContent resolves greenfield to init-project and brownfield to adopt-project", () => {
   assert.equal(setupPendingContent("greenfield"), "init-project");
   assert.equal(setupPendingContent("brownfield"), "adopt-project");
+});
+
+test("installationKindFromSetupPending round-trips every marker setupPendingContent writes", () => {
+  for (const kind of ["greenfield", "brownfield"] as const) {
+    assert.equal(installationKindFromSetupPending(setupPendingContent(kind)), kind);
+  }
+});
+
+test("installationKindFromSetupPending tolerates a trailing newline", () => {
+  assert.equal(installationKindFromSetupPending("adopt-project\n"), "brownfield");
+});
+
+test("installationKindFromSetupPending returns null for a marker this CLI never wrote", () => {
+  assert.equal(installationKindFromSetupPending("something else entirely"), null);
+});
+
+test("INSTALL_TIME_OWNED_ENTRIES covers every file the CLI writes inside .kenovis/", () => {
+  const covered = [...INSTALL_TIME_OWNED_ENTRIES.preserved, ...INSTALL_TIME_OWNED_ENTRIES.rewritten];
+  assert.deepEqual(covered.sort(), [SETUP_PENDING_FILENAME, CLAUDE_MD_HASH_FILENAME].sort());
 });
 
 test("BrownfieldDetectedError cites the evidence and points at kenovis add", () => {

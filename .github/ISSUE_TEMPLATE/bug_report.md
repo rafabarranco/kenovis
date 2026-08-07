@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Something in the framework (AI/, CLAUDE.md, README) is broken, contradictory, or doesn't work as documented
+about: Something in the framework (.kenovis/AI/, CLAUDE.md, README) is broken, contradictory, or doesn't work as documented
 title: "[BUG] "
 labels: bug
 assignees: ''
@@ -12,7 +12,7 @@ A clear description of the problem.
 
 ## Where
 
-Which file(s) — e.g. `AI/agents/backend.md`, `AI/policies/database.md`.
+Which file(s) — e.g. `.kenovis/AI/agents/backend.md`, `.kenovis/AI/policies/database.md`.
 
 ## Expected vs actual
 

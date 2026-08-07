@@ -26,7 +26,7 @@ This repository has two layers.
 
 Framework — reusable, never rewritten per product:
 
-AI/agents/, AI/workflows/, AI/policies/, AI/commands/, AI/templates/, AI/SYSTEM.md, CLAUDE.md, README.md
+.kenovis/AI/agents/, .kenovis/AI/workflows/, .kenovis/AI/policies/, .kenovis/AI/commands/, .kenovis/AI/templates/, .kenovis/AI/SYSTEM.md, CLAUDE.md, README.md
 
 Product — rewritten for every product:
 
@@ -36,7 +36,7 @@ Product-layer files start with a `PROJECT-SPECIFIC` HTML comment.
 
 If those files still describe an example company rather than a real one, stop and run:
 
-→ AI/commands/init-project.md
+→ .kenovis/AI/commands/init-project.md
 
 Do not build a product on top of another product's context.
 
@@ -50,7 +50,7 @@ Read:
 
 1. COMPANY_OS.md
 2. DECISIONS.md
-3. AI/SYSTEM.md
+3. .kenovis/AI/SYSTEM.md
 
 Then load relevant context:
 
@@ -92,16 +92,16 @@ Always use the appropriate workflow.
 Examples:
 
 Feature:
-→ AI/workflows/feature.md
+→ .kenovis/AI/workflows/feature.md
 
 Bug:
-→ AI/workflows/bugfix.md
+→ .kenovis/AI/workflows/bugfix.md
 
 Architecture:
-→ AI/workflows/architecture.md
+→ .kenovis/AI/workflows/architecture.md
 
 Release:
-→ AI/workflows/release.md
+→ .kenovis/AI/workflows/release.md
 
 ---
 
@@ -110,17 +110,17 @@ Release:
 Use specialized agents when required.
 
 CTO:
-→ AI/agents/cto.md
+→ .kenovis/AI/agents/cto.md
 
 Product:
-→ AI/agents/product-manager.md
+→ .kenovis/AI/agents/product-manager.md
 
 Designer:
-→ AI/agents/designer.md
+→ .kenovis/AI/agents/designer.md
 
 Engineering:
-→ AI/agents/frontend.md
-→ AI/agents/backend.md
+→ .kenovis/AI/agents/frontend.md
+→ .kenovis/AI/agents/backend.md
 
 ---
 
@@ -129,22 +129,22 @@ Engineering:
 All work must follow:
 
 Architecture:
-→ AI/policies/architecture.md
+→ .kenovis/AI/policies/architecture.md
 
 Coding:
-→ AI/policies/coding.md
+→ .kenovis/AI/policies/coding.md
 
 Code Quality:
-→ AI/policies/code-quality.md
+→ .kenovis/AI/policies/code-quality.md
 
 Database:
-→ AI/policies/database.md
+→ .kenovis/AI/policies/database.md
 
 Security:
-→ AI/policies/security.md
+→ .kenovis/AI/policies/security.md
 
 Testing:
-→ AI/policies/testing.md
+→ .kenovis/AI/policies/testing.md
 
 ---
 

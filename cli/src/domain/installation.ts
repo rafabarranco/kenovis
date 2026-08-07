@@ -188,6 +188,42 @@ export function setupPendingContent(kind: InstallationKind): string {
 }
 
 /**
+ * Inverse of `setupPendingContent`: recovers the installation kind recorded in
+ * an existing `.setup-pending` marker, so `sync` can re-emit the pending stub
+ * for the same command install time already chose. Returns null for anything
+ * this CLI did not write — the caller must then re-detect rather than guess.
+ */
+export function installationKindFromSetupPending(
+  markerContent: string,
+): InstallationKind | null {
+  const trimmed = markerContent.trim();
+  if (trimmed === setupPendingContent("brownfield")) return "brownfield";
+  if (trimmed === setupPendingContent("greenfield")) return "greenfield";
+  return null;
+}
+
+/**
+ * Files this CLI writes *inside* `${FRAMEWORK_DIR_NAME}/` that the Framework
+ * bundle itself never ships. `sync` mirror-replaces that directory
+ * (removeTree + copyTree), so every entry here is destroyed on each sync
+ * unless it is explicitly handled — and silently, since nothing fails.
+ *
+ * Each entry therefore needs one of two rules, stated here rather than left
+ * as an accident of statement order in runSync (see AI/memory/learnings.md
+ * Learning-010, where `.setup-pending` had neither and `.claude-md.sha256`
+ * survived only because sync happened to rewrite it afterwards):
+ *
+ * - `preserved`: read before the mirror, re-established after it.
+ * - `rewritten`: recomputed from what this run wrote, after the mirror.
+ *
+ * Any future install-time-owned file must be added to one of these lists.
+ */
+export const INSTALL_TIME_OWNED_ENTRIES = {
+  preserved: [SETUP_PENDING_FILENAME],
+  rewritten: [CLAUDE_MD_HASH_FILENAME],
+} as const;
+
+/**
  * Top-level entries a legitimate Framework-layer source directory may
  * contain, mirroring scripts/bundle-framework-assets.mjs's own output shape
  * (AI/ minus memory/, plus README.md) — the one shape Kenovis itself defines
