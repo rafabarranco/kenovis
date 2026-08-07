@@ -206,7 +206,7 @@ Phase 1 — Immediate Priority (added 2026-08-07, from /next after Phase 0 close
 
 Two items, in this order. Neither is blocked. Ordering matters: item 1 lands a real customer-facing bug fix, item 2 packages it — doing them in this order means one release carries both instead of cutting two.
 
-1. NOT STARTED — close Learning-010: `sync` disarms DECISION-018's first-session auto-trigger.
+1. DONE (2026-08-07, via /next) — close Learning-010: `sync` disarms DECISION-018's first-session auto-trigger.
 
 Found 2026-08-07 by the scratch-repo smoke test that closed Phase 0 item 8, not by a customer report. `runSync` mirror-replaces `.kenovis/` from the bundle — which correctly never ships `.kenovis/.setup-pending`, since `runInit`/`runAdd` write that marker at install time — and then rewrites `CLAUDE.md` in its steady-state form unconditionally. Neither step asks whether setup is still pending. A customer who installs and then syncs before their first AI session loses the auto-trigger and is back to typing `/init-project` or `/adopt-project` by hand: exactly the friction DECISION-018 was built to remove.
 
@@ -219,6 +219,12 @@ Generalize while fixing, per Learning-010's own framing: "mirror-replace" and "l
 Validation: unit tests for both branches (pending present → preserved and pending stub written; pending absent → today's behavior unchanged), plus the smoke-test sequence that found it — `kenovis add` → commit → `kenovis sync` → assert `.setup-pending` still present and `CLAUDE.md` unchanged.
 
 Priority rationale: Customer Pain is real but currently unreported (one external team so far, and it only bites the install-then-sync-before-first-session ordering); Frequency is low today; Implementation Cost is small and the fix is well understood. Scheduled ahead of item 2 because it is cheap and because shipping it first means the next release carries a fix rather than only a repository reorganization.
+
+Shipped: `runSync` reads `.kenovis/.setup-pending` before the mirror-replace and, when present, rewrites it afterwards (canonically, via `setupPendingContent`, so a corrupted marker can never disagree with the stub's directive) and emits the pending-form stub instead of the steady-state one. `SyncResult` gained `setupStillPending`; `bin.ts` says so on stdout. The generalization the item asked for landed as `INSTALL_TIME_OWNED_ENTRIES` in `cli/src/domain/installation.ts` — a single named set of the files the CLI writes inside `.kenovis/` that the bundle never ships, each tagged `preserved` or `rewritten`, so the next such file is not a third silent coincidence. New `installationKindFromSetupPending` is the inverse of `setupPendingContent`; an unrecognised marker falls back to re-detecting the kind from the target rather than guessing. 12 new tests (83 → 95 total), typecheck and build clean.
+
+Adjacent gap found while fixing, and fixed in the same round because it sits in the same pending → steady-state transition: `init-project.md`/`adopt-project.md` revert the `CLAUDE.md` stub on completion but never touched `.kenovis/.claude-md.sha256`, which still recorded the *pending* stub's hash — so the very next `kenovis sync` refused (`ExistingClaudeMdError`) to overwrite a `CLAUDE.md` those commands had just legitimately rewritten. Introduced by Phase 0 item 7's hash sidecar, which never revisited DECISION-018's completion step. Both commands now delete the sidecar alongside the marker; the next install/sync records it again. Recorded as Learning-011.
+
+Validated: 95 `cli/` tests pass, typecheck and build clean, plus the smoke sequence that found the bug — `kenovis add` → commit → `kenovis sync` left `git status` completely clean (marker intact, stub unchanged, target's `README.md`/`src/`/`package.json` untouched) while still updating the Framework layer; and the completed-setup path (marker + sidecar deleted, stub reverted) syncs without refusing and stays in steady state.
 
 2. NOT STARTED — promote `development` → `preproduction` → `main` and cut the next release.
 

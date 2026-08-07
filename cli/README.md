@@ -20,6 +20,8 @@ An existing Installation does not auto-detect a newer Framework Release today (P
 2. Run `kenovis sync <targetDir>` — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub to the new Framework Release, same as any other sync.
 3. Review the change with `git diff` before committing (RULE-INST-02) — this is the same review step any sync needs, not upgrade-specific.
 
+Syncing before you have run `/init-project` or `/adopt-project` is safe: `sync` keeps `.kenovis/.setup-pending` and the pending form of the `CLAUDE.md` stub, so the next AI session still runs that command automatically (DECISION-018).
+
 If your root `CLAUDE.md` was never written by this CLI at all (predates adopting Kenovis, or you replaced its content), or if you've added your own notes below Kenovis's own stub content, `init --force`/`add --force`/`sync` refuse to overwrite it unless `--force` is passed — a recorded content hash (`.kenovis/.claude-md.sha256`) catches both cases, not just the first (closes the gap `AI/memory/learnings.md` Learning-007 documented; see Learning-008 for the fix). An Installation that predates this fix falls back to the older, weaker first-line check until its next successful install/sync records a hash.
 
 ## Cutting a release
