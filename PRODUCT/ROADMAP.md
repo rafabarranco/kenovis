@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.17
+Version: 1.18
 ---
 Purpose
 
@@ -187,6 +187,12 @@ Dependencies: none remaining. All of Phase 0 item 6 is complete except the defer
 Founder chose this as the next item once Phase 0 items 1-6 were confirmed complete and Phase 1's own success criteria already validated (no other unscheduled roadmap item existed) — see this session's /next run.
 
 Shipped: `cli/src/domain/installation.ts` gained `hashClaudeMdContent`/`isClaudeMdSafeToOverwrite` and the `CLAUDE_MD_HASH_FILENAME` (`.kenovis/.claude-md.sha256`) sidecar, recorded by every `init`/`add`/`sync` alongside the stub it writes. The guard now compares the on-disk CLAUDE.md against that recorded hash — byte-identical or refuse — instead of only checking the marker line's prefix, so content appended below an otherwise-untouched stub is caught too. An Installation with no recorded hash yet (predates this fix) falls back to the old prefix check for its next transition only. 8 new tests (75 → 83 total in `cli/`), typecheck/build clean, real end-to-end smoke test (`kenovis init` → `sync` → append notes → `sync` refuses → `sync --force` overwrites) confirmed the exact Learning-007 scenario is now caught. Recorded as `AI/memory/learnings.md` Learning-008.
+
+8. ADR DONE (2026-08-06, via /next), migration NOT YET STARTED — DECISION-017's own deferred Phase 2: this repository migrates its own Framework layer (`AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md`) into `.kenovis/AI/`, the same packaging every customer Installation already gets.
+
+Founder chose this as the next item once Phase 0 items 1-7 were confirmed complete and Phase 1/2 had no other unscheduled, unblocked item — see this session's `/next` run. Starting the migration surfaced a gap DECISION-017 never resolved: this repository's root `README.md`/`CLAUDE.md` are simultaneously "Kenovis's own explanation" and "the Installation's pre-existing content" — the same two things DECISION-017's B1 resolution assumed were always different documents. Ran `/architect` before touching any file. See DECISION-020: root `README.md` and root `CLAUDE.md` are a documented exception, staying hand-authored at repo root; only the five `AI/` subdirectories plus `AI/SYSTEM.md` actually relocate. `ENGINEERING/ARCHITECTURE.md` → Hard Rules states the exception.
+
+Remaining work (not done in this round — ADR only): relocate the six paths above into `.kenovis/AI/`; repoint every cross-reference in `README.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `.claude/commands/*.md`, `.github/scripts/check_changelog.py`, `.github/scripts/check_markers.py`, `.github/PULL_REQUEST_TEMPLATE.md`, `.github/ISSUE_TEMPLATE/*.md`, and inside the relocated files themselves; re-run the Learning-004 scratch-repo smoke test against the result; update `CHANGELOG.md` (CI's changelog gate applies — this touches `AI/**`/`CLAUDE.md`/`README.md`) and mark this item DONE.
 ---
 Phase 1 — MVP
 

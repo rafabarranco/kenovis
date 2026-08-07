@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Added
+
+- `DECISIONS.md` → DECISION-020: this repository's own root `README.md` and root `CLAUDE.md` are a documented exception to DECISION-017's `.kenovis/` self-migration — they stay hand-authored at repo root (public landing page; repo-specific Role/Layers/Source-Of-Truth/graphify prose) instead of being replaced by the CLI's generic customer templates. Only `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md` relocate to `.kenovis/AI/` when that migration is implemented (`PRODUCT/ROADMAP.md` Phase 0 item 8, not yet started). `ENGINEERING/ARCHITECTURE.md` (1.3 → 1.4) → "Hard Rules" states the exception. `AI/memory/learnings.md` gains Learning-009.
+
 ## [0.4.0] - 2026-08-06
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0]/[0.3.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release".

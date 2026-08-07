@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.3
+Version: 1.4
 ---
 Scope
 
@@ -144,6 +144,35 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — a packaging rule designed for "customer vs. framework" breaks on the one Installation where they're the same thing
+
+## Learning-009
+
+Date:
+2026-08-06
+
+Category:
+Architecture
+
+Context:
+Starting DECISION-017's own deferred Phase 2 (this repository migrates its own Framework layer into `.kenovis/`, using the packaging rule already decided for every customer Installation) via `/next`.
+
+Problem:
+DECISION-017's B1 resolution — Kenovis's own explanatory README moves to `.kenovis/README.md`; the customer's own pre-existing root README is never touched — silently assumed those are always two different documents. Applied literally to this repository, it would hide this project's own GitHub/npm-facing landing page inside a directory GitHub doesn't auto-render, and replace this repository's hand-authored root `CLAUDE.md` (Role, Layers, Source Of Truth, graphify wiring) with the generic customer stub.
+
+What happened:
+This repository is the one Installation where "Kenovis's own explanation" and "the Installation's pre-existing content" are the same document — it is simultaneously the framework's origin and its own dogfooded product (DECISION-013). A packaging rule written for the general case (any two Installations have unrelated README/CLAUDE.md content) doesn't have a case for the specific Installation that authored the rule.
+
+Root cause:
+DECISION-017 was scoped and reasoned entirely from the perspective of a third-party customer's repository. It never asked "what happens when this rule is applied to the repository that IS the framework" — a blind spot that only surfaces when the self-referential case is actually attempted, not when the rule is merely described.
+
+Learning:
+When a packaging/distribution rule is designed by reasoning about "the customer," explicitly check whether the tool's own origin repository is itself a customer of that rule (true here, per DECISION-013's maximal-dogfooding stance) — and if so, walk the rule through that specific case before considering the design complete. A rule that's correct for every *other* Installation can still be wrong for the one that's self-referential.
+
+Future action:
+See DECISIONS.md DECISION-020 — root `README.md`/`CLAUDE.md` are now a documented, standing exception for this repository specifically. When designing a future rule that treats "the framework" and "an Installation" as distinct parties, add a checklist item: does this repository's own dual nature (framework origin + dogfooded product) break the assumption?
 
 ---
 Example: Project — a startsWith check only proves "not a foreign file," not "nothing appended"
