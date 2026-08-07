@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-07
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0]/[0.3.0]/[0.4.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch: the framework files this package bundles changed behaviour (`init-project.md`/`adopt-project.md` now clear the `CLAUDE.md` hash sidecar on completion), so an Installation that syncs to this release gets more than a CLI bug fix.
+
 ### Added
 
 - `DECISIONS.md` → DECISION-020: this repository's own root `README.md` and root `CLAUDE.md` are a documented exception to DECISION-017's `.kenovis/` self-migration — they stay hand-authored at repo root (public landing page; repo-specific Role/Layers/Source-Of-Truth/graphify prose) instead of being replaced by the CLI's generic customer templates. Only `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md` relocate to `.kenovis/AI/` (`PRODUCT/ROADMAP.md` Phase 0 item 8). `ENGINEERING/ARCHITECTURE.md` (1.3 → 1.4) → "Hard Rules" states the exception. `AI/memory/learnings.md` gains Learning-009.
@@ -16,7 +20,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 - `cli/scripts/bundle-framework-assets.mjs` now sources the bundle from `.kenovis/AI/` instead of the repository root's `AI/`, and no longer needs its `memory/` exclusion — that directory is no longer inside the tree it copies.
 - The relocated framework files' `Version: X.Y` headers were deliberately left unchanged. Per `CONTRIBUTING.md` → "Versioning framework files" that header tracks a file's substance, and a path repoint changes none — bumping ~40 files would tell the next reader "this content changed" when it did not.
 - `.github/scripts/check_changelog.py` watches `.kenovis/AI/` instead of `AI/`. Previously the `AI/` prefix also matched `AI/memory/`, which is Product layer, so the changelog gate fired on changes it was never meant to cover.
-- `AI/memory/learnings.md` gains Learning-010: `kenovis sync` deletes `.kenovis/.setup-pending` and reverts the `CLAUDE.md` stub to steady state, disarming DECISION-018's first-session auto-trigger on an Installation that has not completed setup. Pre-existing behavior, found by this round's smoke test, recorded as a backlog item rather than fixed here — closed in this same `[Unreleased]` section, see "Fixed" below.
+- `AI/memory/learnings.md` gains Learning-010: `kenovis sync` deletes `.kenovis/.setup-pending` and reverts the `CLAUDE.md` stub to steady state, disarming DECISION-018's first-session auto-trigger on an Installation that has not completed setup. Pre-existing behavior, found by this round's smoke test, recorded as a backlog item rather than fixed here — closed in this same release, see "Fixed" below.
 - `.kenovis/AI/commands/init-project.md` (1.6 → 1.7) and `.kenovis/AI/commands/adopt-project.md` (1.5 → 1.6) — their completion step now also deletes `.kenovis/.claude-md.sha256` alongside `.setup-pending`. That sidecar recorded the hash of the *pending* stub the CLI wrote, so leaving it behind made the next `kenovis sync` refuse (`ExistingClaudeMdError`) to touch a `CLAUDE.md` the command itself had just legitimately reverted. The next install/sync records the hash again.
 
 ### Fixed
