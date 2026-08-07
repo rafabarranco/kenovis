@@ -3,6 +3,6 @@ description: Full engineering review of code, architecture or a proposed change 
 argument-hint: <target, optional>
 ---
 
-Read `AI/commands/review.md` in full and execute every step in order, without skipping any.
+Read `.kenovis/AI/commands/review.md` in full and execute every step in order, without skipping any.
 
 Target to review: $ARGUMENTS

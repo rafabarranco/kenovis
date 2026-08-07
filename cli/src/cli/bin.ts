@@ -49,7 +49,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
 
 /**
  * dist/cli/bin.js -> dist/framework-assets, bundled at build time by
- * scripts/bundle-framework-assets.mjs from this repository's own AI/.
+ * scripts/bundle-framework-assets.mjs from this repository's own .kenovis/AI/.
  * Never re-reads ../AI at runtime — only this frozen, already-copied output.
  */
 export function defaultFrameworkSourceDir(): string {
@@ -229,6 +229,12 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
 
     console.log(`Framework layer synced to ${result.frameworkSyncedTo}`);
     console.log(`CLAUDE.md stub rewritten at ${result.claudeStubWrittenTo}`);
+    if (result.setupStillPending) {
+      console.log(
+        "\nSetup is still pending — kept. The next AI session in this repository " +
+          "will run init-project/adopt-project automatically, as it would have before this sync.",
+      );
+    }
     console.log("\nReview the change with `git diff` before committing.");
     return 0;
   } catch (error) {

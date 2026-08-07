@@ -1,10 +1,10 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
 
 # DECISIONS.md
 
 Company Decision Log
 
-Version: 2.6
+Version: 2.7
 
 Last updated: —
 
@@ -25,7 +25,7 @@ Seven are framework-level and should be carried over:
 - DECISION-016 — No Framework-Mandated Directory Name For Customer Code (supersedes DECISION-015).
 - DECISION-019 — Collision Guard Against Silent Product-Layer Overwrite In init-project/adopt-project.
 
-Everything else is product-specific and should be recorded as real decisions get made. See AI/commands/init-project.md.
+Everything else is product-specific and should be recorded as real decisions get made. See .kenovis/AI/commands/init-project.md.
 
 ---
 
@@ -1328,6 +1328,129 @@ Positive:
 Negative:
 
 - The guard's enforcement is instruction-only, not code-enforced — an agent that skips reading the "Collision Guard" section could still overwrite a file. No CLI code path exists for these two commands to make this unconditional; the same conversational, human-gated nature that makes the commands safe by design (they already refuse to continue without human answers) is also why this can't be a hard code guarantee today.
+
+---
+
+# DECISION-020
+
+# Kenovis's Own Root README.md and CLAUDE.md Are Exempt From The `.kenovis/` Self-Migration
+
+Date:
+
+2026-08-06
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-06
+
+---
+
+## Context
+
+PRODUCT/ROADMAP.md's DECISION-017 Implementation Strategy scoped a Phase 2: "this repository migrates its own Framework layer from root into `.kenovis/`, re-pathing its internal cross-references, using the CLI's own sync mechanism on itself — the dogfooding validation that the mechanism works, not just that the documentation describes it." That Phase 2 work was never started; DECISION-017's own Consequences already flagged it as "a temporary and explicitly tracked inconsistency, not an oversight."
+
+Starting that migration via `/next` (this session) surfaced a gap DECISION-017 explicitly left out of scope: DECISION-017's B1 resolution — Kenovis's own explanatory README moves to `.kenovis/README.md`; the *customer's* pre-existing root `README.md` is never touched — was designed for a third-party Installation, where "Kenovis's explanation" and "the customer's own project" are two different documents. This repository has no such split: its root `README.md` *is* Kenovis's own project's public landing page (GitHub, npm package page) *and* the explanatory document DECISION-017 was talking about, at once. Applying B1 literally here would move that content into `.kenovis/README.md`, which GitHub does not auto-render — the repository's public landing page would go effectively blank. COMPANY_OS.md → Distribution Strategy names this exact repository, unprompted, as part of the product's distribution channel: "Kenovis's own dogfooded repository as a public reference implementation of the product working on itself." Hiding the README contradicts a stated business asset, not just an internal convention.
+
+The same shape of gap applies to root `CLAUDE.md`. The CLI's `claudeStubContent()` (`cli/src/domain/installation.ts`) generates a minimal, generic stub for a customer Installation. This repository's actual root `CLAUDE.md` is hand-authored and carries content the generic stub does not: Role, Repository Layers, Session Initialization Protocol, Source Of Truth Hierarchy, and a `## graphify` section wiring this repository's own `graphify` hook-guard rules (DECISION-012). Replacing it with the generic stub during a self-migration would be a real, functional regression to this team's own daily-driver instructions, not a neutral packaging change.
+
+Both gaps share a root cause: DECISION-017 assumed every Installation (including Kenovis's own) has a clean split between "the framework's explanation" and "the Installation's own pre-existing content." Kenovis's own repository is the one Installation where that split does not exist — it is simultaneously the framework's origin and its own dogfooded product.
+
+---
+
+## Options Considered
+
+### Option A
+
+Apply DECISION-017's B1 resolution to this repository exactly as written for any customer Installation: move all Kenovis-explanatory README content into `.kenovis/README.md`, reduce (or remove) the root `README.md`, and replace root `CLAUDE.md` with the generic `claudeStubContent()` output.
+
+Advantages:
+
+- Perfect mechanical parity with a customer install — the self-migration exercises the exact same code path (`kenovis init`/`kenovis sync`) with zero special-casing, the cleanest possible proof that "dogfooding validates the mechanism."
+
+Disadvantages:
+
+- Directly undermines COMPANY_OS.md's own stated Distribution Strategy, which relies on this repository's root README functioning as a real public landing page and reference implementation.
+- Discards this team's own richer, hand-authored `CLAUDE.md` (Role, Layers, Source Of Truth, graphify wiring) in favor of a generic template built for a different audience (a fresh customer Installation with no prior context), degrading this team's own daily Claude Code sessions for the sake of symbolic purity.
+
+---
+
+### Option B
+
+Treat Kenovis's own root `README.md` and root `CLAUDE.md` as a standing, documented exception to the self-migration: they stay at repo root, hand-authored, with their own content — not generated or overwritten by the CLI's `init`/`sync` mechanism. Everything else that DECISION-017 scoped to move — `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md` — relocates into `.kenovis/AI/` as originally planned. `AI/memory/` stays at root, unaffected (already Product-layer per DECISION-013/016). Every internal cross-reference inside README.md, CLAUDE.md, and the moved files themselves that currently points at `AI/...` is repointed to `.kenovis/AI/...`. The "dogfooding validates the sync mechanism" goal DECISION-017 Phase 2 was chasing is satisfied by the existing scratch-repository smoke-test pattern (`AI/memory/learnings.md` Learning-004, already run against a disposable clone) rather than by running `init`/`sync` unmodified against this repository's own root.
+
+Advantages:
+
+- Preserves the actual, real value of this repository's public presence — matches COMPANY_OS.md's explicit naming of this repo as a distribution channel.
+- Does not force a real, valuable, hand-authored document to be replaced by a lossier generic template just to make a mechanical proof marginally cleaner — the proof already exists via scratch-repo smoke testing.
+- Still achieves DECISION-017's actual stated goal — "framework infra invisible, product infra visible" — for the part of the Framework layer that actually clutters a repo listing (12 agent files, workflows, policies, commands, templates): those genuinely move under `.kenovis/`.
+
+Disadvantages:
+
+- This repository's root `CLAUDE.md`/`README.md` permanently diverge from exactly what a customer's `init`/`sync` would generate — a maintainer's own daily-use files are never byte-identical to what a new customer sees on first install. Slightly weakens the literal "maximal dogfooding" framing of DECISION-013, though only for these two specific files.
+- `isKenovisManagedClaudeStub`/`isClaudeMdSafeToOverwrite` (the CLI's own guard logic) would, if `kenovis sync` were ever accidentally run against this repository's own root, correctly refuse to overwrite this hand-authored `CLAUDE.md` — expected and desired, but worth naming explicitly so it is never mistaken for a bug.
+
+---
+
+### Option C
+
+Hybrid: keep root `README.md` mostly as-is (preserve the public landing page), but replace root `CLAUDE.md` with the actual generic stub, relocating its current repo-specific prose (Role, Layers, Source Of Truth, graphify wiring) into `AI/SYSTEM.md` (tool-agnostic, framework-layer) or a new Kenovis-specific product-layer document, so a real Claude Code session still gets equivalent guidance, sourced through the same mechanism a customer's install uses.
+
+Advantages:
+
+- Achieves true dogfooding of the specific mechanism DECISION-018 built machinery around (the pending-marker stub, the content-hash guard) without touching the public README.
+
+Disadvantages:
+
+- Much of `CLAUDE.md`'s current prose already duplicates `AI/SYSTEM.md`'s Core Philosophy in different words — merging them cleanly is a real, separate content-consolidation problem, unrelated in scope to "where does the Framework layer physically live," and risks silently losing the graphify hook-guard section's specific, load-bearing rules (`.claude/settings.json`'s `PreToolUse` hooks depend on agents actually reading and following that section every session).
+- Solves a cosmetic-parity goal (this repo's `CLAUDE.md` "looks like" a generated stub) at real risk to something that already works correctly today.
+
+---
+
+## Decision
+
+Adopt Option B.
+
+- Root `README.md` and root `CLAUDE.md` are a standing, documented exception: they remain hand-authored, at repo root, and are never written or overwritten by `kenovis init`/`kenovis add`/`kenovis sync` run against this repository's own working tree. (Running those commands here at all would be unusual — this repository is the framework's origin, not an Installation of it — but the exception is recorded explicitly in case it is ever attempted, e.g. accidentally.)
+- `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md` relocate to `.kenovis/AI/` as DECISION-017 originally scoped. `AI/memory/` stays at root.
+- Every reference to the old `AI/...` paths inside `README.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `.claude/commands/*.md`, `.github/scripts/check_changelog.py`, `.github/scripts/check_markers.py`, `.github/PULL_REQUEST_TEMPLATE.md`, `.github/ISSUE_TEMPLATE/*.md`, and every file under the relocated `AI/` tree itself is repointed to `.kenovis/AI/...` as part of implementing this decision.
+- `ENGINEERING/ARCHITECTURE.md` → "Hard Rules" gains a line stating this repository-specific exception explicitly, so it reads as a documented carve-out rather than an unexplained inconsistency with the rule it otherwise enforces for every Installation.
+- The dogfooding validation DECISION-017 Phase 2 asked for is satisfied by re-running the existing scratch-repository smoke test (`AI/memory/learnings.md` Learning-004's pattern) against the post-migration bundled framework assets, not by running `init`/`sync` against this repository's own root.
+
+---
+
+## Reason
+
+COMPANY_OS.md's Distribution Strategy is not incidental — it explicitly names this repository as a distribution asset ("word of mouth among developers... Kenovis's own dogfooded repository as a public reference implementation of the product working on itself"). Option A would sacrifice that real, stated business value for a mechanical purity that a disposable scratch-repo test already provides equally well. Option C was rejected as scope creep: it tries to solve a pre-existing content-duplication problem (`CLAUDE.md` vs. `AI/SYSTEM.md`) that this migration did not create and does not need to fix, at real risk to a rule (`.claude/`'s graphify hook-guard) that already works. Option B is the option that actually finishes what DECISION-017 named as its goal — "framework infra invisible, product infra visible" — for the files that create real clutter (12 agent definitions, workflows, policies, commands, templates), without regressing the two files whose current, repo-specific content has independent value DECISION-017 never intended to discard.
+
+---
+
+## Consequences
+
+Positive:
+
+- This repository's root listing gets the same visual cleanup DECISION-017 already gives every customer Installation — the Framework layer's bulk (`AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`) stops cluttering the root, without costing the project its own GitHub/npm-facing landing page.
+- Closes the "temporary and explicitly tracked inconsistency" DECISION-017 flagged, for the part of it that was genuinely just deferred work (the file relocation), while giving the part that turned out to need its own judgment call (README/CLAUDE.md treatment) an actual documented decision instead of leaving it to be improvised silently during implementation.
+
+Negative:
+
+- This repository's root `CLAUDE.md`/`README.md` are now permanently, deliberately not what `kenovis init`/`sync` would generate — a fact that must stay documented here (and in `ENGINEERING/ARCHITECTURE.md`) so a future contributor does not "fix" the divergence by mistake.
+- The relocation of `AI/{agents,workflows,policies,commands,templates}/` plus `AI/SYSTEM.md` still requires re-pathing every internal and external cross-reference to those files — real mechanical work, not reduced in size by this decision, only scoped correctly around it.
+
+---
+
+## Implementation Strategy
+
+Phase 1 (this decision): record the exception, no files moved yet.
+
+Phase 2 (separate `/next` or `/feature` execution): move `AI/{agents,workflows,policies,commands,templates}/` and `AI/SYSTEM.md` into `.kenovis/AI/`; repoint every cross-reference listed under Decision above; update `ENGINEERING/ARCHITECTURE.md` → Hard Rules; re-run the scratch-repository smoke test against the resulting bundled assets; update `CHANGELOG.md` (this touches `AI/**`, `CLAUDE.md`, `README.md` — CI's changelog gate applies) and `PRODUCT/ROADMAP.md`'s DECISION-017 Phase 2 line to DONE.
 
 ---
 

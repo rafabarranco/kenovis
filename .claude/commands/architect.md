@@ -3,6 +3,6 @@ description: Analyze, design and document a technical solution before implementa
 argument-hint: <problem>
 ---
 
-Read `AI/commands/architect.md` in full and execute every step in order, without skipping any.
+Read `.kenovis/AI/commands/architect.md` in full and execute every step in order, without skipping any.
 
 Problem to design: $ARGUMENTS
