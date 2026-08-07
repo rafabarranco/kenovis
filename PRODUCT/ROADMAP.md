@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.19
+Version: 1.20
 ---
 Purpose
 
@@ -199,6 +199,34 @@ Scoping rule applied, worth stating because it recurs: navigational references (
 `cli/scripts/bundle-framework-assets.mjs` now sources from `.kenovis/AI/` and dropped its now-meaningless `memory/` exclusion. `.github/scripts/check_changelog.py`'s watched prefix became `.kenovis/AI/` — previously `AI/` also matched Product-layer `AI/memory/`, firing the changelog gate on changes it never covered.
 
 Validated: 83 `cli/` tests pass, typecheck and build clean, `check_links.py` and `check_markers.py` pass, and the Learning-004 scratch-repo smoke test re-run against the post-migration bundle (brownfield `kenovis add` → commit → `kenovis sync`) left the target's own `README.md`, `src/` and `package.json` untouched and produced a byte-identical `.kenovis/AI/` on sync. That smoke test also surfaced a pre-existing gap unrelated to this migration — `sync` deletes `.kenovis/.setup-pending` and reverts the `CLAUDE.md` stub to steady state, disarming DECISION-018's first-session auto-trigger on an Installation that has not completed setup. Recorded as `AI/memory/learnings.md` Learning-010, left as a backlog item rather than fixed inside this item's scope.
+
+Phase 0 is closed. All eight "Immediate Priority" items are DONE, and Phase 0's own Success Criteria were satisfied by the Real External Validation recorded under Phase 1 below. Work continues in the Phase 1 priority block that follows.
+---
+Phase 1 — Immediate Priority (added 2026-08-07, from /next after Phase 0 closed)
+
+Two items, in this order. Neither is blocked. Ordering matters: item 1 lands a real customer-facing bug fix, item 2 packages it — doing them in this order means one release carries both instead of cutting two.
+
+1. NOT STARTED — close Learning-010: `sync` disarms DECISION-018's first-session auto-trigger.
+
+Found 2026-08-07 by the scratch-repo smoke test that closed Phase 0 item 8, not by a customer report. `runSync` mirror-replaces `.kenovis/` from the bundle — which correctly never ships `.kenovis/.setup-pending`, since `runInit`/`runAdd` write that marker at install time — and then rewrites `CLAUDE.md` in its steady-state form unconditionally. Neither step asks whether setup is still pending. A customer who installs and then syncs before their first AI session loses the auto-trigger and is back to typing `/init-project` or `/adopt-project` by hand: exactly the friction DECISION-018 was built to remove.
+
+Pre-existing since `sync` and the pending marker were designed in separate rounds — `sync` predates the marker and was never revisited against it. Not a regression from the `.kenovis/` migration.
+
+Target design (no ADR needed — this restores DECISION-018's already-decided behavior, it does not decide anything new): `runSync` detects `.kenovis/.setup-pending` before the mirror-replace, and if present, re-writes it afterwards and emits the pending-form stub instead of the steady-state one. Sync must never advance an Installation past a setup it has not completed.
+
+Generalize while fixing, per Learning-010's own framing: "mirror-replace" and "local state living inside the mirrored directory" are in direct conflict. `.claude-md.sha256` survives today only because `sync` happens to rewrite it after the mirror. Any future CLI-written file under `.kenovis/` that is not part of the bundle needs an explicit preserve-or-recompute rule in `runSync`, or the next sync erases it silently. Make that rule explicit in code (a single named set of install-time-owned paths) rather than leaving it as two independent coincidences.
+
+Validation: unit tests for both branches (pending present → preserved and pending stub written; pending absent → today's behavior unchanged), plus the smoke-test sequence that found it — `kenovis add` → commit → `kenovis sync` → assert `.setup-pending` still present and `CLAUDE.md` unchanged.
+
+Priority rationale: Customer Pain is real but currently unreported (one external team so far, and it only bites the install-then-sync-before-first-session ordering); Frequency is low today; Implementation Cost is small and the fix is well understood. Scheduled ahead of item 2 because it is cheap and because shipping it first means the next release carries a fix rather than only a repository reorganization.
+
+2. NOT STARTED — promote `development` → `preproduction` → `main` and cut the next release.
+
+`CHANGELOG.md`'s `[Unreleased]` has accumulated DECISION-020 and the `.kenovis/` self-migration since `kenovis@0.4.0`, plus item 1 above once it lands. Follow `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release": PR through the protected branches, align `cli/package.json`'s version with the release tag, cut the `CHANGELOG.md` section, publish from CI via `.github/workflows/publish.yml` (GitHub Release triggered, provenance, never from a laptop — ENGINEERING/SECURITY.md → Supply-Chain Security).
+
+Version call, to be confirmed when cutting: item 1 is a bug fix and the migration does not change the published package's contents or shape, so a patch release is defensible. Minor is the safer default given the framework files themselves moved inside this repository and the changelog gate's watched prefix changed — decide explicitly at release time rather than by habit, and record the reasoning in `CHANGELOG.md`.
+
+Dependency: item 1 first, so a single release carries both. Not a hard block — if item 1 stalls, cut the release without it rather than letting `[Unreleased]` keep growing.
 ---
 Phase 1 — MVP
 
