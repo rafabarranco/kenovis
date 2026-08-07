@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.4
+Version: 1.5
 ---
 Scope
 
@@ -144,6 +144,35 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — ship the fact inside the artifact instead of tracking it alongside
+
+## Learning-013
+
+Date:
+2026-08-07
+
+Category:
+Architecture
+
+Context:
+Giving an Installation a record of which Framework Release it tracks (`PRODUCT/ROADMAP.md` Phase 1 item 3), via `/next`. `DOMAIN/DOMAIN_MODEL.md` had claimed since initialization that "an Installation tracks one Framework Release"; the code had no notion of a version at all.
+
+Problem:
+The obvious implementation was the one this codebase had already reached for twice: have the CLI write the version into `.kenovis/` at install time and add it to `INSTALL_TIME_OWNED_ENTRIES` — the registry of files `sync`'s mirror-replace must explicitly preserve or rewrite. That registry exists *because* two earlier files (`.setup-pending`, `.claude-md.sha256`) were written by one mechanism and silently invalidated by another (Learning-010, Learning-011).
+
+What happened:
+The version is a property of the Framework bundle, not of the act of installing it. Stamping it at build time — inside the bundle — means the mirror-replace that already copies the bundle installs and updates it for free. Nothing to preserve, nothing to rewrite, nothing to keep in sync. The CLI only reads it back. The entry that would have been the third member of `INSTALL_TIME_OWNED_ENTRIES` never needed to exist.
+
+Root cause of the near-miss:
+`INSTALL_TIME_OWNED_ENTRIES` is a good registry, and having it made adding a third entry feel like the correct, well-trodden path. But a registry of exceptions quietly invites more exceptions: the question it answers ("how does this file survive the mirror?") assumes the file must be written outside the mirror in the first place.
+
+Learning:
+Before adding to a registry of special cases, ask whether the new fact belongs to the artifact being copied rather than to the copier. A fact that ships inside a distributed artifact needs no synchronization rule, because it has exactly one writer — the build that produced it. This is the structural fix for the failure mode Learning-010 and Learning-011 each described after the fact: not better bookkeeping, but no second copy to keep books on.
+
+Future action:
+When a new file must exist inside a mirrored/replaced directory, first try to make the bundle ship it. Only when the value genuinely cannot be known at build time (it depends on the target, like `.setup-pending`'s greenfield/brownfield result, or on what was written, like `.claude-md.sha256`) does it belong in `INSTALL_TIME_OWNED_ENTRIES`. Record the reasoning at the constant itself, so the next contributor sees why a given file is or is not a member.
 
 ---
 Example: Project — the fix for branch drift is itself a source of branch drift
@@ -409,6 +438,8 @@ An unvalidated "mirror this directory" flag will faithfully reproduce whatever l
 
 Future action:
 DECISIONS.md DECISION-017's Phase 2 (this repository migrates its own Framework layer into `.kenovis/` using the CLI's own sync mechanism on itself) must run `sync` against the built `dist/framework-assets/` bundle, never against the raw repo root — otherwise it will self-pollute `.kenovis/` with this repository's own Product-layer content. Consider adding a lightweight source-directory validation (e.g., reject a `--source` whose top level contains recognizably Product-layer names) before Phase 2 executes.
+
+Closed by `kenovis@0.2.0`: `invalidFrameworkSourceEntries`/`InvalidFrameworkSourceError` (`cli/src/domain/installation.ts`) validate `--source` before `init`/`sync` touch anything. Built as an allowlist of the known Framework-bundle shape (`AI/`, `README.md`) rather than the blocklist of Product-layer names suggested above — a blocklist would have been a name-based rule, and no name-based rule may ever apply to a target repository, which may legitimately contain any name at all (DECISION-016). Noted here because the closure was never recorded when it shipped.
 
 ---
 

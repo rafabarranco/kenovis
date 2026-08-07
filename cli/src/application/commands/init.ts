@@ -18,6 +18,7 @@ import {
   TARGET_README_FILENAME,
   type InstallationKind,
 } from "../../domain/installation.js";
+import { readFrameworkVersion } from "../frameworkVersion.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
 
 export interface InitOptions {
@@ -46,6 +47,12 @@ export interface InitResult {
   detectedKind: InstallationKind;
   /** Target directory entries that count as evidence of a real implementation, empty when greenfield. */
   detectionEvidence: string[];
+  /**
+   * The Framework Release this Installation now tracks, read from the bundle
+   * that was installed. Null when that bundle carries no stamp — see
+   * readFrameworkVersion.
+   */
+  frameworkVersion: string | null;
 }
 
 /**
@@ -64,6 +71,13 @@ export interface InitResult {
  * A --force re-install always mirror-replaces .kenovis/ (removeTree then
  * copyTree), matching runSync's semantics — never a merge that could leave
  * files retired from an older Framework Release behind.
+ *
+ * The Framework Release the Installation ends up tracking is read from the
+ * bundle rather than written by this function: the bundle ships its own
+ * `.framework-version` stamp, so copyTree installs it along with everything
+ * else. Reading it from the source (not from the target after the copy) is the
+ * same value by construction, and keeps this function free of a second source
+ * of truth for it.
  *
  * Also validates frameworkSourceDir itself before copying anything: it must
  * match the known Framework-bundle shape (AI/, README.md), or this throws
@@ -133,5 +147,6 @@ export async function runInit(
     targetReadmeUntouched,
     detectedKind: detection.kind,
     detectionEvidence: detection.evidence,
+    frameworkVersion: await readFrameworkVersion(fs, options.frameworkSourceDir),
   };
 }

@@ -239,6 +239,20 @@ Shipped: `cli/package.json`/`package-lock.json` 0.4.0 → 0.5.0, `CHANGELOG.md` 
 Recurring cost found and named: the promotion needed the same content-sync branch procedure used for `kenovis@0.2.0` and `0.4.0`, which each round had treated as a one-off repair of historical drift. It is not — the sync commit that fix creates lives only on the downstream branch, which is exactly what makes the next rebase-replay diverge. The chain is permanently in content-sync mode, and that is acceptable (branches end byte-identical, which is the property that matters). Recorded as `AI/memory/learnings.md` Learning-012 with the exact procedure, so future releases follow it instead of re-investigating.
 
 Phase 1's Immediate Priority block is closed. Both items DONE; the next `/next` run selects from Phase 1 MVP / Phase 2 rather than this block.
+
+3. DONE (2026-08-07, via /next) — an Installation records which Framework Release it tracks.
+
+Founder chose this as the next item once Phase 0 and the Phase 1 Immediate Priority block were both confirmed closed and no scheduled, unblocked item remained — see this session's `/next` run. Candidates weighed against this document's own priority formula: this item, a `/framework-review` audit pass of the post-migration Framework layer, and the ADR gating the Phase 2 paid tier (judged premature — Phase 1 has one external team's data, not enough to size it).
+
+Gap found: `DOMAIN/DOMAIN_MODEL.md` defines the Installation entity with "framework version installed" among its attributes and states "an Installation tracks one Framework Release (the one currently synced)" — while `cli/src/domain/installation.ts` contained no notion of a version at all. The central attribute of the domain's central entity existed only in prose. Concretely: a customer could not tell which release they were on without archaeology in their own `git log`, and `sync` could only mirror-replace silently, never say what it had changed.
+
+Shipped: `cli/scripts/bundle-framework-assets.mjs` stamps `dist/framework-assets/.framework-version` from `cli/package.json` at build time. The stamp therefore ships *inside* the bundle, so `init`/`add`/`sync`'s existing mirror-replace installs and updates it by construction — the CLI reads it back (`readFrameworkVersion`, `cli/src/application/frameworkVersion.ts`; `parseFrameworkVersion` in the domain) and never writes a second copy. This is deliberately *not* an `INSTALL_TIME_OWNED_ENTRIES` member, and `installation.ts` says so at that constant: state written by one mechanism and invisibly invalidated by another is precisely the recurring defect Learning-010 and Learning-011 record, and a bundle-shipped fact has no second writer to desynchronise from. `bin.ts` prints the release on install and the transition on sync (`0.3.0 -> 0.5.0`, `(already up to date)`, or `unknown -> …`), and gained `--version`/`-v`, checked before dispatch alongside `--help` (Learning-005).
+
+Scoped out deliberately: the active version-check against the npm registry stays in Phase 2 → New Capabilities, unchanged. That item was deferred on network-dependency cost, which this item does not incur — it is the local half of the same discovery gap, and it is also the prerequisite that check would have needed anyway (nothing to compare against existed before).
+
+Validated: 108 `cli/` tests pass (95 → 108), typecheck and build clean, and a real scratch-repository smoke test — brownfield `kenovis add` (stamp lands on disk, reported), stamp hand-set to `0.3.0`, `kenovis sync` (reports `0.3.0 -> 0.5.0`, stamp updated), sync again (reports `already up to date`), with the target's own `README.md`, `src/` and `package.json` untouched and `.setup-pending` preserved throughout.
+
+Two stale documentation statements were corrected in the same round, both in the sections this item was already rewriting: `cli/assets/framework/README.md` (the file customers receive at `.kenovis/README.md`) still told them `kenovis sync` did not exist yet, and `cli/README.md` → Structure still described the bundler's pre-`.kenovis/` source path.
 ---
 Phase 1 — MVP
 
