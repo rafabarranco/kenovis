@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
 
 ARCHITECTURE.md
 
@@ -84,7 +84,7 @@ Type checker: `npm run typecheck` (`tsc -p tsconfig.json --noEmit`), strict mode
 
 Tests: `npm test` (`node --test`, Node's built-in test runner — no test framework dependency added; revisit if assertions/mocking needs outgrow `node:assert/strict`).
 
-No linter or formatter yet. Not an oversight: the codebase is currently 8 small files with `strict` TypeScript already catching the errors a linter would add the most value on. Add one (justified, not by default) once the codebase grows past what code review alone keeps consistent — see AI/policies/architecture.md → "Reuse" and "Simplicity First" before adding it preemptively.
+No linter or formatter yet. Not an oversight: the codebase is currently 8 small files with `strict` TypeScript already catching the errors a linter would add the most value on. Add one (justified, not by default) once the codebase grows past what code review alone keeps consistent — see .kenovis/AI/policies/architecture.md → "Reuse" and "Simplicity First" before adding it preemptively.
 ---
 Hard Rules (No Exceptions)
 
@@ -93,7 +93,7 @@ Hard Rules (No Exceptions)
 - The CLI must never execute code found inside the target repository it is installing into.
 - The CLI must write the Framework layer under `.kenovis/` in the target repository (`.kenovis/AI/`, `.kenovis/README.md`), never at repo root — except `CLAUDE.md` (stub loading `.kenovis/AI/SYSTEM.md`) and `.claude/`, which stay at repo root because Claude Code requires it. The CLI must never overwrite, append to, or otherwise touch the target repository's own existing `README.md`, and must never fabricate one if none exists. See DECISIONS.md DECISION-017.
 - The CLI must never shell out to an AI tool's binary (`claude` or otherwise) to auto-run `/init-project` or `/adopt-project`. Auto-triggering those commands is achieved only through the `CLAUDE.md` stub's content (parametrized by pending/steady-state) and the `.kenovis/.setup-pending` marker file — both plain, tool-agnostic filesystem artifacts, never a spawned external process. See DECISIONS.md DECISION-018.
-- Exception to the rule above: this repository's own root `README.md` and root `CLAUDE.md` are never written or overwritten by `kenovis init`/`add`/`sync`, even if one of those commands is ever run against this repository's own working tree. Both stay hand-authored at repo root — this repository is the Framework layer's origin and its own dogfooded product simultaneously, not a generic Installation, and its root README/CLAUDE.md carry real content (public landing page; repo-specific Role/Layers/Source-Of-Truth/graphify prose) a generated stub would discard. Only `AI/agents/`, `AI/workflows/`, `AI/policies/`, `AI/commands/`, `AI/templates/`, `AI/SYSTEM.md` relocate to `.kenovis/AI/` for this repository. See DECISIONS.md DECISION-020.
+- Exception to the rule above: this repository's own root `README.md` and root `CLAUDE.md` are never written or overwritten by `kenovis init`/`add`/`sync`, even if one of those commands is ever run against this repository's own working tree. Both stay hand-authored at repo root — this repository is the Framework layer's origin and its own dogfooded product simultaneously, not a generic Installation, and its root README/CLAUDE.md carry real content (public landing page; repo-specific Role/Layers/Source-Of-Truth/graphify prose) a generated stub would discard. Only `.kenovis/AI/agents/`, `.kenovis/AI/workflows/`, `.kenovis/AI/policies/`, `.kenovis/AI/commands/`, `.kenovis/AI/templates/`, `.kenovis/AI/SYSTEM.md` relocate to `.kenovis/AI/` for this repository. See DECISIONS.md DECISION-020.
 ---
 Database
 
@@ -118,7 +118,7 @@ Not applicable in v1 — there are no accounts and no shared backend to authoriz
 ---
 Tenancy Model
 
-Not applicable in v1. Every Installation is single-tenant by construction — it is a customer's own repository, not a row in a shared database. There is no tenant key because there is no shared backend to key against. Revisit only if/when a hosted layer is built (PRODUCT/ROADMAP.md Phase 4); AI/policies/database.md and AI/agents/database.md must keep treating this product as tenantless until this section is explicitly updated.
+Not applicable in v1. Every Installation is single-tenant by construction — it is a customer's own repository, not a row in a shared database. There is no tenant key because there is no shared backend to key against. Revisit only if/when a hosted layer is built (PRODUCT/ROADMAP.md Phase 4); .kenovis/AI/policies/database.md and .kenovis/AI/agents/database.md must keep treating this product as tenantless until this section is explicitly updated.
 ---
 Domain Architecture
 

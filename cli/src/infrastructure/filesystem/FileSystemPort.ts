@@ -1,6 +1,6 @@
 /**
  * Filesystem access, isolated behind a port so the application layer never
- * imports node:fs directly (AI/policies/architecture.md — Persistence is an
+ * imports node:fs directly (.kenovis/AI/policies/architecture.md — Persistence is an
  * implementation detail; Dependency Direction points inward).
  */
 export interface FileSystemPort {

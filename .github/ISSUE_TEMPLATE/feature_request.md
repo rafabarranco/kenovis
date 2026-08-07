@@ -14,11 +14,11 @@ What gap exists in the framework today? Not "what should be added" — start wit
 
 Which layer does this belong to?
 
-- [ ] Agent (`AI/agents/`)
-- [ ] Workflow (`AI/workflows/`)
-- [ ] Policy (`AI/policies/`)
-- [ ] Command (`AI/commands/`)
-- [ ] Template (`AI/templates/`)
+- [ ] Agent (`.kenovis/AI/agents/`)
+- [ ] Workflow (`.kenovis/AI/workflows/`)
+- [ ] Policy (`.kenovis/AI/policies/`)
+- [ ] Command (`.kenovis/AI/commands/`)
+- [ ] Template (`.kenovis/AI/templates/`)
 - [ ] Something else (explain)
 
 ## Why it's framework-level, not product-level

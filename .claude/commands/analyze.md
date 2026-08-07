@@ -3,6 +3,6 @@ description: Investigate, understand and diagnose a technical or product situati
 argument-hint: <topic>
 ---
 
-Read `AI/commands/analyze.md` in full and execute every step in order, without skipping any.
+Read `.kenovis/AI/commands/analyze.md` in full and execute every step in order, without skipping any.
 
 Topic: $ARGUMENTS
