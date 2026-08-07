@@ -146,6 +146,35 @@ Future action:
 Use adapters for external integrations.
 
 ---
+Example: Project — a guard's own bookkeeping outlives the state it described
+
+## Learning-011
+
+Date:
+2026-08-07
+
+Category:
+Technical
+
+Context:
+Fixing Learning-010 (`sync` must preserve `.setup-pending` and the pending stub) via `/next`, `PRODUCT/ROADMAP.md` Phase 1 item 1.
+
+Problem:
+Tracing the pending → steady-state transition end to end surfaced a second, unreported defect: after `/init-project` or `/adopt-project` completed correctly, the very next `kenovis sync` refused with `ExistingClaudeMdError` on a `CLAUDE.md` those commands had just legitimately rewritten.
+
+What happened:
+Every install/sync records `.kenovis/.claude-md.sha256` — the hash of the stub the CLI wrote, i.e. the *pending* one. The commands' completion step deletes `.setup-pending` and reverts the stub to steady state, but never touched that sidecar, so the recorded hash described a file that no longer existed. `isClaudeMdSafeToOverwrite` correctly saw a mismatch and correctly refused — on a change Kenovis's own instructions had made.
+
+Root cause:
+The hash sidecar (Phase 0 item 7, closing Learning-007) was designed against "the customer edited CLAUDE.md" and never revisited against "a Kenovis command edited CLAUDE.md." Two mechanisms wrote the same file; only one of them maintained the record of what was written.
+
+Learning:
+A guard that compares against recorded state has two obligations, not one: detect foreign changes, and stay accurate across every *sanctioned* change. Any other actor allowed to modify the guarded file — including the framework's own markdown commands, which no compiler or test reaches — must update or invalidate that record in the same step. This is the same class of defect as Learning-010: state written by one part of the system, invisibly invalidated by another.
+
+Future action:
+When adding a recorded-state guard, enumerate every writer of the guarded file, framework commands included, and give each an explicit update-or-invalidate step. Cheapest correct option is usually invalidate (delete the record) and let the next CLI run re-record it, rather than teaching a markdown command to compute a hash.
+
+---
 Example: Project — `sync` silently disarms the first-session auto-trigger it never installed
 
 ## Learning-010
@@ -173,6 +202,8 @@ Pre-existing, not a regression from this round — but it means "mirror-replace"
 
 Future action:
 Backlog item, not fixed here (out of this migration's scope): `runSync` should preserve `.setup-pending` when it exists, and write the pending-form stub in that case, so syncing never advances an Installation past a setup it hasn't done. Verify against the smoke-test sequence above.
+
+Closed 2026-08-07 via `/next` (ROADMAP Phase 1 item 1): `runSync` now does exactly that, and `INSTALL_TIME_OWNED_ENTRIES` (`cli/src/domain/installation.ts`) makes the general rule explicit — every CLI-written file inside `.kenovis/` is tagged `preserved` or `rewritten`, so the next one is not a third coincidence. Fixing it surfaced Learning-011, the same failure mode one layer up.
 
 ---
 Example: Project — a packaging rule designed for "customer vs. framework" breaks on the one Installation where they're the same thing

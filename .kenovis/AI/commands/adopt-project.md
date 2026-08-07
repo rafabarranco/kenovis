@@ -1,6 +1,6 @@
 # Adopt Project Command
 
-Version: 1.5
+Version: 1.6
 
 ---
 
@@ -302,6 +302,7 @@ If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis a
 
 - Delete `.kenovis/.setup-pending`.
 - Rewrite the root `CLAUDE.md` stub back to its passive, steady-state form (no first-session directive).
+- Delete `.kenovis/.claude-md.sha256`. It records the hash of the stub the CLI last wrote — the pending one — so leaving it in place would make the next `kenovis sync` refuse to touch a `CLAUDE.md` you just legitimately rewrote. The next install/sync records it again.
 
 ---
 
