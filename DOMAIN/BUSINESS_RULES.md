@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
 
 BUSINESS_RULES.md
 
@@ -50,9 +50,9 @@ Framework updates never touch Product-layer files without explicit customer acti
 
 Entities affected: Installation, Framework Release.
 
-Rule: Syncing a new Framework Release must only modify files under the Framework layer (AI/agents/, AI/workflows/, AI/policies/, AI/commands/, AI/templates/, AI/SYSTEM.md, CLAUDE.md, README.md). It must never write to COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, or any of the customer's own existing code — wherever in the repository it lives — without the customer explicitly initiating that step.
+Rule: Syncing a new Framework Release must only modify files under the Framework layer (.kenovis/AI/agents/, .kenovis/AI/workflows/, .kenovis/AI/policies/, .kenovis/AI/commands/, .kenovis/AI/templates/, .kenovis/AI/SYSTEM.md, CLAUDE.md, README.md). It must never write to COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, or any of the customer's own existing code — wherever in the repository it lives — without the customer explicitly initiating that step.
 
-Example (valid): CLI sync updates AI/agents/backend.md to a newer version. Example (invalid): CLI sync silently rewrites the customer's COMPANY_OS.md.
+Example (valid): CLI sync updates .kenovis/AI/agents/backend.md to a newer version. Example (invalid): CLI sync silently rewrites the customer's COMPANY_OS.md.
 
 ---
 

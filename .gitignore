@@ -56,7 +56,7 @@ graphify-out/
 # =============================================================
 # STACK-SPECIFIC — PROJECT-SPECIFIC: keep only the blocks that
 # match the stack chosen in ENGINEERING/ARCHITECTURE.md.
-# Delete the rest. See AI/commands/init-project.md
+# Delete the rest. See .kenovis/AI/commands/init-project.md
 # =============================================================
 
 # Node.js CLI / npm package (ENGINEERING/ARCHITECTURE.md → Technology Stack)

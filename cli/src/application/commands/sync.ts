@@ -3,13 +3,17 @@ import {
   CLAUDE_MD_HASH_FILENAME,
   CLAUDE_STUB_FILENAME,
   claudeStubContent,
+  detectInstallationKind,
   ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
   hashClaudeMdContent,
+  installationKindFromSetupPending,
   InvalidFrameworkSourceError,
   invalidFrameworkSourceEntries,
   isClaudeMdSafeToOverwrite,
   NotInstalledError,
+  SETUP_PENDING_FILENAME,
+  setupPendingContent,
 } from "../../domain/installation.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
 
@@ -25,6 +29,11 @@ export interface SyncOptions {
 export interface SyncResult {
   frameworkSyncedTo: string;
   claudeStubWrittenTo: string;
+  /**
+   * True when this Installation still had `.setup-pending` — the first-session
+   * init-project/adopt-project directive was preserved rather than cleared.
+   */
+  setupStillPending: boolean;
 }
 
 /**
@@ -58,6 +67,15 @@ export interface SyncResult {
  * install/sync) rather than only a marker-prefix check, so content appended
  * below the stub is caught too, not just a CLAUDE.md that isn't Kenovis's at
  * all — see isClaudeMdSafeToOverwrite and AI/memory/learnings.md Learning-007.
+ *
+ * Syncing never advances an Installation past a setup it has not completed:
+ * a `.setup-pending` marker is read before the mirror-replace and written back
+ * after it, and the CLAUDE.md stub keeps its pending form in that case, so
+ * DECISION-018's first-session auto-trigger survives. The bundle itself never
+ * ships that marker (install time writes it), so the mirror would otherwise
+ * erase it — see INSTALL_TIME_OWNED_ENTRIES for the general rule every
+ * install-time-owned file under .kenovis/ must follow, and
+ * AI/memory/learnings.md Learning-010 for how this was found.
  */
 export async function runSync(
   fs: FileSystemPort,
@@ -85,15 +103,36 @@ export async function runSync(
     }
   }
 
+  // Read install-time-owned state before the mirror destroys it.
+  const setupPendingPath = join(frameworkDir, SETUP_PENDING_FILENAME);
+  const pendingMarker = (await fs.exists(setupPendingPath))
+    ? await fs.readFile(setupPendingPath)
+    : null;
+
   await fs.removeTree(frameworkDir);
   await fs.copyTree(options.frameworkSourceDir, frameworkDir);
 
-  const newClaudeMdContent = claudeStubContent({ pending: false });
+  let newClaudeMdContent = claudeStubContent({ pending: false });
+
+  if (pendingMarker !== null) {
+    // A marker this CLI wrote names the command directly. Anything else is
+    // re-detected from the target rather than guessed at, the same way install
+    // time chose it — and rewritten in its canonical form, so the marker and
+    // the stub's directive can never name different commands.
+    const kind =
+      installationKindFromSetupPending(pendingMarker) ??
+      detectInstallationKind(await fs.listDir(options.targetDir)).kind;
+
+    await fs.writeFile(setupPendingPath, setupPendingContent(kind));
+    newClaudeMdContent = claudeStubContent({ pending: true, kind });
+  }
+
   await fs.writeFile(claudeStubPath, newClaudeMdContent);
   await fs.writeFile(hashPath, hashClaudeMdContent(newClaudeMdContent));
 
   return {
     frameworkSyncedTo: frameworkDir,
     claudeStubWrittenTo: claudeStubPath,
+    setupStillPending: pendingMarker !== null,
   };
 }
