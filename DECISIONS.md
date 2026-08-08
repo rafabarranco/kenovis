@@ -12,9 +12,9 @@ Last updated: —
 
 # Document Layers
 
-Most decisions in this log are product-specific and must be removed when starting a new product.
+A decision log is product-specific. A customer Installation's log starts empty and accumulates that company's own decisions — see DECISION-021 and `.kenovis/AI/templates/product-layer/DECISIONS.md`.
 
-Seven are framework-level and should be carried over:
+This repository is the exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Eight of them are framework-level in effect — framework-layer files cite them by ID, and they would survive a repurposing of this repository:
 
 - DECISION-001 — AI-Native Company Operating Model.
 - DECISION-009 — Documentation As Company Memory.
@@ -1451,6 +1451,186 @@ Negative:
 Phase 1 (this decision): record the exception, no files moved yet.
 
 Phase 2 (separate `/next` or `/feature` execution): move `AI/{agents,workflows,policies,commands,templates}/` and `AI/SYSTEM.md` into `.kenovis/AI/`; repoint every cross-reference listed under Decision above; update `ENGINEERING/ARCHITECTURE.md` → Hard Rules; re-run the scratch-repository smoke test against the resulting bundled assets; update `CHANGELOG.md` (this touches `AI/**`, `CLAUDE.md`, `README.md` — CI's changelog gate applies) and `PRODUCT/ROADMAP.md`'s DECISION-017 Phase 2 line to DONE.
+
+---
+
+# DECISION-021
+
+# An Installation Receives Its Product Layer From Framework Templates, Authored By `/init-project`, Not Written By The CLI
+
+Date:
+
+2026-08-07
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-07
+
+---
+
+## Context
+
+`kenovis init`/`kenovis add` write exactly three things into a target repository: `.kenovis/` (a mirror of the bundled Framework layer), the root `CLAUDE.md` stub, and `.kenovis/.claude-md.sha256` (`cli/src/application/commands/init.ts`). The bundle itself is `.kenovis/AI/` plus a customer-facing `README.md` (`cli/scripts/bundle-framework-assets.mjs`). No Product-layer file is ever created — no `COMPANY_OS.md`, no `DECISIONS.md`, no `DOMAIN/`, `PRODUCT/`, `ENGINEERING/`, `AUTOMATIONS/`, and no `AI/memory/`.
+
+`.kenovis/AI/commands/init-project.md` (and `adopt-project.md`, which shares its structure) is written against a different world. Its Trigger says "Starting a new product in a fresh clone of this repository." Its Core Principle is "The example content is not a suggestion to follow. It is a shape to replace." Its pre-flight verification is `grep -rl "PROJECT-SPECIFIC" .`, which in a real CLI Installation matches nothing at all. Steps 2-8 instruct the agent to *rewrite* files that do not exist: "Keep the section structure. Replace every sentence about the example company" (Step 2), "Keep the decision format... DECISION-001, DECISION-009, DECISION-010. Delete every other decision" (Step 3), "Replace the Domain Terms section... Leave the Framework Terms section untouched" (Step 8).
+
+Both commands predate the CLI. When the only way to adopt Kenovis was to clone or fork this repository, every one of those instructions was literally true — the placeholder product layer was physically present, and "rewrite it" was the correct verb. The CLI changed the distribution mechanism (DECISION-017, DECISION-018) without either command being revisited against what an Installation now actually contains.
+
+Two consequences follow, and the second is the more damaging one.
+
+First, a customer's `/init-project` run has no shape to replace. The agent must invent each document's structure, so two Installations of the same framework end up with different section skeletons for the same document — and every framework file that reads a Product-layer document by section name (`.kenovis/AI/policies/database.md` and `.kenovis/AI/agents/database.md` deliberately look up the tenancy model in `ENGINEERING/DATABASE.md` rather than assuming one; `.kenovis/AI/commands/bootstrap.md` reads `ENGINEERING/ARCHITECTURE.md` → "Suggested Project Structure") is reading a section that may or may not exist under that name.
+
+Second, `AI/memory/` is not distributed at all, and part of it is framework content, not product content. `AI/memory/learnings.md` states this about itself on line 1: "The rules in this document are framework-level and reusable. The learnings recorded by the AI while working on a product are project-specific and must be cleared." Those rules — the Learning Philosophy, the learning format, the categories, the priority levels, the Review Process that promotes a learning into `.kenovis/AI/policies/` — are referenced by 20 framework files, including `.kenovis/AI/commands/next.md` Step 14, eight workflows, three policies and three templates. `AI/memory/glossary.md` has the same split: a Framework Terms section (framework) and a Domain Terms section (product). Today a customer Installation receives neither, so every framework instruction to "record the learning in `AI/memory/learnings.md`" points at a file that does not exist and whose format is defined nowhere the customer can see.
+
+This sits directly on PRODUCT/ROADMAP.md Phase 0's own Success Criteria: "A team outside Kenovis can install the CLI, get the Framework layer into their repository, and complete `/init-project` (greenfield) or `/adopt-project` (brownfield, existing codebase) with their own real answers — end to end, without help."
+
+---
+
+## Problem Statement
+
+An Installation needs the Product layer's *shape* — section structure for each document, plus the framework-level rules that live inside `AI/memory/` — without the CLI writing Product-layer files into a repository whose owner has not yet decided to have them. DECISION-017 deliberately minimised the install footprint (`.kenovis/` plus the one file Claude Code forces at root); RULE-INST-01 forbids Framework updates from touching Product-layer files. Whatever carries the shape must not violate either.
+
+---
+
+## Options Considered
+
+### Option A
+
+The CLI writes the Product layer at install time: `init`/`add` create `COMPANY_OS.md`, `DECISIONS.md`, `DOMAIN/`, `PRODUCT/`, `ENGINEERING/`, `AUTOMATIONS/` and `AI/memory/` as placeholder files carrying the `PROJECT-SPECIFIC` marker. `init-project.md`/`adopt-project.md` keep their current "rewrite the placeholder" wording unchanged.
+
+Advantages:
+
+- Both commands work exactly as written today — no rewrite of Steps 2-8, and the `grep -rl "PROJECT-SPECIFIC"` pre-flight check becomes true again.
+- Reproduces, mechanically, the pre-CLI clone-a-fork experience the commands were designed for.
+
+Disadvantages:
+
+- Adds seventeen visible placeholder files to the target repository's root before the customer has agreed to anything — the exact clutter DECISION-017 chose `.kenovis/` to avoid, now reintroduced at the layer DECISION-017 could not hide.
+- Every one of those seventeen paths needs its own collision check against a file the customer may already own (`README.md` is already protected; `DECISIONS.md`, `PRODUCT/`, `ENGINEERING/` are plausible names in any repository). That is DECISION-019's Collision Guard problem multiplied by seventeen, and moved from a conversational command — which can ask the human — into a non-interactive CLI that cannot.
+- Worst in the brownfield case, which `kenovis add` exists specifically to serve: the more real the target repository, the higher the chance of collision.
+
+---
+
+### Option B
+
+The Framework bundle carries the Product layer as templates under `.kenovis/AI/templates/product-layer/`. `init`/`add` write nothing new into the target — the templates arrive inside `.kenovis/`, because the bundler already copies `.kenovis/AI/` wholesale. `init-project.md`/`adopt-project.md` change verb: each Step reads its template and *authors* the real file from the human's answers, instead of rewriting a placeholder that was assumed to be there.
+
+Advantages:
+
+- Install footprint is unchanged — DECISION-017's `.kenovis/`-only rule holds without a carve-out, and `kenovis add` on a real brownfield repository still creates nothing at root but `CLAUDE.md`.
+- No new collision surface at install time. The collision question moves to the moment a file is actually authored, which is inside a conversational command that can ask the human — exactly where DECISION-019 already put it.
+- The templates are Framework layer, so `kenovis sync` updates them like any other framework file, and RULE-INST-01 is satisfied by construction: sync touches the template, never the customer's authored document.
+- The framework-level content inside `AI/memory/learnings.md` and `glossary.md` finally ships to customers, closing the gap where 20 framework files reference rules no Installation has.
+
+Disadvantages:
+
+- Steps 2-8 of both commands must be rewritten from "rewrite this file" to "author this file from its template," and the pre-flight `grep -rl "PROJECT-SPECIFIC"` check no longer describes a fresh Installation. Real documentation work, and it must be done carefully enough that this repository's own (already-real) product layer keeps working under the new wording.
+- Two sources now describe each Product-layer document's shape: the template, and this repository's own copy of the same document. They can drift. Mitigated by making the template the single authored artifact and this repository's own file the instance — but nothing enforces it mechanically.
+
+---
+
+### Option C
+
+Ship only the framework-level half of `AI/memory/` (the rules inside `learnings.md`, `conventions.md`, and `glossary.md`'s Framework Terms), and leave `init-project.md`/`adopt-project.md`'s "fresh clone" framing alone.
+
+Advantages:
+
+- Smallest possible change, and it closes the most concrete defect — the 20 framework files that reference `AI/memory/` rules an Installation never receives.
+
+Disadvantages:
+
+- Leaves the larger defect untouched: `/init-project` still instructs the agent to rewrite twelve files that do not exist, so the command's own Completion Criteria remain unreachable in a real Installation, and Phase 0's Success Criteria stay unmet.
+- Guarantees a second round on the same gap, at which point the `AI/memory/` templates would have to be re-homed anyway to sit alongside the rest.
+
+---
+
+## Decision
+
+Adopt Option B.
+
+- A new Framework-layer directory `.kenovis/AI/templates/product-layer/` holds one template per Product-layer document: `COMPANY_OS.md`, `DECISIONS.md`, `DOMAIN/DOMAIN_MODEL.md`, `DOMAIN/BUSINESS_RULES.md`, `PRODUCT/{ROADMAP,FEATURES,USER_RESEARCH,COMPETITIVE_LANDSCAPE}.md`, `ENGINEERING/{ARCHITECTURE,DATABASE,SECURITY}.md`, `AUTOMATIONS/{customer-onboarding,release-process,user-feedback}.md`, `AI/memory/{glossary,conventions,learnings}.md`.
+- Each template carries the framework-level content of that document verbatim — the parts every product needs identically (purpose, philosophy, formats, rules for AI agents, final principle) — and replaces the product-specific sections with a short statement of what must be answered there. A template never contains invented answers, and never contains Kenovis's own.
+- Every template's first line is the `PROJECT-SPECIFIC` marker, so a file authored from one is recognisable as Product layer from the moment it is written, and DECISION-019's Collision Guard keeps working unchanged.
+- No CLI change. The bundler already copies `.kenovis/AI/` entry by entry, so the new directory ships with no code, no test and no `INSTALL_TIME_OWNED_ENTRIES` member — the template is part of the artifact being mirrored, which is the structural property `AI/memory/learnings.md` Learning-013 identified as the way to avoid a second writer.
+- `init-project.md` and `adopt-project.md` change from "rewrite the placeholder" to "author from the template," and their pre-flight step stops assuming placeholder files are present. Both must work in an Installation that has no Product layer at all *and* in this repository, whose Product layer is real.
+- `ENGINEERING/ARCHITECTURE.md` → "Hard Rules" gains a line stating that the CLI never writes Product-layer files, so the rule is enforceable rather than incidental.
+
+---
+
+## Reason
+
+The install footprint was decided once, deliberately, in DECISION-017, and the argument that produced it has not changed: a tool that scatters files across someone else's repository before they have agreed to anything is harder to trust and harder to remove. Option A would have reversed that decision for the layer where the cost is highest — the repository root, in the brownfield case the product explicitly targets — in exchange for not editing two markdown files.
+
+The deeper reason is where the collision question belongs. A non-interactive CLI cannot ask "is this `DECISIONS.md` yours or ours?"; it can only guess or refuse. A conversational command can simply ask, and DECISION-019 already built that gate. Option B keeps the question where an answer is available.
+
+Option C was rejected on the same grounds Phase 0 item 6's deferred half was: it fixes the symptom that is easiest to point at and leaves the command's own Completion Criteria unreachable, guaranteeing a second round on the same gap.
+
+---
+
+## Consequences
+
+Positive:
+
+- `/init-project` and `/adopt-project` become executable as written in a real CLI Installation, closing the gap between PRODUCT/ROADMAP.md Phase 0's Success Criteria and what an Installation actually contains.
+- The framework-level rules inside `AI/memory/` reach every Installation, so the 20 framework files that instruct agents to record learnings, promote them into policies, or look up a term now point at content the customer has.
+- Product-layer documents gain a stable section structure across Installations, which is what makes the framework's own "look it up in `ENGINEERING/DATABASE.md`" indirection reliable rather than hopeful.
+- Zero CLI code change, so the change carries no new failure mode in `init`/`add`/`sync` and needs no new test in `cli/`.
+
+Negative:
+
+- Template drift is a real, unenforced risk: this repository's own `COMPANY_OS.md` and the template that describes its shape are two files that can diverge silently. No CI check catches it today. Accepted for now, and named here so it is not rediscovered as a surprise — a marker/structure check is a candidate for `.github/scripts/` if drift actually occurs.
+- The Framework bundle grows by seventeen documents. Immaterial for a filesystem-only, npm-distributed package, but it does mean `kenovis sync` will show template updates in a customer's `git diff` that do not affect any file they authored — worth stating in `cli/README.md` so it does not read as sync overstepping RULE-INST-01.
+
+---
+
+## Implementation Details
+
+Framework layer:
+
+- Add `.kenovis/AI/templates/product-layer/` with the seventeen templates named under Decision above.
+- `.kenovis/AI/commands/init-project.md`: Trigger, Core Principle, "How To Recognise The Product Layer", Collision Guard and Steps 2-8 rewritten for author-from-template; Completion Criteria updated.
+- `.kenovis/AI/commands/adopt-project.md`: the same change to its Steps 3-8.
+- `ENGINEERING/ARCHITECTURE.md` → Hard Rules: the CLI never writes Product-layer files into a target repository.
+
+No change to `cli/src/**`, `cli/scripts/bundle-framework-assets.mjs`, or any test: the bundler copies `.kenovis/AI/` entry by entry, so a new subdirectory of `templates/` ships automatically.
+
+---
+
+## Affected Areas
+
+```
+DOCUMENTATION
+```
+
+---
+
+## Validation
+
+- `node cli/scripts/bundle-framework-assets.mjs` produces `dist/framework-assets/AI/templates/product-layer/` with all seventeen templates.
+- The existing `cli/` test suite and typecheck pass unchanged — this decision must not require a code change to be correct.
+- `.github/scripts/check_links.py` and `check_markers.py` pass.
+- A scratch-repository smoke test (`AI/memory/learnings.md` Learning-004's pattern): `kenovis add` against a brownfield scratch repo puts the templates on disk under `.kenovis/`, and creates no Product-layer file at the target's root.
+
+That smoke test found one real defect in this decision's own implementation, worth recording because it is a direct consequence of the choice made here: the templates carry the `PROJECT-SPECIFIC` marker (deliberately — that is what makes an authored file recognisable as Product layer), and they live inside `.kenovis/`, so both commands' pre-flight `grep -rl "PROJECT-SPECIFIC"` matched all seventeen of them instead of returning nothing. Any marker-based check run from a target repository's root must pass `--exclude-dir=.kenovis`; both commands now do.
+
+---
+
+## Related Documentation
+
+```
+PRODUCT/ROADMAP.md — Phase 0 Success Criteria; Phase 1 Immediate Priority
+DOMAIN/BUSINESS_RULES.md — RULE-INST-01
+ENGINEERING/ARCHITECTURE.md — Hard Rules
+DECISIONS.md — DECISION-017, DECISION-018, DECISION-019
+```
 
 ---
 

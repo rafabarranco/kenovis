@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.20
+Version: 1.21
 ---
 Purpose
 
@@ -253,6 +253,28 @@ Scoped out deliberately: the active version-check against the npm registry stays
 Validated: 108 `cli/` tests pass (95 → 108), typecheck and build clean, and a real scratch-repository smoke test — brownfield `kenovis add` (stamp lands on disk, reported), stamp hand-set to `0.3.0`, `kenovis sync` (reports `0.3.0 -> 0.5.0`, stamp updated), sync again (reports `already up to date`), with the target's own `README.md`, `src/` and `package.json` untouched and `.setup-pending` preserved throughout.
 
 Two stale documentation statements were corrected in the same round, both in the sections this item was already rewriting: `cli/assets/framework/README.md` (the file customers receive at `.kenovis/README.md`) still told them `kenovis sync` did not exist yet, and `cli/README.md` → Structure still described the bundler's pre-`.kenovis/` source path.
+
+4. DONE (2026-08-08, via /next) — an Installation receives its Product layer from Framework templates.
+
+Founder chose this as the next item after the Phase 1 Immediate Priority block closed. Candidates weighed against this document's own priority formula: this item, the active npm-registry version check (Phase 2 → New Capabilities, still deferred on network-dependency cost and unvalidated Pain), and the ADR gating the Phase 2 paid tier (still premature — one external team's data).
+
+Gap found: `kenovis init`/`add` write `.kenovis/`, the root `CLAUDE.md` stub and its hash sidecar, and nothing else. No Product-layer file is ever created. But `.kenovis/AI/commands/init-project.md` was written against a fork of this repository — its Trigger said "a fresh clone of this repository", its Core Principle was "the example content ... is a shape to replace", its pre-flight check was `grep -rl "PROJECT-SPECIFIC"` (which matches nothing in a real Installation), and Steps 2-8 instructed the agent to *rewrite* twelve files that do not exist. `adopt-project.md` shared the same framing. Both commands predate the CLI; DECISION-017/018 changed the distribution mechanism without either command being revisited against what an Installation now contains.
+
+Worse, `AI/memory/` was not distributed at all, and part of it is framework content, not product content. `AI/memory/learnings.md` says so on its own first line: the rules are framework-level, the recorded learnings are product-specific. Those rules — the Learning Philosophy, the format, the categories, the Review Process that promotes a learning into `.kenovis/AI/policies/` — are referenced by roughly twenty framework files, including `next.md` Step 14, eight workflows, three policies and three templates. Every one of them pointed at a file no Installation had.
+
+This sat directly on Phase 0's own Success Criteria above ("complete /init-project ... end to end, without help").
+
+Founder decision (2026-08-08, via /next): the Framework bundle carries the Product layer as templates; the CLI's install footprint does not change. Option A — having `init`/`add` write ~17 placeholder files into the target root — was rejected for reintroducing exactly the clutter DECISION-017 chose `.kenovis/` to avoid, and for multiplying DECISION-019's Collision Guard problem by seventeen while moving it from a conversational command (which can ask the human) into a non-interactive CLI (which cannot). See DECISION-021.
+
+Shipped: `.kenovis/AI/templates/product-layer/` — seventeen templates plus a README, one per Product-layer document, at the path each maps to. Every template keeps its document's framework-level content verbatim and replaces the company-specific sections with a bracketed instruction stating what must be answered; none contains an invented answer or Kenovis's own. `init-project.md` (1.7 → 1.8) and `adopt-project.md` (1.6 → 1.7) gained a "Where The Shape Comes From" section and changed verb throughout — author from template, not rewrite a placeholder — with their pre-flight checks, `.gitignore` handling, Verify steps and Completion Criteria updated for an Installation that has no Product layer. `ENGINEERING/ARCHITECTURE.md` → Hard Rules (1.4 → 1.5) now states that the CLI never creates a Product-layer file at all, so the rule is enforceable rather than incidental.
+
+Zero CLI code change, by construction: `cli/scripts/bundle-framework-assets.mjs` copies `.kenovis/AI/` entry by entry, so a new subdirectory of `templates/` ships automatically. This is the same structural property Learning-013 identified — a fact that ships inside the mirrored artifact needs no synchronisation rule, because it has exactly one writer.
+
+Validated: the `cli/` test suite passes unchanged (95 on this item's own branch, 108 after merging item 3's work in), typecheck and build clean, `check_links.py` and `check_markers.py` pass, the bundler ships all eighteen files under `dist/framework-assets/AI/templates/product-layer/` with no script change, and a real scratch-repository smoke test confirmed the end state — brownfield `kenovis add` created no Product-layer file at the target's root, delivered every template under `.kenovis/`, left the target's own `README.md`, `src/` and `package.json` untouched, and a following `kenovis sync` preserved both the templates and `.setup-pending`.
+
+The smoke test also caught a real defect in this item's own work, which is why it exists: the templates carry the `PROJECT-SPECIFIC` marker by design and live inside `.kenovis/`, so both commands' pre-flight `grep -rl "PROJECT-SPECIFIC"` matched all seventeen templates rather than returning nothing — contradicting the "zero matches is expected" sentence this same item had just written. Both greps now pass `--exclude-dir=.kenovis`. Any future marker-based check run from a target repository's root needs the same exclusion.
+
+Two adjacent inconsistencies were found and fixed in the same round, both inside the sections this item was already rewriting. `DECISIONS.md` → "Document Layers" said "Seven are framework-level" while listing eight, and its claim that those eight "should be carried over" contradicted `init-project.md` Step 3, which named only three. Resolved per DECISION-021: a customer's log starts empty, and this repository is the documented exception because its product *is* the framework (the same self-referential carve-out DECISION-020 established). `DOMAIN/BUSINESS_RULES.md` → Edge Case Thinking (1.1 → 1.2) listed "an Installation still holding placeholder content" as the edge case to design for, which has never been true of a CLI Installation — the real edge case is an Installation with no Product layer at all.
 ---
 Phase 1 — MVP
 

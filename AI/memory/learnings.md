@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.5
+Version: 1.6
 ---
 Scope
 
@@ -146,6 +146,34 @@ Future action:
 Use adapters for external integrations.
 
 ---
+Example: Project — a command written for the old distribution mechanism keeps passing review because nobody re-reads it against the new one
+
+## Learning-014
+
+Date:
+2026-08-08
+
+Category:
+Process
+
+Context:
+Giving an Installation its Product layer (`PRODUCT/ROADMAP.md` Phase 1 item 4), via `/next`. Choosing the next roadmap item surfaced that `.kenovis/AI/commands/init-project.md` — the command Phase 0's own Success Criteria are written around — could not execute in a repository created by `kenovis init`.
+
+Problem:
+The command's Trigger said "a fresh clone of this repository." Its Core Principle was "the example content is not a suggestion to follow. It is a shape to replace." Its pre-flight verification was `grep -rl "PROJECT-SPECIFIC" .`, and Steps 2-8 said things like "Keep the section structure. Replace every sentence about the example company." All of that was literally true when the only way to adopt Kenovis was to clone or fork this repository. After the CLI shipped, an Installation contains `.kenovis/`, a `CLAUDE.md` stub, and no Product-layer file at all — so the grep matched nothing and twelve Steps instructed an agent to rewrite files that did not exist. `AI/memory/` was not distributed either, though roughly twenty framework files reference the framework-level rules inside it.
+
+What happened:
+DECISION-017 and DECISION-018 replaced the distribution mechanism. Neither revisited the two commands that consume it. Both commands stayed internally coherent — they read correctly start to finish, and the reasoning inside each Step is still sound — which is why five releases of review never caught it. Nothing was self-contradictory; the contradiction was between the command and a world that had changed underneath it.
+
+Root cause:
+`/init-project` and `/adopt-project` are the only parts of this system whose correctness depends on the state of a repository the framework does not control, and that state is set by a different part of the system (the CLI). No test can reach them — they are markdown, executed by a human plus an LLM — and no CI check compares what the CLI writes against what the commands assume is present. The assumption was made once, in prose, and then became invisible.
+
+Learning:
+When a change replaces how an artifact reaches its consumer, the artifact's own instructions are inside the blast radius even when they never mention the mechanism. The question to ask is not "does this document contradict itself" but "does this document still describe the situation its reader will actually be in." A document written against a superseded mechanism reads perfectly and is wrong.
+
+Future action:
+When a decision changes the set of paths the CLI writes into a target repository — or stops writing one — walk `init-project.md` and `adopt-project.md` end to end against the resulting layout as part of that decision's own implementation, not as a follow-up. Concretely: after any change to `runInit`/`runAdd`/`runSync`'s written paths, re-read both commands' pre-flight checks, Steps and Completion Criteria and ask which of them assume a file the CLI no longer creates, or never did.
+
 Example: Project — ship the fact inside the artifact instead of tracking it alongside
 
 ## Learning-013
