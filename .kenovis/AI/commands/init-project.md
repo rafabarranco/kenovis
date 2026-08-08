@@ -1,12 +1,12 @@
 # Init Project Command
 
-Version: 1.7
+Version: 1.8
 
 ---
 
 # Purpose
 
-Turn this repository from a framework carrying example content into a framework carrying a real product.
+Turn a repository carrying the framework into a repository carrying a real product.
 
 The AI-OS has two layers:
 
@@ -18,7 +18,17 @@ Product
 
 Describes one specific company and product. Rewritten every time.
 
-This command empties the product layer and rebuilds it, without touching the framework.
+This command builds the product layer, without touching the framework.
+
+Two situations reach this command, and it must work in both:
+
+Fresh Installation
+
+The Framework layer was installed by `kenovis init` (DECISIONS.md DECISION-017). There is no Product layer yet — not placeholder files, nothing. The product layer gets authored from the templates in `.kenovis/AI/templates/product-layer/`.
+
+Repurposed repository
+
+A repository that already carries a product layer, being reset for a different company. The existing files are rewritten in place, and the templates are the reference for any section that went missing.
 
 ---
 
@@ -26,9 +36,9 @@ This command empties the product layer and rebuilds it, without touching the fra
 
 Execute when:
 
-- Starting a new product in a fresh clone of this repository.
-- Repurposing this repository for a different company.
-- Product-layer documents still describe the example company.
+- A fresh `kenovis init` Installation needs its product layer.
+- Repurposing a repository for a different company.
+- Product-layer documents still describe a previous or example company.
 
 Command:
 
@@ -44,11 +54,11 @@ Do not execute on a repository that already contains a real implementation preda
 
 # Core Principle
 
-The example content is not a suggestion to follow.
+A template is a shape, not an answer.
 
-It is a shape to replace.
+Every bracketed instruction in a template is a question for the human. Filling one in with a plausible guess produces a document that reads like a decision and is not one — and every agent from then on inherits it as fact.
 
-Anything that survives from the example company becomes a silent wrong assumption that every agent will inherit.
+The same applies to content left behind by a previous product: anything that survives becomes a silent wrong assumption.
 
 ---
 
@@ -62,17 +72,42 @@ Every product-layer file starts with:
 
 If a file does not carry that marker, it is framework. Leave it alone.
 
-Verify before starting:
+Check what is actually present before starting:
 
 ```
-grep -rl "PROJECT-SPECIFIC" . --include="*.md" --include=".gitignore"
+grep -rl "PROJECT-SPECIFIC" . --include="*.md" --include=".gitignore" --exclude-dir=.kenovis
 ```
+
+Zero matches is the normal, expected result in a fresh Installation. It means the product layer does not exist yet and every Step below authors its file rather than rewriting one. It does not mean anything is broken.
+
+---
+
+# Where The Shape Comes From
+
+```
+.kenovis/AI/templates/product-layer/
+```
+
+One template per product-layer document, at the path it maps to — `product-layer/COMPANY_OS.md` → `COMPANY_OS.md`, `product-layer/DOMAIN/DOMAIN_MODEL.md` → `DOMAIN/DOMAIN_MODEL.md`, and so on. See that directory's own `README.md`.
+
+Each template keeps verbatim the parts of its document that are identical for every product, and replaces everything company-specific with a bracketed instruction stating what must be answered.
+
+For every Step below:
+
+1. Read the template for that document.
+2. Ask the human what its bracketed instructions ask for. Do not answer them yourself.
+3. Write the real file: framework sections carried over unchanged, bracketed instructions replaced by the human's real answers.
+4. Keep the `PROJECT-SPECIFIC` marker on line 1. It marks the file as product layer, which is what makes the Collision Guard work — for this run and every future one.
+
+Never copy a template into place unanswered. A template sitting at a product-layer path is placeholder content wearing the marker of a real decision.
+
+If the document already exists (a repurposed repository), rewrite it in place instead, and use the template only as the reference for what its sections should be.
 
 ---
 
 # Collision Guard
 
-Before rewriting any Product-layer file in Steps 2-7, check it:
+Before writing any Product-layer file in Steps 2-7, check whether something is already there:
 
 ```
 head -1 <file>
@@ -82,7 +117,9 @@ If the marker is missing, the file predates this command and may not be Kenovis'
 
 Same escape-hatch shape as `ExistingClaudeMdError` in `cli/src/domain/installation.ts` — a file this command is allowed to own is not the same guarantee as a file it may discard sight unseen (AI/memory/learnings.md Learning-006).
 
-Files that already carry the marker need no confirmation — that is the expected, normal case.
+Files that already carry the marker need no confirmation — that is the expected case in a repurposed repository.
+
+A path with no file at all needs no confirmation either — that is the expected case in a fresh Installation.
 
 ---
 
@@ -114,9 +151,9 @@ Order matters. Everything below depends on what is written here.
 COMPANY_OS.md
 ```
 
-Collision guard applies (see above).
+Template: `product-layer/COMPANY_OS.md`. Collision guard applies (see above).
 
-Rewrite completely:
+Author, or rewrite completely:
 
 - Company vision.
 - Company thesis.
@@ -130,7 +167,7 @@ Rewrite completely:
 - What the company will NOT become.
 - Definition of success.
 
-Keep the section structure. Replace every sentence about the example company.
+Keep the section structure the template defines. Every bracketed instruction becomes a real answer from Step 1, or a question back to the human.
 
 ---
 
@@ -140,21 +177,15 @@ Keep the section structure. Replace every sentence about the example company.
 DECISIONS.md
 ```
 
-Collision guard applies (see above).
+Template: `product-layer/DECISIONS.md`. Collision guard applies (see above).
 
-Keep:
+The decision log is entirely product-specific and starts empty. Keep the decision format and the status definitions the template carries; record nothing else yet.
 
-- The decision format.
-- The status definitions.
-- DECISION-001 — AI-Native Company Operating Model.
-- DECISION-009 — Documentation As Company Memory.
-- DECISION-010 — AI Tooling Strategy.
+Framework-layer files sometimes cite an identifier like `DECISION-018`. Those refer to the framework's own decision log, not to this company's. Never copy them in, and never renumber this log to make such a citation resolve — the framework decision explains why the framework behaves as it does, which is not a decision this company made.
 
-Delete every other decision.
+In a repurposed repository, delete the previous product's decisions. If any of them recorded something still true for the new product, it must be re-decided and re-recorded deliberately, not inherited.
 
-Renumber the surviving decisions if the human prefers a clean sequence, otherwise keep the original IDs and start new decisions after the highest one.
-
-New decisions are recorded as they are made, not invented up front.
+New decisions are numbered from DECISION-001 upwards as they are actually made, not invented up front. Step 12 records the first one.
 
 ---
 
@@ -165,11 +196,13 @@ DOMAIN/DOMAIN_MODEL.md
 DOMAIN/BUSINESS_RULES.md
 ```
 
-Collision guard applies (see above).
+Templates: `product-layer/DOMAIN/DOMAIN_MODEL.md`, `product-layer/DOMAIN/BUSINESS_RULES.md`. Collision guard applies (see above).
 
-This is the layer most likely to be copied by accident, because the example entities look generic.
+This is the layer where a guess does the most damage, because a generic-sounding entity looks correct in every review afterwards.
 
-Derive entities from the real business, not from the example. If the new product genuinely needs an entity that also exists in the example, define it from scratch and confirm the meaning matches.
+Derive entities from the real business. Four real entities beat twelve invented ones. Give each business rule a stable RULE-ID prefixed per entity, so code, tests and PRs can cite it.
+
+In a repurposed repository: if the new product needs an entity the previous one also had, define it from scratch and confirm the meaning actually matches. A shared name is not a shared concept.
 
 ---
 
@@ -182,9 +215,9 @@ PRODUCT/USER_RESEARCH.md
 PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
-Collision guard applies (see above).
+Templates: the four files under `product-layer/PRODUCT/`. Collision guard applies (see above).
 
-USER_RESEARCH.md and COMPETITIVE_LANDSCAPE.md should be emptied rather than invented. Research that has not happened is not research. Competitors that have not been verified are not competitors.
+USER_RESEARCH.md and COMPETITIVE_LANDSCAPE.md stay empty rather than invented. Research that has not happened is not research. Competitors that have not been verified are not competitors.
 
 Leave both as structured empty documents until real research and real competitor findings exist.
 
@@ -198,7 +231,7 @@ ENGINEERING/DATABASE.md
 ENGINEERING/SECURITY.md
 ```
 
-Collision guard applies (see above).
+Templates: the three files under `product-layer/ENGINEERING/`. Collision guard applies (see above).
 
 Decide explicitly and record in DECISIONS.md:
 
@@ -210,6 +243,10 @@ Decide explicitly and record in DECISIONS.md:
 
 The framework policies read these documents. .kenovis/AI/policies/database.md and .kenovis/AI/agents/database.md deliberately do not assume a tenancy model or an engine — they look it up here. If these documents are vague, the agents will be vague.
 
+"None" is a valid answer for a stack line, a database engine or an authentication approach — but it must be written down. A missing line reads as unknown, and unknown is what makes an agent guess.
+
+ARCHITECTURE.md → "Suggested Project Structure" is the single answer to "where does this product's code live". Decide it here explicitly. There is no framework-mandated directory name (DECISIONS.md DECISION-016).
+
 ---
 
 # Step 7 - Rewrite The Automations
@@ -220,35 +257,46 @@ AUTOMATIONS/release-process.md
 AUTOMATIONS/user-feedback.md
 ```
 
-Collision guard applies (see above).
+Templates: the three files under `product-layer/AUTOMATIONS/`. Collision guard applies (see above).
 
-Onboarding depends on what "activated customer" means for this product. Do not carry over the example definition.
+Onboarding depends on what "activated customer" means for this product, and that definition must be checkable — PRODUCT/ROADMAP.md's success metrics read it. Do not carry over another product's definition.
 
 ---
 
-# Step 8 - Reset AI Memory
+# Step 8 - Set Up AI Memory
+
+Templates: the three files under `product-layer/AI/memory/`. Collision guard applies (see above).
+
+These three files are not distributed by the CLI, and the framework depends on them: roughly twenty framework files instruct agents to record a learning in `AI/memory/learnings.md`, promote one into `.kenovis/AI/policies/`, or look up a term in `AI/memory/glossary.md`. Without this Step, every one of those instructions points at a file that does not exist.
 
 ```
 AI/memory/glossary.md
 ```
 
-Replace the Domain Terms section with the vocabulary of the new product.
+Author the Domain Terms section from the entities defined in Step 4 — every entity in DOMAIN/DOMAIN_MODEL.md should have a term here.
 
-Leave the Framework Terms section untouched.
+Carry the Framework Terms section over from the template unchanged.
 
-Before touching `conventions.md` and `learnings.md`, run the Review Process from `AI/memory/learnings.md` first:
+```
+AI/memory/conventions.md
+```
+
+Carry the template over as-is. It is entirely framework-level rules; recorded conventions accumulate later, as real ones are established.
+
+```
+AI/memory/learnings.md
+```
+
+Carry the template's rules over unchanged — the Learning Philosophy, the format, the categories, the priority levels, the Review Process. Those are the mechanism by which this product's knowledge accumulates.
+
+The two entries in the template are format examples, not recorded learnings. Leave them or replace them; either way, nothing here yet describes this product.
+
+In a repurposed repository only: before deleting the previous product's recorded learnings, run the Review Process from `AI/memory/learnings.md` first.
 
 1. List every recorded learning marked Critical or Important.
 2. For each one, ask: is this reusable across any product built on this framework, or specific to the product being reset?
 3. Reusable ones must be promoted before deletion — a permanent rule moves to `.kenovis/AI/policies/`, a naming rule moves to the Framework Terms section of `conventions.md`, domain knowledge moves nowhere (it dies with the product it described).
-4. Do this promotion now. Do not defer it — after Step 8 completes, the source learning is gone.
-
-```
-AI/memory/conventions.md
-AI/memory/learnings.md
-```
-
-Keep the rules. Delete every recorded convention and learning that was not promoted in the previous step. They belong to the previous product.
+4. Do this promotion now. Do not defer it — once this Step completes, the source learning is gone.
 
 ---
 
@@ -258,9 +306,13 @@ Keep the rules. Delete every recorded convention and learning that was not promo
 .gitignore
 ```
 
-Keep the UNIVERSAL block unchanged.
+Applies only if this repository carries a `.gitignore` with the framework's UNIVERSAL and STACK-SPECIFIC blocks. The CLI does not install one, so a fresh Installation usually has either the repository's own `.gitignore` or none at all.
 
-In the STACK-SPECIFIC block, delete every entry that does not match the stack chosen in Step 6.
+If the framework's blocks are present: keep UNIVERSAL unchanged, and in STACK-SPECIFIC delete every entry that does not match the stack chosen in Step 6.
+
+If the repository has its own `.gitignore`: it belongs to the repository, not to this command. Leave it alone. Add an entry only if the chosen stack genuinely needs one, and only after asking.
+
+If there is none: skip this Step. Do not fabricate a `.gitignore` — that is the stack scaffolding's job, and scaffolding is the first roadmap item, not part of initialization.
 
 ---
 
@@ -278,23 +330,29 @@ Do not scaffold anything yet. Scaffolding is the first roadmap item, not part of
 
 # Step 11 - Verify
 
-Run:
+First, confirm no bracketed instruction survived from a template:
+
+```
+grep -rn "^\[" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/
+```
+
+Every match is a question that was never answered. Either answer it, or replace it with an explicit statement that this product has no answer yet — never leave the instruction itself in place, because the next agent reads it as content.
+
+In a repurposed repository, also run:
 
 ```
 grep -rinE "<terms from the previous product>" . --include="*.md"
 ```
 
-Populate the pattern with the distinctive nouns of the example company: its market, its entities, its brand.
+Populate the pattern with the distinctive nouns of the previous company: its market, its entities, its brand. Zero matches outside a deliberate historical note means the product layer is clean.
 
-Zero matches outside a deliberate historical note means the product layer is clean.
-
-Then confirm the markers survived:
+Then confirm the markers are in place:
 
 ```
-grep -rl "PROJECT-SPECIFIC" . --include="*.md"
+grep -rl "PROJECT-SPECIFIC" . --include="*.md" --exclude-dir=.kenovis
 ```
 
-The markers stay. They mark which files are product-layer, not which files are unfinished.
+Every file authored in Steps 2-8 must appear. The markers mark which files are product-layer, not which files are unfinished.
 
 ---
 
@@ -339,7 +397,7 @@ Initialization is complete when:
 
 ✓ COMPANY_OS.md describes the real company.
 
-✓ DECISIONS.md contains only framework decisions plus real new ones.
+✓ DECISIONS.md carries the decision format and only decisions this company actually made.
 
 ✓ DOMAIN/ describes the real business.
 
@@ -349,13 +407,15 @@ Initialization is complete when:
 
 ✓ AUTOMATIONS/ describes real processes.
 
-✓ AI/memory/ holds the new vocabulary and no inherited learnings.
+✓ AI/memory/ exists, holds this product's vocabulary and the framework's own memory rules, and carries no inherited learnings.
 
-✓ .gitignore matches the chosen stack.
+✓ .gitignore matches the chosen stack, or was deliberately left untouched.
 
 ✓ No implementation survives from a previous product, and ENGINEERING/ARCHITECTURE.md describes this product's chosen topology.
 
-✓ No term from the example company survives.
+✓ No bracketed template instruction survives in any product-layer file.
+
+✓ No term from a previous or example company survives.
 
 ✓ No unmarked pre-existing file was overwritten without the human confirming.
 

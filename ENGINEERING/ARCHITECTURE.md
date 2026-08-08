@@ -4,7 +4,7 @@ ARCHITECTURE.md
 
 Software Architecture
 
-Version: 1.4
+Version: 1.5
 ---
 Purpose
 
@@ -88,6 +88,7 @@ No linter or formatter yet. Not an oversight: the codebase is currently 8 small 
 ---
 Hard Rules (No Exceptions)
 
+- The CLI must never create a Product-layer file in a target repository at all — not even a placeholder. `init`/`add`/`sync` write `.kenovis/`, the root `CLAUDE.md` stub and its hash sidecar, and nothing else. The Product layer's shape ships as templates inside the bundle (`.kenovis/AI/templates/product-layer/`) and is authored by `/init-project` or `/adopt-project`, which can ask the human before writing to a path; a non-interactive CLI cannot. See DECISIONS.md DECISION-021.
 - The CLI must never write to a target repository's Product-layer files if they already contain real (non-placeholder) content, without explicit confirmation — see DOMAIN/BUSINESS_RULES.md RULE-INST-01.
 - The CLI must never require network access to a Kenovis-operated server — there is none. Install/sync only touch the npm registry and the local filesystem.
 - The CLI must never execute code found inside the target repository it is installing into.

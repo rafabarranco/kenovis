@@ -16,6 +16,9 @@ tool-owned, not yours to maintain by hand.
 - `AI/policies/` — non-negotiable engineering rules (architecture, coding, security, testing).
 - `AI/commands/` — entry points your AI tool triggers (`/next`, `/feature`, `/bug`, ...).
 - `AI/templates/` — document skeletons (ADR, decision, feature plan, bug report).
+- `AI/templates/product-layer/` — the shape of your own product context: one template
+  per document `/init-project` or `/adopt-project` will author at your repository root.
+  You do not copy these by hand; those commands ask you real questions first.
 
 ## What does NOT live here
 
@@ -24,12 +27,20 @@ architecture, and your own code — lives at your repository's root, fully visib
 never inside `.kenovis/`. That separation is deliberate: this directory is Kenovis's
 infrastructure; your repository root is yours.
 
+Installing Kenovis creates none of those files. `kenovis init`/`add` write this
+directory plus a `CLAUDE.md` stub, and nothing else — your repository root is
+untouched until you run `/init-project` or `/adopt-project`, which asks before
+writing anything. The templates under `AI/templates/product-layer/` are where those
+documents' structure comes from.
+
 ## Updating
 
-Once the `kenovis sync` command exists, it updates this directory to a newer
-Framework Release without ever touching anything outside `.kenovis/` or your
-repository root's `CLAUDE.md` stub. Until then, treat this directory as installed
-by `kenovis init` — re-run that command with `--force` to update manually.
+`kenovis sync` updates this directory to a newer Framework Release without ever
+touching anything outside `.kenovis/` or your repository root's `CLAUDE.md` stub.
+Review the change with `git diff` before committing — that is your rollback.
+
+The Framework Release you are on is recorded in `.kenovis/.framework-version`.
+`sync` prints the transition it applied (e.g. `0.3.0 -> 0.5.0`).
 
 ## Tool compatibility
 

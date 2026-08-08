@@ -15,6 +15,7 @@ import {
   SETUP_PENDING_FILENAME,
   setupPendingContent,
 } from "../../domain/installation.js";
+import { readFrameworkVersion } from "../frameworkVersion.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
 
 export interface SyncOptions {
@@ -34,6 +35,15 @@ export interface SyncResult {
    * init-project/adopt-project directive was preserved rather than cleared.
    */
   setupStillPending: boolean;
+  /**
+   * The Framework Release this Installation tracked before the sync, read
+   * before the mirror-replace destroyed it. Null when it carried no stamp —
+   * an Installation predating the stamp, which every sync from a stamped
+   * bundle onwards fixes by itself.
+   */
+  previousFrameworkVersion: string | null;
+  /** The Framework Release it tracks now. Null when the bundle carries no stamp. */
+  frameworkVersion: string | null;
 }
 
 /**
@@ -76,6 +86,11 @@ export interface SyncResult {
  * erase it — see INSTALL_TIME_OWNED_ENTRIES for the general rule every
  * install-time-owned file under .kenovis/ must follow, and
  * AI/memory/learnings.md Learning-010 for how this was found.
+ *
+ * Reports which Framework Release the Installation moved from and to, read
+ * from the existing `.kenovis/` and the incoming bundle before the mirror
+ * runs. This is reporting only — the stamp itself ships inside the bundle, so
+ * the mirror updates it without any preserve/rewrite rule of its own.
  */
 export async function runSync(
   fs: FileSystemPort,
@@ -109,6 +124,12 @@ export async function runSync(
     ? await fs.readFile(setupPendingPath)
     : null;
 
+  // Read for reporting only, also before the mirror. Unlike the entries in
+  // INSTALL_TIME_OWNED_ENTRIES, the stamp needs no preserve/rewrite rule — the
+  // incoming bundle carries its own, so the mirror replaces it correctly.
+  const previousFrameworkVersion = await readFrameworkVersion(fs, frameworkDir);
+  const frameworkVersion = await readFrameworkVersion(fs, options.frameworkSourceDir);
+
   await fs.removeTree(frameworkDir);
   await fs.copyTree(options.frameworkSourceDir, frameworkDir);
 
@@ -134,5 +155,7 @@ export async function runSync(
     frameworkSyncedTo: frameworkDir,
     claudeStubWrittenTo: claudeStubPath,
     setupStillPending: pendingMarker !== null,
+    previousFrameworkVersion,
+    frameworkVersion,
   };
 }
