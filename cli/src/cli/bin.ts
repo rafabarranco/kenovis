@@ -1,5 +1,6 @@
 import { resolve, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 import { runInit, type InitResult } from "../application/commands/init.js";
 import { runAdd } from "../application/commands/add.js";
 import { runSync } from "../application/commands/sync.js";
@@ -57,6 +58,19 @@ export function defaultFrameworkSourceDir(): string {
   return join(here, "..", "framework-assets");
 }
 
+/**
+ * This CLI's own version, from its package.json — the same number the bundled
+ * Framework Release is stamped with at build time
+ * (scripts/bundle-framework-assets.mjs), since CHANGELOG.md aligns the two.
+ * Resolves identically from src/cli/ and dist/cli/, both one directory below
+ * the package root.
+ */
+export function cliVersion(): string {
+  const require = createRequire(import.meta.url);
+  const pkg = require("../../package.json") as { version: string };
+  return pkg.version;
+}
+
 function printUsage(): void {
   console.log(`kenovis <targetDir> [--source <frameworkSourceDir>] [--force]
 kenovis init <targetDir> [--source <frameworkSourceDir>] [--force]
@@ -97,11 +111,23 @@ unless --force is passed, same as init/add.
 --source defaults to this package's own bundled Framework layer. Pass it
 explicitly to install or sync a different or custom Framework layer instead.
 
---help/-h prints this message and exits, regardless of other arguments.`);
+--help/-h prints this message and exits, regardless of other arguments.
+--version/-v prints this CLI's version — the same version as the Framework
+Release it bundles. To see which Framework Release an existing Installation
+currently tracks, read its \`.kenovis/.framework-version\`; init/add/sync all
+print it too.`);
 }
+
+/**
+ * How an absent Framework Release stamp reads on stdout. A bundle built before
+ * the stamp existed, or a hand-assembled --source directory, genuinely does not
+ * say which release it is — better said plainly than guessed at.
+ */
+const UNKNOWN_VERSION = "unknown";
 
 function printInstallResult(result: InitResult): void {
   console.log(`Framework layer installed to ${result.frameworkInstalledTo}`);
+  console.log(`Framework Release: ${result.frameworkVersion ?? UNKNOWN_VERSION}`);
   console.log(`CLAUDE.md stub written to ${result.claudeStubWrittenTo}`);
   console.log(
     result.targetReadmeUntouched
@@ -228,6 +254,14 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
     });
 
     console.log(`Framework layer synced to ${result.frameworkSyncedTo}`);
+    console.log(
+      `Framework Release: ${result.previousFrameworkVersion ?? UNKNOWN_VERSION} -> ` +
+        `${result.frameworkVersion ?? UNKNOWN_VERSION}` +
+        (result.previousFrameworkVersion !== null &&
+        result.previousFrameworkVersion === result.frameworkVersion
+          ? " (already up to date)"
+          : ""),
+    );
     console.log(`CLAUDE.md stub rewritten at ${result.claudeStubWrittenTo}`);
     if (result.setupStillPending) {
       console.log(
@@ -251,8 +285,16 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
 }
 
 export async function main(argv: string[]): Promise<number> {
+  // Checked before any dispatch, same as --help: an unrecognized flag would
+  // otherwise fall through to the bare autodetect path and run a real install
+  // against cwd (AI/memory/learnings.md Learning-005).
   if (argv.includes("--help") || argv.includes("-h")) {
     printUsage();
+    return 0;
+  }
+
+  if (argv.includes("--version") || argv.includes("-v")) {
+    console.log(cliVersion());
     return 0;
   }
 

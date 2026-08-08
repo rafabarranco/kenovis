@@ -13,6 +13,7 @@ import {
   NotInstalledError,
   SETUP_PENDING_FILENAME,
   setupPendingContent,
+  FRAMEWORK_VERSION_FILENAME,
 } from "../../domain/installation.js";
 
 test("runSync refuses to run when .kenovis/ does not exist", async () => {
@@ -266,4 +267,50 @@ test("runSync records the hash of the pending stub it wrote, so the next sync is
     fs.files.get(join("/repo", FRAMEWORK_DIR_NAME, CLAUDE_MD_HASH_FILENAME)),
     hashClaudeMdContent(claudeStubContent({ pending: true, kind: "brownfield" })),
   );
+});
+
+test("runSync reports which Framework Release the Installation moved from and to", async () => {
+  const fs = new InMemoryFileSystem();
+  const frameworkDir = join("/repo", ".kenovis");
+  fs.seed(frameworkDir, "<old install>");
+  fs.seed(join(frameworkDir, FRAMEWORK_VERSION_FILENAME), "0.3.0\n");
+  fs.seed(join("/source/framework", FRAMEWORK_VERSION_FILENAME), "0.6.0\n");
+
+  const result = await runSync(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+  });
+
+  assert.equal(result.previousFrameworkVersion, "0.3.0");
+  assert.equal(result.frameworkVersion, "0.6.0");
+});
+
+test("runSync reports an Installation that predates the stamp as coming from unknown", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  fs.seed(join("/source/framework", FRAMEWORK_VERSION_FILENAME), "0.6.0\n");
+
+  const result = await runSync(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+  });
+
+  assert.equal(result.previousFrameworkVersion, null);
+  assert.equal(result.frameworkVersion, "0.6.0");
+});
+
+test("runSync reads the previous Framework Release before the mirror-replace destroys it", async () => {
+  const fs = new InMemoryFileSystem();
+  const frameworkDir = join("/repo", ".kenovis");
+  fs.seed(frameworkDir, "<old install>");
+  fs.seed(join(frameworkDir, FRAMEWORK_VERSION_FILENAME), "0.3.0\n");
+
+  const result = await runSync(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+  });
+
+  // removeTree ran, so the only way this value exists is having been read first.
+  assert.deepEqual(fs.removedTrees, [frameworkDir]);
+  assert.equal(result.previousFrameworkVersion, "0.3.0");
 });

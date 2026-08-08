@@ -9,6 +9,7 @@ import {
   claudeStubContent,
   ExistingClaudeMdError,
   InvalidFrameworkSourceError,
+  FRAMEWORK_VERSION_FILENAME,
 } from "../../domain/installation.js";
 
 test("runInit copies the framework source into <target>/.kenovis", async () => {
@@ -284,4 +285,29 @@ test("runInit under --force on a brownfield target still never touches README.md
   });
 
   assert.equal(fs.files.get(readmePath), "# My Real Product\n\nDo not touch this.");
+});
+
+test("runInit reports the Framework Release stamped on the bundle it installed", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/source/framework", FRAMEWORK_VERSION_FILENAME), "0.6.0\n");
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+    invokedAs: "init",
+  });
+
+  assert.equal(result.frameworkVersion, "0.6.0");
+});
+
+test("runInit reports an unstamped bundle as unknown instead of inferring a version", async () => {
+  const fs = new InMemoryFileSystem();
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+    invokedAs: "init",
+  });
+
+  assert.equal(result.frameworkVersion, null);
 });

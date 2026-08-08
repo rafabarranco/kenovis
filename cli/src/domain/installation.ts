@@ -14,6 +14,7 @@ export const CLAUDE_STUB_FILENAME = "CLAUDE.md";
 export const TARGET_README_FILENAME = "README.md";
 export const SETUP_PENDING_FILENAME = ".setup-pending";
 export const CLAUDE_MD_HASH_FILENAME = ".claude-md.sha256";
+export const FRAMEWORK_VERSION_FILENAME = ".framework-version";
 
 /**
  * Entries that do not count as evidence of a real, pre-existing implementation:
@@ -217,11 +218,39 @@ export function installationKindFromSetupPending(
  * - `rewritten`: recomputed from what this run wrote, after the mirror.
  *
  * Any future install-time-owned file must be added to one of these lists.
+ *
+ * `${FRAMEWORK_VERSION_FILENAME}` deliberately does NOT belong here: the
+ * Framework bundle ships it (scripts/bundle-framework-assets.mjs writes it at
+ * build time), so the mirror-replace installs and updates it by construction.
+ * Adding it would create exactly the parallel bookkeeping Learning-010 and
+ * Learning-011 identify as this codebase's recurring defect — one mechanism
+ * writing state another silently invalidates.
  */
 export const INSTALL_TIME_OWNED_ENTRIES = {
   preserved: [SETUP_PENDING_FILENAME],
   rewritten: [CLAUDE_MD_HASH_FILENAME],
 } as const;
+
+/**
+ * The Framework Release an Installation currently tracks
+ * (DOMAIN/DOMAIN_MODEL.md → Installation, "framework version installed").
+ *
+ * The value is whatever `${FRAMEWORK_VERSION_FILENAME}` holds, trimmed. It is
+ * never derived from the running CLI's own version: an Installation's
+ * `.kenovis/` was written by whichever Framework bundle it was last synced
+ * from, which is not necessarily the one running now — the same distinction
+ * `isClaudeMdSafeToOverwrite` already draws between "what we'd write today"
+ * and "what was actually left there" (see AI/memory/learnings.md Learning-008).
+ *
+ * Returns null for a missing or blank stamp — a bundle predating this
+ * mechanism, or a hand-assembled `--source` directory. Unknown is reported as
+ * unknown; it is never guessed at.
+ */
+export function parseFrameworkVersion(stampContent: string | null): string | null {
+  if (stampContent === null) return null;
+  const trimmed = stampContent.trim();
+  return trimmed === "" ? null : trimmed;
+}
 
 /**
  * Top-level entries a legitimate Framework-layer source directory may
