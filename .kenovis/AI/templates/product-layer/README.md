@@ -1,6 +1,6 @@
 # Product-Layer Templates
 
-Version: 1.0
+Version: 1.1
 
 ---
 
@@ -36,7 +36,15 @@ Every template's first line carries the `PROJECT-SPECIFIC` marker, so a file aut
 
 Kept verbatim: the parts of each document that are identical for every product — purpose, philosophy, formats, rules for AI agents, final principles. These are framework content that happens to live in a Product-layer file, and they should survive into every Installation unchanged.
 
-Replaced by a bracketed instruction: everything that describes one specific company. A template states what must be answered; it never contains an answer, and never contains the framework author's own.
+Replaced by an `[ANSWER: ...]` instruction: everything that describes one specific company. A template states what must be answered; it never contains an answer, and never contains the framework author's own.
+
+`[ANSWER: ...]` is the only bracket form that means "unanswered question", and it is what both commands' Verify step greps for. Brackets are used for other things too, and those legitimately survive into a completed document:
+
+- A format specification — `DOMAIN/BUSINESS_RULES.md` → "Rule Format", `PRODUCT/FEATURES.md`'s FEATURE-NNN shape, `AUTOMATIONS/release-process.md`'s `[ ]` checklists.
+- An illustrative example — `PRODUCT/ROADMAP.md`'s good/bad feature framing, `ENGINEERING/ARCHITECTURE.md`'s directory tree and `POST /[resources]` sample, `ENGINEERING/DATABASE.md`'s `[tenant_key]`.
+- A deliberate "nothing recorded yet" statement, in a section the product has genuinely not filled — `PRODUCT/USER_RESEARCH.md`, `PRODUCT/COMPETITIVE_LANDSCAPE.md`, an empty `DECISIONS.md`.
+
+When adding an instruction to a template, use `[ANSWER: ...]` if and only if leaving it in place would be a defect. An anchored, bracket-shaped check cannot tell these apart — that is why the marker exists (`AI/memory/learnings.md` Learning-015).
 
 `AI/memory/learnings.md` and `AI/memory/glossary.md` are the clearest case of the split. Their rules — the learning format, the categories, the Review Process that promotes a learning into `.kenovis/AI/policies/`, the Framework Terms section — are framework-level, and roughly twenty framework files reference them. Their recorded learnings and Domain Terms belong to one product.
 

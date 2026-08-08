@@ -1,6 +1,6 @@
 # Adopt Project Command
 
-Version: 1.7
+Version: 1.8
 
 ---
 
@@ -71,9 +71,11 @@ Zero matches is the expected result after `kenovis add`. It means no product lay
 
 One template per product-layer document, at the path it maps to. See that directory's own `README.md`, and `init-project.md` → "Where The Shape Comes From" for the full rule — it is identical here, with one difference that matters:
 
-A bracketed instruction in a template is a question. In an adoption, the code answers most of them, and the human confirms the answer. Only the questions the code cannot answer — company, vision, first segment, real user research — go to the human to decide.
+An `[ANSWER: ...]` instruction in a template is a question. In an adoption, the code answers most of them, and the human confirms the answer. Only the questions the code cannot answer — company, vision, first segment, real user research — go to the human to decide.
 
-Never copy a template into place unanswered, and never leave a bracketed instruction in a written document.
+Brackets that are not `[ANSWER:` are format specifications, illustrative examples or deliberate "nothing recorded yet" statements. They survive into the written document; see `init-project.md` for the full rule.
+
+Never copy a template into place unanswered, and never leave an `[ANSWER: ...]` instruction in a written document.
 
 ---
 
@@ -220,7 +222,7 @@ ENGINEERING/SECURITY.md
 
 Templates: the three files under `product-layer/ENGINEERING/`. Collision guard applies (see above).
 
-Unlike `init-project.md` Step 6, do not "decide explicitly." Answer the templates' bracketed instructions from the Step 1 audit: the stack, database engine, tenancy model, authentication approach, and deployment target the code already runs.
+Unlike `init-project.md` Step 6, do not "decide explicitly." Answer the templates' `[ANSWER: ...]` instructions from the Step 1 audit: the stack, database engine, tenancy model, authentication approach, and deployment target the code already runs.
 
 ARCHITECTURE.md → "Suggested Project Structure" describes the layout the repository already has. Adoption never relocates working code to match a shape a document suggests (DECISIONS.md DECISION-016). See Step 11.
 
@@ -314,13 +316,15 @@ For each claim: does the code support it? Cite file/line, or mark it explicitly 
 
 A claim with no code evidence and no explicit Low-confidence marker is a defect in this adoption, not an acceptable gap.
 
-Then confirm no bracketed template instruction survived:
+Then confirm no unanswered template question survived:
 
 ```
-grep -rn "^\[" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/
+grep -rn "\[ANSWER:" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/
 ```
 
-Every match is a question that was never answered. Answer it, or replace it with an explicit statement that no answer exists yet — never leave the instruction, because the next agent reads it as content.
+Zero matches is the passing result. Every match is a question that was never answered. Answer it, or replace it with an explicit statement that no answer exists yet — never leave the instruction, because the next agent reads it as content.
+
+The pattern is deliberately not anchored to the start of a line — a template question can sit mid-line, and an anchored check would report those documents as clean. Brackets that are not `[ANSWER:` are not failures.
 
 Then confirm the markers are in place:
 
@@ -394,7 +398,7 @@ Adoption is complete when:
 
 ✓ Every factual claim in ENGINEERING/ and DOMAIN/ has a code citation or an explicit Low-confidence marker.
 
-✓ No bracketed template instruction survives in any product-layer file.
+✓ No `[ANSWER: ...]` template question survives in any product-layer file.
 
 ✓ No unmarked pre-existing file was overwritten without the human confirming.
 

@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.6
+Version: 1.7
 ---
 Scope
 
@@ -144,6 +144,35 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — a verification step that has never been run against a passing case
+
+## Learning-015
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Executing `/init-project` end to end against a real `npx kenovis@0.6.0` Installation (`PRODUCT/ROADMAP.md` Phase 1 item 6), via `/next`. The seventeen Product-layer templates had shipped two days earlier and had been validated for *delivery* — the smoke test confirmed the files land on disk — but never for *execution*.
+
+Problem:
+Both commands' Verify step used `grep -rn "^\["` and told the reader "Every match is a question that was never answered." Run against this repository's own completed Product layer it returned 29 matches, every one of them content that is supposed to survive: format specifications, illustrative examples, markdown `[ ]` checkboxes, and the deliberate "nothing recorded yet" statements the commands themselves prescribe. It simultaneously missed 8 real questions that sat mid-line — including the entire domain-entity block, the layer the same command calls the one where a guess does the most damage.
+
+What happened:
+The Completion Criterion the check backs ("No bracketed template instruction survives in any product-layer file") was unsatisfiable from the day it was written. The one document set that could have proved it — this repository's own Product layer, the framework's own dogfooded Installation — was never run through it.
+
+Root cause:
+The check was written at the same time as the templates, by reasoning about what a template looks like, and was reviewed the same way. Nobody executed it. A grep is not code: no test imports it, no CI job runs it, and reading it is indistinguishable from running it right up until the moment the two disagree. It was correct *about the failing case* it was designed against, and nobody ever pointed it at a passing one.
+
+Learning:
+A verification step needs its passing case exercised at least as much as its failing case. A check that only ever gets reasoned about will encode the author's mental model of "what a bad document looks like" and will silently misclassify everything that model did not contain. The cheapest possible test — run the check against a document already known to be correct, and require zero matches — would have caught this before the templates shipped, and it costs one command.
+
+Future action:
+When a framework command introduces a mechanical check, run it against this repository's own Product layer in the same round and record the result in the change. Zero matches on a known-good corpus is the acceptance criterion; anything else means the check is measuring something other than what its prose claims — and if the framework's own documentation of the check is itself inside the scanned corpus, say so explicitly rather than quietly reporting a number that excludes it. That happened here: this repository's Product layer matches ten times on prose describing the marker, which is the Learning-009 self-referential case again, not a defect. This applies to any grep, marker convention or CI script the framework asks an agent to run — see [[DECISION-022]] for the case that produced this rule, and Learning-014 for the adjacent failure mode (a document, rather than a check, that was never re-read against the world it now runs in).
 
 ---
 Example: Project — a command written for the old distribution mechanism keeps passing review because nobody re-reads it against the new one
