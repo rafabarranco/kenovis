@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.23
+Version: 1.24
 ---
 Purpose
 
@@ -303,6 +303,14 @@ Shipped: `[ANSWER: ...]` is now the only bracket form meaning "unanswered questi
 Deliberately not built: a CI guard asserting this repository's own Product layer stays free of `[ANSWER:` markers. It would pass trivially and forever — the real regression risk is a future template question written with a plain bracket, and distinguishing that from a legitimate survivor is precisely what no pattern can do.
 
 Validated: the fixed bundle installed into a fresh scratch Installation delivers all eighteen template files with 113 `[ANSWER:` markers intact; copying them in unanswered makes Verify report 110 questions, including all 13 that the old anchored check could not see; two documents then authored for real from their templates (`DOMAIN/DOMAIN_MODEL.md`, `DOMAIN/BUSINESS_RULES.md`) report zero, while their four format-specification brackets — which the old check would have flagged — are correctly left alone. Against this repository's own Product layer the new check returns ten matches, all of them this decision's and this entry's own prose quoting the marker while explaining it, and none an unanswered question — the DECISION-020/021 self-referential carve-out, noted in DECISION-022 → Consequences. A customer Installation returns zero, so the Completion Criterion is satisfiable where it is enforced. 108 `cli/` tests pass, typecheck and build clean, `check_links.py` and `check_markers.py` pass. No CLI code changed.
+
+7. IN PROGRESS (2026-08-09, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 6.
+
+Chosen as the next item because item 6 is merged to `development` and reaches no customer until published — the same packaging step Phase 1 items 2 and 5 performed for `kenovis@0.5.0` and `0.6.0`. Against this document's own priority formula the case is unusually strong: Customer Pain is maximal (every 0.6.0 Installation that runs `/init-project` today hits a Verify step that reports 29 false positives and misses 13 real questions, with a Completion Criterion that cannot be satisfied), Frequency is every install, Business Impact lands directly on the North Star's activation half (`init-project` completion rate), and Implementation Cost is a documented procedure. No other scheduled, unblocked item exists: the active npm-registry version check stays deferred on network-dependency cost and unvalidated Pain, the paid-tier ADR stays premature on one external team's data, and `/framework-review`'s expected yield is low after item 6's own pass over the templates.
+
+Version call, decided at cut time: **minor, `kenovis@0.7.0`**, not patch. Deliberately, not by habit, per Phase 1 item 2's standing instruction — and this round the habitual answer would have been patch. No CLI code changed at all; the entire release is framework content. But this package bundles those framework files, and fifteen templates changed content while `init-project.md`/`adopt-project.md` changed behaviour: an Installation syncing to this release gets a Verify step that reports something different from what it reported before. That is the same distinction `0.5.0` drew — more than a CLI bug fix, so minor. Reasoning recorded in `CHANGELOG.md`'s `[0.7.0]` header.
+
+Procedure: `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release", with the content-sync promotion Learning-012 established as this repository's *standard* procedure (verify each downstream branch is a strict older snapshot, `git read-tree -u --reset` from upstream on a `sync/` branch, confirm an empty diff, PR and rebase-merge). Published from CI via `.github/workflows/publish.yml` on a GitHub Release — never from a laptop (ENGINEERING/SECURITY.md → Supply-Chain Security).
 ---
 Phase 1 — MVP
 
