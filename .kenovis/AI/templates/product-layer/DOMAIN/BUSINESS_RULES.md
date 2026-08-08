@@ -4,7 +4,7 @@ BUSINESS_RULES.md
 
 Business Rules
 
-Version: 1.1
+Version: 1.2
 ---
 Purpose
 
@@ -18,7 +18,7 @@ Any technical decision that violates these rules is incorrect.
 ---
 Core Principle
 
-[What is actually at stake if this product gets its rules wrong — money, safety, legal exposure, customer trust. One paragraph. Every rule below should trace back to this.]
+[ANSWER: What is actually at stake if this product gets its rules wrong — money, safety, legal exposure, customer trust. One paragraph. Every rule below should trace back to this.]
 ---
 Rule Format
 
@@ -42,13 +42,13 @@ Example (valid / invalid):
 
 ---
 
-## [Entity] Rules
+## [ANSWER: entity name] Rules
 
-[One section per entity that has rules. Use a stable RULE-ID prefix per entity — e.g. RULE-ORD-01 for Order rules — so a rule can be referenced from code, tests and PRs without renumbering when a new rule is added.]
+[ANSWER: One section per entity that has rules. Use a stable RULE-ID prefix per entity — e.g. RULE-ORD-01 for Order rules — so a rule can be referenced from code, tests and PRs without renumbering when a new rule is added.]
 
-### RULE-[XXX]-01
+### RULE-[ANSWER: entity prefix]-01
 
-[Rule statement, following the format above.]
+[ANSWER: Rule statement, following the format above.]
 
 ---
 AI Agent Implementation Rules
@@ -68,7 +68,7 @@ Edge Case Thinking
 
 Always consider:
 
-[The states this product's rules must survive that are not the happy path — partial failures, stale data, a customer several versions behind, a half-completed process. List the real ones for this product; do not carry over another product's list.]
+[ANSWER: The states this product's rules must survive that are not the happy path — partial failures, stale data, a customer several versions behind, a half-completed process. List the real ones for this product; do not carry over another product's list.]
 ---
 Final Principle
 

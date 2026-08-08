@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.7
+Version: 2.8
 
 Last updated: —
 
@@ -1631,6 +1631,124 @@ DOMAIN/BUSINESS_RULES.md — RULE-INST-01
 ENGINEERING/ARCHITECTURE.md — Hard Rules
 DECISIONS.md — DECISION-017, DECISION-018, DECISION-019
 ```
+
+---
+
+# DECISION-022
+
+# `[ANSWER: ...]` Is The Only Bracket Form That Means "Unanswered Question"
+
+Date:
+
+2026-08-09
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-09
+
+---
+
+## Context
+
+Executing `/init-project` end to end against a real `npx kenovis@0.6.0` Installation (`PRODUCT/ROADMAP.md` Phase 1 item 6) found that both commands' Verify step is broken in both directions.
+
+The check was `grep -rn "^\[" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/`, followed by "Every match is a question that was never answered."
+
+Run against this repository's own completed, five-releases-reviewed Product layer it returned **29 matches, none of them real**: `DOMAIN/BUSINESS_RULES.md`'s "Rule Format" specification, `PRODUCT/FEATURES.md`'s FEATURE-NNN shape, `AUTOMATIONS/release-process.md`'s markdown `[ ]` checkboxes, `ENGINEERING/DATABASE.md`'s `[tenant_key]` sample, and the deliberate "No competitors recorded yet" / "No decisions recorded yet" statements that `init-project.md` Step 5 explicitly mandates. An agent obeying the instruction literally would delete or mangle all of them.
+
+At the same time it missed **8 real questions** that were not at column 0 — including the whole `### [Entity]` / `Definition:` / `Attributes (conceptually):` / `Relationships:` block in `DOMAIN/DOMAIN_MODEL.md`, the layer `init-project.md` Step 4 itself calls "where a guess does the most damage, because a generic-sounding entity looks correct in every review afterwards". A ninth case had no bracket at all: `ENGINEERING/ARCHITECTURE.md`'s six required Technology Stack lines shipped as bare labels.
+
+Both commands' Completion Criteria said "No bracketed template instruction survives in any product-layer file." That was unsatisfiable: this repository's own Product layer violates it, and always did.
+
+The root cause is that a bracket in a template means three different things — a question for the human, a format specification or illustrative sample, and a deliberate "nothing here yet" statement. The first must never survive; the other two must. No pattern over bracket syntax can separate them.
+
+---
+
+## Options Considered
+
+### Option A
+
+Keep plain brackets and give the Verify step an allowlist of sections and files to ignore.
+
+Advantages:
+
+- No template changes.
+
+Disadvantages:
+
+- The allowlist grows with every template edit and is itself unverifiable — a question added inside an allowlisted section becomes permanently invisible. It encodes the current contents of 17 documents into a check that is supposed to outlive them.
+
+---
+
+### Option B
+
+Drop the mechanical check and make Verify a prose judgement call ("read each document and confirm nothing unanswered survived").
+
+Advantages:
+
+- Zero implementation cost, no false positives.
+
+Disadvantages:
+
+- Abandons the gate exactly where DECISION-011 argued gates matter: "mechanics without verification gets skipped under fatigue." Verify is the last step of a long conversational command — the point at which an agent and a human are least likely to re-read seventeen documents carefully.
+
+---
+
+### Option C
+
+Give unanswered questions their own marker, `[ANSWER: ...]`, and reserve plain brackets for content that survives. Verify greps the marker, unanchored.
+
+Advantages:
+
+- Exact in both directions: zero false positives on documents authored from templates (verified against a real Installation and against this repository's own Product layer, where the only matches are this decision's own prose — see Consequences), and mid-line questions are caught because the pattern needs no `^` anchor.
+- The distinction is visible to a human reading the template, not just to a script. `[ANSWER: the engine, or "none".]` states its own obligation.
+- Makes the previously-unwritable case writable: `ENGINEERING/ARCHITECTURE.md`'s bare stack labels now carry a real placeholder.
+
+Disadvantages:
+
+- Touches 15 of the 17 templates (110 instructions) plus both commands.
+- Nothing mechanically enforces that a *future* template author picks `[ANSWER:` over a plain bracket for a genuine question. The convention is documented in the templates' own `README.md`, but a check for it would have to distinguish the same three meanings the marker exists to distinguish — so it cannot exist. This is an accepted, named limitation, not an oversight.
+
+---
+
+## Decision
+
+Adopt Option C.
+
+- `[ANSWER: ...]` marks a question for the human. It must never survive into a written Product-layer document.
+- Every other bracket form is content: a format specification, an illustrative example, a placeholder inside a code or tree sample, or a deliberate "nothing recorded yet" statement. These survive.
+- Both commands' Verify step greps `\[ANSWER:` without a line anchor. Both Completion Criteria are reworded to match.
+- `.kenovis/AI/templates/product-layer/README.md` documents which form to use when, and states the limitation above.
+
+---
+
+## Reason
+
+DECISION-011 established that this framework holds itself to the mechanical discipline it sells. A gate that produces 29 false positives and 0 true positives on the framework's own documents is worse than no gate — it trains its reader to ignore it, and the one time it fires correctly it will be ignored too. Option C is the only one of the three that leaves a check which is both mechanical and true.
+
+---
+
+## Consequences
+
+Positive:
+
+- The Verify step reports something meaningful for the first time. The Completion Criterion it backs is satisfiable, and verified true against this repository's own Product layer.
+- The nine questions that were structurally invisible — the entire domain-entity block and the Technology Stack lines — are now catchable, in the two documents the framework's own commands identify as highest-damage-if-guessed.
+- Both commands' Verify steps now behave identically, so the two documents stay in sync on this mechanic rather than drifting (the standing risk DECISION-014 → Consequences names).
+
+Negative:
+
+- A future template author can still add a plain-bracket question that Verify will never see. Documented in the templates' `README.md`; not mechanically preventable, for the reason given in Option C.
+- Existing Installations authored under the old convention are unaffected and need no migration — they contain no `[ANSWER:` markers, so the new check passes trivially. It only gains force for documents authored from templates at this release or later.
+- This repository is the one Installation where the check reports matches that are not defects: its Product layer includes this decision record and `PRODUCT/ROADMAP.md`'s entry for the work, both of which quote the marker in prose while explaining it. Ten such matches exist at the time of writing and none is an unanswered question. That is the same self-referential carve-out DECISION-020 and DECISION-021 already established — this company's product *is* the framework, so its product documentation legitimately discusses framework mechanics. A customer Installation has no such prose and returns zero. When running Verify here, read the matches; when running it in a customer Installation, zero is the bar.
 
 ---
 

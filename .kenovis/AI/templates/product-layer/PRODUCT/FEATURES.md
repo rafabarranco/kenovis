@@ -4,7 +4,7 @@ FEATURES.md
 
 Product Features Specification
 
-Version: 1.0
+Version: 1.1
 ---
 Purpose
 
@@ -23,7 +23,7 @@ A feature is complete when it solves the intended user problem.
 ---
 Product Core
 
-[One line tracing the product's central path through the domain entities, e.g. "Customer → places → Order → fulfilled by → Shipment." This is the spine every feature hangs off.]
+[ANSWER: One line tracing the product's central path through the domain entities, e.g. "Customer → places → Order → fulfilled by → Shipment." This is the spine every feature hangs off.]
 
 See DOMAIN/DOMAIN_MODEL.md for full definitions. Individual FEATURE-NNN specs get added below as they are speced. Do not invent them here ahead of real specification — an unspeced feature listed as if it were speced is worse than an empty section.
 ---
@@ -69,7 +69,7 @@ The user can:
 ---
 Features Explicitly Not Included Initially
 
-[What this product deliberately does not build yet, and why, each pointing at the decision or roadmap phase that defers it. This section is what stops an agent from helpfully implementing something the business chose to postpone.]
+[ANSWER: What this product deliberately does not build yet, and why, each pointing at the decision or roadmap phase that defers it. This section is what stops an agent from helpfully implementing something the business chose to postpone.]
 ---
 Feature Development Rules
 

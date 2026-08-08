@@ -4,7 +4,7 @@ USER_RESEARCH.md
 
 User Research Framework
 
-Version: 1.0
+Version: 1.1
 ---
 Purpose
 
@@ -31,11 +31,11 @@ Initial Market
 
 Primary Market
 
-[The first segment this product serves. Must match COMPANY_OS.md → Initial Market Strategy — if the two disagree, COMPANY_OS.md wins and this file is wrong.]
+[ANSWER: The first segment this product serves. Must match COMPANY_OS.md → Initial Market Strategy — if the two disagree, COMPANY_OS.md wins and this file is wrong.]
 ---
 Why Start Here
 
-[Why this segment first and not another: reachability, willingness to adopt, feedback quality, ability to evaluate the product honestly. State the reason, not the aspiration.]
+[ANSWER: Why this segment first and not another: reachability, willingness to adopt, feedback quality, ability to evaluate the product honestly. State the reason, not the aspiration.]
 ---
 Target User Profiles
 

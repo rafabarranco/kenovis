@@ -2,7 +2,7 @@
 
 AI Glossary
 
-Version: 1.1
+Version: 1.2
 ---
 Document Layers
 
@@ -68,19 +68,19 @@ Write one entry per core business concept, drawn from `DOMAIN/DOMAIN_MODEL.md`. 
 Use this shape for each entry:
 
 ---
-[Term]
+[ANSWER: Term]
 
 Definition:
 
-[One sentence. What the concept is, in business language, not technical language.]
+[ANSWER: One sentence. What the concept is, in business language, not technical language.]
 
 Examples:
 
-[Concrete instances. Omit the heading if none are useful.]
+[ANSWER: Concrete instances. Omit the heading if none are useful.]
 
 Rules:
 
-[Any business rule attached to the concept, with the RULE-ID from `DOMAIN/BUSINESS_RULES.md`. Omit the heading if none.]
+[ANSWER: Any business rule attached to the concept, with the RULE-ID from `DOMAIN/BUSINESS_RULES.md`. Omit the heading if none.]
 ---
 
 Do not invent terms to fill the section. A glossary with four real terms is more useful than one with twenty guessed ones.

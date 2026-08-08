@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.22
+Version: 1.23
 ---
 Purpose
 
@@ -289,6 +289,20 @@ Shipped: `cli/package.json`/`package-lock.json` 0.5.0 → 0.6.0, `CHANGELOG.md` 
 Validated against the *published* package, not a local build: `npx kenovis@0.6.0 add` on a scratch brownfield repository reported `Framework Release: 0.6.0`, delivered all eighteen template files under `.kenovis/`, created no Product-layer file at the target's root, and left its `README.md`, `src/` and `package.json` untouched; `npx kenovis@0.6.0 --version` printed `0.6.0`; a following `sync` reported `0.6.0 -> 0.6.0 (already up to date)`, preserved `.setup-pending`, and left `git status` completely clean. No new gap surfaced — nothing recorded as a learning this round.
 
 Solo-maintainer note, unchanged from previous releases: all three PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
+
+6. DONE (2026-08-09, via /next) — execute `/init-project` end to end against a real published Installation, and fix what breaks.
+
+Founder chose this as the next item once Phase 0 and Phase 1 items 1-5 were confirmed closed and no scheduled, unblocked item remained. Candidates weighed against this document's own priority formula: this item, a `/framework-review` audit pass (a quick check of the post-migration templates came back clean in the same session, lowering its expected yield), the active npm-registry version check (Phase 2, still deferred on network-dependency cost and unvalidated Pain), and the paid-tier ADR (still premature on one external team's data).
+
+Gap found: the seventeen Product-layer templates shipped in `kenovis@0.6.0` (DECISION-021) had been validated for *delivery* only — item 4 and item 5's smoke tests confirmed the files land on disk in a real Installation and that nothing is written to the target's root. Nobody had *run* `/init-project` from one. The single real external validation on record (2026-08-06) predates the template mechanism entirely, so the path this product currently publishes had zero end-to-end validation. Pain is maximal if it breaks (activation is zero), Frequency is every install, Implementation Cost is a scratch-repository dry run.
+
+What the run found, in the step it was always going to find it — Verify. Both commands checked for leftover template questions with `grep -rn "^\["`. Against this repository's own completed Product layer that returns 29 matches and zero real ones, and it misses 8 genuine questions that sit mid-line, including the whole `### [Entity]` block in `DOMAIN/DOMAIN_MODEL.md`. A ninth case had no bracket at all: `ENGINEERING/ARCHITECTURE.md`'s six required Technology Stack lines shipped as bare labels. Both Completion Criteria were unsatisfiable as written. See DECISION-022 and `AI/memory/learnings.md` Learning-015.
+
+Shipped: `[ANSWER: ...]` is now the only bracket form meaning "unanswered question"; plain brackets are reserved for format specifications, illustrative examples and deliberate "nothing recorded yet" statements, which legitimately survive. 110 instructions converted across 15 templates (each bumped a minor version), both commands' Verify step and Completion Criteria rewritten, and `.kenovis/AI/templates/product-layer/README.md` (1.0 → 1.1) documents which form to use when — including the limitation that nothing mechanically stops a future author choosing the wrong one, for the reason DECISION-022 → Option C gives.
+
+Deliberately not built: a CI guard asserting this repository's own Product layer stays free of `[ANSWER:` markers. It would pass trivially and forever — the real regression risk is a future template question written with a plain bracket, and distinguishing that from a legitimate survivor is precisely what no pattern can do.
+
+Validated: the fixed bundle installed into a fresh scratch Installation delivers all eighteen template files with 113 `[ANSWER:` markers intact; copying them in unanswered makes Verify report 110 questions, including all 13 that the old anchored check could not see; two documents then authored for real from their templates (`DOMAIN/DOMAIN_MODEL.md`, `DOMAIN/BUSINESS_RULES.md`) report zero, while their four format-specification brackets — which the old check would have flagged — are correctly left alone. Against this repository's own Product layer the new check returns ten matches, all of them this decision's and this entry's own prose quoting the marker while explaining it, and none an unanswered question — the DECISION-020/021 self-referential carve-out, noted in DECISION-022 → Consequences. A customer Installation returns zero, so the Completion Criterion is satisfiable where it is enforced. 108 `cli/` tests pass, typecheck and build clean, `check_links.py` and `check_markers.py` pass. No CLI code changed.
 ---
 Phase 1 — MVP
 

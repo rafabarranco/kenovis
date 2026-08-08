@@ -4,7 +4,7 @@
 
 Company Operating System
 
-Version: 2.0
+Version: 2.1
 
 Last updated: —
 
@@ -26,37 +26,37 @@ The objective is to build a sustainable, valuable and scalable company.
 
 # Company Vision
 
-[Where this company is going, in two or three sentences. Not a slogan — a statement specific enough that a different company could not reuse it.]
+[ANSWER: Where this company is going, in two or three sentences. Not a slogan — a statement specific enough that a different company could not reuse it.]
 
 ---
 
 # Company Thesis
 
-[Why this company wins. What is broken or missing in how the problem is solved today, and what this company does differently that competitors structurally cannot or will not copy.]
+[ANSWER: Why this company wins. What is broken or missing in how the problem is solved today, and what this company does differently that competitors structurally cannot or will not copy.]
 
 ---
 
 # Initial Market Strategy
 
-[The first customer segment, and why it is first. This is the single most load-bearing answer in this document — every other layer reads it.]
+[ANSWER: The first customer segment, and why it is first. This is the single most load-bearing answer in this document — every other layer reads it.]
 
 ---
 
 # Long-Term Market Vision
 
-[Where the company expands after the first market is won, and what stays constant across that expansion versus what changes per segment.]
+[ANSWER: Where the company expands after the first market is won, and what stays constant across that expansion versus what changes per segment.]
 
 ---
 
 # Ideal Customer Profile
 
-[A concrete description of the customer this product is for: their situation, what they are already doing, what they are missing, and what makes them able to adopt this product today.]
+[ANSWER: A concrete description of the customer this product is for: their situation, what they are already doing, what they are missing, and what makes them able to adopt this product today.]
 
 ---
 
 # Market Exclusions
 
-[Who this product is deliberately not for, at least initially. An exclusion is a commitment — it is what lets the team say no to work that would otherwise look reasonable.]
+[ANSWER: Who this product is deliberately not for, at least initially. An exclusion is a commitment — it is what lets the team say no to work that would otherwise look reasonable.]
 
 ---
 
@@ -115,7 +115,7 @@ Every person and AI agent working on the company should act with responsibility 
 
 # Product Philosophy
 
-[The test every feature must pass to deserve to exist in this product, followed by how that test is measured.]
+[ANSWER: The test every feature must pass to deserve to exist in this product, followed by how that test is measured.]
 
 Features without measurable value should not be built.
 
@@ -340,7 +340,7 @@ Implementation
 
 # Distribution Strategy
 
-[How customers actually find and adopt this product. Channels, and what is deliberately not used in the initial phase.]
+[ANSWER: How customers actually find and adopt this product. Channels, and what is deliberately not used in the initial phase.]
 
 Customer satisfaction is the primary marketing channel.
 
@@ -363,13 +363,13 @@ Customer feedback directly influences product direction.
 
 # Competitive Advantages
 
-[What this company has that a competitor cannot simply copy: structural advantages, accumulated assets, cost asymmetries. Not features — features are copyable.]
+[ANSWER: What this company has that a competitor cannot simply copy: structural advantages, accumulated assets, cost asymmetries. Not features — features are copyable.]
 
 ---
 
 # What The Company Will NOT Become
 
-[The adjacent businesses this company refuses to drift into, even when they look tempting. This section exists to be read years from now, when the temptation is real.]
+[ANSWER: The adjacent businesses this company refuses to drift into, even when they look tempting. This section exists to be read years from now, when the temptation is real.]
 
 ---
 
