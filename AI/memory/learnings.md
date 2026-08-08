@@ -146,6 +146,35 @@ Future action:
 Use adapters for external integrations.
 
 ---
+Example: Project — the round that fixed an unexecuted check shipped an uncounted count
+
+## Learning-016
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Publishing `kenovis@0.7.0` (`PRODUCT/ROADMAP.md` Phase 1 item 7), via `/next`. The release carried item 6's fix for a Verify step that had never been executed — the failure [[Learning-015]] records. Item 6's own entry, the `CHANGELOG.md` section, the PR body and the GitHub Release notes all stated the same figure: "110 instructions across 15 templates."
+
+Problem:
+The instruction count was exact — the smoke test against the published package found precisely 110 unanswered questions in a copied-in Product layer. The file count was not. Thirteen templates changed, plus the templates' own `README.md`, which documents the marker convention rather than being a template. Nobody had run `git show --stat` against the commit the sentence describes.
+
+What happened:
+The wrong number reached the npm registry and a public GitHub Release before anything contradicted it, and what finally did was the release's own smoke test — counting changed paths for an unrelated reason (confirming what a customer's `sync` actually touches) and getting 17 where the prose implied 19.
+
+Root cause:
+The claim was written in the same breath as the work, from the author's memory of what had just been edited, and then copied forward verbatim into four more documents. Every later reader — review, CI, the release cut — was reading a restatement, not the artifact. `check_changelog.py` verifies that a changelog entry *exists*; nothing verifies that what it says is true, and nothing can.
+
+Learning:
+This is [[Learning-015]] one round later in a different costume. There the unverified thing was a check; here it is a count. The shared shape is a factual claim about an artifact, written next to the artifact, never read back off it. Prose in `CHANGELOG.md`, `DECISIONS.md` and `PRODUCT/ROADMAP.md` is this framework's product — DECISION-009 makes documentation the company memory — so a number in it carries the same obligation as a number in code, with none of the tooling.
+
+Future action:
+Any count in a changelog, decision or roadmap entry (files touched, instructions converted, tests added) gets read off the artifact with the command that produces it, in the same round, and that command goes in the entry: `git show --stat <commit> -- <path>`, `grep -rc`, the test runner's own total. If the number is not worth one command, do not state it — "several templates" is honest and costs nothing. When a published number turns out wrong, correct it where it was published (including the GitHub Release notes) and say it was corrected, per DECISION-009's discipline: the trail is the point, the same way DECISION-015 → DECISION-016 was kept rather than rewritten.
+
+---
 Example: Project — a verification step that has never been run against a passing case
 
 ## Learning-015
