@@ -4,7 +4,7 @@ ARCHITECTURE.md
 
 Software Architecture
 
-Version: 1.4
+Version: 1.5
 ---
 Purpose
 
@@ -69,36 +69,36 @@ External Services
 ---
 Technology Stack
 
-[Record an explicit choice, or an explicit "none", for each line below. "None" is a valid and often correct answer — but it must be stated, because the framework's agents read this section and a missing line reads as "unknown", which makes them guess.]
+[ANSWER: Record an explicit choice, or an explicit "none", for each line below. "None" is a valid and often correct answer — but it must be stated, because the framework's agents read this section and a missing line reads as "unknown", which makes them guess.]
 
-- Frontend (web / mobile):
-- CLI/tooling layer:
-- Backend / API layer:
-- Database engine: [also expanded in ENGINEERING/DATABASE.md]
-- Authentication approach:
-- Deployment target:
+- Frontend (web / mobile): [ANSWER: the choice, or "none".]
+- CLI/tooling layer: [ANSWER: the choice, or "none".]
+- Backend / API layer: [ANSWER: the choice, or "none".]
+- Database engine: [ANSWER: the engine, or "none" — also expanded in ENGINEERING/DATABASE.md.]
+- Authentication approach: [ANSWER: the approach, or "none".]
+- Deployment target: [ANSWER: the target, or "none".]
 
-[Where a choice was assumed rather than confirmed, say so on that line. An unmarked assumption becomes an inherited fact.]
+[ANSWER: Where a choice was assumed rather than confirmed, say so on that line. An unmarked assumption becomes an inherited fact.]
 ---
 Static Analysis
 
-[The commands that check this codebase, and where they are run from: type checker, tests, linter, formatter.]
+[ANSWER: The commands that check this codebase, and where they are run from: type checker, tests, linter, formatter.]
 
-[If one of these deliberately does not exist yet, say why. "No linter yet, because X" is documentation; a silent absence is an open question every contributor re-asks.]
+[ANSWER: If one of these deliberately does not exist yet, say why. "No linter yet, because X" is documentation; a silent absence is an open question every contributor re-asks.]
 ---
 Hard Rules (No Exceptions)
 
-[The rules this product's implementation may never break, whatever the feature. These are not style preferences — each one should be a rule whose violation would be a real defect, and each should trace to a business rule in DOMAIN/BUSINESS_RULES.md or a decision in DECISIONS.md.]
+[ANSWER: The rules this product's implementation may never break, whatever the feature. These are not style preferences — each one should be a rule whose violation would be a real defect, and each should trace to a business rule in DOMAIN/BUSINESS_RULES.md or a decision in DECISIONS.md.]
 
-[Examples of the shape, not the content: what the system must never write to; what it must never require network access to; what it must never execute. Write this product's own.]
+[ANSWER: Examples of the shape, not the content: what the system must never write to; what it must never require network access to; what it must never execute. Write this product's own.]
 ---
 Database
 
-[The engine, or "none" with the reason and the condition under which that changes. Expanded in ENGINEERING/DATABASE.md.]
+[ANSWER: The engine, or "none" with the reason and the condition under which that changes. Expanded in ENGINEERING/DATABASE.md.]
 ---
 Authentication
 
-[How identity is established, or "not applicable" with the reason.]
+[ANSWER: How identity is established, or "not applicable" with the reason.]
 
 Requirements:
 
@@ -109,15 +109,15 @@ Requirements:
 
 Authentication is separate from authorization.
 
-[If this product has no accounts, replace the requirements above with the reason — do not leave a checklist that describes a system that does not exist.]
+[ANSWER: If this product has no accounts, replace the requirements above with the reason — do not leave a checklist that describes a system that does not exist.]
 ---
 Authorization Model
 
-[Who may do what, and where that is enforced. Or "not applicable", with the reason.]
+[ANSWER: Who may do what, and where that is enforced. Or "not applicable", with the reason.]
 ---
 Tenancy Model
 
-[Single-tenant or multi-tenant, and if multi-tenant, the exact name of the tenant key. `.kenovis/AI/policies/database.md` and `.kenovis/AI/agents/database.md` deliberately do not assume a model — they read this section. If it is vague, they will be vague.]
+[ANSWER: Single-tenant or multi-tenant, and if multi-tenant, the exact name of the tenant key. `.kenovis/AI/policies/database.md` and `.kenovis/AI/agents/database.md` deliberately do not assume a model — they read this section. If it is vague, they will be vague.]
 ---
 Domain Architecture
 
@@ -177,11 +177,11 @@ Should not contain business rules.
 ---
 Suggested Project Structure
 
-[Where this product's implementation actually lives, and how it is organized. This section is the single answer to "where is the code?" — the framework has no mandated directory name, and `.kenovis/AI/commands/bootstrap.md` reads this section instead of guessing.]
+[ANSWER: Where this product's implementation actually lives, and how it is organized. This section is the single answer to "where is the code?" — the framework has no mandated directory name, and `.kenovis/AI/commands/bootstrap.md` reads this section instead of guessing.]
 
-[For a greenfield product, decide the layout here and record it. For a product adopted from an existing repository, describe the layout that already exists — never relocate working code to match a shape suggested by a document.]
+[ANSWER: For a greenfield product, decide the layout here and record it. For a product adopted from an existing repository, describe the layout that already exists — never relocate working code to match a shape suggested by a document.]
 
-[Write the real tree, annotated with what each directory is for. Map the layers above onto it, and say explicitly where a layer does not apply, e.g. "no presentation layer — this product has no UI".]
+[ANSWER: Write the real tree, annotated with what each directory is for. Map the layers above onto it, and say explicitly where a layer does not apply, e.g. "no presentation layer — this product has no UI".]
 
 src/
 
