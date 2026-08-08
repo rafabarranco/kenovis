@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.20
+Version: 1.22
 ---
 Purpose
 
@@ -234,9 +234,55 @@ Version call, decided at cut time: **minor, `kenovis@0.5.0`**, not patch. Patch 
 
 Dependency: item 1 first, so a single release carries both. Satisfied — item 1 merged (PR #37) before the release branch was cut.
 
-Shipped: `cli/package.json`/`package-lock.json` 0.4.0 → 0.5.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.5.0] - 2026-08-07`. Promoted `development` → `preproduction` → `main` and published `kenovis@0.5.0` from CI with provenance.
+Shipped: `cli/package.json`/`package-lock.json` 0.4.0 → 0.5.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.5.0] - 2026-08-07`. Promoted `development` → `preproduction` → `main` (PRs #38, #39, #40) and published `kenovis@0.5.0` from CI with provenance; verified live on the registry (`npm view kenovis version` → `0.5.0`).
 
-Phase 1's Immediate Priority block is closed. Both items DONE; the next `/next` run selects from Phase 1 MVP / Phase 2 rather than this block.
+Recurring cost found and named: the promotion needed the same content-sync branch procedure used for `kenovis@0.2.0` and `0.4.0`, which each round had treated as a one-off repair of historical drift. It is not — the sync commit that fix creates lives only on the downstream branch, which is exactly what makes the next rebase-replay diverge. The chain is permanently in content-sync mode, and that is acceptable (branches end byte-identical, which is the property that matters). Recorded as `AI/memory/learnings.md` Learning-012 with the exact procedure, so future releases follow it instead of re-investigating.
+
+The two items this block opened with are DONE. The block itself stayed open: items 3, 4 and 5 below were scheduled into it by later `/next` runs, each chosen against this document's own priority formula rather than from Phase 1 MVP / Phase 2.
+
+3. DONE (2026-08-07, via /next) — an Installation records which Framework Release it tracks.
+
+Founder chose this as the next item once Phase 0 and the Phase 1 Immediate Priority block were both confirmed closed and no scheduled, unblocked item remained — see this session's `/next` run. Candidates weighed against this document's own priority formula: this item, a `/framework-review` audit pass of the post-migration Framework layer, and the ADR gating the Phase 2 paid tier (judged premature — Phase 1 has one external team's data, not enough to size it).
+
+Gap found: `DOMAIN/DOMAIN_MODEL.md` defines the Installation entity with "framework version installed" among its attributes and states "an Installation tracks one Framework Release (the one currently synced)" — while `cli/src/domain/installation.ts` contained no notion of a version at all. The central attribute of the domain's central entity existed only in prose. Concretely: a customer could not tell which release they were on without archaeology in their own `git log`, and `sync` could only mirror-replace silently, never say what it had changed.
+
+Shipped: `cli/scripts/bundle-framework-assets.mjs` stamps `dist/framework-assets/.framework-version` from `cli/package.json` at build time. The stamp therefore ships *inside* the bundle, so `init`/`add`/`sync`'s existing mirror-replace installs and updates it by construction — the CLI reads it back (`readFrameworkVersion`, `cli/src/application/frameworkVersion.ts`; `parseFrameworkVersion` in the domain) and never writes a second copy. This is deliberately *not* an `INSTALL_TIME_OWNED_ENTRIES` member, and `installation.ts` says so at that constant: state written by one mechanism and invisibly invalidated by another is precisely the recurring defect Learning-010 and Learning-011 record, and a bundle-shipped fact has no second writer to desynchronise from. `bin.ts` prints the release on install and the transition on sync (`0.3.0 -> 0.5.0`, `(already up to date)`, or `unknown -> …`), and gained `--version`/`-v`, checked before dispatch alongside `--help` (Learning-005).
+
+Scoped out deliberately: the active version-check against the npm registry stays in Phase 2 → New Capabilities, unchanged. That item was deferred on network-dependency cost, which this item does not incur — it is the local half of the same discovery gap, and it is also the prerequisite that check would have needed anyway (nothing to compare against existed before).
+
+Validated: 108 `cli/` tests pass (95 → 108), typecheck and build clean, and a real scratch-repository smoke test — brownfield `kenovis add` (stamp lands on disk, reported), stamp hand-set to `0.3.0`, `kenovis sync` (reports `0.3.0 -> 0.5.0`, stamp updated), sync again (reports `already up to date`), with the target's own `README.md`, `src/` and `package.json` untouched and `.setup-pending` preserved throughout.
+
+Two stale documentation statements were corrected in the same round, both in the sections this item was already rewriting: `cli/assets/framework/README.md` (the file customers receive at `.kenovis/README.md`) still told them `kenovis sync` did not exist yet, and `cli/README.md` → Structure still described the bundler's pre-`.kenovis/` source path.
+
+4. DONE (2026-08-08, via /next) — an Installation receives its Product layer from Framework templates.
+
+Founder chose this as the next item after the Phase 1 Immediate Priority block closed. Candidates weighed against this document's own priority formula: this item, the active npm-registry version check (Phase 2 → New Capabilities, still deferred on network-dependency cost and unvalidated Pain), and the ADR gating the Phase 2 paid tier (still premature — one external team's data).
+
+Gap found: `kenovis init`/`add` write `.kenovis/`, the root `CLAUDE.md` stub and its hash sidecar, and nothing else. No Product-layer file is ever created. But `.kenovis/AI/commands/init-project.md` was written against a fork of this repository — its Trigger said "a fresh clone of this repository", its Core Principle was "the example content ... is a shape to replace", its pre-flight check was `grep -rl "PROJECT-SPECIFIC"` (which matches nothing in a real Installation), and Steps 2-8 instructed the agent to *rewrite* twelve files that do not exist. `adopt-project.md` shared the same framing. Both commands predate the CLI; DECISION-017/018 changed the distribution mechanism without either command being revisited against what an Installation now contains.
+
+Worse, `AI/memory/` was not distributed at all, and part of it is framework content, not product content. `AI/memory/learnings.md` says so on its own first line: the rules are framework-level, the recorded learnings are product-specific. Those rules — the Learning Philosophy, the format, the categories, the Review Process that promotes a learning into `.kenovis/AI/policies/` — are referenced by roughly twenty framework files, including `next.md` Step 14, eight workflows, three policies and three templates. Every one of them pointed at a file no Installation had.
+
+This sat directly on Phase 0's own Success Criteria above ("complete /init-project ... end to end, without help").
+
+Founder decision (2026-08-08, via /next): the Framework bundle carries the Product layer as templates; the CLI's install footprint does not change. Option A — having `init`/`add` write ~17 placeholder files into the target root — was rejected for reintroducing exactly the clutter DECISION-017 chose `.kenovis/` to avoid, and for multiplying DECISION-019's Collision Guard problem by seventeen while moving it from a conversational command (which can ask the human) into a non-interactive CLI (which cannot). See DECISION-021.
+
+Shipped: `.kenovis/AI/templates/product-layer/` — seventeen templates plus a README, one per Product-layer document, at the path each maps to. Every template keeps its document's framework-level content verbatim and replaces the company-specific sections with a bracketed instruction stating what must be answered; none contains an invented answer or Kenovis's own. `init-project.md` (1.7 → 1.8) and `adopt-project.md` (1.6 → 1.7) gained a "Where The Shape Comes From" section and changed verb throughout — author from template, not rewrite a placeholder — with their pre-flight checks, `.gitignore` handling, Verify steps and Completion Criteria updated for an Installation that has no Product layer. `ENGINEERING/ARCHITECTURE.md` → Hard Rules (1.4 → 1.5) now states that the CLI never creates a Product-layer file at all, so the rule is enforceable rather than incidental.
+
+Zero CLI code change, by construction: `cli/scripts/bundle-framework-assets.mjs` copies `.kenovis/AI/` entry by entry, so a new subdirectory of `templates/` ships automatically. This is the same structural property Learning-013 identified — a fact that ships inside the mirrored artifact needs no synchronisation rule, because it has exactly one writer.
+
+Validated: the `cli/` test suite passes unchanged (95 on this item's own branch, 108 after merging item 3's work in), typecheck and build clean, `check_links.py` and `check_markers.py` pass, the bundler ships all eighteen files under `dist/framework-assets/AI/templates/product-layer/` with no script change, and a real scratch-repository smoke test confirmed the end state — brownfield `kenovis add` created no Product-layer file at the target's root, delivered every template under `.kenovis/`, left the target's own `README.md`, `src/` and `package.json` untouched, and a following `kenovis sync` preserved both the templates and `.setup-pending`.
+
+The smoke test also caught a real defect in this item's own work, which is why it exists: the templates carry the `PROJECT-SPECIFIC` marker by design and live inside `.kenovis/`, so both commands' pre-flight `grep -rl "PROJECT-SPECIFIC"` matched all seventeen templates rather than returning nothing — contradicting the "zero matches is expected" sentence this same item had just written. Both greps now pass `--exclude-dir=.kenovis`. Any future marker-based check run from a target repository's root needs the same exclusion.
+
+Two adjacent inconsistencies were found and fixed in the same round, both inside the sections this item was already rewriting. `DECISIONS.md` → "Document Layers" said "Seven are framework-level" while listing eight, and its claim that those eight "should be carried over" contradicted `init-project.md` Step 3, which named only three. Resolved per DECISION-021: a customer's log starts empty, and this repository is the documented exception because its product *is* the framework (the same self-referential carve-out DECISION-020 established). `DOMAIN/BUSINESS_RULES.md` → Edge Case Thinking (1.1 → 1.2) listed "an Installation still holding placeholder content" as the edge case to design for, which has never been true of a CLI Installation — the real edge case is an Installation with no Product layer at all.
+
+5. IN PROGRESS (2026-08-08, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying items 3 and 4.
+
+Chosen as the next item because items 3 and 4 are both merged to `development` (PRs #42, #43) and reach no customer until published — the same packaging step Phase 1 item 2 performed for `kenovis@0.5.0`, deliberately carrying both items in one release rather than cutting two. No other scheduled, unblocked item exists: Phase 2's active npm-registry version check stays deferred on network-dependency cost and unvalidated Pain, and the paid-tier ADR stays premature on one external team's data.
+
+Version call, decided at cut time: **minor, `kenovis@0.6.0`**, not patch. Both halves of the package gain capability — the CLI records and reports a fact it never tracked (`.kenovis/.framework-version`, plus `--version`), and the bundled framework gains the seventeen Product-layer templates that make `/init-project` and `/adopt-project` executable in a real Installation for the first time (DECISION-021). Nothing breaks for an existing Installation. Reasoning recorded in `CHANGELOG.md`'s `[0.6.0]` header, per Phase 1 item 2's own instruction not to decide this by habit.
+
+Procedure: `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release", with the content-sync promotion Learning-012 established as this repository's *standard* procedure (verify each downstream branch is a strict older snapshot, `git read-tree -u --reset` from upstream on a `sync/` branch, confirm an empty diff, PR and rebase-merge). Published from CI via `.github/workflows/publish.yml` on a GitHub Release — never from a laptop (ENGINEERING/SECURITY.md → Supply-Chain Security).
 ---
 Phase 1 — MVP
 

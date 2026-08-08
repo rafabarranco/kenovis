@@ -4,7 +4,7 @@ BUSINESS_RULES.md
 
 Business Rules
 
-Version: 1.1
+Version: 1.2
 ---
 Purpose
 
@@ -106,7 +106,7 @@ Edge Case Thinking
 
 Always consider:
 
-- A customer's Installation still holding placeholder/example content (RULE-INST-01 must not assume it's already real).
+- A customer's Installation with no Product layer at all — the normal state right after `kenovis init`/`add`, since the CLI never writes Product-layer files (DECISIONS.md DECISION-021). RULE-INST-01 must not assume those files exist, nor that they are already real.
 - A Framework Release sync interrupted partway through.
 - A customer manually editing Framework-layer files (drift between what Kenovis shipped and what the customer's repo actually has).
 - A customer on a Framework Release several versions behind.

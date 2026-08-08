@@ -16,6 +16,8 @@ import {
   isClaudeMdSafeToOverwrite,
   isKenovisManagedClaudeStub,
   CLAUDE_MD_HASH_FILENAME,
+  FRAMEWORK_VERSION_FILENAME,
+  parseFrameworkVersion,
   SETUP_PENDING_FILENAME,
   setupPendingContent,
 } from "./installation.js";
@@ -196,4 +198,30 @@ test("InvalidFrameworkSourceError names the offending directory and unexpected e
   assert.deepEqual(error.unexpectedEntries, ["DECISIONS.md", "cli"]);
   assert.match(error.message, /DECISIONS\.md, cli/);
   assert.equal(error.name, "InvalidFrameworkSourceError");
+});
+
+test("parseFrameworkVersion trims the stamp's content", () => {
+  assert.equal(parseFrameworkVersion("0.5.0\n"), "0.5.0");
+  assert.equal(parseFrameworkVersion("  0.6.0  "), "0.6.0");
+});
+
+test("parseFrameworkVersion reports a missing or blank stamp as unknown rather than guessing", () => {
+  assert.equal(parseFrameworkVersion(null), null);
+  assert.equal(parseFrameworkVersion(""), null);
+  assert.equal(parseFrameworkVersion("   \n"), null);
+});
+
+test("the Framework Release stamp is not an install-time-owned entry — the bundle ships it", () => {
+  const owned: readonly string[] = [
+    ...INSTALL_TIME_OWNED_ENTRIES.preserved,
+    ...INSTALL_TIME_OWNED_ENTRIES.rewritten,
+  ];
+  assert.ok(!owned.includes(FRAMEWORK_VERSION_FILENAME));
+});
+
+test("the Framework Release stamp is a dotfile, so it never trips the --source shape check", () => {
+  assert.deepEqual(
+    invalidFrameworkSourceEntries(["AI", "README.md", FRAMEWORK_VERSION_FILENAME]),
+    [],
+  );
 });
