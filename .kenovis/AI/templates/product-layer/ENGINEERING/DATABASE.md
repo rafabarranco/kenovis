@@ -4,7 +4,7 @@ DATABASE.md
 
 Database Architecture
 
-Version: 1.0
+Version: 1.1
 ---
 Purpose
 
@@ -38,9 +38,9 @@ Avoid:
 ---
 Database Technology
 
-[The engine, version, and where it is hosted. Must match ENGINEERING/ARCHITECTURE.md → Technology Stack.]
+[ANSWER: The engine, version, and where it is hosted. Must match ENGINEERING/ARCHITECTURE.md → Technology Stack.]
 
-[If this product has no database, say so here with the reason and the condition that would change it, then mark the sections below "not applicable" rather than deleting them — a future hosted layer will need the shape back. Do not invent a schema ahead of a real need.]
+[ANSWER: If this product has no database, say so here with the reason and the condition that would change it, then mark the sections below "not applicable" rather than deleting them — a future hosted layer will need the shape back. Do not invent a schema ahead of a real need.]
 ---
 Core Database Principles
 
@@ -129,17 +129,17 @@ deleted_at
 ---
 Schema
 
-[The tables, their columns and their relationships. Every entity in DOMAIN/DOMAIN_MODEL.md that is persisted should appear here under the same name — a table whose name does not match its domain entity is where the vocabulary starts drifting.]
+[ANSWER: The tables, their columns and their relationships. Every entity in DOMAIN/DOMAIN_MODEL.md that is persisted should appear here under the same name — a table whose name does not match its domain entity is where the vocabulary starts drifting.]
 
-[If nothing is persisted yet, say so and name which domain entities are conceptual only.]
+[ANSWER: If nothing is persisted yet, say so and name which domain entities are conceptual only.]
 ---
 Indexing Strategy
 
-[Which columns are indexed and why. Indexes follow real query patterns — list the queries that justify each one, or state that none have been measured yet.]
+[ANSWER: Which columns are indexed and why. Indexes follow real query patterns — list the queries that justify each one, or state that none have been measured yet.]
 ---
 Row Level Security (RLS)
 
-[Whether row-level security is enforced in the database itself, and how. If the product is single-tenant or has no database, state that instead — but do not silently drop the section, because "the application checks it" is exactly the answer the principle below rejects.]
+[ANSWER: Whether row-level security is enforced in the database itself, and how. If the product is single-tenant or has no database, state that instead — but do not silently drop the section, because "the application checks it" is exactly the answer the principle below rejects.]
 ---
 RLS Principle
 
@@ -204,7 +204,7 @@ Optimize after measuring.
 ---
 Future Considerations
 
-[Data-layer work deliberately deferred, each with the phase or condition that would trigger it. Deferred is not the same as forgotten — an item listed here is a decision; an item missing here is an oversight.]
+[ANSWER: Data-layer work deliberately deferred, each with the phase or condition that would trigger it. Deferred is not the same as forgotten — an item listed here is a decision; an item missing here is an oversight.]
 ---
 AI Agent Database Rules
 

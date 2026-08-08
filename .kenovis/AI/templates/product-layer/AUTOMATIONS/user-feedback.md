@@ -4,7 +4,7 @@ user-feedback.md
 
 User Feedback Automation System
 
-Version: 1.0
+Version: 1.1
 ---
 Purpose
 
@@ -29,7 +29,7 @@ Build intentionally.
 ---
 Feedback Sources
 
-[Where feedback actually arrives from today. List the real channels, and name the ones deliberately not used and why — an absent channel is a choice worth recording.]
+[ANSWER: Where feedback actually arrives from today. List the real channels, and name the ones deliberately not used and why — an absent channel is a choice worth recording.]
 ---
 Feedback Principle
 
