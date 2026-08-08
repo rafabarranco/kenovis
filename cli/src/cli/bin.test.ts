@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseArgs, defaultFrameworkSourceDir, main } from "./bin.js";
+import { readFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { parseArgs, defaultFrameworkSourceDir, main, cliVersion } from "./bin.js";
 
 test("parseArgs reads command, positional targetDir, --source, and --force", () => {
   const args = parseArgs(["init", "/repo", "--source", "/assets", "--force"]);
@@ -60,4 +63,26 @@ test("main(['-h']) prints usage and exits 0 without touching the filesystem", as
 test("defaultFrameworkSourceDir resolves to a framework-assets sibling of dist/cli", () => {
   const dir = defaultFrameworkSourceDir();
   assert.match(dir, /dist[\\/]framework-assets$/);
+});
+
+test("main(['--version']) prints the CLI version and exits 0 without touching the filesystem", async () => {
+  const printed: string[] = [];
+  const originalLog = console.log;
+  console.log = (message?: unknown) => {
+    printed.push(String(message));
+  };
+
+  try {
+    const exitCode = await main(["--version"]);
+    assert.equal(exitCode, 0);
+    assert.deepEqual(printed, [cliVersion()]);
+  } finally {
+    console.log = originalLog;
+  }
+});
+
+test("cliVersion matches the version in this package's own package.json", async () => {
+  const packageJsonPath = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "package.json");
+  const pkg = JSON.parse(await readFile(packageJsonPath, "utf8")) as { version: string };
+  assert.equal(cliVersion(), pkg.version);
 });
