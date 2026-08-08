@@ -4,7 +4,7 @@ customer-onboarding.md
 
 Customer Onboarding Automation System
 
-Version: 1.0
+Version: 1.1
 ---
 Purpose
 
@@ -23,31 +23,31 @@ Help users achieve their first success.
 ---
 Activation Definition
 
-[The exact, checkable moment a customer counts as activated. Not "signed up" — the first point at which they have received real value. This definition feeds PRODUCT/ROADMAP.md → MVP Success Metrics, so it must be measurable.]
+[ANSWER: The exact, checkable moment a customer counts as activated. Not "signed up" — the first point at which they have received real value. This definition feeds PRODUCT/ROADMAP.md → MVP Success Metrics, so it must be measurable.]
 ---
 Time-To-Value Objective
 
-[How long it should take a new customer to reach the activation moment above, and whether that number is measured or still a target.]
+[ANSWER: How long it should take a new customer to reach the activation moment above, and whether that number is measured or still a target.]
 ---
 Customer Journey
 
-[The real sequence of steps from first hearing about the product to repeat use, written as one arrow chain. Each step should name what the customer actually does, not what the company hopes they feel.]
+[ANSWER: The real sequence of steps from first hearing about the product to repeat use, written as one arrow chain. Each step should name what the customer actually does, not what the company hopes they feel.]
 ---
 Onboarding Communication
 
-[How the product communicates with a new customer during onboarding, and through which channel. If there is no channel — no accounts, no email — say so and describe what replaces it.]
+[ANSWER: How the product communicates with a new customer during onboarding, and through which channel. If there is no channel — no accounts, no email — say so and describe what replaces it.]
 ---
 Automation Tools
 
-[Which tools actually run any part of onboarding today. List real ones only; "none, and here is what happens manually instead" is a valid answer.]
+[ANSWER: Which tools actually run any part of onboarding today. List real ones only; "none, and here is what happens manually instead" is a valid answer.]
 ---
 Automated Triggers
 
-[Which events automatically trigger which onboarding action. If nothing is automated yet, say what the manual substitute is.]
+[ANSWER: Which events automatically trigger which onboarding action. If nothing is automated yet, say what the manual substitute is.]
 ---
 Onboarding Checklist
 
-[The ordered list of steps a customer completes to be fully onboarded. Short enough that it can be checked off, concrete enough that someone else could verify it.]
+[ANSWER: The ordered list of steps a customer completes to be fully onboarded. Short enough that it can be checked off, concrete enough that someone else could verify it.]
 ---
 Self-Service Philosophy
 
