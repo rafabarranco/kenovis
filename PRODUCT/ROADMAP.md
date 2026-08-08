@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.21
+Version: 1.22
 ---
 Purpose
 
@@ -238,7 +238,7 @@ Shipped: `cli/package.json`/`package-lock.json` 0.4.0 → 0.5.0, `CHANGELOG.md` 
 
 Recurring cost found and named: the promotion needed the same content-sync branch procedure used for `kenovis@0.2.0` and `0.4.0`, which each round had treated as a one-off repair of historical drift. It is not — the sync commit that fix creates lives only on the downstream branch, which is exactly what makes the next rebase-replay diverge. The chain is permanently in content-sync mode, and that is acceptable (branches end byte-identical, which is the property that matters). Recorded as `AI/memory/learnings.md` Learning-012 with the exact procedure, so future releases follow it instead of re-investigating.
 
-Phase 1's Immediate Priority block is closed. Both items DONE; the next `/next` run selects from Phase 1 MVP / Phase 2 rather than this block.
+The two items this block opened with are DONE. The block itself stayed open: items 3, 4 and 5 below were scheduled into it by later `/next` runs, each chosen against this document's own priority formula rather than from Phase 1 MVP / Phase 2.
 
 3. DONE (2026-08-07, via /next) — an Installation records which Framework Release it tracks.
 
@@ -275,6 +275,14 @@ Validated: the `cli/` test suite passes unchanged (95 on this item's own branch,
 The smoke test also caught a real defect in this item's own work, which is why it exists: the templates carry the `PROJECT-SPECIFIC` marker by design and live inside `.kenovis/`, so both commands' pre-flight `grep -rl "PROJECT-SPECIFIC"` matched all seventeen templates rather than returning nothing — contradicting the "zero matches is expected" sentence this same item had just written. Both greps now pass `--exclude-dir=.kenovis`. Any future marker-based check run from a target repository's root needs the same exclusion.
 
 Two adjacent inconsistencies were found and fixed in the same round, both inside the sections this item was already rewriting. `DECISIONS.md` → "Document Layers" said "Seven are framework-level" while listing eight, and its claim that those eight "should be carried over" contradicted `init-project.md` Step 3, which named only three. Resolved per DECISION-021: a customer's log starts empty, and this repository is the documented exception because its product *is* the framework (the same self-referential carve-out DECISION-020 established). `DOMAIN/BUSINESS_RULES.md` → Edge Case Thinking (1.1 → 1.2) listed "an Installation still holding placeholder content" as the edge case to design for, which has never been true of a CLI Installation — the real edge case is an Installation with no Product layer at all.
+
+5. IN PROGRESS (2026-08-08, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying items 3 and 4.
+
+Chosen as the next item because items 3 and 4 are both merged to `development` (PRs #42, #43) and reach no customer until published — the same packaging step Phase 1 item 2 performed for `kenovis@0.5.0`, deliberately carrying both items in one release rather than cutting two. No other scheduled, unblocked item exists: Phase 2's active npm-registry version check stays deferred on network-dependency cost and unvalidated Pain, and the paid-tier ADR stays premature on one external team's data.
+
+Version call, decided at cut time: **minor, `kenovis@0.6.0`**, not patch. Both halves of the package gain capability — the CLI records and reports a fact it never tracked (`.kenovis/.framework-version`, plus `--version`), and the bundled framework gains the seventeen Product-layer templates that make `/init-project` and `/adopt-project` executable in a real Installation for the first time (DECISION-021). Nothing breaks for an existing Installation. Reasoning recorded in `CHANGELOG.md`'s `[0.6.0]` header, per Phase 1 item 2's own instruction not to decide this by habit.
+
+Procedure: `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release", with the content-sync promotion Learning-012 established as this repository's *standard* procedure (verify each downstream branch is a strict older snapshot, `git read-tree -u --reset` from upstream on a `sync/` branch, confirm an empty diff, PR and rebase-merge). Published from CI via `.github/workflows/publish.yml` on a GitHub Release — never from a laptop (ENGINEERING/SECURITY.md → Supply-Chain Security).
 ---
 Phase 1 — MVP
 

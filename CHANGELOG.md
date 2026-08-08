@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-08-08
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0]/[0.3.0]/[0.4.0]/[0.5.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch: this release adds capability on both sides of the package. The CLI gains a fact it never tracked (`.kenovis/.framework-version`, reported by `init`/`add`/`sync`) and a `--version` flag, and the bundled framework gains seventeen Product-layer templates that make `/init-project` and `/adopt-project` executable in a real Installation for the first time. Nothing breaks: an Installation that syncs to this release keeps every file it authored, and both commands behave as before in a repurposed repository.
+
 ### Added
 
 - Every Installation now records which Framework Release it tracks, in `.kenovis/.framework-version`. `cli/scripts/bundle-framework-assets.mjs` stamps the bundle with the npm package's own version at build time, so the mirror-replace `init`/`add`/`sync` already perform installs and update it — the CLI only reads it back and never maintains a second copy of the same fact (deliberately *not* an `INSTALL_TIME_OWNED_ENTRIES` member; that parallel bookkeeping is the failure mode `AI/memory/learnings.md` Learning-010/011 record). This closes a standing gap between `DOMAIN/DOMAIN_MODEL.md` → Installation ("framework version installed"; "an Installation tracks one Framework Release") and the code, which tracked nothing.
