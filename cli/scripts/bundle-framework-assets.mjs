@@ -16,7 +16,7 @@
 //
 // See PRODUCT/ROADMAP.md Phase 0 item 3 and DECISIONS.md DECISION-017/DECISION-020.
 
-import { cp, mkdir, rm, readdir } from "node:fs/promises";
+import { cp, mkdir, rm, readdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -25,7 +25,9 @@ const cliDir = dirname(scriptDir); // cli/
 const repoRoot = dirname(cliDir);
 const sourceAiDir = join(repoRoot, ".kenovis", "AI");
 const authoredReadme = join(cliDir, "assets", "framework", "README.md");
+const packageJsonPath = join(cliDir, "package.json");
 const outDir = join(cliDir, "dist", "framework-assets");
+const FRAMEWORK_VERSION_FILENAME = ".framework-version";
 
 async function main() {
   await rm(outDir, { recursive: true, force: true });
@@ -40,7 +42,16 @@ async function main() {
 
   await cp(authoredReadme, join(outDir, "README.md"));
 
-  console.log(`Bundled Framework layer assets into ${outDir}`);
+  // Stamp the bundle with the Framework Release it is. Because it ships inside
+  // the bundle, `init`/`add`/`sync`'s mirror-replace installs and updates it
+  // for free — the CLI only ever reads it back, never maintains a second copy
+  // of the same fact (see INSTALL_TIME_OWNED_ENTRIES' note in
+  // src/domain/installation.ts). The version is the npm package's own, which
+  // CHANGELOG.md already aligns the Framework Release to.
+  const { version } = JSON.parse(await readFile(packageJsonPath, "utf8"));
+  await writeFile(join(outDir, FRAMEWORK_VERSION_FILENAME), `${version}\n`, "utf8");
+
+  console.log(`Bundled Framework layer assets (version ${version}) into ${outDir}`);
 }
 
 main().catch((error) => {

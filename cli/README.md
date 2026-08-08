@@ -14,13 +14,17 @@ npm publishing is wired up (`.github/workflows/publish.yml`): pushing a GitHub R
 
 ## Upgrading
 
-An existing Installation does not auto-detect a newer Framework Release today (PRODUCT/ROADMAP.md Phase 2 — an active version-check is deferred, low priority against ~1 external team's data so far). To upgrade by hand:
+Which Framework Release an Installation currently tracks is recorded in its `.kenovis/.framework-version`, stamped into the bundle at build time and installed with it — `cat .kenovis/.framework-version` answers "what am I on?" offline. `init`, `add` and `sync` all print it; `sync` prints the transition (`0.3.0 -> 0.5.0`, or `unknown -> 0.5.0` for an Installation predating the stamp, which that same sync fixes). `kenovis --version` prints the CLI's own version, which is the Framework Release it bundles.
+
+An existing Installation does not auto-detect a newer Framework Release today (PRODUCT/ROADMAP.md Phase 2 — an active version-check is deferred, low priority against ~1 external team's data so far; the stamp above is the local half of that gap, with no network dependency). To upgrade by hand:
 
 1. Reinstall the CLI: `npx kenovis@latest <targetDir>` doesn't upgrade in place — instead run `npm i -g kenovis@latest` (or just let `npx kenovis@latest ...` resolve the latest each time).
 2. Run `kenovis sync <targetDir>` — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub to the new Framework Release, same as any other sync.
 3. Review the change with `git diff` before committing (RULE-INST-02) — this is the same review step any sync needs, not upgrade-specific.
 
 Syncing before you have run `/init-project` or `/adopt-project` is safe: `sync` keeps `.kenovis/.setup-pending` and the pending form of the `CLAUDE.md` stub, so the next AI session still runs that command automatically (DECISION-018).
+
+A sync's `git diff` includes updates to `.kenovis/AI/templates/product-layer/` — the templates `/init-project` and `/adopt-project` author your Product-layer documents from (DECISION-021). Those are Framework-layer files, so sync owns them; the documents you authored at your repository root are untouched, and always are (RULE-INST-01).
 
 If your root `CLAUDE.md` was never written by this CLI at all (predates adopting Kenovis, or you replaced its content), or if you've added your own notes below Kenovis's own stub content, `init --force`/`add --force`/`sync` refuse to overwrite it unless `--force` is passed — a recorded content hash (`.kenovis/.claude-md.sha256`) catches both cases, not just the first (closes the gap `AI/memory/learnings.md` Learning-007 documented; see Learning-008 for the fix). An Installation that predates this fix falls back to the older, weaker first-line check until its next successful install/sync records a hash.
 
@@ -39,7 +43,8 @@ A single Node.js/TypeScript npm package — no monorepo needed for a CLI-only pr
 cli/
 ├── src/                       CLI implementation (see Layering below)
 ├── scripts/                   build-time tooling — not part of the layering below
-│   └── bundle-framework-assets.mjs   copies ../AI (minus memory/) + assets/framework/README.md into dist/framework-assets/
+│   └── bundle-framework-assets.mjs   copies ../.kenovis/AI + assets/framework/README.md into
+│                                     dist/framework-assets/, stamped with .framework-version
 ├── assets/framework/README.md  hand-authored customer-facing README — lands at a customer's .kenovis/README.md
 ├── bin/kenovis.js             CLI entry point (the `kenovis` executable, requires dist/ built)
 ├── package.json               npm scripts: bundle, build, test, typecheck

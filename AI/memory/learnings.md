@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.4
+Version: 1.6
 ---
 Scope
 
@@ -144,6 +144,92 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — a command written for the old distribution mechanism keeps passing review because nobody re-reads it against the new one
+
+## Learning-014
+
+Date:
+2026-08-08
+
+Category:
+Process
+
+Context:
+Giving an Installation its Product layer (`PRODUCT/ROADMAP.md` Phase 1 item 4), via `/next`. Choosing the next roadmap item surfaced that `.kenovis/AI/commands/init-project.md` — the command Phase 0's own Success Criteria are written around — could not execute in a repository created by `kenovis init`.
+
+Problem:
+The command's Trigger said "a fresh clone of this repository." Its Core Principle was "the example content is not a suggestion to follow. It is a shape to replace." Its pre-flight verification was `grep -rl "PROJECT-SPECIFIC" .`, and Steps 2-8 said things like "Keep the section structure. Replace every sentence about the example company." All of that was literally true when the only way to adopt Kenovis was to clone or fork this repository. After the CLI shipped, an Installation contains `.kenovis/`, a `CLAUDE.md` stub, and no Product-layer file at all — so the grep matched nothing and twelve Steps instructed an agent to rewrite files that did not exist. `AI/memory/` was not distributed either, though roughly twenty framework files reference the framework-level rules inside it.
+
+What happened:
+DECISION-017 and DECISION-018 replaced the distribution mechanism. Neither revisited the two commands that consume it. Both commands stayed internally coherent — they read correctly start to finish, and the reasoning inside each Step is still sound — which is why five releases of review never caught it. Nothing was self-contradictory; the contradiction was between the command and a world that had changed underneath it.
+
+Root cause:
+`/init-project` and `/adopt-project` are the only parts of this system whose correctness depends on the state of a repository the framework does not control, and that state is set by a different part of the system (the CLI). No test can reach them — they are markdown, executed by a human plus an LLM — and no CI check compares what the CLI writes against what the commands assume is present. The assumption was made once, in prose, and then became invisible.
+
+Learning:
+When a change replaces how an artifact reaches its consumer, the artifact's own instructions are inside the blast radius even when they never mention the mechanism. The question to ask is not "does this document contradict itself" but "does this document still describe the situation its reader will actually be in." A document written against a superseded mechanism reads perfectly and is wrong.
+
+Future action:
+When a decision changes the set of paths the CLI writes into a target repository — or stops writing one — walk `init-project.md` and `adopt-project.md` end to end against the resulting layout as part of that decision's own implementation, not as a follow-up. Concretely: after any change to `runInit`/`runAdd`/`runSync`'s written paths, re-read both commands' pre-flight checks, Steps and Completion Criteria and ask which of them assume a file the CLI no longer creates, or never did.
+
+Example: Project — ship the fact inside the artifact instead of tracking it alongside
+
+## Learning-013
+
+Date:
+2026-08-07
+
+Category:
+Architecture
+
+Context:
+Giving an Installation a record of which Framework Release it tracks (`PRODUCT/ROADMAP.md` Phase 1 item 3), via `/next`. `DOMAIN/DOMAIN_MODEL.md` had claimed since initialization that "an Installation tracks one Framework Release"; the code had no notion of a version at all.
+
+Problem:
+The obvious implementation was the one this codebase had already reached for twice: have the CLI write the version into `.kenovis/` at install time and add it to `INSTALL_TIME_OWNED_ENTRIES` — the registry of files `sync`'s mirror-replace must explicitly preserve or rewrite. That registry exists *because* two earlier files (`.setup-pending`, `.claude-md.sha256`) were written by one mechanism and silently invalidated by another (Learning-010, Learning-011).
+
+What happened:
+The version is a property of the Framework bundle, not of the act of installing it. Stamping it at build time — inside the bundle — means the mirror-replace that already copies the bundle installs and updates it for free. Nothing to preserve, nothing to rewrite, nothing to keep in sync. The CLI only reads it back. The entry that would have been the third member of `INSTALL_TIME_OWNED_ENTRIES` never needed to exist.
+
+Root cause of the near-miss:
+`INSTALL_TIME_OWNED_ENTRIES` is a good registry, and having it made adding a third entry feel like the correct, well-trodden path. But a registry of exceptions quietly invites more exceptions: the question it answers ("how does this file survive the mirror?") assumes the file must be written outside the mirror in the first place.
+
+Learning:
+Before adding to a registry of special cases, ask whether the new fact belongs to the artifact being copied rather than to the copier. A fact that ships inside a distributed artifact needs no synchronization rule, because it has exactly one writer — the build that produced it. This is the structural fix for the failure mode Learning-010 and Learning-011 each described after the fact: not better bookkeeping, but no second copy to keep books on.
+
+Future action:
+When a new file must exist inside a mirrored/replaced directory, first try to make the bundle ship it. Only when the value genuinely cannot be known at build time (it depends on the target, like `.setup-pending`'s greenfield/brownfield result, or on what was written, like `.claude-md.sha256`) does it belong in `INSTALL_TIME_OWNED_ENTRIES`. Record the reasoning at the constant itself, so the next contributor sees why a given file is or is not a member.
+
+---
+Example: Project — the fix for branch drift is itself a source of branch drift
+
+## Learning-012
+
+Date:
+2026-08-07
+
+Category:
+Process
+
+Context:
+Promoting `development` → `preproduction` → `main` for the `kenovis@0.5.0` release (`PRODUCT/ROADMAP.md` Phase 1 item 2), via `/next`.
+
+Problem:
+The promotion chain had drifted again — `preproduction` and `main` each held commits `development` did not, so a rebase-merge would replay `development`'s 26 commits against content those branches already had under different hashes. The identical situation was hit and fixed during `kenovis@0.2.0` (PRs #23/#24) and again during `0.4.0` (PRs #33/#34), each time believed to be a one-off cleanup of historical drift.
+
+What happened:
+Both downstream branches were verified as strict, older snapshots: `git diff origin/main dceece7` (the 0.4.0 cut) was empty, and the same held for `preproduction`. No content divergence at all. The only unique commits on each were the synthetic "Sync X content with Y" commits produced by the previous promotion's own fix.
+
+Root cause:
+The content-sync fix creates one commit on the *downstream* branch that the upstream branch will never contain. That commit is precisely what makes the next promotion's rebase-replay diverge. Each application of the fix guarantees the next release needs it again — it is a steady state, not a cleanup. Calling it "a deliberate one-time trade" (as the 0.2.0 round did) was wrong: the trade recurs every release.
+
+Learning:
+A promotion chain of protected branches merged with "Rebase and Merge" only cannot stay history-aligned if any step ever introduces a downstream-only commit. Either every promotion is a true fast-forward, or the chain is permanently in content-sync mode. Kenovis is in the second mode, and that is fine — the branches are byte-identical after every promotion, which is the property that actually matters. What is not fine is rediscovering this each release and spending the investigation again.
+
+Future action:
+Treat the content-sync branch as the *standard* promotion procedure for this repository, not an exceptional repair. Each release: verify the downstream tree is a strict older snapshot (`git diff origin/<downstream> <last-release-cut-commit>` empty, nothing unique downstream), then `git read-tree -u --reset origin/<upstream>` on a `sync/<downstream>-to-<upstream>-<version>` branch, confirm `git diff origin/<upstream> HEAD` is empty, PR and rebase-merge. `read-tree --reset` is the correct primitive — `git checkout <ref> -- .` does not delete files removed upstream, which matters whenever a release moves or retires paths (as the `.kenovis/` migration did).
 
 ---
 Example: Project — a guard's own bookkeeping outlives the state it described
@@ -380,6 +466,8 @@ An unvalidated "mirror this directory" flag will faithfully reproduce whatever l
 
 Future action:
 DECISIONS.md DECISION-017's Phase 2 (this repository migrates its own Framework layer into `.kenovis/` using the CLI's own sync mechanism on itself) must run `sync` against the built `dist/framework-assets/` bundle, never against the raw repo root — otherwise it will self-pollute `.kenovis/` with this repository's own Product-layer content. Consider adding a lightweight source-directory validation (e.g., reject a `--source` whose top level contains recognizably Product-layer names) before Phase 2 executes.
+
+Closed by `kenovis@0.2.0`: `invalidFrameworkSourceEntries`/`InvalidFrameworkSourceError` (`cli/src/domain/installation.ts`) validate `--source` before `init`/`sync` touch anything. Built as an allowlist of the known Framework-bundle shape (`AI/`, `README.md`) rather than the blocklist of Product-layer names suggested above — a blocklist would have been a name-based rule, and no name-based rule may ever apply to a target repository, which may legitimately contain any name at all (DECISION-016). Noted here because the closure was never recorded when it shipped.
 
 ---
 
