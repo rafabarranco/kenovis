@@ -4,7 +4,7 @@ SECURITY.md
 
 Security Architecture
 
-Version: 1.0
+Version: 1.1
 ---
 Purpose
 
@@ -12,7 +12,7 @@ This document defines the security principles, requirements and practices of the
 
 Security is a fundamental product requirement.
 
-[What sensitive material this product actually handles: personal data, payment data, customer content, credentials, or none of them. Be specific — every rule below is calibrated to this answer, and "none" is a valid answer that must still be stated.]
+[ANSWER: What sensitive material this product actually handles: personal data, payment data, customer content, credentials, or none of them. Be specific — every rule below is calibrated to this answer, and "none" is a valid answer that must still be stated.]
 
 Security failures can damage user trust and business viability.
 ---
@@ -115,11 +115,11 @@ Not applicable in v1 — no accounts, no shared backend. See ENGINEERING/ARCHITE
 ---
 Multi-Tenant Security
 
-[How one tenant is prevented from reaching another tenant's data, and where that is enforced. If the product is single-tenant, say so and point at ENGINEERING/ARCHITECTURE.md → Tenancy Model.]
+[ANSWER: How one tenant is prevented from reaching another tenant's data, and where that is enforced. If the product is single-tenant, say so and point at ENGINEERING/ARCHITECTURE.md → Tenancy Model.]
 ---
 Personal Data Protection
 
-[Which personal data this product stores, where, and under what legal basis. If none, state that — and state that any future collection must be scoped here before it starts, so the absence is a rule rather than a coincidence.]
+[ANSWER: Which personal data this product stores, where, and under what legal basis. If none, state that — and state that any future collection must be scoped here before it starts, so the absence is a rule rather than a coincidence.]
 ---
 Data Minimization
 
@@ -132,7 +132,7 @@ Avoid collecting:
 ---
 Data Classification
 
-[Classify this product's data: what is public, what is internal, what is customer-private, what is regulated. For each class, state what may never happen to it — transmitted where, logged where, cached where.]
+[ANSWER: Classify this product's data: what is public, what is internal, what is customer-private, what is regulated. For each class, state what may never happen to it — transmitted where, logged where, cached where.]
 ---
 Personal Data Rules
 
@@ -236,7 +236,7 @@ Check:
 ---
 Supply-Chain Security
 
-[How this product's dependencies and its own published artifacts are kept trustworthy: version pinning, install-script policy, where releases are published from, and whether provenance is attached. Weight this section by how the product is distributed — code that runs on a customer's machine carries more supply-chain risk than an internal service.]
+[ANSWER: How this product's dependencies and its own published artifacts are kept trustworthy: version pinning, install-script policy, where releases are published from, and whether provenance is attached. Weight this section by how the product is distributed — code that runs on a customer's machine carries more supply-chain risk than an internal service.]
 ---
 Secrets Management
 

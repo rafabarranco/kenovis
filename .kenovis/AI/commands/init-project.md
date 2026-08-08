@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.8
+Version: 1.9
 
 ---
 
@@ -56,7 +56,7 @@ Do not execute on a repository that already contains a real implementation preda
 
 A template is a shape, not an answer.
 
-Every bracketed instruction in a template is a question for the human. Filling one in with a plausible guess produces a document that reads like a decision and is not one — and every agent from then on inherits it as fact.
+Every `[ANSWER: ...]` instruction in a template is a question for the human. Filling one in with a plausible guess produces a document that reads like a decision and is not one — and every agent from then on inherits it as fact.
 
 The same applies to content left behind by a previous product: anything that survives becomes a silent wrong assumption.
 
@@ -90,13 +90,27 @@ Zero matches is the normal, expected result in a fresh Installation. It means th
 
 One template per product-layer document, at the path it maps to — `product-layer/COMPANY_OS.md` → `COMPANY_OS.md`, `product-layer/DOMAIN/DOMAIN_MODEL.md` → `DOMAIN/DOMAIN_MODEL.md`, and so on. See that directory's own `README.md`.
 
-Each template keeps verbatim the parts of its document that are identical for every product, and replaces everything company-specific with a bracketed instruction stating what must be answered.
+Each template keeps verbatim the parts of its document that are identical for every product, and replaces everything company-specific with an instruction stating what must be answered.
+
+A template uses brackets for two different things, and the difference is what makes Step 11 checkable:
+
+```
+[ANSWER: ...]
+```
+
+A question for the human. It must not survive into the written document. Every one of these is a decision nobody has made yet.
+
+```
+[anything else in brackets]
+```
+
+Content that legitimately survives: a format specification (`DOMAIN/BUSINESS_RULES.md` → "Rule Format", `PRODUCT/FEATURES.md`'s FEATURE-NNN shape), an illustrative example, a placeholder inside a code or tree sample, or a deliberate "nothing recorded yet" statement in a section the product has genuinely not filled. These are answers, not questions. Leave them.
 
 For every Step below:
 
 1. Read the template for that document.
-2. Ask the human what its bracketed instructions ask for. Do not answer them yourself.
-3. Write the real file: framework sections carried over unchanged, bracketed instructions replaced by the human's real answers.
+2. Ask the human what its `[ANSWER: ...]` instructions ask for. Do not answer them yourself.
+3. Write the real file: framework sections carried over unchanged, every `[ANSWER: ...]` replaced by the human's real answer.
 4. Keep the `PROJECT-SPECIFIC` marker on line 1. It marks the file as product layer, which is what makes the Collision Guard work — for this run and every future one.
 
 Never copy a template into place unanswered. A template sitting at a product-layer path is placeholder content wearing the marker of a real decision.
@@ -167,7 +181,7 @@ Author, or rewrite completely:
 - What the company will NOT become.
 - Definition of success.
 
-Keep the section structure the template defines. Every bracketed instruction becomes a real answer from Step 1, or a question back to the human.
+Keep the section structure the template defines. Every `[ANSWER: ...]` instruction becomes a real answer from Step 1, or a question back to the human.
 
 ---
 
@@ -330,13 +344,17 @@ Do not scaffold anything yet. Scaffolding is the first roadmap item, not part of
 
 # Step 11 - Verify
 
-First, confirm no bracketed instruction survived from a template:
+First, confirm no unanswered template question survived:
 
 ```
-grep -rn "^\[" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/
+grep -rn "\[ANSWER:" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/
 ```
 
-Every match is a question that was never answered. Either answer it, or replace it with an explicit statement that this product has no answer yet — never leave the instruction itself in place, because the next agent reads it as content.
+Zero matches is the passing result. Every match is a question that was never answered. Either answer it, or replace it with an explicit statement that this product has no answer yet — never leave the instruction itself in place, because the next agent reads it as content.
+
+The pattern is deliberately not anchored to the start of a line: a template question can sit mid-line (`Definition: [ANSWER: ...]`, `- Deployment target: [ANSWER: ...]`), and an anchored check would report those documents as clean.
+
+Brackets that are not `[ANSWER:` are not failures — see "Where The Shape Comes From". A correctly completed product layer still contains format specifications, illustrative examples and deliberate "nothing recorded yet" statements, all of them in brackets.
 
 In a repurposed repository, also run:
 
@@ -413,7 +431,7 @@ Initialization is complete when:
 
 ✓ No implementation survives from a previous product, and ENGINEERING/ARCHITECTURE.md describes this product's chosen topology.
 
-✓ No bracketed template instruction survives in any product-layer file.
+✓ No `[ANSWER: ...]` template question survives in any product-layer file.
 
 ✓ No term from a previous or example company survives.
 

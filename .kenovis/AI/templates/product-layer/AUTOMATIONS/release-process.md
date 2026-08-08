@@ -4,7 +4,7 @@ release-process.md
 
 Software Release Process
 
-Version: 1.0
+Version: 1.1
 ---
 Purpose
 
@@ -72,26 +72,26 @@ Monitoring
 ---
 Environment Strategy
 
-[The environments this product actually has. If there is no hosted infrastructure, map the three names below onto whatever plays their role — do not delete them, because the framework's release workflow reads this section.]
+[ANSWER: The environments this product actually has. If there is no hosted infrastructure, map the three names below onto whatever plays their role — do not delete them, because the framework's release workflow reads this section.]
 
 Development
 
-[Where day-to-day development happens.]
+[ANSWER: Where day-to-day development happens.]
 
 Staging
 
-[Where a change is verified before customers can reach it.]
+[ANSWER: Where a change is verified before customers can reach it.]
 
 Production
 
-[What customers actually run.]
+[ANSWER: What customers actually run.]
 
 ---
 Development Environment
 
 Purpose:
 
-[Build and experiment on the product's source.]
+[ANSWER: Build and experiment on the product's source.]
 
 Characteristics:
 
@@ -120,7 +120,7 @@ Requirements:
 
 - Version pinned exactly, published from CI with provenance (ENGINEERING/SECURITY.md → Supply-Chain Security).
 - CHANGELOG.md updated per DECISIONS.md DECISION-011.
-- [Backup and rollback requirements before a production release, or the reason none apply.]
+- [ANSWER: Backup and rollback requirements before a production release, or the reason none apply.]
 ---
 Feature Development Process
 ---
