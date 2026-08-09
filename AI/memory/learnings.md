@@ -146,6 +146,35 @@ Future action:
 Use adapters for external integrations.
 
 ---
+Example: Project — a count without its scope is unverifiable, even when it is right
+
+## Learning-018
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Publishing `kenovis@0.8.0` (`PRODUCT/ROADMAP.md` Phase 1 item 9), via `/next`. The release carried item 8's fix for [[Learning-017]] — three templates that shipped this framework's own answers. Item 8's entry, the `CHANGELOG.md` section and the GitHub Release notes all stated "eleven `[ANSWER: ...]` instructions now replace that content across the three files."
+
+Problem:
+The release's own smoke test counted `[ANSWER:` markers across the installed template corpus before and after `sync` and got 113 → 126: thirteen, not eleven. On that evidence the published claim was wrong, and [[Learning-016]] — the round that shipped a count nobody counted — had recurred one release later despite being recorded specifically to prevent it.
+
+What happened:
+It had not recurred, and the published number was right. Counting the three files individually gives 5 → 9, 6 → 11 and 1 → 3, net +11 exactly. The other two are in the templates' own `README.md` (3 → 5), which gained a section quoting the marker while documenting the convention — prose about questions, not questions. The corpus figure and the per-file figure measure different sets and were never comparable. Ten minutes went into verifying a defect that did not exist, and a correction to a public release was one step from being issued.
+
+Root cause:
+"Eleven instructions across the three files" is precise about the number and precise about the scope — but the scope lives in the sentence, not in the artifact. Any later verification has to reconstruct which files were meant before it can count, and the obvious command (`grep -rc` over the whole template directory) silently answers a different question. This is [[Learning-016]]'s inverse: that round shipped a number nobody had measured; this round measured a number against the wrong corpus. Both fail the same way — a count and the thing it counts are recorded separately, so nothing forces them to stay attached.
+
+Learning:
+Verifying a count requires reproducing its scope, and a scope stated only in prose does not survive into the verification. The failure is symmetric and the cheap-looking direction is the dangerous one: a false alarm costs an investigation and nearly a public correction, which is worse than the wrong number would have been, because it also spends the credibility of the check. Note that this repository's Product layer is itself a template corpus (the DECISION-020/021 self-referential carve-out), so corpus-wide greps here will keep matching prose that quotes a marker — the same trap [[Learning-015]] hit from the other side.
+
+Future action:
+State the command alongside the count, not the scope in words. Write "net +11 across `ENGINEERING/SECURITY.md`, `AUTOMATIONS/release-process.md`, `AUTOMATIONS/user-feedback.md` (5 → 9, 6 → 11, 1 → 3)" rather than "eleven across the three files" — the per-file transitions are self-checking and name their own scope. When a corpus-wide number disagrees with a scoped one, reconcile the difference before treating either as a defect; the difference is usually a file that belongs to one set and not the other. Item 9's roadmap entry records this reconciliation explicitly so the next release does not repeat the investigation.
+
+---
 Example: Project — a template that was derived by deletion kept the answers nobody deleted
 
 ## Learning-017
