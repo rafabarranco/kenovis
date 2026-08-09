@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.9
+Version: 1.10
 
 ---
 
@@ -67,10 +67,12 @@ The same applies to content left behind by a previous product: anything that sur
 Every product-layer file starts with:
 
 ```
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: this product's own context, not framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 ```
 
 If a file does not carry that marker, it is framework. Leave it alone.
+
+The marker states which layer a file belongs to, and nothing about whether it has been filled in. It is equally true of a template nobody has answered and of a document this company has owned for a year. Whether questions remain unanswered is a separate fact carried by a separate marker, `[ANSWER: ...]` — see "Where The Shape Comes From" below, and DECISION-023.
 
 Check what is actually present before starting:
 
@@ -111,9 +113,9 @@ For every Step below:
 1. Read the template for that document.
 2. Ask the human what its `[ANSWER: ...]` instructions ask for. Do not answer them yourself.
 3. Write the real file: framework sections carried over unchanged, every `[ANSWER: ...]` replaced by the human's real answer.
-4. Keep the `PROJECT-SPECIFIC` marker on line 1. It marks the file as product layer, which is what makes the Collision Guard work — for this run and every future one.
+4. Keep the `PROJECT-SPECIFIC` marker on line 1, unchanged. It marks the file as product layer, which is what makes the Collision Guard work — for this run and every future one. Do not reword it to say the file is finished; it never claimed the file was unfinished.
 
-Never copy a template into place unanswered. A template sitting at a product-layer path is placeholder content wearing the marker of a real decision.
+Never copy a template into place unanswered. The marker would be correct — a template at a product-layer path really is Product layer — and that is exactly why it is not a safety net. What tells anyone the file is unanswered is the `[ANSWER: ...]` instructions still sitting in it.
 
 If the document already exists (a repurposed repository), rewrite it in place instead, and use the template only as the reference for what its sections should be.
 
