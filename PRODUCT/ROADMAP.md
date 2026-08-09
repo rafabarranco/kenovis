@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.28
+Version: 1.30
 ---
 Purpose
 
@@ -387,6 +387,56 @@ Validated: 109 `cli/` tests pass, typecheck and build clean, `check_links.py` an
 Recorded as `AI/memory/learnings.md` Learning-019: an unverified cost estimate in a backlog note nearly deferred a maximal-Pain fix indefinitely, and the smallest possible check — grep for the string the note claimed was load-bearing — collapsed the estimate from "seventeen templates, every authored document and `check_markers.py`" to a mechanical find-and-replace.
 
 Next: this work reaches no customer until published. The release carrying items 9 and 10 is the leading candidate for the next item, the same packaging step items 2, 5, 7 and 9 performed.
+
+11. DONE (2026-08-09, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 10.
+
+Chosen as the next item because item 10 is merged to `development` and reaches no customer until published — the same packaging step items 2, 5, 7 and 9 performed for `kenovis@0.5.0` through `0.8.0`. Against this document's own priority formula nothing competes: every `0.8.0` Installation opens `COMPANY_OS.md` at the start of every session and reads on line 1 that its contents are placeholder content, the fix exists and reaches nobody, and the cost is a documented procedure. The active npm-registry version check stays deferred on network-dependency cost and unvalidated Pain, the paid-tier ADR stays premature on one external team's data, and `/framework-review`'s expected yield is low after items 6, 8 and 10 each swept the same surface.
+
+Version call, decided at cut time: **minor, `kenovis@0.9.0`**. Per Phase 1 item 2's standing instruction this is decided rather than assumed, and unlike the last two rounds it needs no argument — CLI code changed (the stub written on every install), seventeen templates changed content, and both commands changed behaviour. `1.0.0` was considered and rejected: it would signal maturity Phase 1 has not validated, with one external team on record and the MVP Success Metrics below still without a target. Reasoning recorded in `CHANGELOG.md`'s `[0.9.0]` header.
+
+The `[0.9.0]` header and the GitHub Release both **lead with what the upgrade cannot do**, rather than burying it under the fixes: an Installation created before this release keeps the old marker wording on the Product-layer files it already authored, and `sync` will not update them (RULE-INST-01). The release notes carry the three replacement lines so a customer can update by hand, and state plainly that leaving them alone breaks nothing — the `PROJECT-SPECIFIC` token is what every mechanism reads, and only the sentence after it is wrong.
+
+Procedure: `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release", with the content-sync promotion Learning-012 established as this repository's *standard* procedure. Published from CI via `.github/workflows/publish.yml` on a GitHub Release — never from a laptop (ENGINEERING/SECURITY.md → Supply-Chain Security).
+
+Shipped: `cli/package.json`/`package-lock.json` 0.8.0 → 0.9.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.9.0] - 2026-08-09` (PR #59). Both promotions ran exactly as Learning-012 prescribes and needed no investigation — `preproduction` verified as a strict older snapshot against the 0.8.0 cut (`75ec1f0`, empty diff), `main` byte-identical to `preproduction`, and the only commits unique to either were the synthetic sync commits from previous rounds (PRs #60, #61). All three branches are byte-identical. `kenovis@0.9.0` published from CI with provenance (SLSA v1 attestation on the registry); `npm view kenovis version` → `0.9.0`, `dist-tags.latest` → `0.9.0`.
+
+Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.8.0 add` on a scratch brownfield repository, a `COMPANY_OS.md` authored from the 0.8.0 template (so it carries the old marker line, which is the state that matters), then `npx kenovis@0.9.0 sync`. Baseline first: 0.8.0 reproduces both defects, the old wording on every template and a stub with no `AI/memory/`. After the sync, transition reported `0.8.0 -> 0.9.0`, 22 paths changed inside `.kenovis/` (18 of them under `templates/product-layer/`) plus the root `CLAUDE.md`, the stub enumerates `AI/memory/`, and all three marker forms arrive correctly.
+
+The result the round was really checking: the authored `COMPANY_OS.md` still carries the **old** wording after the upgrade — the documented consequence, reproduced rather than asserted — and `head -1` still matches `PROJECT-SPECIFIC`, so the Collision Guard keeps working and no Installation breaks. The target's own `README.md`, `src/` and `package.json` were untouched throughout and `.setup-pending` was preserved. A separate fresh `npx kenovis@0.9.0 add` delivered all eighteen template files with zero occurrences of the old wording anywhere in the bundle and created no Product-layer file at the target's root.
+
+One number was reconciled before being written down, per Learning-018's own future action: `[ANSWER:` occurrences across the templates go 126 → 127. No template gained or lost a question — item 10 touched the `PROJECT-SPECIFIC` marker, not this one — and the single addition is in the templates' `README.md` (5 → 6), whose new section quotes the marker while explaining the layer/state distinction. Checked before publishing the figure rather than after, which is the difference from item 9.
+
+No new gap surfaced — nothing recorded as a learning this round.
+
+Solo-maintainer note, unchanged from previous releases: all three PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
+
+12. DONE (2026-08-09, via /next) — execute `/feature` end to end from a real published Installation, and fix what breaks.
+
+Founder chose this as the next item once item 11 closed and no scheduled, unblocked item remained. Candidates weighed against this document's own priority formula: this item, the active npm-registry version check (Phase 2, still deferred on network-dependency cost and unvalidated Pain), the paid-tier ADR (still premature on one external team's data), and a `/framework-review` audit pass (expected yield low after items 6, 8 and 10 each swept the same surface).
+
+Gap found: items 6 and 8 ran the two *setup* commands from a real Installation for the first time and each found a maximal-Pain defect. No *post-setup* workflow ever had been. The one real external `/feature` run on record (2026-08-06) was against `kenovis@0.3.0` — before the `.kenovis/` migration and before the Product-layer templates existed — so the shape this product publishes today had never been exercised past setup. That matters more than activation now: the North Star is defined as an Installation that ran at least one framework workflow, which is exactly the path nobody had run.
+
+Method: a real brownfield fixture (a court-booking API — Express, SQLite, JWT auth, `club_id` multi-tenancy, role checks, a deploy workflow), `npx kenovis@0.9.0 add` against it, its Product layer authored from the shipped templates, then `/feature` Phases 1-13 executed as written with no patching mid-run. The published bundle was confirmed byte-identical to this repository's own `.kenovis/AI/` before starting. Scoped deliberately: `/adopt-project`'s own Steps were not re-validated — item 8 did that — the Product layer was authored from its templates only far enough to give `/feature` real inputs, which covers every document `/feature` reads.
+
+What the run found, and it was not in a step that failed — the workflow executed cleanly and produced a working feature (booking cancellation, six passing tests, first tests that repository ever had). Eleven instructions across five workflows, two commands and one agent name a path under `.kenovis/AI/templates/` as the *output* of an imperative: "Generate: `.kenovis/AI/templates/feature-plan.md`", "Update: `.kenovis/AI/templates/bug-report.md` with final resolution details". A template's path stands where a destination belongs.
+
+Reproduced rather than argued: a feature plan written to `.kenovis/AI/templates/feature-plan.md` and committed in the fixture was deleted by the next `kenovis sync`, which restored the pristine template, reported `0.9.0 -> 0.9.0 (already up to date)`, and never named the file it removed. Followed carefully instead — an agent that declines to overwrite a shipped template — the same instruction gives no destination at all, so the run had to invent a path, and two runs in the same Installation would land in different places.
+
+Two more from the same run. `/feature` Phase 2 reads a `FEATURE-NNN` spec from `PRODUCT/FEATURES.md` that nothing in the framework writes before implementation — `/init-project` and `/adopt-project` seed that file with what already ships, and Phase 13 updates it afterwards, so the workflow's first input is produced by its own last step. And `.kenovis/AI/commands/architect.md` offered `ENGINEERING/ADR/` as an ADR destination: a path appearing exactly once in the framework, created by neither setup command, absent from the seventeen templates, and non-existent in this repository too.
+
+Founder decision (2026-08-09, via /next): ADR first, per the same pattern as DECISION-016/017/020/021. See DECISION-024 — a template is a form, never a destination. Option A (a fixed Product-layer directory per artifact type, created at setup) was rejected for reintroducing exactly what DECISION-021 rejected: directories created for every Installation that most never fill. Every destination now named is a file the framework already requires.
+
+Shipped: 15 framework files — the eleven instruction sites reworded across `workflows/feature.md` (3.2 → 3.3), `bugfix.md` (2.2 → 2.3), `hotfix.md` (2.0 → 2.1), `architecture.md` (2.1 → 2.2), `roadmap.md` (2.1 → 2.2), `release.md` (2.0 → 2.1), `commands/feature.md` (2.0 → 2.1), `commands/architect.md` (2.0 → 2.1) and `agents/designer.md` (1.1 → 1.2); the six working templates each carrying a "this is a form, not a destination" line under their version header, so an agent that reads only the template still gets the rule; and `/feature` Phase 2 now authoring the `FEATURE-NNN` spec when none exists. `DECISIONS.md` 2.9 → 2.10. No CLI code changed and no Product-layer template changed — the `[ANSWER:` corpus stays at 127, verified against both the 0.9.0 install and this build.
+
+Adjacent inconsistency fixed in the same round, in the paragraph DECISION-024 had to be added to: `DECISIONS.md` → "Document Layers" said "Eight of them are framework-level" and claimed framework-layer files cite all eight by ID. Four are not cited, and five decisions that are cited were missing. Now fourteen entries with the nine cited ones marked, counts read off the tree rather than recalled (Learning-016).
+
+Validated: the fixed bundle built and installed into a fresh scratch Installation — all six templates carry the new line, no imperative-plus-template-path site remains anywhere in the installed tree, no Product-layer file is created at the target's root, and `PRODUCT/FEATURES.md`'s spec-authoring instruction arrives intact. 109 `cli/` tests pass, typecheck and build clean, `check_links.py` and `check_markers.py` pass.
+
+Recorded as `AI/memory/learnings.md` Learning-020: both defects are invisible from inside this repository, because here `.kenovis/AI/` is the product's source rather than a synced copy and `sync` never runs against this checkout. The instruction became destructive when the framework started being *installed* — DECISION-017, four releases ago — and nothing re-read it against that change. Three post-setup commands have now been run from a real Installation and all three surfaced a maximal-Pain defect; the learning's future action names the remaining ones (`/bug`, `/review`, `/release`, `/architect`) as the next candidates, one per round.
+
+Backlog finding, left out of this item's scope deliberately and stated so it is a decision rather than an oversight: `kenovis sync` still deletes anything a customer puts under `.kenovis/` without naming what it removed — the smoke test's `already up to date` output mentioned nothing. This round removes every framework instruction that would lead a customer there, which is the cause; making `sync` defensive (report removed paths that the bundle does not ship, or refuse) is a separate change with its own design, and mixing a CLI change into a framework-content round is what `.kenovis/AI/workflows/release.md`'s stability requirement argues against.
+
+Next: this work reaches no customer until published. The release carrying item 12 is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9 and 11 performed.
 
 ---
 Phase 1 — MVP

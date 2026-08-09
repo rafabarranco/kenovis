@@ -1,6 +1,6 @@
 # Feature Development Workflow
 
-Version: 3.2
+Version: 3.3
 
 ---
 
@@ -92,6 +92,8 @@ Identify:
 - Acceptance criteria.
 - Dependencies.
 
+If no `FEATURE-NNN` spec exists for this feature, writing it is this phase's output, not a missing input. Author it into `PRODUCT/FEATURES.md` using that document's own "Feature Specification Template" section, and confirm it with the human before Phase 4. Nothing else in the framework produces a spec ahead of implementation — `/init-project` and `/adopt-project` seed that file with what already ships, and Phase 13 below only updates the entry against what was actually built. See DECISIONS.md DECISION-024.
+
 Do not start implementation without a clear understanding of the feature.
 
 ---
@@ -164,11 +166,13 @@ Designer evaluates:
 - Accessibility impact.
 - Consistency with existing design system.
 
-Generate:
+Produce a design spec for this feature, shaped by:
 
 ```
 .kenovis/AI/templates/design-spec.md
 ```
+
+That path is a form, not a destination — never write into it. The spec is a working artifact of this session; what must outlive the session is the user-facing behaviour it settles, which belongs in the `FEATURE-NNN` spec's Capabilities and Acceptance Criteria in `PRODUCT/FEATURES.md`. A product that wants to keep design specs as files decides where and records it in `AI/memory/conventions.md`. See DECISIONS.md DECISION-024.
 
 Do not proceed to implementation preparation with an unresolved user flow.
 
@@ -196,11 +200,13 @@ ENGINEERING/SECURITY.md
 
 # Phase 7 - Create Feature Plan
 
-Generate:
+Produce a feature plan, shaped by:
 
 ```
 .kenovis/AI/templates/feature-plan.md
 ```
+
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. The plan is a working artifact of this session: present it to the human here, and let its durable parts land where they belong — scope and acceptance criteria in the `FEATURE-NNN` spec (Phase 2), technical decisions in `DECISIONS.md` (Phase 8), what shipped in `PRODUCT/FEATURES.md` (Phase 13). A product that wants to keep plans as files decides where and records it in `AI/memory/conventions.md`. See DECISIONS.md DECISION-024.
 
 Include:
 
@@ -226,7 +232,13 @@ Execute:
 .kenovis/AI/commands/architect.md
 ```
 
-Create ADR using:
+Record the ADR in:
+
+```
+DECISIONS.md
+```
+
+Shaped by:
 
 ```
 .kenovis/AI/templates/adr.md

@@ -1,6 +1,6 @@
 # Feature Command
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -250,11 +250,13 @@ security.md
 
 # Step 8 - Create Feature Plan
 
-Before coding create:
+Before coding, produce a feature plan shaped by:
 
 ```
 .kenovis/AI/templates/feature-plan.md
 ```
+
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
 
 The plan must include:
 

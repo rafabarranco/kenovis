@@ -117,6 +117,37 @@ Operations
 ---
 Learning Examples
 
+Example: Process — an instruction was never executed in the place it was written for
+
+## Learning-020
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Executing `/feature` end to end from a real `npx kenovis@0.9.0` Installation for the first time (`PRODUCT/ROADMAP.md` Phase 1 item 12), via `/next`. The setup commands had each been run from a real Installation by then — `/init-project` in item 6, `/adopt-project` in item 8 — and each run found a maximal-Pain defect. No post-setup workflow ever had been.
+
+Problem:
+Eleven instructions across five workflows, two commands and one agent named a path under `.kenovis/AI/templates/` as the *output* of an imperative: "Generate: `.kenovis/AI/templates/feature-plan.md`", "Update: `.kenovis/AI/templates/bug-report.md` with final resolution details". Followed literally inside a customer's Installation, the produced artifact lands in the one directory `kenovis sync` mirror-replaces. Reproduced rather than argued: a feature plan written there and committed was deleted by the next `sync`, which restored the pristine template, reported `0.9.0 -> 0.9.0 (already up to date)`, and never mentioned the file it removed. Followed carefully, the same instruction gives no destination at all, so each agent invents a path.
+
+The same run found `/feature` Phase 2 reading a `FEATURE-NNN` spec that nothing in the framework writes before implementation — its own Phase 13 writes it afterwards.
+
+What happened:
+Both defects are invisible from inside this repository, and that is the whole finding. Here `.kenovis/AI/` is the product's source, not a synced copy: writing to it is editing the framework, which no `/next` round would ever do by accident, and `sync` never runs against this checkout. The instruction was written by someone for whom "the template" and "the document made from it" were the same file in the same tree. It became destructive only once the framework started being *installed* somewhere — DECISION-017, four releases ago — and nothing re-read the instructions against that new world.
+
+Root cause:
+One path doing two jobs: naming the blank form and naming the filled-in document. This is the third instance of exactly that shape in eight days — [[DECISION-022]] separated "unanswered question" from "format specification" in the `[ANSWER:` marker, [[DECISION-023]] separated "which layer" from "what state" in the `PROJECT-SPECIFIC` marker, and now a template path separated from a destination. Each was found by executing something nobody had executed, not by review.
+
+Learning:
+A framework that is *installed* has two execution environments, and its own repository is the one where its instructions are least likely to fail. Every instruction that produces a file is a claim about where files may be written in a customer's repository, and that claim cannot be checked by reading — only by following it somewhere the mirror-replace is real. The pattern across items 6, 8 and 12 is now consistent enough to state as a rule: for each framework command or workflow, "has anyone run this from an installed copy?" is a better predictor of latent defects than any review pass. Three for three, each finding maximal-Pain.
+
+Future action:
+Run each remaining post-setup workflow — `/bug`, `/review`, `/release`, `/architect` — from a real published Installation, one per round, before assuming it works. When an instruction tells an agent to produce an artifact, name three things separately: what is produced, where its durable residue is recorded, and which form shapes it; never let one path stand for two of them ([[DECISION-024]]). And when a distribution mechanism changes — as `.kenovis/` packaging did — re-read the instructions that write files against it, because that is the class of change that turns correct prose into a destructive command without editing a word of it.
+
+---
 Example: Architecture
 
 ## Learning-001
