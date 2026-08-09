@@ -1,6 +1,6 @@
 # Architecture Decision Workflow
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -167,7 +167,13 @@ Select the solution that best balances:
 
 # Phase 6 - Create Architecture Decision Record
 
-Generate:
+Record the ADR in:
+
+```
+DECISIONS.md
+```
+
+Shaped by:
 
 ```
 .kenovis/AI/templates/adr.md

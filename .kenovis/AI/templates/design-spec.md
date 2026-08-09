@@ -1,6 +1,8 @@
 # Design Spec
 
-Version: 1.0
+Version: 1.1
+
+This file is a form, not a destination. Fill it in where the workflow that sent you here says to record the artifact — never write into this file, and never write a produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
 
 ---
 
@@ -173,6 +175,6 @@ References:
 PRODUCT/
 
 DOMAIN/
-
-.kenovis/AI/templates/feature-plan.md
 ```
+
+and the feature plan produced for this feature, shaped by `.kenovis/AI/templates/feature-plan.md`.

@@ -1,6 +1,6 @@
 # Hotfix Workflow
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -221,7 +221,13 @@ Analyze:
 
 If required:
 
-Create:
+Record the decision in:
+
+```
+DECISIONS.md
+```
+
+Shaped by:
 
 ```
 .kenovis/AI/templates/decision.md

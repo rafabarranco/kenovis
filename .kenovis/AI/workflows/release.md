@@ -1,6 +1,6 @@
 # Release Management Workflow
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -155,11 +155,15 @@ Validate:
 
 # Phase 6 - Release Preparation
 
-Prepare:
+Prepare release notes and publish them wherever this product publishes them — `AUTOMATIONS/release-process.md` records where that is.
+
+Shaped by:
 
 ```
 .kenovis/AI/templates/release-notes.md
 ```
+
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
 
 Include:
 
