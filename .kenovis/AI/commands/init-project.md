@@ -356,6 +356,16 @@ The pattern is deliberately not anchored to the start of a line: a template ques
 
 Brackets that are not `[ANSWER:` are not failures — see "Where The Shape Comes From". A correctly completed product layer still contains format specifications, illustrative examples and deliberate "nothing recorded yet" statements, all of them in brackets.
 
+Second, read back what came over verbatim. The check above finds questions that were never answered; it cannot find a section that arrived already answered — about a different product. Templates are derived from the framework's own Product layer, and a derivation that missed a section ships that answer to every Installation (`AI/memory/learnings.md` Learning-017, fixed in three files but not provably absent from the rest).
+
+Read each section that was not written in Steps 2-8 and ask whether it describes this product. A concrete statement about infrastructure, distribution, accounts or tooling is the shape to look for — framework-level prose states principles and formats, never facts about one system:
+
+```
+grep -rinE "in v1|not applicable|no backend|the CLI|npm" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/
+```
+
+A hit is not automatically wrong — this product may genuinely have no backend. It is wrong when nobody decided it. Replace any such sentence with this product's real answer, or with an explicit statement that there is none.
+
 In a repurposed repository, also run:
 
 ```

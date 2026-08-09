@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.7
+Version: 1.8
 ---
 Scope
 
@@ -144,6 +144,35 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — a template that was derived by deletion kept the answers nobody deleted
+
+## Learning-017
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Executing `/adopt-project` end to end against a real `npx kenovis@0.7.0` Installation (`PRODUCT/ROADMAP.md` Phase 1 item 8), via `/next`. The brownfield command had never been run — [[Learning-015]]'s round exercised `/init-project` only, and the two share templates but not Steps.
+
+Problem:
+Three of the seventeen Product-layer templates contained Kenovis's own answers, unmarked, presented as framework-level prose that every product inherits verbatim. `ENGINEERING/SECURITY.md` told the reader "Authorization Model: not applicable in v1 — no accounts, no shared backend", "Audit System: not applicable in v1 — no backend exists", and described the CLI writing to a customer's filesystem as the product's sensitive operation, citing `RULE-INST-01`/`02` — rule IDs that exist only in this repository's log. `AUTOMATIONS/release-process.md` defined staging as "validate the CLI before publishing" and production as "the published npm package". `AUTOMATIONS/user-feedback.md` named GitHub Issues as the feedback system of record.
+
+What happened:
+The adoption fixture was a padel-court booking API with a members table, JWT auth, role checks and a Fly.io deployment. Authoring `ENGINEERING/SECURITY.md` from its template produced a security document stating that authorization did not apply to a product that has an `admin_only` check, and that no audit trail was possible because there was no backend. The Step 12 Verify then passed it: zero `[ANSWER:` matches. A document asserting three false things about the product it governs was reported clean.
+
+Root cause:
+The templates were derived from this repository's own completed Product layer by deleting each Kenovis-specific answer and writing the question that produced it. Where a deletion was missed, the answer stayed — and a leftover answer is shaped exactly like the framework-level prose that legitimately survives. Both commands' Verify greps for `[ANSWER:`, which is by construction the one marker a leftover answer does not carry. `AUTOMATIONS/customer-onboarding.md`, derived in the same round, is clean, so this was inconsistent execution of a rule the templates' own `README.md` already stated, not a missing rule.
+
+Learning:
+A check that finds *unanswered* questions cannot find *wrongly answered* ones, and the two failures are not symmetric: an unanswered question is visibly incomplete, while an inherited answer looks decided and gets built on. This is [[Learning-015]] and [[Learning-016]] a third time — a claim written once, never read back against the world it ends up in — but with a sharper edge, because here the artifact is the thing shipped to customers rather than prose describing it. Deriving a template by deletion has no completion signal: nothing tells you which deletions you skipped.
+
+Future action:
+When deriving a template from a real document, the passing condition is not "the questions are marked" but "no sentence in this file is true of only one product." Read every section that was not rewritten and ask whether it would survive a product with the opposite shape — no database, no users, no published artifact. `.kenovis/AI/templates/product-layer/README.md` → "How a template goes wrong, and how to see it" carries the two questions and a starting grep. Both commands' Verify now say to read back what came over verbatim, and `/adopt-project`'s contrast check extends to `AUTOMATIONS/` — where two of these three were. None of that is a gate; no pattern distinguishes an inherited answer from a legitimate one, which is why the rule is stated as a reading discipline and the limitation is written down rather than papered over.
 
 ---
 Example: Project — the round that fixed an unexecuted check shipped an uncounted count

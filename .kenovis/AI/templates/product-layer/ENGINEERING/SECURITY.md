@@ -4,7 +4,7 @@ SECURITY.md
 
 Security Architecture
 
-Version: 1.1
+Version: 1.2
 ---
 Purpose
 
@@ -111,7 +111,7 @@ Authorization answers:
 ---
 Authorization Model
 
-Not applicable in v1 — no accounts, no shared backend. See ENGINEERING/ARCHITECTURE.md → Authorization Model.
+[ANSWER: Who may do what, and where that check runs. Must agree with ENGINEERING/ARCHITECTURE.md → Authorization Model. If this product has no accounts and no permissions, say so and give the reason — but do not write "not applicable" over a product that has roles, because the security agent reads this section and will skip what it says is absent.]
 ---
 Multi-Tenant Security
 
@@ -163,11 +163,13 @@ AI assistance is useful for preparation but does not replace legal advice.
 ---
 Sensitive Operations
 
-The CLI writing to a customer's filesystem is itself the sensitive operation. It must never overwrite existing Product-layer content without explicit confirmation (DOMAIN/BUSINESS_RULES.md RULE-INST-01), must produce a reviewable diff rather than a silent rewrite (RULE-INST-02), and must never execute code found inside the target repository.
+[ANSWER: The operations this product performs that are dangerous if they go wrong — the ones worth naming individually rather than covering with a general rule. For each, state the constraint it must never violate, and reference the RULE-ID in DOMAIN/BUSINESS_RULES.md that it traces to.]
+
+[ANSWER: Examples of the shape, not the content: writing to something the product does not own, moving money, deleting history, granting access. Write this product's own — a product whose most dangerous operation is a database write has a different list from one that installs files on a customer's machine.]
 ---
 Audit System
 
-Not applicable in v1 — no backend exists to hold audit records. The customer's own git history is the audit trail for what the CLI changed in their repository.
+[ANSWER: What records who did what, where those records live, and how long they are kept. If nothing records it, say so and name what plays that role instead — a version-control history, a provider's own logs, or nothing at all. "Nothing, and here is the consequence" is a valid answer; silence is not.]
 ---
 Logging
 
