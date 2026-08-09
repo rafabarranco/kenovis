@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.9
+Version: 2.10
 
 Last updated: —
 
@@ -14,16 +14,24 @@ Last updated: —
 
 A decision log is product-specific. A customer Installation's log starts empty and accumulates that company's own decisions — see DECISION-021 and `.kenovis/AI/templates/product-layer/DECISIONS.md`.
 
-This repository is the exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Eight of them are framework-level in effect — framework-layer files cite them by ID, and they would survive a repurposing of this repository:
+This repository is the exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Fourteen of them are framework-level in effect — they govern how the framework behaves for every Installation and would survive a repurposing of this repository. Nine are also cited by ID from inside `.kenovis/AI/` (marked ★):
 
-- DECISION-001 — AI-Native Company Operating Model.
+- DECISION-001 ★ — AI-Native Company Operating Model.
 - DECISION-009 — Documentation As Company Memory.
 - DECISION-010 — AI Tooling Strategy.
 - DECISION-011 — Framework Contribution & Memory Discipline.
-- DECISION-012 — Graphify Exception To Tool-Agnosticism.
+- DECISION-012 ★ — Graphify Exception To Tool-Agnosticism.
 - DECISION-014 — Brownfield Adoption Path: adopt-project Command.
-- DECISION-016 — No Framework-Mandated Directory Name For Customer Code (supersedes DECISION-015).
-- DECISION-019 — Collision Guard Against Silent Product-Layer Overwrite In init-project/adopt-project.
+- DECISION-016 ★ — No Framework-Mandated Directory Name For Customer Code (supersedes DECISION-015).
+- DECISION-017 ★ — Framework Layer Packaging: `.kenovis/` Hidden Directory.
+- DECISION-018 ★ — Auto-Trigger init-project/adopt-project Without A Manual Slash Command.
+- DECISION-019 ★ — Collision Guard Against Silent Product-Layer Overwrite In init-project/adopt-project.
+- DECISION-021 ★ — An Installation Receives Its Product Layer From Framework Templates.
+- DECISION-022 — `[ANSWER: ...]` Is The Only Bracket Form That Means "Unanswered Question".
+- DECISION-023 ★ — The PROJECT-SPECIFIC Marker States Layer, Not State.
+- DECISION-024 ★ — A Template Is A Form, Never A Destination.
+
+The list previously said "Eight", named eight, and claimed all eight were cited by ID inside the framework layer — four of them are not, while five decisions that are cited were missing. Corrected in the round that added DECISION-024 (`PRODUCT/ROADMAP.md` Phase 1 item 12), which had to edit this paragraph anyway; the citation counts were read off the tree with `grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI`, per `AI/memory/learnings.md` Learning-016.
 
 Everything else is product-specific and should be recorded as real decisions get made. See .kenovis/AI/commands/init-project.md.
 
@@ -1890,6 +1898,126 @@ Negative:
 
 - Installations created before this release keep the old sentence on their authored Product-layer files. `sync` cannot fix it, by design (RULE-INST-01) — Kenovis never edits a customer's Product layer. Those files stay wrong until the customer chooses to update them, and the release notes say so rather than implying the upgrade is complete.
 - Two wordings are now in circulation. The Collision Guard reads the token, so both work; but a grep written against the *sentence* — by a customer, or by a future round of this framework — will match only one. The lesson is already recorded (`AI/memory/learnings.md` Learning-018): match the token, and state a check's scope in the command rather than in prose.
+
+---
+
+# DECISION-024
+
+# A Template Is A Form, Never A Destination
+
+Date:
+
+2026-08-09
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-09
+
+---
+
+## Context
+
+Executing `/feature` end to end from a real `npx kenovis@0.9.0` Installation for the first time (`PRODUCT/ROADMAP.md` Phase 1 item 12) found that eleven instructions across five workflows, two commands and one agent name a path under `.kenovis/AI/templates/` as the *output* of an imperative — "Generate: `.kenovis/AI/templates/feature-plan.md`", "Update: `.kenovis/AI/templates/bug-report.md` with final resolution details", "Create: `.kenovis/AI/templates/decision.md`". A template's path is given where a destination belongs, so the same path names both the blank form and the filled-in document.
+
+Followed literally by an agent inside a customer's Installation, this writes the produced artifact into `.kenovis/` — the one directory `kenovis sync` mirror-replaces. Reproduced against the published package rather than argued: a feature plan written to `.kenovis/AI/templates/feature-plan.md` and committed was deleted by the next `kenovis sync`, which restored the pristine template, reported only `0.9.0 -> 0.9.0 (already up to date)`, and never mentioned the file it had removed.
+
+Followed carefully — an agent that declines to overwrite a shipped template — the instruction gives no destination at all, so each agent invents its own path and two runs in the same Installation land in different places.
+
+The framework already contains the correct shape in one place. `.kenovis/AI/commands/architect.md` Step 8 says "Create: `DECISIONS.md` … Using: `.kenovis/AI/templates/adr.md`" — destination and form, separately named. That site had its own defect: the alternative destination it offers, `ENGINEERING/ADR/`, appears exactly once in the entire framework, is created by neither `/init-project` nor `/adopt-project`, is absent from the seventeen Product-layer templates, and does not exist in this repository either, which has always recorded ADRs in `DECISIONS.md`.
+
+A second, related gap surfaced in the same run. `/feature` Phase 2 reads `PRODUCT/FEATURES.md` for the feature's objective, user problem and acceptance criteria — but nothing in the framework writes a `FEATURE-NNN` spec before implementation. `/init-project` and `/adopt-project` seed that file with what already ships, and `/feature`'s own Phase 13 updates it afterwards. The workflow's first input is produced by its own last step, so the first feature in any Installation begins with a step that cannot be satisfied.
+
+---
+
+## Options Considered
+
+### Option A
+
+Give each artifact type a fixed Product-layer directory — `PRODUCT/features/`, `ENGINEERING/ADR/`, `ENGINEERING/bugs/` — created at setup by `/init-project` and `/adopt-project`.
+
+Advantages:
+
+- Unambiguous. Two agents in the same Installation land in the same place without the product having decided anything.
+
+Disadvantages:
+
+- Reintroduces exactly what DECISION-021 rejected: directories created at setup that most Installations never fill. A product that records its decisions in `DECISIONS.md` and its feature specs in `PRODUCT/FEATURES.md` — which is how this repository has operated for every one of the twelve roadmap items it has shipped — would carry three empty directories forever.
+- Mandates repository layout, which DECISION-016 removed from this framework on the grounds that a documentation framework should not be reorganising a customer's repository.
+
+---
+
+### Option B
+
+Leave the destination unstated and rely on the agent's judgement, fixing only the destructive half by saying "do not write into `.kenovis/`".
+
+Advantages:
+
+- Smallest possible change.
+
+Disadvantages:
+
+- Preserves the half of the defect that produces silent divergence rather than data loss. "Somewhere sensible" is what the instructions already effectively say, and it is why the run had to invent a path.
+
+---
+
+### Option C
+
+State the rule the framework already follows in its best-shaped site, and apply it everywhere: a template is a form, never a destination. Every instruction that produces an artifact names three things — what is produced, the Product-layer document where its durable residue is recorded, and the template that gives it shape. Working artifacts with no durable residue (a feature plan, a design spec, a bug report) are session artifacts by default; a product that wants to persist them records where in `AI/memory/conventions.md`, which every Installation has and which exists for exactly this kind of operating habit.
+
+Advantages:
+
+- Every named destination is a file the framework already requires an Installation to have — `PRODUCT/FEATURES.md`, `DECISIONS.md`, `AI/memory/learnings.md`, `AUTOMATIONS/release-process.md`. Nothing new is created, at setup or ever.
+- Matches this repository's own twelve-item history, which is the only long-run evidence available: not one of those rounds persisted a feature plan or a design spec as a file, and every one of them recorded its residue in `PRODUCT/ROADMAP.md`, `DECISIONS.md`, `CHANGELOG.md` and `AI/memory/learnings.md`.
+- Fixes the `/feature` Phase 2 gap in the same grammar: the `FEATURE-NNN` spec is Phase 2's *output*, written into `PRODUCT/FEATURES.md` using the Feature Specification Template that file already carries, rather than an input nobody produces.
+
+Disadvantages:
+
+- A product that genuinely wants durable feature plans has to decide where they go and record it. That is one sentence in `conventions.md`, but it is a decision the framework declines to make for them.
+- Nothing mechanically prevents a future framework instruction from naming a template path as a destination again. The same limitation DECISION-022 accepted for its own marker convention, and for the same reason: no pattern separates "a path cited as a form" from "a path cited as a destination".
+
+---
+
+## Decision
+
+Adopt Option C.
+
+- No framework instruction names a path under `.kenovis/AI/templates/` as a place to write. Eleven sites reworded across `workflows/feature.md`, `bugfix.md`, `hotfix.md`, `architecture.md`, `roadmap.md`, `release.md`, `commands/feature.md` and `agents/designer.md`.
+- Each of the six working templates carries a line under its version header stating that it is a form, that the workflow which sent the reader there names the destination, and that `kenovis sync` replaces this directory wholesale.
+- Durable destinations, all already-mandated files: an ADR or a hotfix decision record goes in `DECISIONS.md`; a `FEATURE-NNN` spec goes in `PRODUCT/FEATURES.md`; a bug's reusable residue goes in `AI/memory/learnings.md`; release notes go wherever `AUTOMATIONS/release-process.md` says this product publishes them.
+- `.kenovis/AI/commands/architect.md` no longer offers `ENGINEERING/ADR/`. `DECISIONS.md` is the destination; a product that prefers separate ADR files records that in `AI/memory/conventions.md`.
+- `/feature` Phase 2 authors the `FEATURE-NNN` spec into `PRODUCT/FEATURES.md` when none exists, using that file's own Feature Specification Template. Phase 13 updates the same entry against what actually shipped.
+
+---
+
+## Reason
+
+The defect is a grammar problem, not a layout problem: one path was being used for two jobs, so the destructive reading and the ambiguous reading are the same sentence read by two different agents. DECISION-023 separated *layer* from *state* in the `PROJECT-SPECIFIC` marker for the same reason four days earlier, and DECISION-022 separated *unanswered question* from *format specification* three days before that. This is the third instance of one marker or path carrying two meanings, and the fix is the same each time: give each meaning its own carrier and say so where an agent reads it.
+
+Choosing destinations the framework already mandates, rather than new directories, follows DECISION-021's reasoning directly — that round rejected writing seventeen files into a customer's repository at install time for the same cost it would impose here on three directories most Installations would never use.
+
+---
+
+## Consequences
+
+Positive:
+
+- An agent following any workflow inside a customer Installation can no longer be instructed into `.kenovis/`, so no produced artifact can be silently deleted by the next `sync`.
+- `/feature` becomes executable from its first phase in a fresh Installation, which it was not: its Phase 2 input had no producer.
+- The rule is stated at both ends — in the instruction that sends an agent to a template, and in the template it arrives at — so an agent that reads only one of the two still gets it.
+
+Negative:
+
+- Nothing enforces this. A future instruction can name a template path as a destination again, and no check distinguishes that from a legitimate citation. Stated rather than papered over, per DECISION-022's own precedent.
+- `kenovis sync` still deletes anything a customer chooses to put under `.kenovis/` without naming what it removed. This decision removes every framework instruction that would lead them there; it does not make `sync` defensive, which is a separate change with its own design — recorded as a backlog finding in `PRODUCT/ROADMAP.md` Phase 1 item 12 rather than folded in here.
+- An Installation that already followed the old instruction has lost that artifact and cannot recover it from Kenovis. Its own `git history` is the only copy, which is the same recovery path RULE-INST-02 relies on elsewhere.
 
 ---
 

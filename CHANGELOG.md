@@ -6,6 +6,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Fixed
+
+- **Every workflow that told an agent to produce a document named a template's own path as the place to write it — inside `.kenovis/`, which `kenovis sync` deletes.** Eleven instructions across `.kenovis/AI/workflows/feature.md`, `bugfix.md`, `hotfix.md`, `architecture.md`, `roadmap.md`, `release.md`, `.kenovis/AI/commands/feature.md` and `.kenovis/AI/agents/designer.md` read "Generate: `.kenovis/AI/templates/feature-plan.md`", "Update: `.kenovis/AI/templates/bug-report.md` with final resolution details", "Create: `.kenovis/AI/templates/decision.md`". A template's path was given where a destination belongs, so one path named both the blank form and the filled-in document.
+
+  Followed literally in an Installation, the artifact lands in the one directory `sync` mirror-replaces. Reproduced against the published `kenovis@0.9.0` package: a feature plan written to `.kenovis/AI/templates/feature-plan.md` and committed was deleted by the next `kenovis sync`, which restored the pristine template, reported `0.9.0 -> 0.9.0 (already up to date)`, and never named the file it removed. Followed carefully instead, the same instruction gives no destination at all, so two runs in the same Installation land in different places.
+
+  Every site now names the artifact, the Product-layer document that records its durable residue, and the template that shapes it — separately. Destinations are files every Installation already has: an ADR or hotfix decision record in `DECISIONS.md`, a `FEATURE-NNN` spec in `PRODUCT/FEATURES.md`, a bug's reusable residue in `AI/memory/learnings.md`, release notes wherever `AUTOMATIONS/release-process.md` says this product publishes them. No new directory is created, at setup or ever. Each of the six working templates now carries a line saying it is a form and not a destination, so an agent that reads only the template still gets the rule. See DECISION-024.
+
+- **`/feature` Phase 2 required a `FEATURE-NNN` spec that nothing in the framework wrote before implementation.** `/init-project` and `/adopt-project` seed `PRODUCT/FEATURES.md` with what already ships, and `/feature`'s own Phase 13 updates it afterwards — so the workflow's first input was produced by its last step, and the first feature in any Installation began with a step that could not be satisfied. Phase 2 now authors the spec into `PRODUCT/FEATURES.md` using that file's own Feature Specification Template when none exists, and says so explicitly: writing it is the phase's output, not a missing input.
+
+- **`.kenovis/AI/commands/architect.md` offered `ENGINEERING/ADR/` as a place to record an ADR.** That path appears exactly once in the whole framework, is created by neither setup command, is absent from the seventeen Product-layer templates, and does not exist in this repository either, which has always recorded ADRs in `DECISIONS.md`. Retired; a product that prefers separate ADR files records that choice in `AI/memory/conventions.md`.
+
+  Found by executing `/feature` end to end from a real published Installation for the first time (`PRODUCT/ROADMAP.md` Phase 1 item 12) — the third post-setup command to be run this way and the third to surface a maximal-Pain defect, after `/init-project` (item 6) and `/adopt-project` (item 8). None of the three is visible from inside this repository, where `.kenovis/AI/` is the product's source rather than a synced copy. See `AI/memory/learnings.md` Learning-020.
+
+### Changed
+
+- `DECISIONS.md` → "Document Layers" listed eight framework-level decisions and claimed framework-layer files cite all eight by ID. Four are not cited, and five decisions that are cited were missing from the list. Now fourteen entries with the nine cited ones marked, counts read off the tree with `grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI` per `AI/memory/learnings.md` Learning-016.
+
 ## [0.9.0] - 2026-08-09
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.8.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, and unlike the last two rounds the call needs no argument: CLI code changed (the stub written on every install), seventeen templates changed content, and both `/init-project` and `/adopt-project` changed behaviour.

@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.29
+Version: 1.30
 ---
 Purpose
 
@@ -409,6 +409,34 @@ One number was reconciled before being written down, per Learning-018's own futu
 No new gap surfaced — nothing recorded as a learning this round.
 
 Solo-maintainer note, unchanged from previous releases: all three PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
+
+12. DONE (2026-08-09, via /next) — execute `/feature` end to end from a real published Installation, and fix what breaks.
+
+Founder chose this as the next item once item 11 closed and no scheduled, unblocked item remained. Candidates weighed against this document's own priority formula: this item, the active npm-registry version check (Phase 2, still deferred on network-dependency cost and unvalidated Pain), the paid-tier ADR (still premature on one external team's data), and a `/framework-review` audit pass (expected yield low after items 6, 8 and 10 each swept the same surface).
+
+Gap found: items 6 and 8 ran the two *setup* commands from a real Installation for the first time and each found a maximal-Pain defect. No *post-setup* workflow ever had been. The one real external `/feature` run on record (2026-08-06) was against `kenovis@0.3.0` — before the `.kenovis/` migration and before the Product-layer templates existed — so the shape this product publishes today had never been exercised past setup. That matters more than activation now: the North Star is defined as an Installation that ran at least one framework workflow, which is exactly the path nobody had run.
+
+Method: a real brownfield fixture (a court-booking API — Express, SQLite, JWT auth, `club_id` multi-tenancy, role checks, a deploy workflow), `npx kenovis@0.9.0 add` against it, its Product layer authored from the shipped templates, then `/feature` Phases 1-13 executed as written with no patching mid-run. The published bundle was confirmed byte-identical to this repository's own `.kenovis/AI/` before starting. Scoped deliberately: `/adopt-project`'s own Steps were not re-validated — item 8 did that — the Product layer was authored from its templates only far enough to give `/feature` real inputs, which covers every document `/feature` reads.
+
+What the run found, and it was not in a step that failed — the workflow executed cleanly and produced a working feature (booking cancellation, six passing tests, first tests that repository ever had). Eleven instructions across five workflows, two commands and one agent name a path under `.kenovis/AI/templates/` as the *output* of an imperative: "Generate: `.kenovis/AI/templates/feature-plan.md`", "Update: `.kenovis/AI/templates/bug-report.md` with final resolution details". A template's path stands where a destination belongs.
+
+Reproduced rather than argued: a feature plan written to `.kenovis/AI/templates/feature-plan.md` and committed in the fixture was deleted by the next `kenovis sync`, which restored the pristine template, reported `0.9.0 -> 0.9.0 (already up to date)`, and never named the file it removed. Followed carefully instead — an agent that declines to overwrite a shipped template — the same instruction gives no destination at all, so the run had to invent a path, and two runs in the same Installation would land in different places.
+
+Two more from the same run. `/feature` Phase 2 reads a `FEATURE-NNN` spec from `PRODUCT/FEATURES.md` that nothing in the framework writes before implementation — `/init-project` and `/adopt-project` seed that file with what already ships, and Phase 13 updates it afterwards, so the workflow's first input is produced by its own last step. And `.kenovis/AI/commands/architect.md` offered `ENGINEERING/ADR/` as an ADR destination: a path appearing exactly once in the framework, created by neither setup command, absent from the seventeen templates, and non-existent in this repository too.
+
+Founder decision (2026-08-09, via /next): ADR first, per the same pattern as DECISION-016/017/020/021. See DECISION-024 — a template is a form, never a destination. Option A (a fixed Product-layer directory per artifact type, created at setup) was rejected for reintroducing exactly what DECISION-021 rejected: directories created for every Installation that most never fill. Every destination now named is a file the framework already requires.
+
+Shipped: 15 framework files — the eleven instruction sites reworded across `workflows/feature.md` (3.2 → 3.3), `bugfix.md` (2.2 → 2.3), `hotfix.md` (2.0 → 2.1), `architecture.md` (2.1 → 2.2), `roadmap.md` (2.1 → 2.2), `release.md` (2.0 → 2.1), `commands/feature.md` (2.0 → 2.1), `commands/architect.md` (2.0 → 2.1) and `agents/designer.md` (1.1 → 1.2); the six working templates each carrying a "this is a form, not a destination" line under their version header, so an agent that reads only the template still gets the rule; and `/feature` Phase 2 now authoring the `FEATURE-NNN` spec when none exists. `DECISIONS.md` 2.9 → 2.10. No CLI code changed and no Product-layer template changed — the `[ANSWER:` corpus stays at 127, verified against both the 0.9.0 install and this build.
+
+Adjacent inconsistency fixed in the same round, in the paragraph DECISION-024 had to be added to: `DECISIONS.md` → "Document Layers" said "Eight of them are framework-level" and claimed framework-layer files cite all eight by ID. Four are not cited, and five decisions that are cited were missing. Now fourteen entries with the nine cited ones marked, counts read off the tree rather than recalled (Learning-016).
+
+Validated: the fixed bundle built and installed into a fresh scratch Installation — all six templates carry the new line, no imperative-plus-template-path site remains anywhere in the installed tree, no Product-layer file is created at the target's root, and `PRODUCT/FEATURES.md`'s spec-authoring instruction arrives intact. 109 `cli/` tests pass, typecheck and build clean, `check_links.py` and `check_markers.py` pass.
+
+Recorded as `AI/memory/learnings.md` Learning-020: both defects are invisible from inside this repository, because here `.kenovis/AI/` is the product's source rather than a synced copy and `sync` never runs against this checkout. The instruction became destructive when the framework started being *installed* — DECISION-017, four releases ago — and nothing re-read it against that change. Three post-setup commands have now been run from a real Installation and all three surfaced a maximal-Pain defect; the learning's future action names the remaining ones (`/bug`, `/review`, `/release`, `/architect`) as the next candidates, one per round.
+
+Backlog finding, left out of this item's scope deliberately and stated so it is a decision rather than an oversight: `kenovis sync` still deletes anything a customer puts under `.kenovis/` without naming what it removed — the smoke test's `already up to date` output mentioned nothing. This round removes every framework instruction that would lead a customer there, which is the cause; making `sync` defensive (report removed paths that the bundle does not ship, or refuse) is a separate change with its own design, and mixing a CLI change into a framework-content round is what `.kenovis/AI/workflows/release.md`'s stability requirement argues against.
+
+Next: this work reaches no customer until published. The release carrying item 12 is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9 and 11 performed.
 
 ---
 Phase 1 — MVP
