@@ -1,8 +1,8 @@
-<!-- PROJECT-SPECIFIC: the Domain Terms section is placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: the Domain Terms section is this product's own; the Framework Terms are framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 
 AI Glossary
 
-Version: 1.2
+Version: 1.3
 ---
 Document Layers
 

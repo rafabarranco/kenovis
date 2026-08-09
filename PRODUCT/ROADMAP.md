@@ -1,10 +1,10 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: this product's own context, not framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 
 ROADMAP.md
 
 Product Roadmap
 
-Version: 1.27
+Version: 1.28
 ---
 Purpose
 
@@ -340,6 +340,8 @@ Validated: the fixed bundle built and installed into a second fresh scratch Inst
 Two smaller findings from the same run, left as backlog rather than fixed inside this item's scope, both stated here so they are decisions and not oversights:
 
 - Every template's first line reads "placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md". Once authored, the file is not placeholder content, and in an adoption it was not `init-project` that wrote it. The same string is what the Collision Guard matches on (`head -1`), and this repository's own completed Product layer carries it, so changing the wording touches seventeen templates, every authored document and `check_markers.py`. Worth doing deliberately, not as a side effect.
+
+  **Correction (2026-08-09, item 10):** the cost estimate in the sentence above is wrong, and the error is in its premise. The Collision Guard does not match on that string — it matches on the bare `PROJECT-SPECIFIC` token, as does `check_markers.py`, and no `.py`/`.ts`/`.mjs` file in the repository matches any part of the sentence after it. Changing the wording therefore touched no mechanism at all and needed no change to `check_markers.py`. Left visible rather than rewritten, per this document's own scoping rule, because the mis-estimate is the finding: an unverified cost note nearly deferred a maximal-Pain, low-cost fix indefinitely. See Learning-019.
 - The `CLAUDE.md` stub the CLI writes enumerates the Product layer ("COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, and this repository's own code") and omits `AI/memory/`, which `/adopt-project` Step 9 and `/init-project` Step 8 both create. A one-line fix in `cli/src/domain/installation.ts`, but it changes the stub and therefore the recorded hash sidecar and its tests — CLI work, which this item had none of.
 
 9. DONE (2026-08-09, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 8.
@@ -363,6 +365,28 @@ The one thing this round found, and it was found in its own validation rather th
 Solo-maintainer note, unchanged from previous releases: all three PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
 
 The two backlog findings item 8 left (the templates' first-line wording; the `CLAUDE.md` stub omitting `AI/memory/`) were deliberately kept out of this release: neither was merged to `development`, and introducing a CLI change mid-release contradicts `.kenovis/AI/workflows/release.md`'s stability requirement. They are the leading candidates for the next item.
+
+10. DONE (2026-08-09, via /next) — the `PROJECT-SPECIFIC` marker states layer, not state; and the `CLAUDE.md` stub enumerates the whole Product layer.
+
+Founder chose this as the next item once item 9 closed and no scheduled, unblocked item remained. Both of item 8's backlog findings, taken in one round because they are the same defect — a Kenovis-authored artifact that describes the Product layer wrongly — and one release carries both, as items 1+2 and 3+4 did.
+
+Gap found, and the reason it outranked everything else: line 1 of every Product-layer document read `placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md`. That is false from the moment `/init-project` or `/adopt-project` authors the file — which is to say false for the entire life of every real Installation — and in an adoption it names the wrong command. It is the first thing read in `COMPANY_OS.md`, the top of the Source Of Truth Hierarchy, at the start of every session, and it is also what the Collision Guard (DECISION-019) reads to decide whether a file may be overwritten without asking. The one line whose job is to protect authored content was describing that content as scaffolding. Root cause: the marker carried both *which layer* and *what state*, the same conflation DECISION-022 had separated three days earlier in the adjacent `[ANSWER:` marker — that round fixed where the symptom appeared, not the pattern.
+
+Priority against this document's own formula: Customer Pain maximal (an agent that believes line 1 may treat a company's real strategy as disposable), Frequency every session of every document of every Installation, Business Impact on the Source Of Truth Hierarchy itself. Implementation Cost turned out **low**, which is the part item 8's backlog note got wrong — see the correction recorded against that note above, and Learning-019.
+
+Founder decision (2026-08-09, via /next): the marker states layer and adds the fact a reader most needs at that point — `kenovis sync` never overwrites this file. Two alternatives were rejected: instructing agents to disregard line 1 (a standing exception to counteract a false sentence), and retiring the marker for a manifest or path list (parallel bookkeeping, the defect Learning-010/011 record; and DECISION-016 rules out any path-based rule). See DECISION-023.
+
+Shipped: 37 files carry a rewritten marker — 17 templates (each bumped a minor version), this repository's own 17 Product-layer documents, `README.md`, `cli/README.md`, and the one literal example inside `init-project.md`. Three wordings, preserving distinctions that already existed: general, `AI/memory/` recorded knowledge, and `glossary.md`'s split between Domain and Framework Terms. Both commands (1.9 → 1.10) and `.kenovis/AI/templates/product-layer/README.md` (1.2 → 1.3) now state the layer/state distinction explicitly, and `init-project.md` says to carry the line through unchanged rather than reword it on completion — the natural mistake once a line describes state. `DECISIONS.md` 2.8 → 2.9.
+
+Zero mechanism changed, verified rather than assumed: `check_markers.py` greps the bare `PROJECT-SPECIFIC` token within a file's first three lines, the Collision Guard's `head -1` looks for the same token, and no `.py`/`.ts`/`.mjs` file matches any part of the sentence after it.
+
+The CLI half: `claudeStubContent` (`cli/src/domain/installation.ts`) omitted `AI/memory/` from the Product layer it enumerates, while `/init-project` Step 8 and `/adopt-project` Step 9 both create it and roughly twenty framework files instruct agents to record a learning or look up a term there. Present since the stub was introduced. Every existing test compared `claudeStubContent` against its own output, which is tautological for content and cannot catch an omission — so the fix is one line plus a test that pins the enumeration against the list of paths the commands create. That test was confirmed to fail on the old content before being kept; 108 → 109 tests.
+
+Validated: 109 `cli/` tests pass, typecheck and build clean, `check_links.py` and `check_markers.py` pass. Real scratch-repository smoke test — brownfield `kenovis add` delivers all three marker wordings correctly and writes a stub that enumerates `AI/memory/`; a document authored from a template keeps a line 1 that is now true and reports zero unanswered questions; and all three Collision Guard cases behave, including the one that mattered most to check — a file carrying the *old* wording is still recognised as Product layer, so no pre-release Installation breaks. A following `sync` left `git status` completely clean, preserved `.setup-pending`, and left the authored Product-layer files untouched, including the one deliberately seeded with the old wording. That last result is the documented negative consequence made visible: `sync` cannot migrate a Product-layer file, by design (RULE-INST-01), so Installations created before this release keep the old sentence until their owner edits it.
+
+Recorded as `AI/memory/learnings.md` Learning-019: an unverified cost estimate in a backlog note nearly deferred a maximal-Pain fix indefinitely, and the smallest possible check — grep for the string the note claimed was load-bearing — collapsed the estimate from "seventeen templates, every authored document and `check_markers.py`" to a mechanical find-and-replace.
+
+Next: this work reaches no customer until published. The release carrying items 9 and 10 is the leading candidate for the next item, the same packaging step items 2, 5, 7 and 9 performed.
 
 ---
 Phase 1 — MVP

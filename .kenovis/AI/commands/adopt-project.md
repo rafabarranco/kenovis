@@ -1,6 +1,6 @@
 # Adopt Project Command
 
-Version: 1.9
+Version: 1.10
 
 ---
 
@@ -57,7 +57,9 @@ A fact reconstructed from code and confirmed by a human is trustworthy. A fact i
 grep -rl "PROJECT-SPECIFIC" . --include="*.md" --include=".gitignore" --exclude-dir=.kenovis
 ```
 
-If that lists nothing, or lists product-layer files that were never rewritten, AND the repository already has a real implementation somewhere — whatever the repository's actual layout is — this is an adoption, not an initialization.
+That marker states which layer a file belongs to, not whether anyone has filled it in — a completed Product layer carries it exactly as a template does (DECISION-023). So the grep tells you which product-layer files *exist*, and you still have to read them to know whether they hold real answers or leftover `[ANSWER: ...]` instructions.
+
+If it lists nothing, or lists product-layer files still holding unanswered questions, AND the repository already has a real implementation somewhere — whatever the repository's actual layout is — this is an adoption, not an initialization.
 
 Zero matches is the expected result after `kenovis add`. It means no product layer exists yet, so every Step below authors its file from the template rather than rewriting one.
 

@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: accumulates per-product knowledge. Reset the recorded entries when starting a new product, keep the rules. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: this product's own recorded knowledge; the rules around it are framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 
 AI Learnings
 
@@ -144,6 +144,35 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Process — an unverified cost estimate is a decision, and it was made by nobody
+
+## Learning-019
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Fixing the `PROJECT-SPECIFIC` marker (`PRODUCT/ROADMAP.md` Phase 1 item 10), via `/next`. The work had sat as a backlog note since item 8, carrying its own cost estimate: changing the wording "touches seventeen templates, every authored document and `check_markers.py`", because "the same string is what the Collision Guard matches on (`head -1`)". The note closed with "worth doing deliberately, not as a side effect" — correct-sounding caution.
+
+Problem:
+The premise was false. The Collision Guard matches the bare `PROJECT-SPECIFIC` token, not the sentence after it; so does `check_markers.py`; and no `.py`, `.ts` or `.mjs` file in the repository matches any part of that sentence. The change touched no mechanism, required no `check_markers.py` edit, and broke no existing Installation. It was a find-and-replace across 37 files plus three prose sections.
+
+What happened:
+Two `/next` rounds ranked this item against alternatives while carrying that estimate as fact, and it lost both times — reasonably, given a cost that high against a defect that sounded cosmetic. Checking the premise took one grep. Had the note said "cost unverified" instead of stating a scope, the same grep would have run two rounds earlier. Meanwhile every session of every Installation opened `COMPANY_OS.md` and read that its contents were placeholder content.
+
+Root cause:
+A cost estimate written into a backlog note becomes an input to every future prioritisation decision, but nothing marks it as an estimate. It reads exactly like the findings around it, which were verified. The priority formula in `PRODUCT/ROADMAP.md` divides by Implementation Cost, so a wrong cost does not merely mislead — it deterministically suppresses the item, and the more wrong it is the longer it stays suppressed. This is [[Learning-016]] and [[Learning-018]] in a third position: a number recorded once and never read back against the thing it describes. Here it was not published, it was worse — it was acted on.
+
+Learning:
+An unverified claim in a backlog note is a decision made by whoever was tired at the end of the round that wrote it. The asymmetry is what makes it dangerous: over-estimating cost is invisible, because the item simply never comes up again, while under-estimating it surfaces immediately when the work starts. Nothing in the framework distinguishes "I checked" from "I assumed" in a deferred item, and the priority formula treats both as input.
+
+Future action:
+When deferring an item, either verify the cost or say it is unverified — and when the note names a specific mechanism as the reason something is expensive ("X matches on this string", "Y depends on this file"), check that claim before writing it, because it is the load-bearing part. When picking up any deferred item, re-derive its cost before ranking it rather than trusting the note; one grep is cheaper than a round of wrong prioritisation. Item 8's original note is left visible in `PRODUCT/ROADMAP.md` with the correction beneath it, rather than rewritten, so the mis-estimate stays legible as the finding.
 
 ---
 Example: Project — a count without its scope is unverifiable, even when it is right

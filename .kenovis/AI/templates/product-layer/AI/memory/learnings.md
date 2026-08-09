@@ -1,8 +1,8 @@
-<!-- PROJECT-SPECIFIC: accumulates per-product knowledge. Reset the recorded entries when starting a new product, keep the rules. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: this product's own recorded knowledge; the rules around it are framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 
 AI Learnings
 
-Version: 1.5
+Version: 1.6
 ---
 Scope
 
