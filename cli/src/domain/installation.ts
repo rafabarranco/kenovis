@@ -319,6 +319,6 @@ ${pendingDirective}This repository uses the Kenovis AI-OS. Its Framework layer l
 Read \`${FRAMEWORK_DIR_NAME}/AI/SYSTEM.md\` first — it is the entry point for how AI agents should
 operate in this repository. Everything under \`${FRAMEWORK_DIR_NAME}/\` is reusable framework;
 this repository's own product context lives at the repository root (COMPANY_OS.md, DECISIONS.md,
-PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, and this repository's own code).
+PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, and this repository's own code).
 `;
 }

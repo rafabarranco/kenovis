@@ -1,10 +1,10 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: this product's own context, not framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 
 # DECISIONS.md
 
 Company Decision Log
 
-Version: 2.8
+Version: 2.9
 
 Last updated: —
 
@@ -1749,6 +1749,147 @@ Negative:
 - A future template author can still add a plain-bracket question that Verify will never see. Documented in the templates' `README.md`; not mechanically preventable, for the reason given in Option C.
 - Existing Installations authored under the old convention are unaffected and need no migration — they contain no `[ANSWER:` markers, so the new check passes trivially. It only gains force for documents authored from templates at this release or later.
 - This repository is the one Installation where the check reports matches that are not defects: its Product layer includes this decision record and `PRODUCT/ROADMAP.md`'s entry for the work, both of which quote the marker in prose while explaining it. Ten such matches exist at the time of writing and none is an unanswered question. That is the same self-referential carve-out DECISION-020 and DECISION-021 already established — this company's product *is* the framework, so its product documentation legitimately discusses framework mechanics. A customer Installation has no such prose and returns zero. When running Verify here, read the matches; when running it in a customer Installation, zero is the bar.
+
+---
+
+# DECISION-023
+
+# The PROJECT-SPECIFIC Marker States Layer, Not State
+
+Date:
+
+2026-08-09
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-09
+
+---
+
+## Context
+
+`/adopt-project`'s first end-to-end run (PRODUCT/ROADMAP.md Phase 1 item 8) left two findings as backlog rather than fixing them inside that item's scope. This is the first.
+
+Every Product-layer file's first line read:
+
+```
+<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
+```
+
+Two things are wrong with that sentence, and they compound. It says the file is *placeholder content* — false the moment `/init-project` or `/adopt-project` authors it, which is to say false for the entire life of every real Installation. And it names `init-project` as the thing that will write it, which in an adoption is the wrong command.
+
+The consequence is not cosmetic. This is line 1 of `COMPANY_OS.md`, the top of the Source Of Truth Hierarchy (`.kenovis/AI/SYSTEM.md`), read at the start of every session by every agent. An agent that believes it is looking at placeholder content has been told, by the framework itself, that a company's real strategy is disposable. The marker is also what the Collision Guard (DECISION-019) reads to decide whether a file may be overwritten without asking — so the one line whose job is to protect authored content was describing that content as scaffolding.
+
+The root cause is a conflation the framework had already fixed once, elsewhere. DECISION-022 separated "this is an unanswered question" (`[ANSWER: ...]`) from "this is a bracket" precisely because one marker carrying two meanings cannot be checked. The `PROJECT-SPECIFIC` line carried two meanings too — *which layer this file belongs to* and *whether it has been filled in* — and only the first is stable over a file's life. That round fixed the bracket convention and did not revisit this one.
+
+Item 8's own backlog note estimated the cost as touching "seventeen templates, every authored document and `check_markers.py`", on the belief that the full sentence was what the Collision Guard matched on. That belief was wrong, and checking it is what made this item cheap: `check_markers.py` greps the bare token `PROJECT-SPECIFIC` within a file's first three lines, the Collision Guard's `head -1` looks for the same token, and no `.py`, `.ts` or `.mjs` file in the repository matches any part of the sentence. The explanatory prose after the token has no consumer but the reader.
+
+---
+
+## Options Considered
+
+### Option A
+
+Leave the marker alone and fix the problem at the reading end — instruct agents, in `SYSTEM.md` and both commands, that "placeholder content" on line 1 of an authored document should be disregarded.
+
+Advantages:
+
+- Zero files changed beyond the instruction itself.
+
+Disadvantages:
+
+- Adds a standing exception an agent must remember, to counteract a sentence that is simply false. The framework's own `code-quality.md` argues against exactly this shape: prose telling a reader to ignore what another document says is what a correction looks like when nobody wants to make the correction.
+- Does nothing for a human reading the file.
+
+---
+
+### Option B
+
+Rewrite the marker so it states which layer the file belongs to and nothing about whether it has been filled in — true of a template nobody has answered and of a document a company has owned for a year. Keep `PROJECT-SPECIFIC` as the first token so every existing mechanism is untouched. Let `[ANSWER: ...]` remain the sole carrier of "unanswered", as DECISION-022 established.
+
+Advantages:
+
+- Makes line 1 true in every state a Product-layer file can be in, which is the only property that makes it safe to read.
+- Applies DECISION-022's own resolution to the one marker that round did not reach: one marker, one meaning.
+- Costs nothing in mechanism. The token the Collision Guard and `check_markers.py` read is unchanged, so existing Installations keep working — their authored files carry whichever wording they were written with, and the guard matches both.
+- The new line can carry something genuinely useful in its place: that `kenovis sync` never overwrites the file. That is the fact a reader most needs about a Product-layer document, and nothing was saying it at the point of use.
+
+Disadvantages:
+
+- Touches 37 files (17 templates, this repository's own 17 Product-layer documents, `README.md`, `cli/README.md`, and the one literal example inside `init-project.md`) — mechanical, but a large diff for a one-line change.
+- Two wordings now exist in the wild. An Installation authored before this release keeps the old sentence on its files, and `sync` will not update them (it never touches Product-layer files — RULE-INST-01). The old text stays wrong in those repositories until the customer edits it by hand.
+
+---
+
+### Option C
+
+Retire the marker entirely and have the Collision Guard detect Product-layer files some other way — a manifest, or a path list.
+
+Advantages:
+
+- No per-file marker to keep accurate.
+
+Disadvantages:
+
+- A manifest is state written by one mechanism and invalidated by another, which is this codebase's documented recurring defect (`AI/memory/learnings.md` Learning-010, Learning-011). A path list cannot work: DECISION-016 established that no Installation is required to have any particular layout, and a customer may legitimately have their own file at a Product-layer path — which is the entire reason the Collision Guard exists.
+- Discards a working mechanism to fix a sentence next to it.
+
+---
+
+## Decision
+
+Adopt Option B.
+
+Three wordings, matching the three kinds of Product-layer file the framework already distinguished:
+
+```
+<!-- PROJECT-SPECIFIC: this product's own context, not framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
+```
+
+```
+<!-- PROJECT-SPECIFIC: this product's own recorded knowledge; the rules around it are framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
+```
+
+```
+<!-- PROJECT-SPECIFIC: the Domain Terms section is this product's own; the Framework Terms are framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
+```
+
+The second applies to `AI/memory/conventions.md` and `AI/memory/learnings.md`, whose rules are framework-level while their recorded entries are not. The third applies to `AI/memory/glossary.md`, which splits within a single file. Both distinctions existed before this decision and are preserved.
+
+`PROJECT-SPECIFIC` stays the first token after `<!--`. `check_markers.py` and the Collision Guard are unchanged and were re-run against the result.
+
+Both commands and the templates' `README.md` now state the layer/state distinction explicitly, and `init-project.md` Step "Where The Shape Comes From" item 4 says to carry the line through unchanged rather than rewording it on completion — the natural mistake once a line describes state.
+
+---
+
+## Reason
+
+A marker read at the start of every session, on the highest document in the Source Of Truth Hierarchy, has to be true in every state the file can be in. "Placeholder content" is true of a template for the few minutes between install and `/init-project`, and false for every day after. That ratio is the argument.
+
+DECISION-022 already established the principle and the vocabulary — one marker, one meaning; `[ANSWER: ...]` carries state. This decision finishes applying it. That the two rounds are three days apart, on the same underlying confusion in two adjacent markers, is itself the finding: the fix was scoped to where the symptom appeared rather than to the pattern.
+
+---
+
+## Consequences
+
+Positive:
+
+- Line 1 of every Product-layer document is now true whether or not the document has been authored, so an agent reading it reaches the right conclusion in both cases.
+- The marker gained a fact worth carrying — `kenovis sync` never overwrites this file — stated where a reader is standing when they need it, rather than only in `cli/README.md`.
+- No mechanism changed, so no Installation broke and no migration is required.
+
+Negative:
+
+- Installations created before this release keep the old sentence on their authored Product-layer files. `sync` cannot fix it, by design (RULE-INST-01) — Kenovis never edits a customer's Product layer. Those files stay wrong until the customer chooses to update them, and the release notes say so rather than implying the upgrade is complete.
+- Two wordings are now in circulation. The Collision Guard reads the token, so both work; but a grep written against the *sentence* — by a customer, or by a future round of this framework — will match only one. The lesson is already recorded (`AI/memory/learnings.md` Learning-018): match the token, and state a check's scope in the command rather than in prose.
 
 ---
 
