@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: accumulates per-product knowledge. Reset the recorded entries when starting a new product, keep the rules. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: this product's own recorded knowledge; the rules around it are framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 
 AI Learnings
 
@@ -144,6 +144,64 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Process — an unverified cost estimate is a decision, and it was made by nobody
+
+## Learning-019
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Fixing the `PROJECT-SPECIFIC` marker (`PRODUCT/ROADMAP.md` Phase 1 item 10), via `/next`. The work had sat as a backlog note since item 8, carrying its own cost estimate: changing the wording "touches seventeen templates, every authored document and `check_markers.py`", because "the same string is what the Collision Guard matches on (`head -1`)". The note closed with "worth doing deliberately, not as a side effect" — correct-sounding caution.
+
+Problem:
+The premise was false. The Collision Guard matches the bare `PROJECT-SPECIFIC` token, not the sentence after it; so does `check_markers.py`; and no `.py`, `.ts` or `.mjs` file in the repository matches any part of that sentence. The change touched no mechanism, required no `check_markers.py` edit, and broke no existing Installation. It was a find-and-replace across 37 files plus three prose sections.
+
+What happened:
+Two `/next` rounds ranked this item against alternatives while carrying that estimate as fact, and it lost both times — reasonably, given a cost that high against a defect that sounded cosmetic. Checking the premise took one grep. Had the note said "cost unverified" instead of stating a scope, the same grep would have run two rounds earlier. Meanwhile every session of every Installation opened `COMPANY_OS.md` and read that its contents were placeholder content.
+
+Root cause:
+A cost estimate written into a backlog note becomes an input to every future prioritisation decision, but nothing marks it as an estimate. It reads exactly like the findings around it, which were verified. The priority formula in `PRODUCT/ROADMAP.md` divides by Implementation Cost, so a wrong cost does not merely mislead — it deterministically suppresses the item, and the more wrong it is the longer it stays suppressed. This is [[Learning-016]] and [[Learning-018]] in a third position: a number recorded once and never read back against the thing it describes. Here it was not published, it was worse — it was acted on.
+
+Learning:
+An unverified claim in a backlog note is a decision made by whoever was tired at the end of the round that wrote it. The asymmetry is what makes it dangerous: over-estimating cost is invisible, because the item simply never comes up again, while under-estimating it surfaces immediately when the work starts. Nothing in the framework distinguishes "I checked" from "I assumed" in a deferred item, and the priority formula treats both as input.
+
+Future action:
+When deferring an item, either verify the cost or say it is unverified — and when the note names a specific mechanism as the reason something is expensive ("X matches on this string", "Y depends on this file"), check that claim before writing it, because it is the load-bearing part. When picking up any deferred item, re-derive its cost before ranking it rather than trusting the note; one grep is cheaper than a round of wrong prioritisation. Item 8's original note is left visible in `PRODUCT/ROADMAP.md` with the correction beneath it, rather than rewritten, so the mis-estimate stays legible as the finding.
+
+---
+Example: Project — a count without its scope is unverifiable, even when it is right
+
+## Learning-018
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Publishing `kenovis@0.8.0` (`PRODUCT/ROADMAP.md` Phase 1 item 9), via `/next`. The release carried item 8's fix for [[Learning-017]] — three templates that shipped this framework's own answers. Item 8's entry, the `CHANGELOG.md` section and the GitHub Release notes all stated "eleven `[ANSWER: ...]` instructions now replace that content across the three files."
+
+Problem:
+The release's own smoke test counted `[ANSWER:` markers across the installed template corpus before and after `sync` and got 113 → 126: thirteen, not eleven. On that evidence the published claim was wrong, and [[Learning-016]] — the round that shipped a count nobody counted — had recurred one release later despite being recorded specifically to prevent it.
+
+What happened:
+It had not recurred, and the published number was right. Counting the three files individually gives 5 → 9, 6 → 11 and 1 → 3, net +11 exactly. The other two are in the templates' own `README.md` (3 → 5), which gained a section quoting the marker while documenting the convention — prose about questions, not questions. The corpus figure and the per-file figure measure different sets and were never comparable. Ten minutes went into verifying a defect that did not exist, and a correction to a public release was one step from being issued.
+
+Root cause:
+"Eleven instructions across the three files" is precise about the number and precise about the scope — but the scope lives in the sentence, not in the artifact. Any later verification has to reconstruct which files were meant before it can count, and the obvious command (`grep -rc` over the whole template directory) silently answers a different question. This is [[Learning-016]]'s inverse: that round shipped a number nobody had measured; this round measured a number against the wrong corpus. Both fail the same way — a count and the thing it counts are recorded separately, so nothing forces them to stay attached.
+
+Learning:
+Verifying a count requires reproducing its scope, and a scope stated only in prose does not survive into the verification. The failure is symmetric and the cheap-looking direction is the dangerous one: a false alarm costs an investigation and nearly a public correction, which is worse than the wrong number would have been, because it also spends the credibility of the check. Note that this repository's Product layer is itself a template corpus (the DECISION-020/021 self-referential carve-out), so corpus-wide greps here will keep matching prose that quotes a marker — the same trap [[Learning-015]] hit from the other side.
+
+Future action:
+State the command alongside the count, not the scope in words. Write "net +11 across `ENGINEERING/SECURITY.md`, `AUTOMATIONS/release-process.md`, `AUTOMATIONS/user-feedback.md` (5 → 9, 6 → 11, 1 → 3)" rather than "eleven across the three files" — the per-file transitions are self-checking and name their own scope. When a corpus-wide number disagrees with a scoped one, reconcile the difference before treating either as a defect; the difference is usually a file that belongs to one set and not the other. Item 9's roadmap entry records this reconciliation explicitly so the next release does not repeat the investigation.
 
 ---
 Example: Project — a template that was derived by deletion kept the answers nobody deleted

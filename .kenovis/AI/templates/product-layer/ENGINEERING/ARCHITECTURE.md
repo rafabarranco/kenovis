@@ -1,10 +1,10 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: this product's own context, not framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 
 ARCHITECTURE.md
 
 Software Architecture
 
-Version: 1.5
+Version: 1.6
 ---
 Purpose
 
