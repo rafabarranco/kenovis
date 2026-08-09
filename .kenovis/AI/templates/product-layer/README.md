@@ -1,6 +1,6 @@
 # Product-Layer Templates
 
-Version: 1.1
+Version: 1.2
 
 ---
 
@@ -47,6 +47,29 @@ Replaced by an `[ANSWER: ...]` instruction: everything that describes one specif
 When adding an instruction to a template, use `[ANSWER: ...]` if and only if leaving it in place would be a defect. An anchored, bracket-shaped check cannot tell these apart — that is why the marker exists (`AI/memory/learnings.md` Learning-015).
 
 `AI/memory/learnings.md` and `AI/memory/glossary.md` are the clearest case of the split. Their rules — the learning format, the categories, the Review Process that promotes a learning into `.kenovis/AI/policies/`, the Framework Terms section — are framework-level, and roughly twenty framework files reference them. Their recorded learnings and Domain Terms belong to one product.
+
+---
+
+## How a template goes wrong, and how to see it
+
+The rule above — a template never contains an answer, and never the framework author's own — was stated from the beginning and broken anyway, in three files, for three releases. It is worth knowing what the failure looks like, because it is invisible to every check the framework runs.
+
+These templates were derived from this repository's own completed Product layer. Deriving means deleting each Kenovis-specific answer and writing the question that produced it. Where that deletion was missed, Kenovis's own answer stayed behind — indistinguishable, in shape, from the framework-level prose that legitimately survives. `ENGINEERING/SECURITY.md` shipped "Audit System: not applicable in v1 — no backend exists", `AUTOMATIONS/release-process.md` shipped "Staging: validate the CLI before publishing", and a product with a backend, a staging server and no CLI inherited all of it as fact (`AI/memory/learnings.md` Learning-017).
+
+Neither Verify step catches this. Both grep for `[ANSWER:`, and a leftover answer has no marker — that is exactly what makes it a leftover answer. The document passes, and reads as though someone decided it.
+
+When adding or editing a template, read the section back and ask which product it is describing. Two questions separate the cases:
+
+- Would this sentence be true for a product with a completely different shape — no database, or no users, or no published artifact? If not, it is an answer, and it needs an `[ANSWER: ...]` instruction instead.
+- Does it name something only this framework has — a CLI, an npm package, an Installation, a `RULE-INST-*` ID, a `DECISION-NNN` from the framework's own log? Then it is this repository's content in a customer's file.
+
+A cheap first pass over the whole directory, which is what found the three:
+
+```
+grep -rniE "in v1|not applicable|no backend|RULE-INST|npm|the CLI" . --include="*.md"
+```
+
+Every hit is either a real answer that must become a question, or framework-level prose that survives — decide which, do not skim past it. The check is a starting point, not a gate: it cannot see an answer phrased in this product's own generic-sounding words.
 
 ---
 
