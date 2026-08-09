@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.26
+Version: 1.27
 ---
 Purpose
 
@@ -341,6 +341,28 @@ Two smaller findings from the same run, left as backlog rather than fixed inside
 
 - Every template's first line reads "placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md". Once authored, the file is not placeholder content, and in an adoption it was not `init-project` that wrote it. The same string is what the Collision Guard matches on (`head -1`), and this repository's own completed Product layer carries it, so changing the wording touches seventeen templates, every authored document and `check_markers.py`. Worth doing deliberately, not as a side effect.
 - The `CLAUDE.md` stub the CLI writes enumerates the Product layer ("COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, and this repository's own code") and omits `AI/memory/`, which `/adopt-project` Step 9 and `/init-project` Step 8 both create. A one-line fix in `cli/src/domain/installation.ts`, but it changes the stub and therefore the recorded hash sidecar and its tests — CLI work, which this item had none of.
+
+9. DONE (2026-08-09, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 8.
+
+Chosen as the next item because item 8 is merged to `development` and reaches no customer until published — the same packaging step Phase 1 items 2, 5 and 7 performed for `kenovis@0.5.0`, `0.6.0` and `0.7.0`. Against this document's own priority formula the case is the strongest of any release round so far: Customer Pain is maximal and *actively wrong*, not merely missing — every `0.7.0` Installation that runs `/adopt-project` today receives an `ENGINEERING/SECURITY.md` asserting it has no authorization model and no audit system, and Verify passes it clean, because a leftover answer is by construction the one thing that carries no `[ANSWER:` marker. Frequency is every brownfield install, which DECISION-014 states is the majority path for this product's own segment. Business Impact lands on the North Star's activation half. Implementation Cost is a documented procedure. No other scheduled, unblocked item exists: the active npm-registry version check stays deferred on network-dependency cost and unvalidated Pain, and the paid-tier ADR stays premature on one external team's data.
+
+Version call, decided at cut time: **minor, `kenovis@0.8.0`**, not patch. Deliberately, not by habit, per Phase 1 item 2's standing instruction — and for the second release running the habitual answer would have been patch, more strongly than last time: not one line of CLI code changed, and everything in the release is a bug fix. But this package bundles the framework files themselves, and three templates changed content while two commands changed behaviour. An Installation syncing to this release gets templates that ask three questions they previously answered for it. That is the same distinction `0.5.0` and `0.7.0` drew. Reasoning recorded in `CHANGELOG.md`'s `[0.8.0]` header.
+
+Stated in the release notes rather than left implicit, because syncing does not fix it: `sync` never touches a Product-layer file the customer already authored, so an Installation that authored `ENGINEERING/SECURITY.md`, `AUTOMATIONS/release-process.md` or `AUTOMATIONS/user-feedback.md` from the 0.7.0 templates still holds the inherited answers after upgrading. Both `CHANGELOG.md` `[0.8.0]` and the GitHub Release's "Upgrading" section say to read those three documents back.
+
+Procedure: `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release", with the content-sync promotion Learning-012 established as this repository's *standard* procedure. Published from CI via `.github/workflows/publish.yml` on a GitHub Release — never from a laptop (ENGINEERING/SECURITY.md → Supply-Chain Security).
+
+Shipped: `cli/package.json`/`package-lock.json` 0.7.0 → 0.8.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.8.0] - 2026-08-09` (PR #54). Both promotions ran exactly as Learning-012 prescribes and needed no investigation — `preproduction` verified as a strict older snapshot against the 0.7.0 cut (`2adab43`, empty diff), `main` byte-identical to `preproduction`, and the only commits unique to either were the synthetic sync commits from previous rounds. Tree set with `git read-tree -u --reset`, empty diff confirmed before opening each PR (PRs #55, #56). All three branches are byte-identical. `kenovis@0.8.0` published from CI with provenance (SLSA v1 attestation present on the registry); `npm view kenovis version` → `0.8.0`, `dist-tags.latest` → `0.8.0`.
+
+Validated against the *published* package, on the path a real customer runs — `npx kenovis@0.7.0 add` on a scratch brownfield repository (own `README.md`, `src/`, `package.json`), then `npx kenovis@0.8.0 sync`. The sync reported `0.7.0 -> 0.8.0`, changed exactly 7 paths inside `.kenovis/` (the version stamp, both commands, the three templates and the templates' README), left the target's own files untouched, created no Product-layer file at the target's root, and preserved `.setup-pending` so an Installation that had not completed setup keeps its first-session auto-trigger. The three inherited answers are gone from the installed artifact — `not applicable in v1`, `RULE-INST-01`, `GitHub Issues` and `published npm package` each return zero — and `ENGINEERING/SECURITY.md`'s Authorization Model now arrives as a question that explicitly warns against writing "not applicable" over a product that has roles.
+
+Counts read off the published artifact, per Learning-016: the three templates go 5 → 9, 6 → 11 and 1 → 3 `[ANSWER:` occurrences, net **+11**, matching item 8's own claim. The corpus-wide total goes 113 → 126, and the extra two are the templates' `README.md` (3 → 5) quoting the marker while documenting the convention — not questions.
+
+The one thing this round found, and it was found in its own validation rather than in the framework: the corpus figure was measured first, disagreed with the published "eleven", and read as a defect. A correction to a public release was one step from being issued for a number that was correct. "Eleven across the three files" states its scope in the sentence, not in the artifact, so any later verification has to reconstruct which files were meant — and the obvious command (`grep -rc` over the whole template directory) silently answers a different question. Recorded as `AI/memory/learnings.md` Learning-018, with the reconciliation kept above so the next release does not repeat the investigation. Its future action: state the per-file transitions, which name their own scope, instead of a bare total.
+
+Solo-maintainer note, unchanged from previous releases: all three PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
+
+The two backlog findings item 8 left (the templates' first-line wording; the `CLAUDE.md` stub omitting `AI/memory/`) were deliberately kept out of this release: neither was merged to `development`, and introducing a CLI change mid-release contradicts `.kenovis/AI/workflows/release.md`'s stability requirement. They are the leading candidates for the next item.
 
 ---
 Phase 1 — MVP
