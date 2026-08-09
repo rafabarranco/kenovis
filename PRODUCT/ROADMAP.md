@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.30
+Version: 1.31
 ---
 Purpose
 
@@ -437,6 +437,26 @@ Recorded as `AI/memory/learnings.md` Learning-020: both defects are invisible fr
 Backlog finding, left out of this item's scope deliberately and stated so it is a decision rather than an oversight: `kenovis sync` still deletes anything a customer puts under `.kenovis/` without naming what it removed — the smoke test's `already up to date` output mentioned nothing. This round removes every framework instruction that would lead a customer there, which is the cause; making `sync` defensive (report removed paths that the bundle does not ship, or refuse) is a separate change with its own design, and mixing a CLI change into a framework-content round is what `.kenovis/AI/workflows/release.md`'s stability requirement argues against.
 
 Next: this work reaches no customer until published. The release carrying item 12 is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9 and 11 performed.
+
+13. DONE (2026-08-09, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 12.
+
+Chosen as the next item because item 12 is merged to `development` and reaches no customer until published — the same packaging step items 2, 5, 7, 9 and 11 performed for `kenovis@0.5.0` through `0.9.0`. Against this document's own priority formula nothing competes: every `0.9.0` Installation that runs `/feature`, `/bug`, `/release`, `/architect` or the roadmap workflow is told to write its output into the one directory `sync` deletes, the fix exists and reaches nobody, and the cost is a documented procedure. The active npm-registry version check stays deferred on network-dependency cost and unvalidated Pain, and the paid-tier ADR stays premature on one external team's data.
+
+Version call, decided at cut time: **minor, `kenovis@0.10.0`**, not patch. Per Phase 1 item 2's standing instruction this is decided rather than assumed, and for the third release running the habitual answer would have been patch — no CLI code changed and everything in the release is a bug fix. But this package bundles the framework files themselves, and fifteen of them changed: nine instruction documents and six templates. An Installation syncing to this release gets workflows that tell an agent to write somewhere different from where they told it before. Same distinction `0.5.0`, `0.7.0` and `0.8.0` drew. `1.0.0` rejected again for `0.9.0`'s reason — one external team on record, MVP Success Metrics still without a target. Reasoning recorded in `CHANGELOG.md`'s `[0.10.0]` header.
+
+The `[0.10.0]` header and the GitHub Release both lead with what the upgrade cannot undo: an Installation that already followed one of the old instructions and wrote a feature plan, design spec, bug report or ADR into `.kenovis/AI/templates/` has already lost it to `sync`, and its own git history is the only copy. Nothing else about the upgrade is lossy.
+
+Procedure: `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release", with the content-sync promotion Learning-012 established as this repository's *standard* procedure. Published from CI via `.github/workflows/publish.yml` on a GitHub Release — never from a laptop (ENGINEERING/SECURITY.md → Supply-Chain Security).
+
+Shipped: `cli/package.json`/`package-lock.json` 0.9.0 → 0.10.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.10.0] - 2026-08-09` (PR #64). Both promotions ran exactly as Learning-012 prescribes and needed no investigation — `preproduction` verified as a strict older snapshot against the 0.9.0 cut (`f69abfb`, empty diff), `main` byte-identical to `preproduction`, and the only commits unique to either were the synthetic sync commits from previous rounds (PRs #65, #66). All three branches are byte-identical. `kenovis@0.10.0` published from CI with provenance; `npm view kenovis version` → `0.10.0`, `dist-tags.latest` → `0.10.0`.
+
+Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.9.0 add` on a scratch brownfield repository, then `npx kenovis@0.10.0 sync`. Baseline first: 0.9.0 reproduces the defect, eleven instructions naming a template path as their output and zero templates carrying the form rule. After the sync, transition reported `0.9.0 -> 0.10.0`, **16 paths changed inside `.kenovis/`** — the fifteen framework files plus the version stamp, listed off `git status` rather than recalled — defective sites **11 → 0**, all six working templates carrying the rule, `ENGINEERING/ADR/` gone from the tree entirely, the `[ANSWER:` corpus unchanged at 127, the target's own `README.md`, `src/` and `package.json` untouched, and `.setup-pending` preserved so an Installation that had not completed setup keeps its first-session auto-trigger.
+
+One number was reconciled before being written down, per Learning-018's own future action. The first grep run against the installed 0.9.0 tree returned **9** defective sites, not the eleven this release claims. The gap is entirely in the pattern: that grep matched `Generate|Update|Prepare|Create ADR using` and silently excluded `Create:` (`hotfix.md`) and `Before coding create:` (`commands/feature.md`). Re-run with the full verb set it returns eleven, in the eight files item 12 names. This is exactly Learning-018's shape — a count whose scope lives in prose, verified by a command answering a narrower question — caught this time before a correction was drafted rather than after.
+
+No new gap surfaced in the framework this round.
+
+Solo-maintainer note, unchanged from previous releases: all four PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
 
 ---
 Phase 1 — MVP
