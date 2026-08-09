@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.7
+Version: 1.8
 ---
 Scope
 
@@ -144,6 +144,64 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+---
+Example: Project — a template that was derived by deletion kept the answers nobody deleted
+
+## Learning-017
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Executing `/adopt-project` end to end against a real `npx kenovis@0.7.0` Installation (`PRODUCT/ROADMAP.md` Phase 1 item 8), via `/next`. The brownfield command had never been run — [[Learning-015]]'s round exercised `/init-project` only, and the two share templates but not Steps.
+
+Problem:
+Three of the seventeen Product-layer templates contained Kenovis's own answers, unmarked, presented as framework-level prose that every product inherits verbatim. `ENGINEERING/SECURITY.md` told the reader "Authorization Model: not applicable in v1 — no accounts, no shared backend", "Audit System: not applicable in v1 — no backend exists", and described the CLI writing to a customer's filesystem as the product's sensitive operation, citing `RULE-INST-01`/`02` — rule IDs that exist only in this repository's log. `AUTOMATIONS/release-process.md` defined staging as "validate the CLI before publishing" and production as "the published npm package". `AUTOMATIONS/user-feedback.md` named GitHub Issues as the feedback system of record.
+
+What happened:
+The adoption fixture was a padel-court booking API with a members table, JWT auth, role checks and a Fly.io deployment. Authoring `ENGINEERING/SECURITY.md` from its template produced a security document stating that authorization did not apply to a product that has an `admin_only` check, and that no audit trail was possible because there was no backend. The Step 12 Verify then passed it: zero `[ANSWER:` matches. A document asserting three false things about the product it governs was reported clean.
+
+Root cause:
+The templates were derived from this repository's own completed Product layer by deleting each Kenovis-specific answer and writing the question that produced it. Where a deletion was missed, the answer stayed — and a leftover answer is shaped exactly like the framework-level prose that legitimately survives. Both commands' Verify greps for `[ANSWER:`, which is by construction the one marker a leftover answer does not carry. `AUTOMATIONS/customer-onboarding.md`, derived in the same round, is clean, so this was inconsistent execution of a rule the templates' own `README.md` already stated, not a missing rule.
+
+Learning:
+A check that finds *unanswered* questions cannot find *wrongly answered* ones, and the two failures are not symmetric: an unanswered question is visibly incomplete, while an inherited answer looks decided and gets built on. This is [[Learning-015]] and [[Learning-016]] a third time — a claim written once, never read back against the world it ends up in — but with a sharper edge, because here the artifact is the thing shipped to customers rather than prose describing it. Deriving a template by deletion has no completion signal: nothing tells you which deletions you skipped.
+
+Future action:
+When deriving a template from a real document, the passing condition is not "the questions are marked" but "no sentence in this file is true of only one product." Read every section that was not rewritten and ask whether it would survive a product with the opposite shape — no database, no users, no published artifact. `.kenovis/AI/templates/product-layer/README.md` → "How a template goes wrong, and how to see it" carries the two questions and a starting grep. Both commands' Verify now say to read back what came over verbatim, and `/adopt-project`'s contrast check extends to `AUTOMATIONS/` — where two of these three were. None of that is a gate; no pattern distinguishes an inherited answer from a legitimate one, which is why the rule is stated as a reading discipline and the limitation is written down rather than papered over.
+
+---
+Example: Project — the round that fixed an unexecuted check shipped an uncounted count
+
+## Learning-016
+
+Date:
+2026-08-09
+
+Category:
+Process
+
+Context:
+Publishing `kenovis@0.7.0` (`PRODUCT/ROADMAP.md` Phase 1 item 7), via `/next`. The release carried item 6's fix for a Verify step that had never been executed — the failure [[Learning-015]] records. Item 6's own entry, the `CHANGELOG.md` section, the PR body and the GitHub Release notes all stated the same figure: "110 instructions across 15 templates."
+
+Problem:
+The instruction count was exact — the smoke test against the published package found precisely 110 unanswered questions in a copied-in Product layer. The file count was not. Thirteen templates changed, plus the templates' own `README.md`, which documents the marker convention rather than being a template. Nobody had run `git show --stat` against the commit the sentence describes.
+
+What happened:
+The wrong number reached the npm registry and a public GitHub Release before anything contradicted it, and what finally did was the release's own smoke test — counting changed paths for an unrelated reason (confirming what a customer's `sync` actually touches) and getting 17 where the prose implied 19.
+
+Root cause:
+The claim was written in the same breath as the work, from the author's memory of what had just been edited, and then copied forward verbatim into four more documents. Every later reader — review, CI, the release cut — was reading a restatement, not the artifact. `check_changelog.py` verifies that a changelog entry *exists*; nothing verifies that what it says is true, and nothing can.
+
+Learning:
+This is [[Learning-015]] one round later in a different costume. There the unverified thing was a check; here it is a count. The shared shape is a factual claim about an artifact, written next to the artifact, never read back off it. Prose in `CHANGELOG.md`, `DECISIONS.md` and `PRODUCT/ROADMAP.md` is this framework's product — DECISION-009 makes documentation the company memory — so a number in it carries the same obligation as a number in code, with none of the tooling.
+
+Future action:
+Any count in a changelog, decision or roadmap entry (files touched, instructions converted, tests added) gets read off the artifact with the command that produces it, in the same round, and that command goes in the entry: `git show --stat <commit> -- <path>`, `grep -rc`, the test runner's own total. If the number is not worth one command, do not state it — "several templates" is honest and costs nothing. When a published number turns out wrong, correct it where it was published (including the GitHub Release notes) and say it was corrected, per DECISION-009's discipline: the trail is the point, the same way DECISION-015 → DECISION-016 was kept rather than rewritten.
 
 ---
 Example: Project — a verification step that has never been run against a passing case
