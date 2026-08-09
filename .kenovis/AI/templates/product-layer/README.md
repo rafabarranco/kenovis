@@ -1,6 +1,6 @@
 # Product-Layer Templates
 
-Version: 1.2
+Version: 1.3
 
 ---
 
@@ -29,6 +29,8 @@ product-layer/AI/memory/*.md             →  AI/memory/*.md
 Only `/init-project` and `/adopt-project` read this directory. Do not copy a template into place by hand — both commands ask the human real questions first, then author the file from the answers. A template copied verbatim is placeholder content pretending to be a decision.
 
 Every template's first line carries the `PROJECT-SPECIFIC` marker, so a file authored from one is recognisable as Product layer from the moment it exists. That is what makes the Collision Guard (DECISION-019) work: a Product-layer path holding a file *without* the marker is someone else's file, and neither command may overwrite it without asking.
+
+Carry that line into the authored file unchanged. It states which layer the file belongs to and nothing else — it is equally true of a template nobody has answered and of a document a company has owned for a year, which is what lets the Collision Guard keep working for every future run rather than only the first. Whether a file still holds unanswered questions is a separate fact with its own marker, `[ANSWER: ...]`, described below. The marker line said both things until DECISION-023 separated them, and the consequence was that line 1 of every completed Product-layer document told the next agent to read it as placeholder content.
 
 ---
 

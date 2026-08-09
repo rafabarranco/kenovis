@@ -1,4 +1,4 @@
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: this product's own context, not framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 
 # cli/
 
@@ -82,7 +82,7 @@ Both `init` and `sync` also validate `--source` itself before touching anything:
 ```
 npm install
 npm run build      # bundles Framework layer assets, then compiles TypeScript
-npm test           # 83 tests: domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
+npm test           # domain, application (in-memory), infrastructure (real fs, temp dirs), cli parsing
 npm run typecheck
 node bin/kenovis.js init <targetDir>                                    # uses the bundled Framework layer
 node bin/kenovis.js init <targetDir> --source <customFrameworkDir>      # or install something else instead
