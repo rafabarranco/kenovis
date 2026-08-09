@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-08-09
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.9.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2, and this round the habitual answer would again have been patch: not one line of CLI code changed and everything here is a bug fix. But this package bundles the framework files themselves, and fifteen of them changed — nine instruction documents and six templates. An Installation syncing to this release gets workflows that tell an agent to write somewhere different from where they told it before. That is the same distinction [0.5.0], [0.7.0] and [0.8.0] drew.
+
+`1.0.0` was considered and rejected again, for the reason [0.9.0] gave: it would signal maturity Phase 1 has not validated, with one external team on record and the MVP Success Metrics still without a target.
+
+**Nothing breaks for an existing Installation, and nothing is lost by upgrading** — but if you already followed one of the old instructions and wrote a feature plan, design spec, bug report or ADR into `.kenovis/AI/templates/`, `kenovis sync` has already deleted it, or will on your next sync. Your own `git history` is the only copy. Check `git log -- .kenovis/AI/templates/` before syncing if you are unsure.
+
 ### Fixed
 
 - **Every workflow that told an agent to produce a document named a template's own path as the place to write it — inside `.kenovis/`, which `kenovis sync` deletes.** Eleven instructions across `.kenovis/AI/workflows/feature.md`, `bugfix.md`, `hotfix.md`, `architecture.md`, `roadmap.md`, `release.md`, `.kenovis/AI/commands/feature.md` and `.kenovis/AI/agents/designer.md` read "Generate: `.kenovis/AI/templates/feature-plan.md`", "Update: `.kenovis/AI/templates/bug-report.md` with final resolution details", "Create: `.kenovis/AI/templates/decision.md`". A template's path was given where a destination belongs, so one path named both the blank form and the filled-in document.
