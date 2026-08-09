@@ -1,6 +1,6 @@
 # Adopt Project Command
 
-Version: 1.8
+Version: 1.9
 
 ---
 
@@ -308,7 +308,9 @@ Describe the actual repository topology found in Step 1 — the real layout, not
 
 This is not the `init-project.md` Step 11 check for zero matches of example terms — adoption doesn't start from an example, it starts from real code that must not be contradicted.
 
-For every factual claim written into `ENGINEERING/*.md` and `DOMAIN/*.md`, confirm it matches something observable in the customer's actual code:
+This check covers every factual claim in the document, not only the sentences authored in Steps 3-9. A section that came over from its template verbatim can carry an answer about a different product — the framework's own, left behind when the template was derived from it (`AI/memory/learnings.md` Learning-017). Such a sentence has no `[ANSWER:` marker and no code citation, which is exactly what the contrast check below is for. Apply it to `AUTOMATIONS/*.md` as well: two of the three known cases were there, describing a release process and a feedback system belonging to another company.
+
+For every factual claim written into `ENGINEERING/*.md`, `DOMAIN/*.md` and `AUTOMATIONS/*.md`, confirm it matches something observable in the customer's actual code:
 
 ```
 For each claim: does the code support it? Cite file/line, or mark it explicitly as inferred / Low confidence and unverified.
