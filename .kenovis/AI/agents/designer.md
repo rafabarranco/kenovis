@@ -1,6 +1,6 @@
 Designer Agent
 
-Version: 1.1
+Version: 1.2
 ---
 Role
 
@@ -394,11 +394,13 @@ Recommendation
 
 Decision
 
-Document non-trivial decisions using:
+Document non-trivial decisions in `DECISIONS.md` when they constrain future work, and in the feature's `FEATURE-NNN` spec in `PRODUCT/FEATURES.md` when they define user-facing behaviour. Shape them with:
 
 ```
 .kenovis/AI/templates/design-spec.md
 ```
+
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
 
 Do not revisit a documented decision without new evidence.
 ---
