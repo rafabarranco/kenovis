@@ -6,6 +6,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-08-09
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.8.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, and unlike the last two rounds the call needs no argument: CLI code changed (the stub written on every install), seventeen templates changed content, and both `/init-project` and `/adopt-project` changed behaviour.
+
+**Read this before syncing.** An Installation created before this release keeps the old marker wording on the Product-layer files it already authored, and `kenovis sync` will not update them — it never touches a Product-layer file, by design (RULE-INST-01). Those files keep telling the next agent they are placeholder content until you edit line 1 by hand. The new wording is below; the `PROJECT-SPECIFIC` token is what every mechanism actually reads, so a file left as-is still works — it is only the sentence after the token that is wrong, and only for a reader.
+
 ### Fixed
 
 - **Line 1 of every Product-layer document told the next agent it was reading placeholder content.** The `PROJECT-SPECIFIC` marker read `placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md` — false the moment `/init-project` or `/adopt-project` authors the file, which is to say false for the entire life of every real Installation, and naming the wrong command in an adoption. This is the first thing read in `COMPANY_OS.md`, the top of the Source Of Truth Hierarchy, at the start of every session; it is also what the Collision Guard (DECISION-019) reads to decide whether a file may be overwritten without asking. The one line whose job is to protect authored content was describing that content as scaffolding.
