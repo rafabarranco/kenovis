@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.25
+Version: 1.26
 ---
 Purpose
 
@@ -319,6 +319,29 @@ Validated against the *published* package, on the path a real customer runs — 
 The fix itself was measured rather than assumed, per Learning-015's own future action: with every template copied in unanswered, the new check finds **110** real questions; the old anchored `grep -rn "^\["` on the same corpus returns 126 matches, of which **30 are false positives** (the deliberate "nothing recorded yet" statements, format specifications) while **14 real questions are invisible to it** because they sit mid-line. Both numbers reproduce against the published artifact, not a local build.
 
 Correction made in the close: this item's own release prose, and item 6 above, said "110 instructions across 15 templates." The instruction count is exact; the file count was not — thirteen templates changed, plus the templates' `README.md`, which documents the convention rather than being a template. Corrected in `CHANGELOG.md` `[0.7.0]`, in item 6 above, and in the GitHub Release notes. Recorded as `AI/memory/learnings.md` Learning-016: the round that fixed a check nobody executed shipped a count nobody counted.
+8. DONE (2026-08-09, via /next) — execute `/adopt-project` end to end against a real published Installation, and fix what breaks.
+
+Founder chose this as the next item once Phase 1 items 1-7 were confirmed closed and no scheduled, unblocked item remained. Candidates weighed against this document's own priority formula: this item, the active npm-registry version check (Phase 2, still deferred on network-dependency cost and unvalidated Pain), the paid-tier ADR (still premature on one external team's data), and a `/framework-review` audit pass (expected yield low after item 6's own pass over the templates).
+
+Gap found: item 6 ran `/init-project` from a real Installation for the first time and found a Verify step that had never been executed. `/adopt-project` had still never been run at all. The two commands share the seventeen templates but not their Steps — audit-first (Step 1), confidence tagging, decision-log reconstruction (Step 4), verify-by-contrast (Step 12), never-touch-the-customer's-code (Step 11) are unique to adoption — and brownfield is the majority path for this product's own segment, which DECISION-014 states explicitly ("most of whom are not starting from zero"). Pain is maximal if it breaks (activation is zero and nobody reports it), Frequency is every brownfield install, Implementation Cost is a scratch-repository dry run.
+
+Method: a real brownfield fixture (a court-booking API — Express, SQLite, JWT auth, `club_id` multi-tenancy, role checks, GitHub Actions deploying to a host), `npx kenovis@0.7.0 add` against it, then Steps 1-13 executed as written, with no patching mid-run. The company answers Step 2 cannot get from code were supplied as a declared test fixture, not as a real Installation. The published bundle was confirmed byte-identical to this repository's own `.kenovis/AI/` before starting, so every finding applies to what customers actually have.
+
+What the run found — and it was not in the Steps, which executed cleanly. Three of the seventeen templates carried Kenovis's own answers as unmarked prose. `ENGINEERING/SECURITY.md` asserted "Authorization Model: not applicable in v1 — no accounts, no shared backend", "Audit System: not applicable in v1 — no backend exists", and described the CLI writing to a customer's filesystem as the product's sensitive operation, citing `RULE-INST-01`/`02` — rule IDs from this repository's log, which no Installation has. `AUTOMATIONS/release-process.md` defined staging as "validate the CLI before publishing" and production as the published npm package. `AUTOMATIONS/user-feedback.md` named GitHub Issues as the feedback system of record. Authored against the fixture, the resulting security document denied that authorization applied to a product with an `admin_only` check — and Step 12's Verify passed it, because both commands grep for `[ANSWER:` and a leftover answer is precisely the thing that carries no marker. See `AI/memory/learnings.md` Learning-017.
+
+Shipped: eleven `[ANSWER: ...]` instructions replace that content across the three templates (each 1.1 → 1.2); `AUTOMATIONS/customer-onboarding.md`, derived in the same original round, was already clean, which is why this is recorded as inconsistent execution of an existing rule rather than a missing one. Both commands' Verify now says to read back what came over verbatim, and `/adopt-project`'s verify-by-contrast extends to `AUTOMATIONS/` — where two of the three were — having previously covered only `ENGINEERING/` and `DOMAIN/` (`init-project.md` 1.8 → 1.9, `adopt-project.md` 1.8 → 1.9). `.kenovis/AI/templates/product-layer/README.md` (1.1 → 1.2) documents what a leftover answer looks like and the two questions that separate it from framework prose.
+
+No ADR: this corrects content and strengthens an existing check. It decides nothing new, the same call Phase 1 item 1 made.
+
+Deliberately not built: a CI guard. No pattern distinguishes an inherited answer from a legitimate one — an answer phrased in generic words is invisible to any check, and the grep the templates' README now carries is documented as a starting point rather than a gate. Claiming otherwise would repeat Learning-015's own failure in a new place.
+
+Validated: the fixed bundle built and installed into a second fresh scratch Installation — the three sections now arrive as questions, and a `SECURITY.md` copied in unanswered reports 9 `[ANSWER:` matches instead of passing clean at 0. 108 `cli/` tests pass, typecheck and build clean, `check_links.py` and `check_markers.py` pass. No CLI code changed. Counts read off the artifact with `git diff --stat` and `grep -c` in the same round, per Learning-016.
+
+Two smaller findings from the same run, left as backlog rather than fixed inside this item's scope, both stated here so they are decisions and not oversights:
+
+- Every template's first line reads "placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md". Once authored, the file is not placeholder content, and in an adoption it was not `init-project` that wrote it. The same string is what the Collision Guard matches on (`head -1`), and this repository's own completed Product layer carries it, so changing the wording touches seventeen templates, every authored document and `check_markers.py`. Worth doing deliberately, not as a side effect.
+- The `CLAUDE.md` stub the CLI writes enumerates the Product layer ("COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, and this repository's own code") and omits `AI/memory/`, which `/adopt-project` Step 9 and `/init-project` Step 8 both create. A one-line fix in `cli/src/domain/installation.ts`, but it changes the stub and therefore the recorded hash sidecar and its tests — CLI work, which this item had none of.
+
 ---
 Phase 1 — MVP
 

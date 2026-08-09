@@ -4,7 +4,7 @@ user-feedback.md
 
 User Feedback Automation System
 
-Version: 1.1
+Version: 1.2
 ---
 Purpose
 
@@ -198,7 +198,7 @@ Characteristics:
 ---
 Feedback Database
 
-None in v1 — no backend or database exists (DECISIONS.md DECISION-013). GitHub Issues is the feedback system of record: an issue plus a label taxonomy (bug, usability, feature-request, product-insight) substitutes for a `feedback_items` table until a hosted layer exists.
+[ANSWER: Where feedback items are actually recorded, and the fields each one carries. If nothing stores them, name what plays that role — an issue tracker, a spreadsheet, a channel — and the condition under which a real store becomes worth building.]
 
 ---
 Feedback Status
@@ -313,7 +313,7 @@ Human judgment is required.
 ---
 Tools Integration
 
-GitHub Issues/Discussions for feedback collection and triage. No communication, database or automation tooling beyond that in v1 — see AUTOMATIONS/customer-onboarding.md → Automation Tools.
+[ANSWER: Which tools actually carry feedback today — collection, triage, communication — and which categories deliberately have no tooling. Must agree with AUTOMATIONS/customer-onboarding.md → Automation Tools.]
 ---
 First 100 Customers Strategy
 

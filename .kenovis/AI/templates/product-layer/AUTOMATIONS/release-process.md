@@ -4,7 +4,7 @@ release-process.md
 
 Software Release Process
 
-Version: 1.1
+Version: 1.2
 ---
 Purpose
 
@@ -91,35 +91,32 @@ Development Environment
 
 Purpose:
 
-[ANSWER: Build and experiment on the product's source.]
+[ANSWER: What this environment is for — where the product's source is built and experimented on.]
 
 Characteristics:
 
-- Local development.
-- No hosted infrastructure to provision.
-- Fast iteration.
+[ANSWER: What is true of it: where it runs, what infrastructure it needs, how fast the loop is.]
 ---
 Staging Environment
 
 Purpose:
 
-Validate the CLI before publishing.
+[ANSWER: What is verified here before a change can reach a customer.]
 
 Characteristics:
 
-- Run the CLI against a scratch/throwaway target repository.
-- Verify install and sync both respect RULE-INST-01/02.
+[ANSWER: How that verification actually happens. If there is no hosted staging, name what substitutes for it — a scratch target, a preview build, a dry run — rather than leaving the section describing infrastructure this product does not have.]
 ---
 Production Environment
 
 Purpose:
 
-Serve real customers via the published npm package.
+[ANSWER: What customers actually run, and how it reaches them.]
 
 Requirements:
 
-- Version pinned exactly, published from CI with provenance (ENGINEERING/SECURITY.md → Supply-Chain Security).
-- CHANGELOG.md updated per DECISIONS.md DECISION-011.
+[ANSWER: What must be true before a change is allowed into production. Include how the artifact is versioned and where it is released from, and reference ENGINEERING/SECURITY.md → Supply-Chain Security for the trust requirements.]
+
 - [ANSWER: Backup and rollback requirements before a production release, or the reason none apply.]
 ---
 Feature Development Process
