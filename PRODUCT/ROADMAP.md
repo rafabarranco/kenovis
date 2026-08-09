@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.28
+Version: 1.29
 ---
 Purpose
 
@@ -387,6 +387,28 @@ Validated: 109 `cli/` tests pass, typecheck and build clean, `check_links.py` an
 Recorded as `AI/memory/learnings.md` Learning-019: an unverified cost estimate in a backlog note nearly deferred a maximal-Pain fix indefinitely, and the smallest possible check — grep for the string the note claimed was load-bearing — collapsed the estimate from "seventeen templates, every authored document and `check_markers.py`" to a mechanical find-and-replace.
 
 Next: this work reaches no customer until published. The release carrying items 9 and 10 is the leading candidate for the next item, the same packaging step items 2, 5, 7 and 9 performed.
+
+11. DONE (2026-08-09, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 10.
+
+Chosen as the next item because item 10 is merged to `development` and reaches no customer until published — the same packaging step items 2, 5, 7 and 9 performed for `kenovis@0.5.0` through `0.8.0`. Against this document's own priority formula nothing competes: every `0.8.0` Installation opens `COMPANY_OS.md` at the start of every session and reads on line 1 that its contents are placeholder content, the fix exists and reaches nobody, and the cost is a documented procedure. The active npm-registry version check stays deferred on network-dependency cost and unvalidated Pain, the paid-tier ADR stays premature on one external team's data, and `/framework-review`'s expected yield is low after items 6, 8 and 10 each swept the same surface.
+
+Version call, decided at cut time: **minor, `kenovis@0.9.0`**. Per Phase 1 item 2's standing instruction this is decided rather than assumed, and unlike the last two rounds it needs no argument — CLI code changed (the stub written on every install), seventeen templates changed content, and both commands changed behaviour. `1.0.0` was considered and rejected: it would signal maturity Phase 1 has not validated, with one external team on record and the MVP Success Metrics below still without a target. Reasoning recorded in `CHANGELOG.md`'s `[0.9.0]` header.
+
+The `[0.9.0]` header and the GitHub Release both **lead with what the upgrade cannot do**, rather than burying it under the fixes: an Installation created before this release keeps the old marker wording on the Product-layer files it already authored, and `sync` will not update them (RULE-INST-01). The release notes carry the three replacement lines so a customer can update by hand, and state plainly that leaving them alone breaks nothing — the `PROJECT-SPECIFIC` token is what every mechanism reads, and only the sentence after it is wrong.
+
+Procedure: `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release", with the content-sync promotion Learning-012 established as this repository's *standard* procedure. Published from CI via `.github/workflows/publish.yml` on a GitHub Release — never from a laptop (ENGINEERING/SECURITY.md → Supply-Chain Security).
+
+Shipped: `cli/package.json`/`package-lock.json` 0.8.0 → 0.9.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.9.0] - 2026-08-09` (PR #59). Both promotions ran exactly as Learning-012 prescribes and needed no investigation — `preproduction` verified as a strict older snapshot against the 0.8.0 cut (`75ec1f0`, empty diff), `main` byte-identical to `preproduction`, and the only commits unique to either were the synthetic sync commits from previous rounds (PRs #60, #61). All three branches are byte-identical. `kenovis@0.9.0` published from CI with provenance (SLSA v1 attestation on the registry); `npm view kenovis version` → `0.9.0`, `dist-tags.latest` → `0.9.0`.
+
+Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.8.0 add` on a scratch brownfield repository, a `COMPANY_OS.md` authored from the 0.8.0 template (so it carries the old marker line, which is the state that matters), then `npx kenovis@0.9.0 sync`. Baseline first: 0.8.0 reproduces both defects, the old wording on every template and a stub with no `AI/memory/`. After the sync, transition reported `0.8.0 -> 0.9.0`, 22 paths changed inside `.kenovis/` (18 of them under `templates/product-layer/`) plus the root `CLAUDE.md`, the stub enumerates `AI/memory/`, and all three marker forms arrive correctly.
+
+The result the round was really checking: the authored `COMPANY_OS.md` still carries the **old** wording after the upgrade — the documented consequence, reproduced rather than asserted — and `head -1` still matches `PROJECT-SPECIFIC`, so the Collision Guard keeps working and no Installation breaks. The target's own `README.md`, `src/` and `package.json` were untouched throughout and `.setup-pending` was preserved. A separate fresh `npx kenovis@0.9.0 add` delivered all eighteen template files with zero occurrences of the old wording anywhere in the bundle and created no Product-layer file at the target's root.
+
+One number was reconciled before being written down, per Learning-018's own future action: `[ANSWER:` occurrences across the templates go 126 → 127. No template gained or lost a question — item 10 touched the `PROJECT-SPECIFIC` marker, not this one — and the single addition is in the templates' `README.md` (5 → 6), whose new section quotes the marker while explaining the layer/state distinction. Checked before publishing the figure rather than after, which is the difference from item 9.
+
+No new gap surfaced — nothing recorded as a learning this round.
+
+Solo-maintainer note, unchanged from previous releases: all three PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
 
 ---
 Phase 1 — MVP
