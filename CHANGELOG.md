@@ -6,6 +6,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-08-09
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0]/[0.3.0]/[0.4.0]/[0.5.0]/[0.6.0]/[0.7.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided deliberately per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2, and this round the habitual answer would again have been patch: not one line of CLI code changed, and everything here is a bug fix. But this package bundles the framework files themselves. Three Product-layer templates changed content and two commands changed behaviour — an Installation that syncs to this release gets templates that ask three questions they previously answered for it, and a Verify step that asks for something it did not ask for before. That is the same distinction [0.5.0] and [0.7.0] drew: more than a CLI bug fix, so minor.
+
+Nothing breaks for an existing Installation. A Product layer already authored from the 0.7.0 templates stays valid — but if it was authored from the `ENGINEERING/SECURITY.md`, `AUTOMATIONS/release-process.md` or `AUTOMATIONS/user-feedback.md` template, read those three documents back after syncing: the content this release replaces with questions was inherited as fact, and syncing does not touch a Product-layer file the customer already authored.
+
 ### Fixed
 
 - **Three Product-layer templates shipped this framework's own answers as if they were framework-level prose, and every Installation inherited them as fact.** `ENGINEERING/SECURITY.md` stated "Authorization Model: not applicable in v1 — no accounts, no shared backend" and "Audit System: not applicable in v1 — no backend exists to hold audit records", and described the CLI writing to a customer's filesystem as the product's sensitive operation, citing `RULE-INST-01`/`02` — rule IDs that exist only in this repository's decision log. `AUTOMATIONS/release-process.md` defined staging as "validate the CLI before publishing" and production as "serve real customers via the published npm package". `AUTOMATIONS/user-feedback.md` named GitHub Issues as the feedback system of record. Eleven `[ANSWER: ...]` instructions now replace that content across the three files (`ENGINEERING/SECURITY.md` 1.1 → 1.2, `AUTOMATIONS/release-process.md` 1.1 → 1.2, `AUTOMATIONS/user-feedback.md` 1.1 → 1.2); `AUTOMATIONS/customer-onboarding.md`, derived in the same original round, was already clean.
