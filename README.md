@@ -40,10 +40,12 @@ Read [.kenovis/AI/commands/init-project.md](.kenovis/AI/commands/init-project.md
 Product-layer files carry this marker on their first line:
 
 ```
-<!-- PROJECT-SPECIFIC: placeholder content. Rewrite when starting a new product. See .kenovis/AI/commands/init-project.md -->
+<!-- PROJECT-SPECIFIC: this product's own context, not framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 ```
 
-If a file has that marker, it describes the example company and must be replaced. If it does not, it is framework and should work unchanged.
+The marker states which layer a file belongs to, and nothing about whether it has been filled in. It is equally true of a template nobody has answered and of a document that has been this company's own for a year — both are Product layer, and `kenovis sync` leaves both alone. A file without the marker is framework, and works unchanged.
+
+Whether a file still holds unanswered questions is a separate fact, carried by a separate marker: `[ANSWER: ...]`. See [DECISIONS.md](DECISIONS.md) DECISION-022 and DECISION-023.
 
 ## Adopting an existing product
 

@@ -32,6 +32,30 @@ test("claudeStubContent references the actual framework directory name", () => {
   assert.ok(content.includes(FRAMEWORK_DIR_NAME));
 });
 
+// The stub tells the next agent where this repository's product context lives.
+// Every other test compares claudeStubContent against itself, which cannot catch
+// an omission — and did not: `AI/memory/` was missing from this list from the
+// stub's introduction until DECISION-023, while /init-project Step 8 and
+// /adopt-project Step 9 both create it. Pin the list against the source of truth
+// rather than against the function's own output.
+test("claudeStubContent enumerates every Product-layer path a command creates", () => {
+  const content = claudeStubContent({ pending: false });
+  for (const productLayerPath of [
+    "COMPANY_OS.md",
+    "DECISIONS.md",
+    "PRODUCT/",
+    "DOMAIN/",
+    "ENGINEERING/",
+    "AUTOMATIONS/",
+    "AI/memory/",
+  ]) {
+    assert.ok(
+      content.includes(productLayerPath),
+      `stub omits the Product-layer path ${productLayerPath}`,
+    );
+  }
+});
+
 test("claudeStubContent, when pending and greenfield, directs the next session to init-project", () => {
   const content = claudeStubContent({ pending: true, kind: "greenfield" });
   assert.match(content, /Before doing anything else this session, run/);
