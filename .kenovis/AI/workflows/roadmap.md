@@ -1,6 +1,6 @@
 # Roadmap Execution Workflow
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -161,11 +161,13 @@ ENGINEERING/ARCHITECTURE.md
 
 # Phase 6 - Create Feature Plan
 
-Generate:
+Produce a feature plan, shaped by:
 
 ```
 .kenovis/AI/templates/feature-plan.md
 ```
+
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024. The plan is a working artifact of this session; its durable parts belong in the `FEATURE-NNN` spec in `PRODUCT/FEATURES.md` and, for technical decisions, in `DECISIONS.md`.
 
 Include:
 
@@ -190,7 +192,13 @@ Execute:
 .kenovis/AI/commands/architect.md
 ```
 
-Create ADR using:
+Record the ADR in:
+
+```
+DECISIONS.md
+```
+
+Shaped by:
 
 ```
 .kenovis/AI/templates/adr.md

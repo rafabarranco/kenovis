@@ -1,6 +1,6 @@
 # Architect Command
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -273,17 +273,13 @@ Create:
 DECISIONS.md
 ```
 
-or:
-
-```
-ENGINEERING/ADR/
-```
-
 Using:
 
 ```
 .kenovis/AI/templates/adr.md
 ```
+
+`DECISIONS.md` is the destination every Installation already has. A product that prefers separate ADR files decides where they live and records that in `AI/memory/conventions.md` — the framework does not create a directory for them. See DECISIONS.md DECISION-024.
 
 Include:
 

@@ -1,6 +1,6 @@
 # Bug Fix Workflow
 
-Version: 2.2
+Version: 2.3
 
 ---
 
@@ -75,11 +75,13 @@ Load:
 
 # Phase 2 - Analyze Bug Report
 
-Review:
+Review the reported bug — from the human, an issue tracker, or a failing test. Where the report is incomplete, use this form to name what is missing and ask for it:
 
 ```
 .kenovis/AI/templates/bug-report.md
 ```
+
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
 
 Identify:
 
@@ -179,7 +181,13 @@ Execute:
 .kenovis/AI/commands/architect.md
 ```
 
-Create ADR using:
+Record the ADR in:
+
+```
+DECISIONS.md
+```
+
+Shaped by:
 
 ```
 .kenovis/AI/templates/adr.md
@@ -273,13 +281,15 @@ Confirm:
 - Review approved.
 - Documentation updated.
 
-Update:
+Record the resolution where it will still be readable after this session:
 
 ```
-.kenovis/AI/templates/bug-report.md
+AI/memory/learnings.md
 ```
 
-with final resolution details.
+when the bug taught something reusable — a root cause that will recur, a convention that would have prevented it. The regression test added in Phase 8 is the other half of that record, and the more durable one.
+
+The bug-report form is not a file to update: it shaped the conversation, and `kenovis sync` replaces the directory it lives in. See DECISIONS.md DECISION-024.
 
 ---
 
