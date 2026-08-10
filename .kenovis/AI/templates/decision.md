@@ -213,4 +213,3 @@ Check:
 - Is the decision still valid?
 - Are consequences acceptable?
 - Are improvements required?
-```

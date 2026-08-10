@@ -6,6 +6,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Fixed
+
+- **`/bug` and `/release` still pointed at a template as the only place to put what they produce — the fix in [0.10.0] missed them.** `.kenovis/AI/commands/bug.md` Step 2 read "Create Bug Report / Use: `.kenovis/AI/templates/bug-report.md`" and `.kenovis/AI/commands/release.md` Step 8 read "Generate Release Notes / Use: `.kenovis/AI/templates/release-notes.md`". Neither named a destination, and since [0.10.0] the templates themselves say "fill it in where the workflow that sent you here says to record the artifact" — which those two commands never say. Template defers to command, command is silent, and the only path an agent has been given is the one inside `.kenovis/`.
+
+  Reproduced against the published `kenovis@0.10.0`: a bug report filled in at `.kenovis/AI/templates/bug-report.md` and committed was deleted by the next `kenovis sync`, which reported `0.10.0 -> 0.10.0 (already up to date)` and never named the file it reverted.
+
+  Both steps now carry the same shape the paired workflows already had. `/bug` Step 2 says the report shapes the session rather than becoming a file, and points at the regression test and `AI/memory/learnings.md` as what survives it. `/release` Step 8 says to publish release notes wherever `AUTOMATIONS/release-process.md` records that this product publishes them.
+
+  Why [0.10.0] missed them: that round found its eleven sites with a grep over a verb set, so the fix's scope was whatever the pattern matched. These two say "Use:". A pattern that defines its own scope cannot report what it missed — the same failure `AI/memory/learnings.md` Learning-016 and Learning-018 each record for counts, now for a sweep. Found by executing `/bug` end to end from a real published Installation (`PRODUCT/ROADMAP.md` Phase 1 item 14); see Learning-021.
+
+- **Five working templates ended with an unmatched code fence**, so the tail of `adr.md`, `bug-report.md`, `decision.md`, `feature-plan.md` and `release-notes.md` opened a code block that never closed. Cosmetic, and present since each file was written.
+
+### Added
+
+- **`.github/scripts/check_template_refs.py`, wired into CI**, so DECISION-024 stops depending on someone remembering it. Every reference to a working template from anywhere else under `.kenovis/AI/` must state that the path is a form rather than a destination, or cite DECISION-024, within a few lines. The check enumerates all fifteen references instead of pattern-matching imperatives, which is the specific way the previous sweep under-reported. Confirmed to fail on the pre-fix tree — naming both real defects — before being kept.
+
+  Five workflow sites (`architecture.md`, `bugfix.md`, `feature.md`, `hotfix.md`, `roadmap.md`) were correct already: each names `DECISIONS.md` as the destination and the template only as "Shaped by:". They gained a one-line citation so the invariant is uniform and mechanically checkable, rather than the check having to judge English it cannot judge.
+
 ## [0.10.0] - 2026-08-09
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.9.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2, and this round the habitual answer would again have been patch: not one line of CLI code changed and everything here is a bug fix. But this package bundles the framework files themselves, and fifteen of them changed — nine instruction documents and six templates. An Installation syncing to this release gets workflows that tell an agent to write somewhere different from where they told it before. That is the same distinction [0.5.0], [0.7.0] and [0.8.0] drew.
