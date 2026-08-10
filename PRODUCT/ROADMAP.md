@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.32
+Version: 1.33
 ---
 Purpose
 
@@ -505,6 +505,34 @@ One count was reconciled before being written down, per Learning-018 and Learnin
 Solo-maintainer note, unchanged from previous releases: all three PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
 
 Next: Learning-020's future action has `/review`, `/release` and `/architect` still unrun from a real published Installation, one per round — `/bug` was item 14 and found a defect, as `/init-project`, `/adopt-project` and `/feature` each did before it. The other standing candidates are unchanged: making `sync` name the paths it removes (item 12's backlog finding), the active npm-registry version check (Phase 2), and the paid-tier ADR.
+
+16. DONE (2026-08-10, via /next) — execute `/review` end to end against a real published Installation, and fix what breaks.
+
+Founder chose this as the next item once item 15 closed and no scheduled, unblocked item remained. It is Learning-020's and Learning-021's future action, taking the first of the two commands they still name. Candidates weighed against this document's own priority formula: this item, `/architect` under the same method, `/release` (which Learning-021 dropped from the list after item 14 fixed its Step 8 — but which has still never been executed end to end, noted here so the gap stays visible), making `sync` name the paths it removes, the active npm-registry version check, and the paid-tier ADR. `/review` wins on being one of the four workflows the North Star is defined in terms of, and on precedent — four for four previous runs of this kind found a maximal-Pain defect.
+
+Method: a real brownfield fixture (a court-booking API — Node 22, `node:sqlite`, HMAC bearer tokens, `club_id` multi-tenancy, an admin role, 7 passing tests) carrying a genuinely reviewable change on a feature branch: recurring weekly booking series, with a real tenant-isolation defect (`cancelSeries` looked up by `series_id` alone) and a real layering defect (the booking-horizon rule implemented in the HTTP layer). `npx kenovis@0.11.0 add` against it, its Product layer authored from the shipped templates, then `/review` Steps 1-13 executed as written with no patching mid-run. The published bundle was confirmed byte-identical to this repository's own `.kenovis/AI/` before starting.
+
+The command's own steps executed cleanly and produced a correct review: the tenant-isolation defect found at Step 9 and reproduced rather than asserted (an outsider holding only the `series_id` cancelled all four of another club's bookings), the layering defect at Step 6 against the fixture's own Hard Rules, missing regression tests at Step 10, and a `Changes requested` decision at Step 12.
+
+What the run found is one release old, and it is the same defect class DECISION-024 named — in the half of it no guard covers. `/review` Step 12 says "Generate Review Report" and stops. It names no destination, and it cites no template, so `check_template_refs.py` — built in item 14 so that "this is the last time" — passes it clean. Reproduced against the published package rather than argued: the review report, carrying the Critical tenant-isolation finding, was written under `.kenovis/` (nothing in `/review` says not to, and everything else Kenovis owns lives there), committed, and deleted by the next `kenovis sync`, which reported `0.11.0 -> 0.11.0 (already up to date)` and never named the file it removed.
+
+Why item 14's guard missed it, which is the more useful half: that round enumerated a population exactly — all fifteen references to a working template — and that was the fix for item 12's verb-set grep. But it is a population of the wrong question. "Where does an agent get sent to write?" has the answer "wherever a template is cited"; "where may an agent write at all?" has the answer "wherever an instruction produces an artifact", and that set is larger and does not contain the first. See `AI/memory/learnings.md` Learning-022.
+
+Shipped: ten instruction sites now say where their artifact goes — `commands/review.md` Step 12 (2.0 → 2.1), `commands/bug.md` Step 12 (2.1 → 2.2), `commands/analyze.md` Steps 7 and 9 (2.0 → 2.1), `commands/architect.md` Step 5 (2.1 → 2.2), `commands/bootstrap.md` Step 9 (2.4 → 2.5), `commands/next.md` Steps 8 and 15 (2.0 → 2.1), `commands/feature.md` Step 13 (2.1 → 2.2) and `workflows/review.md` Phase 10 (2.2 → 2.3). Each states one of two things, which are the only correct answers: the Product-layer document that records the artifact's durable residue, or that the artifact is delivered in the session and is not a file to create — the shape item 14 established for `/bug` Step 2. None may be a path under `.kenovis/`.
+
+And the guard: `.github/scripts/check_artifact_destinations.py`, wired into CI's `docs-integrity` job alongside `check_template_refs.py`, which it deliberately does not replace — the two enforce the two halves DECISION-024 separated, over different populations. Confirmed to fail on the published `kenovis@0.11.0` tree, naming nine sites, before being kept.
+
+Stated in the script itself rather than left implicit, because both previous sweeps under-reported by not stating it: the *population* is exact — every `# Step N` / `# Phase N` block under `commands/` and `workflows/`, and the block count prints on every run — while the *classifier* that decides which blocks produce an artifact is a verb-and-noun heuristic that cannot be complete, for exactly the reason "Use:" survived DECISION-024's first sweep. The classified count prints too, so the cut is reviewable rather than assumed. `commands/next.md` Step 15 is a live example of the limit: it was fixed in this round and the classifier does not see it, because its body says "Summarize:".
+
+No ADR: this enforces DECISION-024 over the population it was always about and decides nothing new — the same call items 1, 8 and 14 made.
+
+Adjacent fix, in files this round was already validating: all six workflows (`architecture.md`, `bugfix.md`, `feature.md`, `hotfix.md`, `release.md`, `review.md`) ended with an unmatched code fence — the same cosmetic defect item 14 fixed in five templates without looking at the workflows. Typo-class, so no version bump beyond the ones above.
+
+Validated, with counts measured off the artifacts and their population named, per Learning-016, Learning-018 and Learning-021: against the published `kenovis@0.11.0` tree the guard classifies 20 artifact-producing blocks out of 213 Step/Phase blocks and reports **9** with no destination; against the fixed tree, **0**. Ten sites were fixed rather than nine — the tenth (`next.md` Step 15) is the classifier's own blind spot, described above. A fresh Installation from the fixed bundle delivers all 18 Product-layer template files with the `[ANSWER:` corpus unchanged at 127, creates no Product-layer file at the target's root, leaves no workflow with an unbalanced fence, and preserves `.setup-pending`. 109 `cli/` tests pass, typecheck and build clean, `check_links.py`, `check_markers.py` and `check_template_refs.py` all pass. No CLI code changed.
+
+One correction made inside the round rather than after it, and it is the reason the guard is written the way it is: the first enumeration was done by matching Step/Phase *headings* that begin with a producing verb, which returned 8 sites. The guard, which reads block *bodies*, returned 9 — catching `commands/feature.md` Step 13 ("Completion Report" / "Generate summary:") and `workflows/review.md` Phase 10 ("Final Review Result" / "Generate result:"), whose headings name the artifact without a verb. A heading-shaped query answering a body-shaped question is Learning-018's structure exactly, caught here before the number was written down.
+
+Next: this work reaches no customer until published. The release carrying item 16 is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9, 11, 13 and 15 performed.
 
 ---
 Phase 1 — MVP

@@ -6,6 +6,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Fixed
+
+- **Nine instructions told an agent to produce a report, a plan or a result and never said where it goes.** `/review` Step 12 is the one that surfaced it: "Generate Review Report", the sections it must contain, and nothing else. No destination, and no template citation either — so `check_template_refs.py`, added in [0.11.0] to end exactly this defect class, passed the whole tree clean.
+
+  Reproduced against the published `kenovis@0.11.0` by executing `/review` end to end from a real Installation (`PRODUCT/ROADMAP.md` Phase 1 item 16): the review report, carrying a Critical tenant-isolation finding the review had correctly found, was written under `.kenovis/` — nothing in `/review` says not to, and everything else Kenovis owns lives there — committed, and deleted by the next `kenovis sync`, which reported `0.11.0 -> 0.11.0 (already up to date)` and never named the file it removed. Third release running, third identical reproduction.
+
+  Ten sites now say one of the only two correct things: the Product-layer document that records the artifact's durable residue, or that the artifact is delivered in the session and is not a file to create. `commands/review.md` Step 12, `commands/bug.md` Step 12, `commands/analyze.md` Steps 7 and 9, `commands/architect.md` Step 5, `commands/bootstrap.md` Step 9, `commands/next.md` Steps 8 and 15, `commands/feature.md` Step 13, `workflows/review.md` Phase 10.
+
+  Why [0.11.0]'s guard missed them: it enumerates every reference to a working template — fifteen, an exact population — and that was the right fix for the verb-set grep before it. But it answers "where does an agent get *sent* to write?", and the question that matters is "where may an agent write *at all*?". The second population is larger and does not contain the first: an instruction can produce a report while citing no template, which is what all nine surviving sites did. See `AI/memory/learnings.md` Learning-022.
+
+- **All six workflows ended with an unmatched code fence**, so the tail of `architecture.md`, `bugfix.md`, `feature.md`, `hotfix.md`, `release.md` and `review.md` opened a code block that never closed. The same cosmetic defect [0.11.0] fixed in five templates without looking at the workflows.
+
+### Added
+
+- **`.github/scripts/check_artifact_destinations.py`, wired into CI** beside `check_template_refs.py`, which it does not replace — the two enforce the two halves DECISION-024 separated, over different populations. Every `# Step N` / `# Phase N` block that produces an artifact must name a Product-layer destination or state that the artifact is session-only. Never a path under `.kenovis/`. Confirmed to fail on the published `kenovis@0.11.0` tree, naming nine sites, before being kept.
+
+  The script states which of its parts is exact and which is not, because the two previous sweeps under-reported by not stating it: the population — every Step/Phase block under `commands/` and `workflows/` — is exact and its size prints on every run; the classifier deciding which blocks produce an artifact is a verb-and-noun heuristic that cannot be complete, and its count prints too. `commands/next.md` Step 15 was fixed in this round and the classifier does not see it, which is the demonstration rather than an oversight.
+
 ## [0.11.0] - 2026-08-10
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.10.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2, and for the fourth release running the habitual answer would have been patch: not one line of CLI code changed and everything here is a bug fix. But this package bundles the framework files themselves, and seven of them changed — two commands changed behaviour, five templates changed content. An Installation syncing to this release gets `/bug` and `/release` telling an agent to record what they produce somewhere different from where they told it before. That is the same distinction [0.5.0], [0.7.0], [0.8.0] and [0.10.0] drew.
