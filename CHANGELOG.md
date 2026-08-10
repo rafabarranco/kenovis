@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-08-10
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.11.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2, and for the fifth release running the habitual answer would have been patch: not one line of CLI code changed and everything here is a bug fix. But this package bundles the framework files themselves, and fourteen of them changed — eight instruction documents changed behaviour across ten sites, six workflows changed content. An Installation syncing to this release gets `/review`, `/bug`, `/analyze`, `/feature`, `/next`, `/architect` and `/bootstrap` telling an agent where what they produce belongs, where before they said nothing. That is the same distinction [0.5.0], [0.7.0], [0.8.0], [0.10.0] and [0.11.0] drew.
+
+`1.0.0` was considered and rejected again, for the reason [0.9.0] through [0.11.0] gave: it would signal maturity Phase 1 has not validated, with one external team on record and the MVP Success Metrics still without a target.
+
+**Nothing breaks for an existing Installation, and nothing is lost by upgrading** — with the same caveat [0.10.0] and [0.11.0] carried, now for a wider set of commands: if you already followed one of these instructions as written and wrote a review report, resolution report, analysis report, completion summary or execution plan anywhere under `.kenovis/`, `kenovis sync` has already deleted it, or will on your next sync. Your own git history is the only copy. Check `git log -- .kenovis/` before syncing if you are unsure.
+
 ### Fixed
 
 - **Nine instructions told an agent to produce a report, a plan or a result and never said where it goes.** `/review` Step 12 is the one that surfaced it: "Generate Review Report", the sections it must contain, and nothing else. No destination, and no template citation either — so `check_template_refs.py`, added in [0.11.0] to end exactly this defect class, passed the whole tree clean.
