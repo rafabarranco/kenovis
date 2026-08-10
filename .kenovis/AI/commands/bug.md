@@ -1,6 +1,6 @@
 # Bug Command
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -337,6 +337,10 @@ Especially when discovering:
 ---
 
 # Step 12 - Generate Resolution Report
+
+Like the bug report in Step 2, this is delivered to the human in this session rather than written to a file, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024.
+
+What survives the session was already named: the regression test from Step 8, and the `AI/memory/learnings.md` entry from Step 11 when the bug taught something reusable.
 
 Include:
 

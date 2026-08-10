@@ -290,4 +290,3 @@ Never:
 A successful release is not when code reaches production.
 
 A successful release is when users receive a stable and valuable improvement.
-```
