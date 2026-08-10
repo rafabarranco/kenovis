@@ -1,6 +1,6 @@
 # Architect Command
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -175,6 +175,8 @@ Do not design in isolation.
 ---
 
 # Step 5 - Generate Options
+
+The options are presented to the human in this session; they are not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. What survives is the chosen option and the reasoning behind the rejected ones, recorded as the ADR in Step 8.
 
 Create multiple possible solutions.
 

@@ -1,6 +1,6 @@
 # Analyze Command
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -273,6 +273,10 @@ Find:
 
 # Step 7 - Generate Recommendations
 
+Recommendations feed the report in Step 9, which says where an analysis leaves a durable residue. They are not written to a file of their own, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024.
+
+Note the Cost field below: an unverified cost estimate suppresses an item in every later prioritisation and nothing marks it as a guess. Verify it, or say it is unverified — see `AI/memory/learnings.md`.
+
 For each recommendation include:
 
 ## Problem
@@ -335,11 +339,9 @@ Low value or excessive complexity.
 
 # Step 9 - Create Report
 
-Output:
+The report is delivered to the human in this session; it is not a file to create, and `Analysis Report` below is its shape, not a filename. Never write it, or any produced artifact, anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024.
 
-```
-Analysis Report
-```
+An analysis that changes what the product does next has a durable residue, and it belongs where that kind of fact already lives: a scheduled item in `PRODUCT/ROADMAP.md`, a chosen approach in `DECISIONS.md`, a reusable lesson in `AI/memory/learnings.md`. An analysis whose recommendations are recorded nowhere has to be run again.
 
 Structure:
 

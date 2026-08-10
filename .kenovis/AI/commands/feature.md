@@ -1,6 +1,6 @@
 # Feature Command
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -408,6 +408,8 @@ DECISIONS.md
 ---
 
 # Step 13 - Completion Report
+
+The summary is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. What survives was written in Step 12: `PRODUCT/FEATURES.md`, `DOMAIN/`, `ENGINEERING/` and `DECISIONS.md`.
 
 Generate summary:
 

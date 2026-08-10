@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   docs-integrity:
-    name: Markdown links, markers and template references
+    name: Markdown links, markers, template references and artifact destinations
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,6 +35,9 @@ jobs:
 
       - name: Check no template path is offered as a destination
         run: python3 .github/scripts/check_template_refs.py
+
+      - name: Check every produced artifact names where it goes
+        run: python3 .github/scripts/check_artifact_destinations.py
 
   cli-tests:
     name: cli/ build, typecheck and tests
