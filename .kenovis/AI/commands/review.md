@@ -1,6 +1,6 @@
 # Review Command
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -331,6 +331,10 @@ DECISIONS.md
 ---
 
 # Step 12 - Generate Review Report
+
+The report is delivered to the human in this session; it is not a file to create. Never write it, or any produced artifact, anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024.
+
+What survives the session is recorded elsewhere, and Step 11 and Step 13 name where: a decision the review forces goes to `DECISIONS.md`, a rule it clarifies to `DOMAIN/`, an architectural consequence to `ENGINEERING/`, and a reusable lesson to `AI/memory/learnings.md`. A Critical or High issue that is deferred rather than fixed is a decision — record it, or it exists only in this conversation.
 
 The report must contain:
 

@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -244,6 +244,8 @@ git.md
 
 # Step 8 - Create Execution Plan
 
+The plan is presented to the human in this session; it is not a file to create, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024. What survives is written in Step 13 (`PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `DECISIONS.md`) and Step 14 (`AI/memory/learnings.md`).
+
 Before coding generate:
 
 ## Objective
@@ -405,6 +407,8 @@ Examples:
 ---
 
 # Step 15 - Prepare Next Step
+
+The summary is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. The recommended next action belongs in `PRODUCT/ROADMAP.md`, written in Step 13, so the next `/next` run reads it instead of re-deriving it.
 
 After completion:
 
