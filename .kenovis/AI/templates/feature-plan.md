@@ -251,4 +251,3 @@ Before completion:
 - [ ] Tests completed.
 - [ ] Architecture reviewed.
 - [ ] Documentation updated.
-```

@@ -1,6 +1,6 @@
 # Feature Development Workflow
 
-Version: 3.3
+Version: 3.4
 
 ---
 
@@ -243,6 +243,8 @@ Shaped by:
 ```
 .kenovis/AI/templates/adr.md
 ```
+
+`DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See DECISIONS.md DECISION-024.
 
 Document:
 

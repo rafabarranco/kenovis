@@ -29,6 +29,7 @@ Before adding a new agent, workflow, policy, or command, check whether an existi
 - **Stay domain-agnostic.** Don't bake in assumptions about a specific vertical, stack, or tenancy model. Where a policy needs to reference something product-specific (e.g. a tenant key), it should say "look it up in `ENGINEERING/DATABASE.md`," not assume a name.
 - **No secrets, no real business data.** This applies to examples too — use placeholders, not anything resembling a real customer, company, or dataset.
 - **Keep the `PROJECT-SPECIFIC` marker convention intact.** If you touch a product-layer file, the marker HTML comment on line 1 must survive.
+- **Never name a template as a destination.** Per [DECISION-024](DECISIONS.md), everything under `.kenovis/AI/templates/` is a form. An instruction that produces an artifact names three things separately: the artifact, the Product-layer document recording its durable residue, and the template that shapes it. CI enforces the visible half — any reference to a working template must state the rule or cite DECISION-024 within a few lines (`.github/scripts/check_template_refs.py`).
 
 ## Framework Definition of Done
 
@@ -71,7 +72,7 @@ After changing code: `graphify update .` (AST-only, no LLM cost, keeps the graph
 1. Fork the repo and branch from `main`.
 2. Make the change, scoped to one concern (one agent, one policy, one fix).
 3. If the change affects how agents behave, explain the reasoning in the PR description — this framework runs on documented decisions, not silent preference changes.
-4. Open a PR. CI checks markdown links, the `PROJECT-SPECIFIC` marker convention, and (for framework-layer PRs) that `CHANGELOG.md` was updated.
+4. Open a PR. CI checks markdown links, the `PROJECT-SPECIFIC` marker convention, that no template path is offered as a destination, and (for framework-layer PRs) that `CHANGELOG.md` was updated.
 
 ## Reporting issues
 

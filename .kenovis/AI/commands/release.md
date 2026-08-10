@@ -1,6 +1,6 @@
 # Release Command
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -235,11 +235,15 @@ Required:
 
 # Step 8 - Generate Release Notes
 
-Use:
+Prepare release notes and publish them wherever this product publishes them — `AUTOMATIONS/release-process.md` records where that is.
+
+Shaped by:
 
 ```
 .kenovis/AI/templates/release-notes.md
 ```
+
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
 
 Include:
 
