@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.33
+Version: 1.34
 ---
 Purpose
 
@@ -533,6 +533,30 @@ Validated, with counts measured off the artifacts and their population named, pe
 One correction made inside the round rather than after it, and it is the reason the guard is written the way it is: the first enumeration was done by matching Step/Phase *headings* that begin with a producing verb, which returned 8 sites. The guard, which reads block *bodies*, returned 9 — catching `commands/feature.md` Step 13 ("Completion Report" / "Generate summary:") and `workflows/review.md` Phase 10 ("Final Review Result" / "Generate result:"), whose headings name the artifact without a verb. A heading-shaped query answering a body-shaped question is Learning-018's structure exactly, caught here before the number was written down.
 
 Next: this work reaches no customer until published. The release carrying item 16 is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9, 11, 13 and 15 performed.
+
+17. DONE (2026-08-10, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 16.
+
+Chosen as the next item because item 16 reaches no customer until published — the same packaging step items 2, 5, 7, 9, 11, 13 and 15 performed for `kenovis@0.5.0` through `0.11.0`. Against this document's own priority formula nothing competes: every `0.11.0` Installation that runs `/review`, `/bug`, `/analyze`, `/feature`, `/next` or `/bootstrap` is told to produce a report, a plan or a result and never told where it goes, the fix exists and reaches nobody, and the cost is a documented procedure. `/architect` and `/release` under item 16's own method stay next in line but are blocked behind this, the active npm-registry version check stays deferred on network-dependency cost and unvalidated Pain, and the paid-tier ADR stays premature on one external team's data.
+
+One difference from the previous seven release rounds, stated because it changed the sequence rather than just the content: item 16's work was not yet on `development` when this round began — it sat on a local feature branch. This round opened PR #73 first and merged it, then cut. Every previous release round started from work already merged.
+
+Version call, decided at cut time: **minor, `kenovis@0.12.0`**, not patch. Per Phase 1 item 2's standing instruction this is decided rather than assumed, and for the fifth release running the habitual answer would have been patch — no CLI code changed and everything in the release is a bug fix. But this package bundles the framework files themselves, and fourteen of them changed: eight instruction documents changed behaviour across ten sites, six workflows changed content. An Installation syncing to this release gets seven commands and one workflow saying where what they produce belongs, where before they said nothing. Same distinction `0.5.0`, `0.7.0`, `0.8.0`, `0.10.0` and `0.11.0` drew. `1.0.0` rejected again for `0.9.0`'s reason — one external team on record, MVP Success Metrics still without a target. Reasoning recorded in `CHANGELOG.md`'s `[0.12.0]` header.
+
+The `[0.12.0]` header and the GitHub Release both lead with what the upgrade cannot undo, as `[0.10.0]` and `[0.11.0]` did and now for a wider set of commands: an Installation that already followed one of those instructions and wrote a review report, resolution report, analysis report, completion summary or execution plan under `.kenovis/` has already lost it to `sync`, and its own git history is the only copy. Nothing else about the upgrade is lossy.
+
+Verified rather than assumed, because this release is the first to add a CI script: `.github/scripts/check_artifact_destinations.py` and `ci.yml` are **not** in the published bundle. `cli/scripts/bundle-framework-assets.mjs` copies only `.kenovis/AI/` plus the customer-facing README, confirmed by listing `cli/dist/framework-assets/` rather than by reading the script.
+
+Procedure: `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release", with the content-sync promotion Learning-012 established as this repository's *standard* procedure. Published from CI via `.github/workflows/publish.yml` on a GitHub Release — never from a laptop (ENGINEERING/SECURITY.md → Supply-Chain Security).
+
+Shipped: item 16 merged via PR #73, then `cli/package.json`/`package-lock.json` 0.11.0 → 0.12.0 and `CHANGELOG.md` `[Unreleased]` cut into `[0.12.0] - 2026-08-10` (PR #74). Both promotions ran exactly as Learning-012 prescribes and needed no investigation — `preproduction` verified as a strict older snapshot of `development` (its only unique commits the synthetic sync commits from previous rounds), `main` byte-identical to `preproduction`, tree set with `git read-tree -u --reset`, empty diff confirmed before opening each PR (PRs #75, #76). All three branches are byte-identical. `kenovis@0.12.0` published from CI with provenance (SLSA v1 attestation on the registry); `npm view kenovis version` → `0.12.0`, `dist-tags.latest` → `0.12.0`.
+
+Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.11.0 add` on a scratch brownfield repository (own `README.md`, `src/`, `package.json`), then `npx kenovis@0.12.0 sync`. Baseline first: the guard run against the installed 0.11.0 tree named all **9** sites, exactly the population item 16 recorded, confirming the defect reproduces from the registry and not only from a local build. After the sync, transition reported `0.11.0 -> 0.12.0`, **14 paths changed inside `.kenovis/`** (the version stamp, seven commands, six workflows) listed off `git status` rather than recalled; sites with no destination **9 → 0**; no workflow left with an unbalanced fence; the target's own `README.md`, `src/` and `package.json` untouched; `CLAUDE.md` unchanged; and `.setup-pending` preserved, so an Installation that had not completed setup keeps its first-session auto-trigger. A separate fresh `npx kenovis@0.12.0 add` reported `0.12.0`, passed the guard clean, delivered all 18 Product-layer template files with the `[ANSWER:` corpus unchanged at 127, and created no Product-layer file at the target's root.
+
+No number needed reconciling this round, and no new gap surfaced in the framework — the first release round since item 9 where both are true. The reason is worth naming rather than treating as luck: item 16 shipped the count as an executable check, so the release's own verification ran the same guard against the published artifact instead of reconstructing a figure from prose. That is Learning-018's and Learning-021's future action arriving at its conclusion.
+
+Solo-maintainer note, unchanged from previous releases: all four PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
+
+Next: Learning-022's future action has `/architect` and `/release` still unrun from a real published Installation, one per round — five for five have surfaced a maximal-Pain defect. `/release` is back on that list deliberately: Learning-021 dropped it after item 14 fixed its Step 8, but fixing one step is not executing the command. The other standing candidates are unchanged: making `sync` name the paths it removes (item 12's backlog finding), the active npm-registry version check (Phase 2), and the paid-tier ADR.
 
 ---
 Phase 1 — MVP
