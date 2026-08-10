@@ -318,4 +318,3 @@ Never:
 # Final Principle
 
 A bug fix is successful when the problem is solved and the system becomes more reliable.
-```

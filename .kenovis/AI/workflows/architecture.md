@@ -296,4 +296,3 @@ Never:
 Good architecture enables future product growth.
 
 Every decision should make the system stronger, clearer and easier to evolve.
-```

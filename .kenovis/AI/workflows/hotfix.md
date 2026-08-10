@@ -288,4 +288,3 @@ Never:
 A hotfix restores stability today.
 
 The follow-up improvements prevent the same problem tomorrow.
-```

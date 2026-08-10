@@ -1,6 +1,6 @@
 # Bootstrap Command
 
-Version: 2.4
+Version: 2.5
 
 ---
 
@@ -304,6 +304,8 @@ Never invent business requirements.
 ---
 
 # Step 9 - Create Execution Plan
+
+The plan is presented to the human in this session; it is not a file to create, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024. The workflow that follows bootstrap names what its own work records durably.
 
 Before modifying files provide:
 

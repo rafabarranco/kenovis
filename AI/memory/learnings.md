@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.8
+Version: 1.9
 ---
 Scope
 
@@ -117,6 +117,41 @@ Operations
 ---
 Learning Examples
 
+Example: Process — an exact population, of the wrong question
+
+## Learning-022
+
+Date:
+2026-08-10
+
+Category:
+Process
+
+Context:
+Executing `/review` end to end from a real `npx kenovis@0.11.0` Installation (`PRODUCT/ROADMAP.md` Phase 1 item 16), via `/next`. The fifth post-setup command run this way, following [[Learning-020]]'s and [[Learning-021]]'s future action. The release under test carried the guard built one round earlier so that this defect class would stop shipping.
+
+Problem:
+`.kenovis/AI/commands/review.md` Step 12 reads "Generate Review Report", lists the sections the report must contain, and stops. No destination, and — unlike the two sites [[Learning-021]] found — no template citation either. Eight more sites across five other commands and one workflow share the shape.
+
+Reproduced against the published package: the review report, carrying a Critical tenant-isolation finding the review had correctly found and reproduced, was written under `.kenovis/`, committed, and deleted by the next `kenovis sync`, which reported `already up to date` and never named the file it removed. Third release running, third identical reproduction.
+
+What happened:
+`check_template_refs.py` passed the whole tree clean while all nine sites were live. It was built in the previous round precisely to end this, and it works: it enumerates every reference to a working template — fifteen — and requires each to state the rule. That population is exact. It is also a population of the wrong question.
+
+Root cause:
+"Where does an agent get *sent* to write?" and "where may an agent write *at all*?" are different questions. The first is answered by template references; the second by every instruction that produces an artifact. The second set is larger, and it does not contain the first — an instruction can produce a report while citing no template, which is what all nine surviving sites do. Enumerating the first population exactly says nothing about the second.
+
+[[Learning-021]] correctly diagnosed "enumerate the population, not the matches" and then enumerated the population its own defects happened to sit in. The upgrade from a verb-set grep to an exact enumeration is real and was the right move; it just does not, by itself, tell you that you enumerated the right thing. An exact population feels like completeness in a way a pattern does not, which is what made it stop the search.
+
+Learning:
+Before enumerating, write down the property being protected as a sentence, and check that the population is the set of places that property could be violated — not the set of places the known violations were found. Here the property is "no produced artifact lands where `sync` deletes it"; its population is artifact-producing instructions, and template references were a subset of the symptoms.
+
+A guard should also state which of its parts is exact and which is a heuristic. `check_artifact_destinations.py` has both: the population — every Step/Phase block under `commands/` and `workflows/` — is exact and its size prints on every run; the classifier that decides which blocks produce an artifact is a verb-and-noun list, cannot be complete, and its count prints too. `commands/next.md` Step 15 was fixed in this round and the classifier does not catch it, which is the honest demonstration rather than an embarrassment. A check that hides its own cut invites the next round to treat a clean pass as proof.
+
+Future action:
+`/architect` remains unrun from a real published Installation; five for five have surfaced a maximal-Pain defect. `/release` should be added back to that list — [[Learning-021]] dropped it after item 14 fixed its Step 8, but fixing one step is not executing the command. When adding a CI guard, state in the script what population it enumerates and what question that population answers, so the next round can check the question rather than re-verify the answer.
+
+---
 Example: Process — the fix's scope was set by the grep that found the bug
 
 ## Learning-021

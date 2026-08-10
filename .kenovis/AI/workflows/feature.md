@@ -410,4 +410,3 @@ Never:
 A feature is complete when the user value is delivered.
 
 Code is only one part of the solution.
-```
