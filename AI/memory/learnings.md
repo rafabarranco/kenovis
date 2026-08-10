@@ -117,6 +117,41 @@ Operations
 ---
 Learning Examples
 
+Example: Process — the fix's scope was set by the grep that found the bug
+
+## Learning-021
+
+Date:
+2026-08-10
+
+Category:
+Process
+
+Context:
+Executing `/bug` end to end from a real `npx kenovis@0.10.0` Installation (`PRODUCT/ROADMAP.md` Phase 1 item 14), via `/next`. The fourth post-setup command to be run this way, following [[Learning-020]]'s own future action. The release under test was the one that had just fixed this exact defect class.
+
+Problem:
+Two sites survived that fix and shipped: `.kenovis/AI/commands/bug.md` Step 2 ("Create Bug Report / Use: `.kenovis/AI/templates/bug-report.md`") and `.kenovis/AI/commands/release.md` Step 8 ("Generate Release Notes / Use: ..."). Neither names a destination. Worse than before the fix, in one respect: [[Learning-020]]'s round added a line to every template saying "fill it in where the workflow that sent you here says to record the artifact" — and these two commands never say. The template defers to the command, the command is silent, and the only path on offer is the one inside `.kenovis/`.
+
+Reproduced against the published package: a bug report filled in at the template path and committed was deleted by the next `kenovis sync`, which reported `already up to date` and never named the file it reverted. Identical to the reproduction one release earlier, in the workflow that release was supposed to cover.
+
+What happened:
+The previous round found its sites with a grep over a verb set — `Generate|Update|Prepare|Create ADR using`, widened to `Create:` and `Before coding create:` when a recount disagreed. It then fixed exactly what the pattern returned. Both survivors say "Use:". The recount that widened the pattern is the detail that matters: it proved the pattern was incomplete and was still treated as the scope, because widening it made the two numbers agree, and agreement reads like completeness.
+
+Root cause:
+The set of defects and the set of matches were assumed identical because one was produced from the other. Nothing in that round enumerated the population the defect could live in — every reference to a template path, fifteen of them — and asked of each whether it complied. A pattern derived from known instances can only ever report on instances of that shape, and it never reports the shape it does not have.
+
+This is [[Learning-016]] and [[Learning-018]] in a third position. Both record a *count* whose scope lived in prose rather than in the artifact. Here it is a *fix* whose scope lived in a grep. Same structure: a claim about a corpus, verified against a query that silently redefined the corpus.
+
+Learning:
+When fixing a class of defect, enumerate the population, not the matches. Ask "where could this live?" — usually a structural set, like every reference to a path — and check each member against the rule. If that population can be enumerated mechanically, the check is also the guard, and it belongs in CI rather than in a session's scrollback. The distinction to hold onto: a pattern that matches *defects* cannot be complete, because it is built from the ones already found; a pattern that enumerates *sites* can be, because it is built from the structure.
+
+That is the difference from the case [[Learning-015]] settled, where no guard was built and that was right: there, no pattern could separate an unanswered question from a legitimate bracket. Here the population is exact — a path reference — so a guard is possible, and its absence was the actual gap. `.github/scripts/check_template_refs.py` now enumerates all fifteen and requires each to state the rule or cite [[DECISION-024]]; it was confirmed to fail on the pre-fix tree before being kept.
+
+Future action:
+Run the remaining post-setup commands — `/review`, `/architect` — from a real published Installation, one per round; four for four have surfaced a maximal-Pain defect. When a round fixes N instances found by a search, state in the change what population was checked and how, not just what was fixed. And when a check can be written, write it in the same round: this defect had a fix, a decision and a learning behind it, and still shipped, because none of the three was executable.
+
+---
 Example: Process — an instruction was never executed in the place it was written for
 
 ## Learning-020

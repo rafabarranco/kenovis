@@ -1,6 +1,6 @@
 # Bug Fix Workflow
 
-Version: 2.3
+Version: 2.4
 
 ---
 
@@ -192,6 +192,8 @@ Shaped by:
 ```
 .kenovis/AI/templates/adr.md
 ```
+
+`DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See DECISIONS.md DECISION-024.
 
 when required.
 
