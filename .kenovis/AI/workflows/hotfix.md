@@ -1,6 +1,6 @@
 # Hotfix Workflow
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -232,6 +232,8 @@ Shaped by:
 ```
 .kenovis/AI/templates/decision.md
 ```
+
+`DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See DECISIONS.md DECISION-024.
 
 Document:
 

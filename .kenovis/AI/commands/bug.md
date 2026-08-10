@@ -1,6 +1,6 @@
 # Bug Command
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -73,13 +73,17 @@ Understand:
 
 ---
 
-# Step 2 - Create Bug Report
+# Step 2 - Establish The Bug Report
 
-Use:
+Review the reported bug — from the human, an issue tracker, or a failing test. Where the report is incomplete, use this form to name what is missing and ask for it:
 
 ```
 .kenovis/AI/templates/bug-report.md
 ```
+
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
+
+The report shapes this session; it is not a file to create. What survives the session is the regression test added in Step 8 and, when the bug taught something reusable, the entry in `AI/memory/learnings.md` written in Step 11.
 
 Capture:
 
