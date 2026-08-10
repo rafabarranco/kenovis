@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.31
+Version: 1.32
 ---
 Purpose
 
@@ -485,6 +485,26 @@ Validated: 109 `cli/` tests pass, typecheck and build clean, `check_links.py`, `
 One verification in this round was initially vacuous and is recorded rather than quietly redone: the first check of the fixed bundle invoked `cli/dist/cli/bin.js`, which only exports `main`, so it exited 0 without installing anything and the check reported "0 references, 0 unmarked" against a directory that did not exist. A clean pass on an empty corpus is indistinguishable from a clean pass on a fixed one unless the check asserts the corpus is there — the assertion was added and the run repeated against `cli/bin/kenovis.js`. Same family as Learning-018, caught in the same session rather than after publishing.
 
 Next: this work reaches no customer until published. The release carrying item 14 is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9, 11 and 13 performed.
+
+15. DONE (2026-08-10, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 14.
+
+Chosen as the next item because item 14 is merged to `development` and reaches no customer until published — the same packaging step items 2, 5, 7, 9, 11 and 13 performed for `kenovis@0.5.0` through `0.10.0`. Against this document's own priority formula nothing competes: every `0.10.0` Installation that runs `/bug` or `/release` is told to record what it produces at a path inside `.kenovis/`, which the next `sync` deletes without naming the file, the fix exists and reaches nobody, and the cost is a documented procedure. The active npm-registry version check stays deferred on network-dependency cost and unvalidated Pain, and the paid-tier ADR stays premature on one external team's data.
+
+Version call, decided at cut time: **minor, `kenovis@0.11.0`**, not patch. Per Phase 1 item 2's standing instruction this is decided rather than assumed, and for the fourth release running the habitual answer would have been patch — no CLI code changed and everything in the release is a bug fix. But this package bundles the framework files themselves, and seven of them changed: two commands changed behaviour, five templates changed content. An Installation syncing to this release gets `/bug` and `/release` telling an agent to record what they produce somewhere different from where they told it before. Same distinction `0.5.0`, `0.7.0`, `0.8.0` and `0.10.0` drew. `1.0.0` rejected again for `0.9.0`'s reason — one external team on record, MVP Success Metrics still without a target. Reasoning recorded in `CHANGELOG.md`'s `[0.11.0]` header.
+
+The `[0.11.0]` header and the GitHub Release both lead with what the upgrade cannot undo, as `[0.10.0]` did and now for two more commands: an Installation that already followed `/bug` Step 2 or `/release` Step 8 as written and filled in `.kenovis/AI/templates/bug-report.md` or `release-notes.md` has already lost it to `sync`, and its own git history is the only copy. Nothing else about the upgrade is lossy.
+
+Procedure: `AUTOMATIONS/release-process.md` and `cli/README.md` → "Cutting a release", with the content-sync promotion Learning-012 established as this repository's *standard* procedure. Published from CI via `.github/workflows/publish.yml` on a GitHub Release — never from a laptop (ENGINEERING/SECURITY.md → Supply-Chain Security).
+
+Shipped: `cli/package.json`/`package-lock.json` 0.10.0 → 0.11.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.11.0] - 2026-08-10` (PR #69). Both promotions ran exactly as Learning-012 prescribes and needed no investigation — `preproduction` verified as a strict older snapshot against the 0.10.0 cut (`77a3e00`, empty diff), `main` byte-identical to `preproduction`, and the only commits unique to either were the synthetic sync commits from previous rounds (PRs #70, #71). All three branches are byte-identical. `kenovis@0.11.0` published from CI with provenance (attestations present on the registry); `npm view kenovis version` → `0.11.0`, `dist-tags.latest` → `0.11.0`.
+
+Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.10.0 add` on a scratch brownfield repository (own `README.md`, `src/`, `package.json`), then `npx kenovis@0.11.0 sync`. Baseline first: 0.10.0 reproduces the defect, the guard run against the installed tree naming all seven unmarked references — the two real defects (`commands/bug.md`, `commands/release.md`) and the five correct-but-uncited workflow sites — exactly the population item 14 recorded. After the sync, transition reported `0.10.0 -> 0.11.0`, **13 paths changed inside `.kenovis/`** (the version stamp, two commands, five templates, five workflows), listed off `git status` rather than recalled; unmarked references **7 → 0**; the target's own `README.md`, `src/`, `package.json` and `.github/` untouched; `CLAUDE.md` unchanged; and `.setup-pending` preserved, so an Installation that had not completed setup keeps its first-session auto-trigger. A separate fresh `npx kenovis@0.11.0 add` delivered all 18 Product-layer template files with the `[ANSWER:` corpus unchanged at 127, created no Product-layer file at the target's root, and left no working template with an unbalanced code fence.
+
+One count was reconciled before being written down, per Learning-018 and Learning-021. The first population figure measured against the installed tree came back **18**, not the fifteen item 14 records. The gap is entirely in the pattern: that grep matched the templates *directory* path, so it counted three lines that name `.kenovis/AI/templates/` without naming a working template — a different question from the one the guard answers. Re-measured with the guard's own regex it returns fifteen, in the nine files item 14 names. Same shape as Learning-018, caught inside the round rather than after publishing, and no new learning recorded because both the failure and its remedy are already on file.
+
+Solo-maintainer note, unchanged from previous releases: all three PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin` after founder confirmation. Not a misconfiguration.
+
+Next: Learning-020's future action has `/review`, `/release` and `/architect` still unrun from a real published Installation, one per round — `/bug` was item 14 and found a defect, as `/init-project`, `/adopt-project` and `/feature` each did before it. The other standing candidates are unchanged: making `sync` name the paths it removes (item 12's backlog finding), the active npm-registry version check (Phase 2), and the paid-tier ADR.
 
 ---
 Phase 1 — MVP
