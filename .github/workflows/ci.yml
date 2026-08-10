@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   docs-integrity:
-    name: Markdown links + PROJECT-SPECIFIC markers
+    name: Markdown links, markers and template references
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,6 +32,9 @@ jobs:
 
       - name: Check framework-layer changes update CHANGELOG.md
         run: python3 .github/scripts/check_changelog.py
+
+      - name: Check no template path is offered as a destination
+        run: python3 .github/scripts/check_template_refs.py
 
   cli-tests:
     name: cli/ build, typecheck and tests
