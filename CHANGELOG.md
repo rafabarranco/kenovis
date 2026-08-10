@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-08-10
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.10.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2, and for the fourth release running the habitual answer would have been patch: not one line of CLI code changed and everything here is a bug fix. But this package bundles the framework files themselves, and seven of them changed — two commands changed behaviour, five templates changed content. An Installation syncing to this release gets `/bug` and `/release` telling an agent to record what they produce somewhere different from where they told it before. That is the same distinction [0.5.0], [0.7.0], [0.8.0] and [0.10.0] drew.
+
+`1.0.0` was considered and rejected again, for the reason [0.9.0] and [0.10.0] gave: it would signal maturity Phase 1 has not validated, with one external team on record and the MVP Success Metrics still without a target.
+
+**Nothing breaks for an existing Installation, and nothing is lost by upgrading** — with the same caveat [0.10.0] carried, now for two more commands: if you already followed `/bug` Step 2 or `/release` Step 8 as written and filled in `.kenovis/AI/templates/bug-report.md` or `release-notes.md`, `kenovis sync` has already deleted it, or will on your next sync. Your own git history is the only copy. Check `git log -- .kenovis/AI/templates/` before syncing if you are unsure.
+
 ### Fixed
 
 - **`/bug` and `/release` still pointed at a template as the only place to put what they produce — the fix in [0.10.0] missed them.** `.kenovis/AI/commands/bug.md` Step 2 read "Create Bug Report / Use: `.kenovis/AI/templates/bug-report.md`" and `.kenovis/AI/commands/release.md` Step 8 read "Generate Release Notes / Use: `.kenovis/AI/templates/release-notes.md`". Neither named a destination, and since [0.10.0] the templates themselves say "fill it in where the workflow that sent you here says to record the artifact" — which those two commands never say. Template defers to command, command is silent, and the only path an agent has been given is the one inside `.kenovis/`.
