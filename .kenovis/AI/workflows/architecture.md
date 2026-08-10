@@ -1,6 +1,6 @@
 # Architecture Decision Workflow
 
-Version: 2.2
+Version: 2.3
 
 ---
 
@@ -178,6 +178,8 @@ Shaped by:
 ```
 .kenovis/AI/templates/adr.md
 ```
+
+`DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See DECISIONS.md DECISION-024.
 
 Include:
 
