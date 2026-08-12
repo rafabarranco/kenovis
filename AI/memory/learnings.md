@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.12
+Version: 1.13
 ---
 Scope
 
@@ -119,6 +119,43 @@ Operations
 ---
 Learning Examples
 
+Example: Process — a command that is forbidden to record cannot close its own loop
+
+## Learning-024
+
+Date:
+2026-08-12
+
+Category:
+Process
+
+Context:
+The founder's observation that the AI-OS detects gaps and then leaves them unresolved: *"está detectándolo pero no está planificándolo, por lo que siempre se queda ahí, muerto, sin resolver."* Investigated with `/analyze`, which turned out to be the clearest instance of the thing being investigated.
+
+Problem:
+Measured across the repository: 13 findings parked in `PRODUCT/ROADMAP.md` narrative, 23 `Future action:` entries of which 5 named the roadmap, and the oldest open finding — `sync` never naming the paths it deletes — repeated in four consecutive rounds' closing paragraphs since 2026-08-09 without ever becoming an item.
+
+What happened:
+`commands/analyze.md` Step 9 required recording an analysis's durable residue in `PRODUCT/ROADMAP.md`. Sixty lines below, "AI Responsibilities" forbade modifying files. The command whose entire purpose is detection could not record what it detected, and the contradiction had been in place since the command was written.
+
+Root cause:
+Two causes, and the second is the one that generalises.
+
+The framework has three sinks for knowledge — `DECISIONS.md` records *why*, `learnings.md` records the *lesson*, `PRODUCT/ROADMAP.md` records *what and when*. Every command routed findings to the first two, and only the third is read to decide what to do next. `review.md` explicitly sent a deferred improvement to `DECISIONS.md`, which is correct for its reasoning and wrong as a queue. A well-documented deferral reads as closed, which is why nobody noticed for three days.
+
+And: a rule that a command is structurally prevented from following is not a weak rule, it is an absent one. `analyze.md`'s Step 9 was correct and unreachable. No amount of care in following it would have helped.
+
+Learning:
+When a command instructs an outcome, check that the same command permits the action that produces it. A prohibition written for one purpose ("do not implement") silently swallows a different one ("do not record") when it is phrased by mechanism rather than by intent.
+
+And: knowledge sinks are not interchangeable. Before adding a "record it in X" instruction, ask what reads X and when. A destination nothing reads at decision time is a place to put something down, not a place for it to be picked up.
+
+Future action:
+Items 24 and 25 remain — the behavioural check that an agent opens a decision body rather than paraphrasing its index, and `kenovis check` so an Installation can run a rule rather than only read it. Item 20 remains: 18 of the 23 future actions are standing rules awaiting promotion into policies, which is a rule with no run behind it since DECISION-011.
+
+Disposition: item 20, item 24 and item 25 — all three scheduled in `PRODUCT/ROADMAP.md`.
+
+---
 Example: Process — a scheduled item's premise was never checked before it was scheduled
 
 ## Learning-023

@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.42
+Version: 1.43
 ---
 Purpose
 
@@ -154,7 +154,7 @@ Items 3-17 continued that alternation of work and release. Items 18-23 are a sec
 ---
 Phase 1 — Immediate Priority, second block (added 2026-08-12, from /analyze on framework context scalability, founder-flagged maximum priority — ahead of any other Phase 1/2/3 item)
 
-Thirteen items, items 18-30, in the order written — except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
+Fourteen items, items 18-31, in the order written — except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
 
 The R-tags (R1-R6) are the recommendation labels from the 2026-08-12 `/analyze` run that produced this block, kept so the items stay traceable to their analysis. Execution order is not R-tag order: R5 is cheap and independent so it lands with the other Do-Now items, and R4 precedes R3 because a lifecycle rule that does not exist cannot govern the restructuring that R3 performs.
 
@@ -282,6 +282,20 @@ Validated when: `kenovis check` run inside a real published Installation catches
 28. DONE (2026-08-12, via /analyze) (RB3) — the roadmap carries a findings queue, not only phase narrative. → `PRODUCT/ROADMAP-ARCHIVE.md`
 29. DONE (2026-08-12, via /analyze) (RB5) — triage the parked findings and the learnings' future actions, before item 19 archives them. → `PRODUCT/ROADMAP-ARCHIVE.md`
 30. DONE (2026-08-12, via /analyze) (RB4) — the one part of this that a machine can check. → `PRODUCT/ROADMAP-ARCHIVE.md`
+
+31. DONE (2026-08-12, via /analyze) — promote `development` → `preproduction` → `main` and publish the release carrying items 18, 19, 21 and 26-30.
+
+Chosen because none of that work reaches a customer until published — the same packaging step items 2, 5, 7, 9, 11, 13, 15 and 17 performed. Against this document's own priority formula nothing competed: every `0.12.0` Installation reads its whole decision log at the start of every session, and every command in it still leaves an unfixed finding in prose.
+
+Version call, decided at cut time: **minor, `kenovis@0.13.0`**. Per Phase 1 item 2's standing instruction this is decided rather than assumed, and for the sixth release running no CLI code changed — but the argument is the strongest of any framework-only release so far: the session-initialization protocol itself changed, seven commands and three workflows changed behaviour, three CI guards are new, and two Product-layer templates gained structural sections every Installation carries. `1.0.0` rejected again for `0.9.0`'s reason, now recorded as OF-11 and OF-12 rather than re-argued each release.
+
+The `[0.13.0]` header and the GitHub Release both lead with what the upgrade cannot do: `sync` never touches a Product-layer file already authored, so an existing Installation's `DECISIONS.md` gains no Decision Index and its `PRODUCT/ROADMAP.md` gains no Open Findings section. Both are a copy-paste from `.kenovis/AI/templates/product-layer/`, and until then the new instructions describe sections those files do not have.
+
+Shipped: `cli/package.json`/`package-lock.json` 0.12.0 → 0.13.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.13.0] - 2026-08-12` (PR #79, after PR #78 merged the work). Both promotions ran exactly as Learning-012 prescribes — each downstream branch verified as a strict older snapshot, tree set with `git read-tree -u --reset`, empty diff confirmed before opening (PRs #80, #81). All three branches byte-identical. `kenovis@0.13.0` published from CI with provenance; `npm view kenovis version` → `0.13.0`, `dist-tags.latest` → `0.13.0`.
+
+Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.12.0 add` on a scratch brownfield repository, then `npx kenovis@0.13.0 sync`. Baseline reproduced first (no Decision Index in the template, no Open Findings section, the disposition rule cited from zero files). After the sync: transition reported `0.12.0 -> 0.13.0`, **17 paths changed inside `.kenovis/`** listed off `git status` rather than recalled, the rule cited from 11 files, all 18 Product-layer templates delivered with the `[ANSWER:` corpus unchanged at 127, no Product-layer file created at the target's root, `.setup-pending` preserved, and the target's own `README.md`, `src/` and `package.json` untouched.
+
+Solo-maintainer note, unchanged from previous releases: all four PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin`. Not a misconfiguration.
 
 Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident.
 
