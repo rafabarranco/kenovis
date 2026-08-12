@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.43
+Version: 1.44
 ---
 Purpose
 
@@ -154,7 +154,7 @@ Items 3-17 continued that alternation of work and release. Items 18-23 are a sec
 ---
 Phase 1 — Immediate Priority, second block (added 2026-08-12, from /analyze on framework context scalability, founder-flagged maximum priority — ahead of any other Phase 1/2/3 item)
 
-Fourteen items, items 18-31, in the order written — except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
+Sixteen items, items 18-33, in the order written — except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
 
 The R-tags (R1-R6) are the recommendation labels from the 2026-08-12 `/analyze` run that produced this block, kept so the items stay traceable to their analysis. Execution order is not R-tag order: R5 is cheap and independent so it lands with the other Do-Now items, and R4 precedes R3 because a lifecycle rule that does not exist cannot govern the restructuring that R3 performs.
 
@@ -297,6 +297,32 @@ Validated against the *published* package, on the exact sequence a real upgrader
 
 Solo-maintainer note, unchanged from previous releases: all four PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin`. Not a misconfiguration.
 
+32. SCHEDULED — the three decisions only the founder can make, and the gap in item 27's own rule that let them sit.
+
+Problem: OF-10 and OF-11 carry the disposition `Open — founder call`, which is honest and insufficient. A finding whose executor is not `/next` does not move because it scores well on a priority formula; it moves when someone names what has to be decided and what input the decision needs. OF-10 had been written in two places since this block was created and produced nothing — the pattern this block exists to end, surviving inside the rule that was supposed to end it.
+
+Fixed already, in the round that scheduled this item: `.kenovis/AI/policies/documentation.md` (2.6 → 2.7) now requires an `Open` finding the AI cannot execute to name **who executes it and what input they need to decide**. `Open` was a valid disposition and the easiest place to hide. Found by the founder asking whether the three founder-call findings were actually planned — they were recorded, which is not the same thing. Item 27's own entry is archived and stays as written; this is where the correction lives.
+
+Target: each decision reaches its own resolution, with the input stated so the founder is not asked to invent it.
+
+- **OF-10 — the per-session context budget as a first-class constraint.** The cheapest of the three and the only one needing no external data: a `DECISIONS.md` entry recording that mandatory per-session reading is bounded by design, and an `AI/memory/learnings.md` entry that documentation-as-memory without a retrieval and lifecycle counterpart is accumulation rather than memory. Input available: everything items 18, 19 and 21 measured — 374.3 KB → 133.9 KB on the bootstrap path, the 60 KB threshold, the four governed documents. The founder decides the position; the entry is drafted against those measurements, not invented.
+- **OF-11 — the MVP usage target.** Needs a number only the founder can set, and the input that shapes it is a constraint rather than data: DECISION-013 means no telemetry and no backend, so the target has to be something countable by hand (installations known to Kenovis, teams that report completing `/init-project`), not a metric a dashboard produces. Until it exists, `1.0.0` has no criterion and every release re-argues the same rejection — six so far.
+- **OF-12 moves out of this item entirely.** It was mistagged as a founder call. It is work: see item 33.
+
+Validated when: `DECISIONS.md` carries the context-budget decision with its index line, `learnings.md` carries the accumulation entry, `PRODUCT/ROADMAP.md` → MVP Success Metrics carries a real number, and OF-10 and OF-11 are struck from the queue rather than left `Open` beside their own resolution.
+
+33. SCHEDULED — re-validate with a real external team, against the published package.
+
+Problem, and the correction that produced this item: OF-12 was tagged `Open — founder call`. It is not a decision, it is work, and tagging work as a decision is a way of parking it. One external team has validated this product, on 2026-08-06, against `kenovis@0.3.0` — eight releases ago, before the `.kenovis/` packaging matured, before the Product-layer templates existed, and before the Decision Index, the findings queue and the lifecycle rules shipped today. `AUTOMATIONS/user-feedback.md` describes a feedback loop that has never run once.
+
+Why it outranks most of what is left: five findings in the queue are `Deferred` on unvalidated Pain — OF-06, OF-07, OF-08 among them — and every one traces to this single gap. It is the cheapest thing that unblocks several at once. The North Star is defined in terms of Installations running a workflow, which is a number this product currently cannot report at all.
+
+Target: at least one external team installs `kenovis@0.13.0` on a real repository, completes `/init-project` or `/adopt-project`, and runs one workflow end to end. Record what breaks in the queue, with dispositions. Run `AUTOMATIONS/user-feedback.md` as written for the first time — if it does not survive contact, that is this item's finding.
+
+Not a smoke test. This repository has run those all day, and they only prove the artifact matches its own intent.
+
+Validated when: a real external team's run is recorded with its findings dispositioned, and `AUTOMATIONS/user-feedback.md` either worked or was corrected.
+
 Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident.
 
 Next: item 18 reaches no customer until published. The release carrying it is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9, 11, 13, 15 and 17 performed — or item 19 first, so one release carries both, as items 1+2 and 3+4 did. Per Learning-023, check item 19's own premise against `PRODUCT/ROADMAP.md` before scoping it.
@@ -322,9 +348,9 @@ First pass, 2026-08-12, over the 13 parked findings in this document and the sta
 | OF-07 | No active version check: nothing tells an installed customer a newer Framework Release exists. `cli/README.md` → "Upgrading" covers discovery at near-zero cost today. | Phase 2 → New Capabilities, 2026-08-06 | **Deferred.** First network dependency in the CLI's core logic; Pain and Frequency unvalidated against one external team. Condition to revisit: real Phase 2 usage data. |
 | OF-08 | The paid open-core tier has no ADR on its gating mechanism, and must not ship without one. | Phase 2 → Prerequisite, 2026-08-06 | **Deferred.** Premature on one external team's data. Blocks "additional specialized agents" when Phase 2 opens. |
 | OF-09 | `sync` has no diff preview or conflict detection before it mirror-replaces. | Phase 0 item 3 slice 4 | **Deferred.** Reversibility is satisfied by the target's own git history; ergonomics belong to Phase 2. |
-| OF-10 | Two records this block implements but never wrote: a `DECISIONS.md` entry making the per-session context budget a first-class constraint, and a `learnings.md` entry that documentation-as-memory without lifecycle is accumulation, not memory. | Second block header, 2026-08-12 | **Open — founder call.** Not `/next` work. Listed so it stops depending on being remembered. |
-| OF-11 | `MVP Success Metrics` → Usage has no target: "N installations (target not yet set)". Every release round since `0.9.0` has rejected `1.0.0` partly on this, so an unset number is gating the version. | Phase 1 → MVP Success Metrics | **Open — founder call.** Product decision, not an engineering item. Until it exists, `1.0.0` has no criterion to meet and each release re-argues the same rejection. |
-| OF-12 | One external team has validated the product, on 2026-08-06, against `kenovis@0.3.0` — eight releases ago. `AUTOMATIONS/user-feedback.md` describes a feedback loop that has never run. | Phase 1 → Real External Validation | **Open.** Every "deferred on unvalidated Pain" disposition above traces to this one gap. It is the cheapest way to unblock OF-07 and OF-08 at once. |
+| OF-10 | Two records this block implements but never wrote: a `DECISIONS.md` entry making the per-session context budget a first-class constraint, and a `learnings.md` entry that documentation-as-memory without lifecycle is accumulation, not memory. | Second block header, 2026-08-12 | **Open — founder call, item 32.** That item names the input the decision needs. Still not `/next` work, but no longer only a queue row. |
+| OF-11 | `MVP Success Metrics` → Usage has no target: "N installations (target not yet set)". Every release round since `0.9.0` has rejected `1.0.0` partly on this, so an unset number is gating the version. | Phase 1 → MVP Success Metrics | **Open — founder call, item 32.** Product decision, not an engineering item. Until it exists, `1.0.0` has no criterion to meet and each release re-argues the same rejection — six so far. |
+| OF-12 | One external team has validated the product, on 2026-08-06, against `kenovis@0.3.0` — eight releases ago. `AUTOMATIONS/user-feedback.md` describes a feedback loop that has never run. | Phase 1 → Real External Validation | **Scheduled — item 33.** Every "deferred on unvalidated Pain" disposition above traces to this one gap. Previously tagged a founder call, which was wrong: it is work, and tagging work as a decision is a way of parking it. |
 | OF-13 | `CHANGELOG.md` has no archive rule — 60.6 KB and growing one released section at a time, with every past release kept inline. The lifecycle rule exempts it pending this finding. | Item 21, 2026-08-12 | **Open.** Same shape as item 19's roadmap archive and cheap for the same reason; nobody reads `[0.2.0]` at session start. |
 
 Findings closed by disposition and kept here so they are not re-proposed: a CI guard asserting this repository's Product layer stays free of `[ANSWER:` markers (**Rejected**, item 6 — it would pass trivially and forever, and the real risk is a question written with a plain bracket, which no pattern separates from a legitimate survivor); a CI guard detecting an inherited answer in an authored Product-layer document (**Rejected**, item 8 — an answer phrased in generic words is invisible to any check, and claiming otherwise repeats Learning-015's failure in a new place).

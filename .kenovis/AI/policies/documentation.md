@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.6
+Version: 2.7
 
 ---
 
@@ -400,6 +400,8 @@ So every finding a round does not fix gets exactly one disposition, stated where
 **Rejected** — decided against, with the reason, recorded so it is not proposed again. This is a first-class outcome, not a failure. Most findings should not become work.
 
 **Being described in prose is not a disposition.**
+
+`Open` is a real disposition and also the easiest place to hide. A finding whose executor is not the AI — a decision only the human can make, work that needs an external party, a number nobody has — sits in the queue in perfect compliance with this rule and moves for no one. So an `Open` finding that the AI cannot execute names two more things: **who executes it, and what input they need to decide.** Without those, the queue becomes the new place where things stay still, with an id.
 
 Two rules that follow from this, because both failure modes have already happened:
 
