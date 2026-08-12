@@ -91,6 +91,8 @@ Learning:
 
 Future action:
 
+`Future action:` either cites the id of a scheduled item or queued finding in `PRODUCT/ROADMAP.md`, or states that no work is implied. A future action naming work that exists nowhere else is a finding with no disposition wearing a different field name — see `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+
 ---
 Categories
 

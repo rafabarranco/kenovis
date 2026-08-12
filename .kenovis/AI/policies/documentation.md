@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.2
+Version: 2.6
 
 ---
 
@@ -347,6 +347,80 @@ Major Decision
 Update DECISIONS.md
 
 Never leave documentation outdated after implementation.
+
+---
+
+# Document Lifecycle: A Size Threshold, An Archive, And An Exit
+
+Documentation rigor in this framework is asymmetric: cheap to add, and until now impossible to remove. `DECISIONS.md` states the no-remove rule explicitly, and it is right to — the reasoning trail is the value. But a rule that only ever adds produces documents that every session pays for and nobody reads whole.
+
+So the governed documents — the ones that accumulate entries rather than describing a current state — carry a lifecycle:
+
+**Governed documents.** `DECISIONS.md`, `PRODUCT/ROADMAP.md`, `AI/memory/learnings.md`, `CHANGELOG.md`. Documents that describe a current state (`COMPANY_OS.md`, `DOMAIN/`, `ENGINEERING/`) are rewritten rather than appended to, and are not governed by this section.
+
+**Threshold: 60 KB.** Past it, a governed document must have a split — an archive sibling, an index that bounds what is read, or a directory. The number is a trigger for a decision, not a law: crossing it means "decide how this document sheds weight", not "delete something".
+
+**The exit.** Closed entries move to the archive verbatim, per the section above. Superseded entries move rather than being marked in place, so the active document holds what is live and the archive holds the trail.
+
+**An exemption is allowed and must name its fix.** A governed document may sit over the threshold while the work that splits it is scheduled — but the exemption cites the roadmap item that closes it. An exemption with no item is the failure this whole rule exists to prevent, wearing a permission slip.
+
+`.github/scripts/check_document_size.py` enforces this: it fails when a governed document passes the threshold with neither a split nor an exemption naming an item.
+
+---
+
+# Closed Work Is Archived, Not Kept Inline
+
+A document that records work — a roadmap, a decision log, a learnings file — is append-only in practice: entries are added and never removed, because the reasoning trail is the point.
+
+That is correct, and it has a cost nobody pays until it is large: finished work loads on every session at the same price as work that is still pending. In this framework's own repository the completed items were 90% of the roadmap and 100% of them were read at every bootstrap.
+
+So a document that accumulates closed entries splits:
+
+- Closed entries move to a sibling archive — `PRODUCT/ROADMAP-ARCHIVE.md` for the roadmap — **verbatim**. Nothing is summarised away; the archive exists to preserve the trail, not to compress it.
+- The active document keeps one line per closed entry and a pointer to the archive.
+- The archive is read on demand. It is never on the session-initialization path.
+- An entry is archived only when it is genuinely closed. An open finding it raised moves to the findings queue first — see the section below. Archiving a document that still holds the only copy of an unresolved finding is how a visible backlog becomes an invisible one.
+
+Create the archive when the first entry closes, not in advance. An empty archive is noise.
+
+---
+
+# A Finding Is Fixed, Scheduled, Or Rejected
+
+A round finds more than it fixes. That is healthy — a round that only ever found what it had budgeted for would not be looking.
+
+What is not healthy is the third outcome: a finding described in the narrative of the item that was open at the time, with no id, no priority and no owner. It reads as handled. It is not. Once that item closes, and certainly once it is archived, the finding exists only in prose that nothing reads to decide what to do next.
+
+So every finding a round does not fix gets exactly one disposition, stated where the round's work is recorded:
+
+**Fixed** — done in this round. Say so, with the evidence.
+
+**Scheduled** — it becomes an entry with an id in `PRODUCT/ROADMAP.md`: the finding, its source, and enough of its shape to be picked up by someone with less context than the person who wrote it. A scheduled item and a queued finding are different things — a scheduled item is dimensioned work, a queued finding is a candidate that is not dimensioned yet — and both live in that document.
+
+**Rejected** — decided against, with the reason, recorded so it is not proposed again. This is a first-class outcome, not a failure. Most findings should not become work.
+
+**Being described in prose is not a disposition.**
+
+Two rules that follow from this, because both failure modes have already happened:
+
+- A deferred improvement is a decision, so its reasoning goes to `DECISIONS.md` — and its *work* still needs a disposition. `DECISIONS.md` records why something was not done; it is not a queue, and nothing reads it to choose the next objective.
+- A `Future action:` in `AI/memory/learnings.md` either cites the id of a queued or scheduled entry, or states that no work is implied. A future action naming work that exists nowhere else is the same defect wearing a different field name.
+
+When a round closes, it must be able to name the disposition of every finding it raised.
+
+---
+
+# A Decision Is Not Recorded Until Its Index Line Exists
+
+`DECISIONS.md` opens with a Decision Index: one line per decision, stating what that decision settled in enough substance that a reader can tell whether they need to open the body.
+
+That index is what the session-initialization protocol reads (`.kenovis/AI/SYSTEM.md` → "Context Loading Rules"). A decision whose body exists with no index line is invisible to every session that follows it, which is worse than not recording it — the reasoning is on disk and nothing points at it.
+
+So:
+
+- Writing a decision body and writing its index line are one change, never two.
+- The index line states what was settled. It never states why — that is the body's job, and it is why citing a decision requires opening it.
+- Superseding a decision updates its index line to say so, and names the decision that replaced it. The body stays where it is.
 
 ---
 

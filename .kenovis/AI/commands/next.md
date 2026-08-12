@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.1
+Version: 2.3
 
 ---
 
@@ -85,6 +85,8 @@ Understand:
 ---
 
 # Step 3 - Identify Next Objective
+
+Read both inputs, not one: the scheduled items, and `PRODUCT/ROADMAP.md` → "Open Findings", the queue of findings earlier rounds did not fix. A finding carrying `Open` competes here on the same priority formula as a scheduled item — that is the whole reason the queue exists, and skipping it is how a known problem stays unresolved for months while rounds pick from the items that happen to be written up.
 
 Determine:
 
@@ -409,6 +411,8 @@ Examples:
 # Step 15 - Prepare Next Step
 
 The summary is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. The recommended next action belongs in `PRODUCT/ROADMAP.md`, written in Step 13, so the next `/next` run reads it instead of re-deriving it.
+
+The same applies to everything this round found and did not fix. A round finds more than it fixes; each of those findings is scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason, in Step 13, before this summary is written. Describing a finding in this summary, or in the narrative of the item just closed, is not a disposition — see `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected". The summary below then states the disposition of each, which is only possible because they already have one.
 
 After completion:
 

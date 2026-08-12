@@ -1,6 +1,6 @@
 # Hotfix Workflow
 
-Version: 2.2
+Version: 2.3
 
 ---
 
@@ -287,4 +287,4 @@ Never:
 
 A hotfix restores stability today.
 
-The follow-up improvements prevent the same problem tomorrow.
+The follow-up improvements prevent the same problem tomorrow — which requires that they exist somewhere other than this conversation. Every follow-up this hotfix names is scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason before the incident is closed. A hotfix is the case where this is most likely to be skipped and least affordable to skip: the pressure is over, the system is up, and the follow-up is the only thing standing between today's fix and tomorrow's repeat. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
