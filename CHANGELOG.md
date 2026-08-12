@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Changed
+
+- **An `Open` finding the AI cannot execute now names who executes it and what input they need.** `.kenovis/AI/policies/documentation.md` (2.6 → 2.7). `Open` was a valid disposition under the rule shipped in [0.13.0] and also the easiest place to hide: a finding whose executor is not the AI — a decision only the human can make, work that needs an external party, a number nobody has — sat in the queue in perfect compliance and moved for no one. Found immediately after [0.13.0] shipped, by asking whether three findings tagged "founder call" were actually planned. They were recorded, which is not the same thing.
+
 ## [0.13.0] - 2026-08-12
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.12.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2. No CLI code changed in this release either, but the argument is the strongest of any framework-only release so far: the session-initialization protocol itself changed, seven commands and three workflows changed behaviour, three CI guards are new, and two Product-layer templates gained structural sections every Installation will carry — a Decision Index and an Open Findings queue.
