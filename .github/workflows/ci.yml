@@ -48,6 +48,9 @@ jobs:
       - name: Check governed documents stay inside the lifecycle rule
         run: python3 .github/scripts/check_document_size.py
 
+      - name: Check every promoted learning is findable in its policy
+        run: python3 .github/scripts/check_learning_promotions.py
+
   cli-tests:
     name: cli/ build, typecheck and tests
     runs-on: ubuntu-latest
