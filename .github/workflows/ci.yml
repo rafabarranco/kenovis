@@ -45,6 +45,9 @@ jobs:
       - name: Check every future action has a disposition
         run: python3 .github/scripts/check_future_actions.py
 
+      - name: Check governed documents stay inside the lifecycle rule
+        run: python3 .github/scripts/check_document_size.py
+
   cli-tests:
     name: cli/ build, typecheck and tests
     runs-on: ubuntu-latest
