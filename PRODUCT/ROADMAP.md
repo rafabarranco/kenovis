@@ -345,9 +345,11 @@ Validated when: a real external team's run is recorded with its findings disposi
 
 Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident.
 
-Next: item 18 reaches no customer until published. The release carrying it is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9, 11, 13, 15 and 17 performed — or item 19 first, so one release carries both, as items 1+2 and 3+4 did. Per Learning-023, check item 19's own premise against `PRODUCT/ROADMAP.md` before scoping it.
+Next (updated 2026-08-12, after item 20 closed): two things sit unpublished on `development` — item 20's policy promotions and the `Open`-finding-names-its-executor fix that scheduled items 32 and 33. Neither reaches a customer until a release is cut, which makes that the leading candidate, the same packaging step items 2, 5, 7, 9, 11, 13, 15, 17 and 31 performed. Item 20's half is unusually customer-visible for a framework-only release: five policies gained rules that an Installation's agents already load per task, so the upgrade changes behaviour rather than only instructions.
 
-Not yet recorded, and outstanding after this block is scheduled: a `DECISIONS.md` entry establishing the per-session context budget as a first-class architectural constraint — the standing rule the thirteen items above implement — and an `AI/memory/learnings.md` entry that documentation-as-memory without a retrieval and lifecycle counterpart is accumulation rather than memory. Both are founder calls, not `/next` work. Tracked as OF-10 below so they stop depending on being remembered.
+Competing without a release first: item 24 (needs a seeded fixture, no release required — the instruction under test is already on `development`), item 32 (founder input, not `/next` work), OF-13 (`CHANGELOG.md` archive, cheap and now the only governed document over threshold with a still-open exemption). Item 22 and item 25 both require `/architect` and an ADR before any file is touched; do not start either from `/next`.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it — item 20's premise had drifted by one entry and 11 KB in the four days between being written and being executed.
 ---
 Open Findings (queue, added 2026-08-12)
 
