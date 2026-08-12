@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.50
+Version: 1.51
 ---
 Purpose
 
@@ -154,7 +154,7 @@ Items 3-17 continued that alternation of work and release. Items 18-23 are a sec
 ---
 Phase 1 — Immediate Priority, second block (added 2026-08-12, from /analyze on framework context scalability, founder-flagged maximum priority — ahead of any other Phase 1/2/3 item)
 
-Twenty items, items 18-37 — sixteen as originally written, plus items 34-37 added as the block ran. Item 25 is rejected, superseded by item 37. In the order written, except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
+Twenty-one items, items 18-38 — sixteen as originally written, plus items 34-38 added as the block ran. Item 25 is rejected, superseded by item 37. In the order written, except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
 
 The R-tags (R1-R6) are the recommendation labels from the 2026-08-12 `/analyze` run that produced this block, kept so the items stay traceable to their analysis. Execution order is not R-tag order: R5 is cheap and independent so it lands with the other Do-Now items, and R4 precedes R3 because a lifecycle rule that does not exist cannot govern the restructuring that R3 performs.
 
@@ -339,6 +339,18 @@ Validated when: each of the ten has a recorded disposition — Framework-layer h
 
 Findings this item did not fix: none — the guard-count drift above is corrected in place rather than queued, and the underlying misdirection is DECISION-026, not a finding.
 
+38. SCHEDULED — `sync` names what it removed from `.kenovis/`. Closes OF-01.
+
+Problem: `sync` mirror-replaces the AI-OS layer and prints `already up to date` while files disappear. The oldest finding in the queue, unscheduled for four rounds because it read as needing a design decision.
+
+It did not. RULE-INST-03 (2026-08-12) settled it: the AI-OS layer belongs to the AI-OS, so removal is correct and refusing would break the guarantee that every Installation runs the same team. What is left is one line of honesty — say what was removed.
+
+Target: `sync` reports removed paths under `.kenovis/`, and `already up to date` is not printed when something was deleted. No refusal, no `--force`, no prompt.
+
+Dependency: none. First item to test DECISION-026 in the direction it is hardest — this one genuinely is CLI code, and the rule it enforces already lives in `DOMAIN/BUSINESS_RULES.md`, so the loaded-layer half exists and the code is delivery.
+
+Findings this item did not fix: none.
+
 Next (updated 2026-08-12, after DECISION-026): **item 37**, and it is not a close call — the founder flagged it maximum priority and it changes what every other item on this document is allowed to produce.
 
 Take it before item 24, before OF-14, before a release. The reason is not that those are unimportant; it is that until item 37 runs, a round can still close work by improving this repository instead of the product, which is what the last four rounds did while recording that they should not. Every item below it inherits the DECISION-026 test — *does this reach a customer's next task without anyone doing anything?* — and item 37 is what makes that test answerable per rule rather than per round.
@@ -363,7 +375,7 @@ First pass, 2026-08-12, over the 13 parked findings in this document and the sta
 
 | Id | Finding | Source | Disposition |
 |---|---|---|---|
-| OF-01 | `kenovis sync` deletes anything a customer put under `.kenovis/` without naming what it removed. `already up to date` is printed while files disappear. | Item 12, 2026-08-09 | **Open.** Oldest open finding — prose for four rounds. CLI change with its own design; needs a decision on report-vs-refuse. Priority: Pain high (silent data loss), Frequency low (item 12 removed the instructions that led customers there), Cost medium. |
+| OF-01 | `kenovis sync` deletes anything a customer put under `.kenovis/` without naming what it removed. `already up to date` is printed while files disappear. | Item 12, 2026-08-09 | **Scheduled — item 38.** Open for four rounds on "needs a decision on report-vs-refuse", which RULE-INST-03 settled on 2026-08-12: the AI-OS layer is the AI-OS's, so deleting is the rule working and refusing would be wrong. Only the silence is the defect, which collapses this from a design question to naming what was removed. |
 | OF-02 | `/architect` has never been executed end to end from a real published Installation. Six for six such runs have found a maximal-Pain defect. | Learning-020/021/022 | **Open.** Highest expected yield of any unscheduled item on precedent alone. Item 24 may use it as its vehicle. |
 | OF-03 | `/release` has never been executed end to end from a real published Installation. Item 14 fixed its Step 8; fixing one step is not running the command. | Learning-021/022 | **Open.** Same class as OF-02, one round behind it. |
 | OF-04 | Items 19-23 carry structural premises about file contents that were never verified when written — the defect Learning-023 records against item 18. | Learning-023, 2026-08-12 | **Open.** Cost is one command per item. Do it at the start of each item rather than as its own round. |
