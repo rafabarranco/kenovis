@@ -29,6 +29,11 @@ leaving the distinction implicit:
     there is nothing useful to review in it; what is reviewable is the rule in
     `.kenovis/AI/policies/documentation.md`.
 
+Framework-layer home: not yet dispositioned. PRODUCT/ROADMAP.md item 37 works
+the guards one at a time and this one is outstanding. Until it names a home or
+records that its rule has no Framework-layer form, this check protects this
+repository only.
+
 Scope, stated so it is not mistaken for wider coverage than it has: this runs in
 this repository's CI only. The bundler ships `.kenovis/AI/` and the customer
 README, not `.github/` (PRODUCT/ROADMAP.md Phase 1 item 17), so a customer

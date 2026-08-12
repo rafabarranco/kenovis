@@ -17,6 +17,11 @@ a verb set, so its scope was whatever that pattern happened to match. Two sites
 phrased "Use:" survived it and shipped in `kenovis@0.10.0`. A pattern that
 defines its own scope cannot report what it missed; this one enumerates every
 reference instead.
+
+Framework-layer home: not yet dispositioned. PRODUCT/ROADMAP.md item 37 works
+the guards one at a time and this one is outstanding. Until it names a home or
+records that its rule has no Framework-layer form, this check protects this
+repository only.
 """
 
 import re

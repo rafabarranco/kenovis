@@ -50,9 +50,20 @@ Learning-022:
     naming `OF-99` fails: citing an id that was never written is the same defect
     wearing a citation.
 
+Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "A Finding Is
+Fixed, Scheduled, Or Rejected" states the rule; `.kenovis/AI/commands/next.md`
+Step 15 orders it (dispositions first, summary second); and
+`.kenovis/AI/templates/product-layer/PRODUCT/ROADMAP.md` -> "Open Findings"
+ships both to every Installation at initialization. Verified 2026-08-13
+(PRODUCT/ROADMAP.md item 37).
+
 Scope: this repository's CI only. The bundle ships `.kenovis/AI/`, not
-`.github/` -- a customer Installation carries the rule with no guard behind it
-until `kenovis check` ships (PRODUCT/ROADMAP.md item 25).
+`.github/`, so a customer Installation runs this script never and carries the
+rule always. That is the intended split, not a gap -- the rule is what travels
+and this file is a local net over this repository's own dogfooding
+(DECISIONS.md DECISION-026). An earlier version of this paragraph said the gap
+closed "until `kenovis check` ships (PRODUCT/ROADMAP.md item 25)"; item 25 is
+rejected and `kenovis check` will not ship.
 """
 
 import re

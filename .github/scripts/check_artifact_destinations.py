@@ -35,6 +35,11 @@ Learning-021):
 
 Adding a producing verb or artifact noun here when a new phrasing appears is
 expected maintenance, not a workaround.
+
+Framework-layer home: not yet dispositioned. PRODUCT/ROADMAP.md item 37 works
+the guards one at a time and this one is outstanding. Until it names a home or
+records that its rule has no Framework-layer form, this check protects this
+repository only.
 """
 
 import re
