@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.4
+Version: 2.5
 
 ---
 
@@ -347,6 +347,23 @@ Major Decision
 Update DECISIONS.md
 
 Never leave documentation outdated after implementation.
+
+---
+
+# Closed Work Is Archived, Not Kept Inline
+
+A document that records work — a roadmap, a decision log, a learnings file — is append-only in practice: entries are added and never removed, because the reasoning trail is the point.
+
+That is correct, and it has a cost nobody pays until it is large: finished work loads on every session at the same price as work that is still pending. In this framework's own repository the completed items were 90% of the roadmap and 100% of them were read at every bootstrap.
+
+So a document that accumulates closed entries splits:
+
+- Closed entries move to a sibling archive — `PRODUCT/ROADMAP-ARCHIVE.md` for the roadmap — **verbatim**. Nothing is summarised away; the archive exists to preserve the trail, not to compress it.
+- The active document keeps one line per closed entry and a pointer to the archive.
+- The archive is read on demand. It is never on the session-initialization path.
+- An entry is archived only when it is genuinely closed. An open finding it raised moves to the findings queue first — see the section below. Archiving a document that still holds the only copy of an unresolved finding is how a visible backlog becomes an invisible one.
+
+Create the archive when the first entry closes, not in advance. An empty archive is noise.
 
 ---
 
