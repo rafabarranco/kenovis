@@ -6,6 +6,56 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-08-12
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.12.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2. No CLI code changed in this release either, but the argument is the strongest of any framework-only release so far: the session-initialization protocol itself changed, seven commands and three workflows changed behaviour, three CI guards are new, and two Product-layer templates gained structural sections every Installation will carry — a Decision Index and an Open Findings queue.
+
+`1.0.0` was considered and rejected again, for the reason [0.9.0] through [0.12.0] gave: it would signal maturity Phase 1 has not validated, with one external team on record — against `kenovis@0.3.0`, eight releases ago — and the MVP Success Metrics still without a target. Both of those are now recorded as findings (OF-11, OF-12) instead of being re-argued each release.
+
+**Nothing breaks for an existing Installation.** Two things the upgrade cannot do for you, both stated because `sync` never touches a Product-layer file you already authored: your `DECISIONS.md` will not gain a Decision Index and your `PRODUCT/ROADMAP.md` will not gain an Open Findings section — the new templates carry both, but only for documents authored after upgrading. Adding them by hand is a copy-paste from `.kenovis/AI/templates/product-layer/`, and until you do, the new instructions describe sections your files do not have.
+
+### Added
+
+
+- **Governed documents now have a lifecycle, enforced in CI.** `.kenovis/AI/policies/documentation.md` (2.5 → 2.6) → "Document Lifecycle: A Size Threshold, An Archive, And An Exit". Rigor in this framework was asymmetric — cheap to add, impossible to remove — and four documents grew from ~20 KB combined to ~360 KB in eleven days, all of it on every session's reading path.
+
+  Four governed documents, a 60 KB threshold, and three acceptable answers to crossing it: an archive, an index, or a split. Exemptions are allowed and must name the roadmap item that closes them. `.github/scripts/check_document_size.py` enforces it and prints every governed document's size on every run, so growth is visible before it is a problem. Confirmed to fail when an exemption is removed.
+
+- **Closed roadmap items move to a verbatim archive.** `.kenovis/AI/policies/documentation.md` (2.4 → 2.5) → "Closed Work Is Archived, Not Kept Inline": a document that accumulates closed entries splits, the active file keeps one line each plus a pointer, and the archive is never on the session-initialization path. Nothing is summarised away — the archive preserves the trail, it does not compress it. The Product-layer roadmap template (1.3 → 1.4) tells an Installation to create its archive when its first item closes, not in advance.
+
+  In this repository: 31 closed items moved to `PRODUCT/ROADMAP-ARCHIVE.md` and `PRODUCT/ROADMAP.md` went 164.7 KB → 42.2 KB. Combined with the Decision Index above, the full bootstrap path goes 374.3 KB → 133.9 KB.
+
+- **`PRODUCT/ROADMAP.md` gains an `Open Findings` queue, shipped in the Product-layer template** (1.2 → 1.3) so every Installation starts with it. A scheduled item is dimensioned work; a finding is a candidate that is not. Four dispositions — Scheduled, Open, Deferred, Rejected — and `commands/next.md` Step 3 (2.2 → 2.3) reads the queue alongside the scheduled items, so an open finding competes on the priority formula instead of waiting to be remembered. See DECISION-025.
+
+- **`.github/scripts/check_future_actions.py`, wired into CI.** Most of the disposition rule cannot be checked by a machine — detecting a finding inside prose has no pattern (Learning-015). This is the part that can: `AI/memory/learnings.md` has fixed structure, so every `Future action:` must carry a `Disposition:` citing an id or stating that no work is implied. Confirmed to fail on the pre-sweep tree naming all 23 future actions.
+
+  Population exact and printed; classifier declared shallow — it cannot tell a correct disposition from a plausible one. It does not cover findings parked in roadmap prose, and says so. This repository's CI only, until `kenovis check` ships.
+
+
+- **`DECISIONS.md` gains a Decision Index**, and the Product-layer template ships the section empty so every Installation starts with it (`.kenovis/AI/templates/product-layer/DECISIONS.md` 1.1 → 1.2) instead of discovering the need for one at 100 KB. The item that scheduled this work assumed the index already existed; it did not — what sat at the head of the file listed fourteen of seventeen decisions by bare title. See `AI/memory/learnings.md` Learning-023.
+
+- **`.github/scripts/check_decision_index.py`, wired into CI** beside the three existing docs-integrity guards. Reading an index instead of a log is only safe while the index is complete: a decision body with no index line is invisible to every session that follows it. The check fails on a body without an index line, an index line without a body, a duplicate, or a line that states a title and little else. Confirmed to fail on the pre-change tree before being kept.
+
+  Per Learning-021 and Learning-022 the script states which of its parts is exact and which is not: the population — every `# DECISION-NNN` heading and every `- **DECISION-NNN**` index line — is exact and both counts print on every run; the substance test is a length heuristic and cannot tell a long empty line from a short useful one. Its scope is this repository only, because the bundle ships `.kenovis/AI/` and not `.github/` — a customer Installation carries the rule as an instruction with no guard behind it.
+
+- **`.kenovis/AI/policies/documentation.md` → "A Decision Is Not Recorded Until Its Index Line Exists"** (2.2 → 2.3): writing a decision body and writing its index line are one change, never two; the index line says what was settled and never why; superseding updates the index line and leaves the body in place.
+
+### Changed
+
+- **A finding a round does not fix is now scheduled or rejected, never just described.** The framework had three sinks for knowledge — `DECISIONS.md` (why), `AI/memory/learnings.md` (lesson), `PRODUCT/ROADMAP.md` (what and when) — and every command routed findings to the first two. Only the third is read to decide what to do next. Nothing anywhere said that a finding implying work becomes a scheduled item, so findings landed in the narrative of whichever item was open, with no id, no priority and no life after that item closed.
+
+  Measured in this repository before the fix: 13 findings parked in `PRODUCT/ROADMAP.md` prose, 24 `Future action:` entries in `learnings.md` of which 5 named the roadmap, and the oldest open finding — `kenovis sync` never naming the paths it deletes — untouched since 2026-08-09 despite being repeated in four rounds' closing paragraphs.
+
+  `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" (2.3 → 2.4) states the rule: three dispositions, and **being described in prose is not one of them**. Rejection is first-class — most findings should not become work. Cited from every command that can produce a finding: `analyze.md` (2.1 → 2.2), `bug.md` (2.2 → 2.3), `review.md` (2.1 → 2.2), `feature.md` (2.2 → 2.3), `next.md` (2.1 → 2.2), `architect.md` (2.2 → 2.3), `workflows/review.md` (2.3 → 2.4), `workflows/hotfix.md` (2.2 → 2.3). The learnings template (1.2 → 1.3) now requires a `Future action:` to cite an id or state that no work is implied.
+
+- **`/analyze` was forbidden from doing what its own Step 9 required.** Step 9 said an analysis with a durable residue belongs in "a scheduled item in `PRODUCT/ROADMAP.md`"; sixty lines below, "AI Responsibilities" said **"AI must not: Modify files."** The one command whose entire purpose is detection could not record what it detected. `analyze.md`'s prohibition now names what it actually means to forbid — implementing, changing product code or documents to apply a finding, inventing requirements — and states the recording obligation explicitly. The command detects and records; it never fixes.
+
+- **The session-initialization protocol reads `DECISIONS.md` as an index, not as seventeen decision bodies.** A decision log is append-only by design and grows without bound; every session was paying the whole file to consult none of it. Measured over 2026-07-30 → 2026-08-10 in this repository, `DECISIONS.md` went 9.8 KB → 119.9 KB in eleven days, and the mandatory read of `COMPANY_OS.md` + `DECISIONS.md` + `AI/SYSTEM.md` stood at ~138 KB before any work started.
+
+  `COMPANY_OS.md` and `.kenovis/AI/SYSTEM.md` stay full reads. `DECISIONS.md` is read as its Decision Index — one line per decision, stating what that decision settled. A body is opened on demand, and **citing a decision requires opening it**: the index says what was settled, never why, and a citation built on the index alone is a preference wearing a decision's ID.
+
+  Stated in `.kenovis/AI/SYSTEM.md` → "Context Loading Rules" (1.4 → 1.5), `.kenovis/AI/commands/bootstrap.md` Step 2 (2.5 → 2.6), and this repository's own root `CLAUDE.md` (2.1 → 2.2). Two further sites told an agent to read the log rather than the index and were found by enumerating every read instruction rather than the three the item named (Learning-022's rule): `agents/database.md` (1.1 → 1.2), which sent a designer to the whole log for the engine and tenancy model, and `workflows/framework-review.md` (1.0 → 1.1), whose reading scope named DECISION-001/009/010 by number and now names the index's framework-level marks. Measured on the read path: this repository 138.2 KB → 22.2 KB (**-84%**); an Installation whose log has grown to the same size, 135.6 KB → 19.7 KB (-85%). A day-one Installation whose log is still the template saves 2.6 KB of 19.2 KB — the bound matters as the log accumulates, which is the point.
+
 ## [0.12.0] - 2026-08-10
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.11.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2, and for the fifth release running the habitual answer would have been patch: not one line of CLI code changed and everything here is a bug fix. But this package bundles the framework files themselves, and fourteen of them changed — eight instruction documents changed behaviour across ten sites, six workflows changed content. An Installation syncing to this release gets `/review`, `/bug`, `/analyze`, `/feature`, `/next`, `/architect` and `/bootstrap` telling an agent where what they produce belongs, where before they said nothing. That is the same distinction [0.5.0], [0.7.0], [0.8.0], [0.10.0] and [0.11.0] drew.

@@ -1,6 +1,6 @@
 # AI Engineering Constitution
 
-Version: 2.1
+Version: 2.2
 
 Part of the Kenovis AI-OS. This file is framework-level and product-agnostic.
 
@@ -46,11 +46,16 @@ Do not build a product on top of another product's context.
 
 At the beginning of every session:
 
-Read:
+Read in full:
 
 1. COMPANY_OS.md
-2. DECISIONS.md
-3. .kenovis/AI/SYSTEM.md
+2. .kenovis/AI/SYSTEM.md
+
+Read as its index only:
+
+3. DECISIONS.md → its Decision Index, the section at the head of the file. Not the bodies.
+
+A decision body is opened on demand, and citing a decision requires opening it — the index says what a decision settled, never why. See .kenovis/AI/SYSTEM.md → "Context Loading Rules".
 
 Then load relevant context:
 
