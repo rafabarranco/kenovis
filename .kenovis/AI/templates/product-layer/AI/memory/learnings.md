@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.6
+Version: 1.7
 ---
 Scope
 
@@ -259,6 +259,24 @@ If a learning becomes domain knowledge:
 Move it to:
 
 DOMAIN/
+
+---
+What "Move It" Means
+
+"Move" is the whole instruction, and the half that is easy to skip is what happens to the entry afterwards.
+
+A promotion is not done when the rule appears in a policy. It is done when the rule appears in the policy **and** the learning stops being the place that rule lives. Otherwise the same rule sits in two documents, one loaded per task and one loaded at session start, and the second keeps growing.
+
+So a promoted learning closes:
+
+1. The rule is written into the policy that enforces it, in that policy's own voice — a rule, not a story. The policy cites the learning id, so the reasoning is one hop away.
+2. The entry moves verbatim to `AI/memory/LEARNINGS-ARCHIVE.md`. Create that file when the first learning closes, not before — an empty archive is noise.
+3. One line stays here, naming what the learning established and which policy section now carries it.
+4. Any finding the entry raised already has a disposition in `PRODUCT/ROADMAP.md` before the move. An entry holding the only copy of an unresolved finding is not ready to be archived.
+
+Run this process when this file crosses the size threshold in `.kenovis/AI/policies/documentation.md` → "Document Lifecycle", and at every `/init-project` in a repurposed repository, before the previous product's learnings are deleted.
+
+A learning that has not become a rule stays here. Most do not, and that is the normal outcome.
 
 ---
 Evolution Rules

@@ -1,6 +1,6 @@
 # Architecture Policy
 
-Version: 1.0
+Version: 1.1
 
 ---
 
@@ -382,6 +382,22 @@ Design so tomorrow's growth is possible.
 Do not build distributed systems for ten users.
 
 Do not build monoliths that cannot evolve.
+
+---
+
+# Distribution Is Part Of The Architecture
+
+Applies to any product that is *installed* somewhere else — a CLI, a template, a library, a framework — rather than only run by its authors.
+
+**A product that is installed has two execution environments, and its own repository is the one where its instructions are least likely to fail.** Inside the origin repository, a path is source; inside an Installation, the same path may be a synced copy that the next update replaces. Every instruction that produces a file is a claim about where files may be written in someone else's repository, and that claim cannot be verified by reading — only by following it somewhere the replace is real. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-014, Learning-020.)
+
+**When a change replaces how an artifact reaches its consumer, that artifact's own instructions are inside the blast radius** — even when they never mention the distribution mechanism. The question is not "does this document contradict itself" but "does it still describe the situation its reader will actually be in". A document written against a superseded mechanism reads perfectly and is wrong. After changing the set of paths an installer writes, re-read every instruction that assumes one of them. (Learning-014.)
+
+**A rule reasoned about "the customer" is checked against this repository too.** When a packaging or distribution rule treats "the tool" and "an installation" as distinct parties, ask whether the tool's own repository is itself an installation of that rule. If it is, walk the rule through that case before considering the design complete — a rule correct for every other installation can still be wrong for the self-referential one. (Learning-009.)
+
+**Default paths and escape hatches carry different trust, documented explicitly.** An unvalidated "use exactly what I point you at" flag will faithfully reproduce whatever layer-mixing mistake the caller makes. Which trust level applies must be stated, not implied by which flag was used. (Learning-004.)
+
+**When a business rule names its own mechanism, build against that mechanism.** If `DOMAIN/BUSINESS_RULES.md` says reversibility comes from the consumer's version control, the tool does not need to reimplement a diff engine to satisfy it. Check `PRODUCT/ROADMAP.md` for whether a richer version of the same capability is already deliberately deferred — that is strong evidence the leaner reading is the intended one. (Learning-003.)
 
 ---
 

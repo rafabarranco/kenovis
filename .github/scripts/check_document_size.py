@@ -14,11 +14,11 @@ archive sibling, an index that bounds what is read, or a split into a directory.
 WHAT THIS CHECK CAN AND CANNOT DO, per AI/memory/learnings.md Learning-021 and
 Learning-022:
 
-  - The POPULATION is exact and hardcoded below: the four documents that
-    accumulate entries. Documents that describe a current state are rewritten
-    rather than appended to and are deliberately not governed. Every governed
-    document's size prints on every run, so growth is visible before it is a
-    problem rather than after.
+  - The POPULATION is exact and hardcoded below: the documents that accumulate
+    entries, plus the archives they shed weight into. Documents that describe a
+    current state are rewritten rather than appended to and are deliberately not
+    governed. Every governed document's size prints on every run, so growth is
+    visible before it is a problem rather than after.
 
   - The SATISFACTION test is structural, not semantic: a document over
     threshold passes if it has a declared split, or an exemption naming the
@@ -39,23 +39,26 @@ THRESHOLD_BYTES = 60 * 1024
 
 # Governed documents, and how each one is allowed to be over threshold.
 # "split" names a file that must exist; "exempt" names the roadmap item that
-# closes the gap. A governed document with neither, over threshold, fails.
+# closes the gap; "archive_of" names the active document this one absorbs
+# weight for. A governed document with none of the three, over threshold, fails.
+#
+# An archive is over threshold on purpose -- it is where the weight went, it is
+# never on the session-initialization path, and no roadmap item will ever
+# "close" it. Naming an item for one would be an exemption nothing can satisfy,
+# which is the failure mode this rule exists to prevent. It is still listed and
+# still prints its size, because an archive nobody watches is how the next 120 KB
+# arrives unnoticed.
 GOVERNED = {
     "PRODUCT/ROADMAP.md": {"split": "PRODUCT/ROADMAP-ARCHIVE.md"},
-    "PRODUCT/ROADMAP-ARCHIVE.md": {
-        "exempt": "item 21 — the archive is off the session-initialization path by design; "
-        "it is read on demand and its size is the point of the split, not a defect"
-    },
+    "PRODUCT/ROADMAP-ARCHIVE.md": {"archive_of": "PRODUCT/ROADMAP.md"},
     "DECISIONS.md": {
         "split": None,
         "exempt": "item 22 — DECISIONS.md becomes a directory, one file per decision, "
         "with the current file as its index. The Decision Index from item 18 already "
         "bounds what a session reads",
     },
-    "AI/memory/learnings.md": {
-        "exempt": "item 20 — run the learnings Review Process, promoting standing rules "
-        "into policies and archiving the rest"
-    },
+    "AI/memory/learnings.md": {"split": "AI/memory/LEARNINGS-ARCHIVE.md"},
+    "AI/memory/LEARNINGS-ARCHIVE.md": {"archive_of": "AI/memory/learnings.md"},
     "CHANGELOG.md": {"exempt": "OF-13 — no archive rule exists for released changelog sections yet"},
 }
 
@@ -63,6 +66,7 @@ GOVERNED = {
 def main() -> int:
     over = []
     exempted = []
+    archives = []
     errors = []
 
     for rel, rule in sorted(GOVERNED.items()):
@@ -72,6 +76,15 @@ def main() -> int:
             continue
         size = path.stat().st_size
         print(f"  {rel}: {size / 1024:.1f} KB")
+
+        archive_of = rule.get("archive_of")
+        if archive_of:
+            if not (ROOT / archive_of).exists():
+                errors.append(f"{rel}: archives {archive_of}, which does not exist")
+            elif size > THRESHOLD_BYTES:
+                archives.append(f"{rel} — archive of {archive_of}, over threshold by design")
+            continue
+
         if size <= THRESHOLD_BYTES:
             continue
         over.append(rel)
@@ -89,6 +102,11 @@ def main() -> int:
             f"{rel}: {size / 1024:.1f} KB, over the {THRESHOLD_BYTES / 1024:.0f} KB "
             f"threshold with no archive, index, or exemption naming the item that fixes it"
         )
+
+    if archives:
+        print("\nOver threshold, by design:")
+        for line in archives:
+            print(f"  {line}")
 
     if exempted:
         print("\nOver threshold, exempted:")
@@ -108,7 +126,8 @@ def main() -> int:
 
     print(
         f"\nDocument lifecycle holds: {len(GOVERNED)} governed documents, "
-        f"{len(over)} over the {THRESHOLD_BYTES / 1024:.0f} KB threshold, "
+        f"{len(archives)} archives over threshold by design, "
+        f"{len(over)} others over the {THRESHOLD_BYTES / 1024:.0f} KB threshold, "
         f"each with a split or an exemption naming its item."
     )
     return 0
