@@ -1,6 +1,6 @@
 # Architecture Policy
 
-Version: 1.2
+Version: 1.3
 
 ---
 
@@ -416,6 +416,8 @@ Applies to any product that is *installed* somewhere else — a CLI, a template,
 **Default paths and escape hatches carry different trust, documented explicitly.** An unvalidated "use exactly what I point you at" flag will faithfully reproduce whatever layer-mixing mistake the caller makes. Which trust level applies must be stated, not implied by which flag was used. (Learning-004.)
 
 **When a business rule names its own mechanism, build against that mechanism.** If `DOMAIN/BUSINESS_RULES.md` says reversibility comes from the consumer's version control, the tool does not need to reimplement a diff engine to satisfy it. Check `PRODUCT/ROADMAP.md` for whether a richer version of the same capability is already deliberately deferred — that is strong evidence the leaner reading is the intended one. (Learning-003.)
+
+**A file's layer is declared in the file, and the declaration is what the updater reads.** Where an update mirror-replaces one layer and must never touch another, the boundary cannot live in a list held by the tool — a list is a registry of paths that has to be edited every time a document is added, and the edit is the step that gets skipped. It lives on line 1 of the document, as a marker the tool and the next agent both read. Two consequences follow, and the second is the one that is missed: **every new document in the protected layer carries the marker when it is created**, not when someone notices later; and the marker states *which layer the file belongs to* and nothing about whether it has been filled in, so it is equally true of an untouched template and of a document the company has owned for years. A marker that also means "unfinished" cannot survive the file being finished, and whatever reads it then reads it wrong. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-013; DECISIONS.md DECISION-019 and DECISION-023.)
 
 ---
 

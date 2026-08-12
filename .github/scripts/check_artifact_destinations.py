@@ -36,10 +36,13 @@ Learning-021):
 Adding a producing verb or artifact noun here when a new phrasing appears is
 expected maintenance, not a workaround.
 
-Framework-layer home: not yet dispositioned. PRODUCT/ROADMAP.md item 37 works
-the guards one at a time and this one is outstanding. Until it names a home or
-records that its rule has no Framework-layer form, this check protects this
-repository only.
+Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "An Instruction
+That Produces An Artifact Names Where It Goes, And A Template Is Never Where",
+first half -- including the part this script cannot see, that "delivered in
+session, no file" is itself a destination and silence is not. Same gap as
+`check_template_refs.py` had: the destinations were present at ~20 sites and
+the rule requiring them was written nowhere an agent loads. Verified
+2026-08-13 (PRODUCT/ROADMAP.md item 37).
 """
 
 import re

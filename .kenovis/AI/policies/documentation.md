@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.0
+Version: 3.1
 
 ---
 
@@ -366,7 +366,7 @@ So the governed documents — the ones that accumulate entries rather than descr
 
 **An archive is over the threshold on purpose, and is not exempted — it is classified.** An archive is where the weight went; it is never on the session-initialization path, and no roadmap item will ever close it. Giving one an exemption would mean naming an item that can never be satisfied, which is the same failure in the opposite direction. It stays listed and its size stays printed, because an archive nobody watches is how the next hundred kilobytes arrive unnoticed.
 
-`.github/scripts/check_document_size.py` enforces this: it fails when a governed document passes the threshold with neither a split nor an exemption naming an item.
+Nothing in an Installation enforces this mechanically — the rule holds because it is loaded on every task, which is the enforcement this framework has. The origin repository additionally backs it with a check in its own build, which is a local net over its own dogfooding and reaches nobody else. See `.kenovis/AI/policies/architecture.md` → "An Improvement Lands Where The Work Is Loaded".
 
 ---
 
@@ -413,7 +413,7 @@ So every finding a round does not fix gets exactly one disposition, stated where
 
 So closing an item includes the line `Findings this item did not fix:` naming the queued ids, or stating none. A round that found nothing writes "none" and is done. A round that found something can no longer stay silent about it; it has to write "none" and be wrong on the record, which is a different act from forgetting.
 
-This is the inversion that makes the rule checkable at all. Detecting a finding inside narrative prose has no pattern — which is why guards built on classifying prose were correctly rejected twice. Requiring a declaration does: the population is every closed item, and a missing line is exact. `.github/scripts/check_item_findings.py` enforces it, including that every declared id exists in the queue.
+This is the inversion that makes the rule checkable at all. Detecting a finding inside narrative prose has no pattern — which is why guards built on classifying prose were correctly rejected twice. Requiring a declaration does: the population is every closed item, and a missing line is exact. Two things follow and both are part of the rule: every id a closing item declares exists in the queue, and a round with nothing to declare writes "none" rather than omitting the line.
 
 Two rules that follow from this, because both failure modes have already happened:
 
@@ -463,6 +463,22 @@ Two failure modes that make a correctly written instruction produce nothing.
 **A document that instructs an outcome must permit the action that produces it.** A prohibition written for one purpose ("do not implement") silently swallows a different one ("do not record") when it is phrased by mechanism rather than by intent. A rule a command is structurally prevented from following is not a weak rule, it is an absent one, and no amount of care in following it helps. When writing "do X" into a command, re-read that command's own constraints for whatever forbids X. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-024.)
 
 **Knowledge sinks are not interchangeable.** This framework has three: `DECISIONS.md` records *why*, `AI/memory/learnings.md` records the *lesson*, `PRODUCT/ROADMAP.md` records *what and when*. Only the third is read to decide what happens next. Before writing "record it in X", ask what reads X and when. A destination nothing consults at decision time is a place to put something down, not a place for it to be picked up — and a well-documented deferral in the wrong sink reads as closed. (Learning-024.)
+
+---
+
+# An Instruction That Produces An Artifact Names Where It Goes, And A Template Is Never Where
+
+Two halves of one rule. Both shipped as real defects before either was written down, and both are invisible to the agent that hits them.
+
+**An instruction that tells an agent to produce something states where the produced thing is recorded.** A step that says "generate the report" and stops does not read as incomplete — it reads as finished, and the agent completes it by choosing a destination itself. The destination it chooses is wherever this framework's own files live, because that is where everything else the framework owns sits. In an Installation that directory is mirror-replaced by the next update, so the artifact is deleted and nothing names the file it removed.
+
+So the destination is part of the instruction, not judgement left to the reader. When the artifact is genuinely session-only — a plan presented to a human, a summary, a form that shaped a conversation — the instruction says *that*, because "no file, delivered in session" is a destination and silence is not.
+
+**A template is a form, never a destination.** A path under the templates directory names a shape to fill in; the filled-in artifact goes somewhere else. Every reference to a template carries that sentence **at the reference**, not only in the template's own header — an agent following a pointer acts on the instruction that sent it, and does not necessarily open the target first. The templates directory is inside the layer `sync` mirror-replaces, so a template used as a destination is a file written in order to be deleted.
+
+Why both belong at the reference site and not only here: the agent that fails this is reading one instruction, not the policy set. This policy is what makes the sentence required; the sentence at the site is what makes the instruction complete. A rule that is true in a policy and absent from the instruction it governs is a rule with no reader at the moment it applies.
+
+See DECISIONS.md DECISION-024.
 
 ---
 
