@@ -1,6 +1,6 @@
 # Architecture Policy
 
-Version: 1.1
+Version: 1.2
 
 ---
 
@@ -382,6 +382,24 @@ Design so tomorrow's growth is possible.
 Do not build distributed systems for ten users.
 
 Do not build monoliths that cannot evolve.
+
+---
+
+# An Improvement Lands Where The Work Is Loaded
+
+An AI-OS is not a package someone invokes at a moment of their choosing. It is injected into a repository and operates on it, on every task, through the policies, commands, workflows and agents the AI loads to do that task. That is the whole product claim, and it decides where an improvement goes.
+
+So when a round learns a rule, finds a defect worth preventing, or takes a decision that should bind future work, the rule goes into the layer that is already loaded — not beside it.
+
+**The test, and it has one answer:** *does this change reach the next task without anyone doing anything?*
+
+- A CI script in the repository's own build fails it. The build is not shipped, and it runs at merge time, after the work and the decision are done.
+- A command someone has to run fails it — a linter, a `check` subcommand, a documented manual step. A rule that holds only when invoked stops holding exactly when someone is busy, which is when it was needed.
+- A rule written into a policy, command, workflow, agent or template passes it. It is in force on the next task, in every repository the AI-OS was injected into, with nothing to remember.
+
+A repository's own build tooling is still allowed — it is a local net over that repository's own dogfooding. It is never the answer to "how is this enforced." A round that adds one states what the loaded-layer half is, or records that the rule has no loaded-layer form and why. "No form" is a legitimate outcome; a caveat that reads as a plan is not.
+
+This matters most where a project's product *is* a framework, because there "improve the product" and "improve our tooling" stop being distinguishable by intent and are only distinguishable by destination. See DECISIONS.md DECISION-026, which was written after nine mechanical guards accumulated in one repository and zero reached an Installation, each round recording the gap while widening it.
 
 ---
 

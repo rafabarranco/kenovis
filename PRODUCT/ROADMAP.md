@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.49
+Version: 1.50
 ---
 Purpose
 
@@ -154,7 +154,7 @@ Items 3-17 continued that alternation of work and release. Items 18-23 are a sec
 ---
 Phase 1 — Immediate Priority, second block (added 2026-08-12, from /analyze on framework context scalability, founder-flagged maximum priority — ahead of any other Phase 1/2/3 item)
 
-Nineteen items, items 18-36 — sixteen as originally written, plus items 34, 35 and 36 added as the block ran. In the order written, except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
+Twenty items, items 18-37 — sixteen as originally written, plus items 34-37 added as the block ran. Item 25 is rejected, superseded by item 37. In the order written, except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
 
 The R-tags (R1-R6) are the recommendation labels from the 2026-08-12 `/analyze` run that produced this block, kept so the items stay traceable to their analysis. Execution order is not R-tag order: R5 is cheap and independent so it lands with the other Do-Now items, and R4 precedes R3 because a lifecycle rule that does not exist cannot govern the restructuring that R3 performs.
 
@@ -211,7 +211,15 @@ Dependency: none. Independent of items 19-23, and it needs no release first — 
 
 Validated when: the run's citations are checked against the bodies it actually opened, and the result is written down either way. A negative result is the useful one — it means the index needs the body's shape, not more summary.
 
-25. SCHEDULED (RA3) — a customer Installation can run a check, not just read a rule.
+25. REJECTED (2026-08-12, founder) — a customer Installation can run a check, not just read a rule. Superseded by DECISION-026 and item 37.
+
+The problem it named is real and stays: nine guards run here, zero in any Installation. The remedy was wrong. `kenovis check` is a subcommand a human invokes on purpose, and an AI-OS that only holds when someone remembers to run it is not operating on the repository — it is a linter standing beside it. It also split every rule into a Python implementation and a TypeScript one, a cost this item's own ADR listed as an open question rather than as a reason not to.
+
+Enforcement belongs in `.kenovis/AI/` — the policies, commands, workflows and templates the agents already load per task, which `sync` already delivers. Item 37 carries the work. The text below is kept unedited so the reasoning trail survives; do not execute it.
+
+---
+
+25-original (rejected, kept verbatim) — a customer Installation can run a check, not just read a rule.
 
 Problem: five guards run in this repository's CI (`check_links`, `check_markers`, `check_changelog`, `check_template_refs`, `check_artifact_destinations`, plus `check_decision_index` from item 18 — six). A customer Installation runs none. `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` plus the customer README; `.github/` is not in the bundle, verified in item 17. Every rule this repository enforces mechanically, a customer holds as prose.
 
@@ -313,17 +321,35 @@ Run against the pre-fix tree first, per `policies/testing.md`: it failed, naming
 
 Findings this item did not fix: **OF-18** (backfilled from item 34 by this item's own first run).
 
-Next (updated 2026-08-12, after item 36 closed): unpublished work now sits on `development` again — a policy at 2.9, the changelog split, and two doc files — so a release is a live candidate for the first time since item 34. It is not the recommendation.
+37. SCHEDULED (founder-flagged maximum priority, 2026-08-12) — every rule this repository enforces mechanically gets its Framework-layer home, or is recorded as having none.
 
-**Item 24** is the recommendation, for the reason the previous "Next" gave and this round did not displace: it needs no release, its dependency list is empty, and it is the only unmet criterion left from item 18. What this round adds is the execution constraint, now concrete — run it from a session that has read the index and not the bodies (the state under test), and get the observation from an agent that did not author the instruction. OF-02 or OF-03 is still its cheapest vehicle: `/architect` and `/release` have never been run end to end from a real published Installation, and six for six such runs have found a maximal-Pain defect.
+Problem, stated as the founder stated it: work has been landing in this repository's infrastructure instead of in the product, and in this repository those are not the same place. `ls .github/scripts/check_*.py | wc -l` → **9**. Guards a customer Installation runs: **0**. `.github/` is not in the bundle (verified in item 17), so every guard added since item 15 improved this repository and no customer. Four consecutive rounds recorded that gap as a caveat while widening it — including the round that quoted item 25's own "the margin grows every round" line and then added the ninth guard.
 
-**OF-17** competes with it and outranks it on Pain: a round that finds and does not queue is the failure this entire block exists to end, and it recurred inside the block one round after the rule shipped. It is cheap to *start* — the first output is a decision on whether any part is mechanically checkable — and worth taking before another round adds to the same pile.
+DECISION-026 settles where a rule goes: `.kenovis/AI/` — the policies, commands, workflows, agents and templates the AI loads to do the work, delivered by `sync`, in force on the next task with nothing to invoke. `kenovis check` is rejected; the CLI's job stays delivery.
 
-**OF-14** is the cheapest of the three, and the same class of gap this round closed for the changelog guard: an unrun failing case, cost one fixture. Take it if item 24's fixture again proves larger than one round.
+Target: for each of the nine guards, its rule has a stated Framework-layer home, or an explicit record that it has none and why. Not a mechanical port — most of what these scripts guard is framework content a customer never edits, and that is a finding per guard, not an assumption to carry.
 
-A release carrying item 35 is the third option and the weakest of the three: the customer-visible half is one policy section about a file no Installation receives, since `CHANGELOG.md` is this repository's own and ships in no bundle.
+The nine, to be worked one at a time rather than in a sweep: `check_links`, `check_markers`, `check_changelog`, `check_template_refs`, `check_artifact_destinations`, `check_decision_index`, `check_future_actions`, `check_document_size`, `check_learning_promotions`, `check_item_findings` — read off the tree on 2026-08-12, which is **ten**, because `check_item_findings.py` landed in item 36 the same day this item was written. The count in the previous sentence is left wrong on purpose and corrected here: it is the same drift Learning-023 records, produced inside the round that was complaining about it.
 
-Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 and item 25 both require `/architect` and an ADR before any file is touched; do not start either from `/next`.
+Ordering constraint: the guards whose rule already has a Framework-layer half go first, because they are cheapest and they establish the pattern — `check_item_findings` (rule already in `policies/documentation.md` 3.0, `commands/next.md` 2.4 and the roadmap template 1.5) and `check_future_actions` (rule already in the learnings template). The two with no obvious home, `check_links` and `check_changelog`, go last and may well end as "no Framework-layer form", which is a valid outcome to record.
+
+The test each one has to pass, from DECISION-026: **does this change reach a customer's next task without anyone doing anything?** A CI script fails it. A CLI subcommand fails it. A rule in a policy the agents already load passes it.
+
+Validated when: each of the ten has a recorded disposition — Framework-layer home named, or no-form recorded with the reason — and no round can add a guard again without stating its Framework-layer half.
+
+Findings this item did not fix: none — the guard-count drift above is corrected in place rather than queued, and the underlying misdirection is DECISION-026, not a finding.
+
+Next (updated 2026-08-12, after DECISION-026): **item 37**, and it is not a close call — the founder flagged it maximum priority and it changes what every other item on this document is allowed to produce.
+
+Take it before item 24, before OF-14, before a release. The reason is not that those are unimportant; it is that until item 37 runs, a round can still close work by improving this repository instead of the product, which is what the last four rounds did while recording that they should not. Every item below it inherits the DECISION-026 test — *does this reach a customer's next task without anyone doing anything?* — and item 37 is what makes that test answerable per rule rather than per round.
+
+**Item 24** is next after it, unchanged and still the only unmet criterion from item 18: run it from a session that has read the decision index and not the bodies, with the observation coming from an agent that did not author the instruction. OF-02 or OF-03 is its cheapest vehicle.
+
+**OF-14** stays the cheapest thing on the board, one fixture. Take it if item 37's first guard turns out larger than one round.
+
+A release is a live candidate — `development` now carries two policies, a command, a template, the changelog split and DECISION-026 — but it is not the recommendation. Release after item 37 has moved at least the first guards, so the release carries product change rather than mostly repository change.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it — OF-13's own row claimed 66.1 KB and the file read 67.3 KB, the third consecutive round to find drift this way.
 ---

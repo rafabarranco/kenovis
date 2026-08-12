@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.12
+Version: 2.13
 
 Last updated: —
 
@@ -37,6 +37,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-022** ‡ — `[ANSWER: ...]` Is The Only Bracket Form That Means "Unanswered Question". Every other bracket form is content — a format specification, an example, a deliberate "nothing recorded yet" — and legitimately survives into an authored document.
 - **DECISION-023** ‡★ — The PROJECT-SPECIFIC Marker States Layer, Not State. Line 1 of a Product-layer file says which layer it belongs to and that `sync` never overwrites it, never that its content is placeholder.
 - **DECISION-024** ‡★ — A Template Is A Form, Never A Destination. No framework instruction may name a path under `.kenovis/` as a place to write, because `sync` mirror-replaces that directory wholesale.
+- **DECISION-026** ‡★ — An Improvement Lands In The Framework Layer, Because That Is The Product. Rules go into `.kenovis/AI/`, which agents load on every task and `sync` delivers to every Installation; `.github/` is local scaffolding and never the deliverable, and `kenovis check` is rejected because an on-demand command is not an AI-OS operating on a repository.
 - **DECISION-025** ‡★ — A Finding Is Fixed, Scheduled, Or Rejected. A finding a round does not fix carries one of three dispositions, prose is not one of them, and `PRODUCT/ROADMAP.md` gains an `Open Findings` queue that `/next` Step 3 reads alongside the scheduled items.
 
 ---
@@ -2110,6 +2111,81 @@ Every round can be asked a question it previously could not answer: what happene
 Negative:
 
 The queue is another append-only document in a repository whose per-session context is already the subject of this priority block — it must stay a table of one-line entries, and it falls under whatever lifecycle rule item 21 writes. The disposition rule is also mostly unenforceable: only the `Future action:` half has a mechanical guard, because detecting a finding inside prose has no pattern (Learning-015). And that guard, like every other, runs in this repository's CI and not in any Installation until `kenovis check` ships (item 25).
+
+---
+
+# DECISION-026
+
+# An Improvement Lands In The Framework Layer, Because That Is The Product
+
+Date:
+
+2026-08-12
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+When a rule is proposed that genuinely cannot live in `.kenovis/AI/` — the first real counter-example is the test of this decision.
+
+---
+
+## Context
+
+Founder, 2026-08-12, after reviewing four consecutive rounds of work:
+
+> *"Tu misión es que todo lo que hagas y mejores y arregles y TODO, se haga en la propia infraestructura de Kenovis, NO EN UNA PUTA BUILD... la gente va a inyectar el AI-OS en sus productos para tener un equipo que desarrolle el producto, no es un paquete a utilizar en X momento o no. Esto será un AI-OS que trabaje SOBRE EL PRODUCTO QUE SE INYECTE."*
+
+Measured, not asserted: `ls .github/scripts/check_*.py | wc -l` → **9** mechanical guards in this repository. Number of them a customer Installation runs: **0**. `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` plus the customer README; `.github/` is not in the bundle, verified in Phase 1 item 17. Every round added enforcement to the repository and none to the product, and each round recorded the gap as a caveat while widening it — item 25's own text says the margin "grows every round", which it did, including in the round that quoted it.
+
+The proposed remedy made it worse rather than better. `kenovis check` (item 25) would have moved the rules into the shipped package as a **CLI subcommand a human runs on purpose**. That is a linter next to the AI-OS, not the AI-OS. It fails the product definition: an Installation is not a package invoked at a moment of someone's choosing, it is a team that operates on the repository it was injected into, on every task, whether or not anyone remembers it exists.
+
+---
+
+## Options Considered
+
+**Option A — CI guards in `.github/`.** What was actually being built. Rejected: not in the bundle, so it protects this repository and no customer. It also fires at merge time, after the work and the decision are already done, and this repository merges with `gh pr merge --admin`, which bypasses it.
+
+**Option B — `kenovis check`, a CLI subcommand (item 25 as written).** Rejected by the founder. On-demand invocation is the defect, not the delivery mechanism: a rule that only holds when someone runs a command is a rule that holds when it is least needed. It also splits every rule across two implementations — the ADR for it named "where the rule definitions live so Python and TypeScript cannot drift apart" as an open question, which is a cost created entirely by choosing this option.
+
+**Option C — the Framework layer is the enforcement.** A rule goes into the policy, command, workflow, agent or template that the AI already loads to do the work. `sync` delivers it to every Installation. It is in force on the next task, in every repository that has the AI-OS injected, with nothing to invoke.
+
+---
+
+## Decision
+
+Adopt Option C.
+
+- **Every improvement — a rule learned, a defect found, a decision taken — lands in `.kenovis/AI/`.** That is the product. In this repository the product *is* the Framework layer, so "improve the product" and "improve the infrastructure under `.kenovis/AI/`" are the same sentence, and work that lands anywhere else has not improved the product.
+- **`.github/` is this repository's own scaffolding and is never the deliverable.** A guard there is allowed as a local net over this repository's own dogfooding. It may never be the answer to "how is this enforced", and a round that adds one states what the framework-layer half is.
+- **Item 25 (`kenovis check`) is rejected** in its current form. See `PRODUCT/ROADMAP.md`.
+- **The CLI's job stays delivery.** `init`, `add`, `sync` install and update the Framework layer. Behaviour belongs to the layer they deliver, not to new subcommands.
+
+---
+
+## Reason
+
+The product's value proposition is a team that operates on the customer's repository continuously. Enforcement that requires invocation contradicts it at the mechanism level, not the packaging level — which is why moving the guards into the npm package would not have fixed anything.
+
+There is also a simple test this decision makes available and the previous approach did not: *does this change reach a customer's next task without anyone doing anything?* A CI script fails it. A CLI subcommand fails it. A rule in a policy the agents already load passes it.
+
+---
+
+## Consequences
+
+Positive:
+
+The dogfooding gap closes by construction rather than by an item that keeps being deferred: there is no longer a place to put a rule where a customer will not get it. `sync` is already the distribution mechanism, so no new machinery is required.
+
+Negative:
+
+The Framework layer's enforcement is instructions read by an agent, not code that fails a build — weaker than a mechanical check, and honest about it. Some rules genuinely have no framework-layer form; those go without a guard rather than into `.github/` with a caveat that reads as a plan. The nine existing guards stay where they are and are not migrated wholesale: each one's rule needs its framework-layer home decided individually, which is `PRODUCT/ROADMAP.md` item 37.
 
 ---
 
