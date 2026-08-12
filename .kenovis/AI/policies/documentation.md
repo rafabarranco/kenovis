@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.8
+Version: 2.9
 
 ---
 
@@ -378,7 +378,7 @@ That is correct, and it has a cost nobody pays until it is large: finished work 
 
 So a document that accumulates closed entries splits:
 
-- Closed entries move to a sibling archive — `PRODUCT/ROADMAP-ARCHIVE.md` for the roadmap, `AI/memory/LEARNINGS-ARCHIVE.md` for the learnings — **verbatim**. Nothing is summarised away; the archive exists to preserve the trail, not to compress it.
+- Closed entries move to a sibling archive — `PRODUCT/ROADMAP-ARCHIVE.md` for the roadmap, `AI/memory/LEARNINGS-ARCHIVE.md` for the learnings, `CHANGELOG-ARCHIVE.md` for the changelog — **verbatim**. Nothing is summarised away; the archive exists to preserve the trail, not to compress it.
 - The active document keeps one line per closed entry and a pointer to the archive.
 - The archive is read on demand. It is never on the session-initialization path.
 - An entry is archived only when it is genuinely closed. An open finding it raised moves to the findings queue first — see the section below. Archiving a document that still holds the only copy of an unresolved finding is how a visible backlog becomes an invisible one.
@@ -386,6 +386,8 @@ So a document that accumulates closed entries splits:
 Create the archive when the first entry closes, not in advance. An empty archive is noise.
 
 **A learning closes when its rule has been promoted.** `AI/memory/learnings.md` documents a Review Process that moves a recurring lesson into the policy that should enforce it. "Move" is the whole instruction: the rule is written into the policy in that policy's voice, the policy cites the learning id so the reasoning stays one hop away, and the entry then closes and is archived like any other closed entry. A rule left in both places is loaded twice — once per task from the policy, once per session from the learnings — and only one of those two documents is bounded.
+
+**A changelog section closes on release, so "closed" is not the trim rule there.** Every released section is closed the moment it ships, and archiving on that alone would leave a changelog holding only `[Unreleased]` — useless to the one reader it has, someone deciding whether to upgrade. So the changelog keeps `[Unreleased]` plus the **two most recent released versions** inline, which is what an upgrade from the previous version needs, and archives the rest. The trim runs as a step of cutting a release, not as a separate cleanup: a document that is only trimmed when someone notices its size is a document that gets noticed late.
 
 ---
 

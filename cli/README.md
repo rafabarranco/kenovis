@@ -34,6 +34,7 @@ If your root `CLAUDE.md` was never written by this CLI at all (predates adopting
 2. Push a git tag matching the version, e.g. `git tag v0.2.0 && git push origin v0.2.0`.
 3. Publish a GitHub Release from that tag (Release notes, `gh release create v0.2.0 --generate-notes` or the GitHub UI).
 4. CI's `publish` workflow runs automatically, verifies `cli/package.json`'s version matches the release tag, then publishes.
+5. Trim `CHANGELOG.md`: any released section below the two most recent moves verbatim to `CHANGELOG-ARCHIVE.md`, leaving one row in "Earlier releases". See `.kenovis/AI/policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline".
 
 ## Structure
 
