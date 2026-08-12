@@ -59,7 +59,8 @@ GOVERNED = {
     },
     "AI/memory/learnings.md": {"split": "AI/memory/LEARNINGS-ARCHIVE.md"},
     "AI/memory/LEARNINGS-ARCHIVE.md": {"archive_of": "AI/memory/learnings.md"},
-    "CHANGELOG.md": {"exempt": "OF-13 — no archive rule exists for released changelog sections yet"},
+    "CHANGELOG.md": {"split": "CHANGELOG-ARCHIVE.md"},
+    "CHANGELOG-ARCHIVE.md": {"archive_of": "CHANGELOG.md"},
 }
 
 

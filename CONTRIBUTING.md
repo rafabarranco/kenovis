@@ -37,7 +37,7 @@ The framework asks products to keep a changelog and a decision log (`.kenovis/AI
 
 Before a framework-layer PR (touching `.kenovis/AI/`, `CLAUDE.md`, or `README.md`) is considered done:
 
-- **CHANGELOG.md** — add a bullet under `[Unreleased]` describing what changed. CI checks this automatically for any PR touching `.kenovis/AI/**`, `CLAUDE.md`, or `README.md`. If the change is wording/typo-only and doesn't alter behavior, include `[skip changelog]` in the PR title or description instead.
+- **CHANGELOG.md** — add a bullet under `[Unreleased]` describing what changed. CI checks this automatically for any PR touching `.kenovis/AI/**`, `CLAUDE.md`, or `README.md`. If the change is wording/typo-only and doesn't alter behavior, include `[skip changelog]` in the PR title or description instead. Released sections older than the two most recent live in `CHANGELOG-ARCHIVE.md`; the trim is a step of cutting a release (`cli/README.md` → "Cutting a release"), never something a feature PR does.
 - **DECISIONS.md** — add an entry when the change alters an agent's responsibilities, a workflow's phases, or a policy's mechanics (not for wording clarity or typo fixes). This is a judgment call, not CI-enforced — explain the reasoning in the PR description either way, per the rule below.
 
 ## Versioning framework files

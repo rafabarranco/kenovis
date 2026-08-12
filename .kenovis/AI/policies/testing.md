@@ -1,6 +1,6 @@
 # Testing Policy
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -314,6 +314,8 @@ Not every check in a repository is a test. Greps, marker conventions, CI scripts
 **A guard states which of its parts is exact and which is a heuristic, and prints both counts.** A population that is structurally enumerable is exact; a classifier deciding which members are in scope usually is not, and cannot be. Saying so in the script lets the next round check the question the guard asks instead of re-verifying its answer. A check that hides its own cut invites a clean pass to be read as proof. (Learning-022.)
 
 **If the population is mechanically enumerable, the check belongs in CI**, not in a session's scrollback. Confirm it fails against the pre-fix state before keeping it. (Learning-021.)
+
+**A fix that succeeds can make the guard covering it pass for the wrong reason.** When the remedy removes the condition that puts a document, path or record into the guard's scope, the branch the fix just registered stops executing — and the guard reports a clean pass that is true of the file and silent about the change. The pass is evidence the problem is gone, never evidence the new handling works. Exercise the registered branch in a fixture that still meets the triggering condition, and say which branch the green run actually covered. (`PRODUCT/ROADMAP.md` item 35: a changelog trimmed to 18.5 KB passed its size guard by being under threshold, leaving the `split` registration written for it untested.)
 
 **For anything installed elsewhere, "has this been run from an installed copy?" predicts latent defects better than any review pass.** Instructions that are correct in the origin repository can be destructive in an Installation without a word of them changing. Run each command end to end from a real published installation, one per round. (Learning-020.)
 
