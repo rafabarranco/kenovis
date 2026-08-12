@@ -193,7 +193,7 @@ One stale label was corrected in passing, because archiving surfaced it: Phase 0
 
 Validated: all six docs-integrity guards pass, `check_links.py` included; nothing was summarised away — the archive is the extracted text verbatim, and roadmap plus archive together are larger than the original by exactly the 31 pointer lines.
 
-20. SCHEDULED (R5) — run `AI/memory/learnings.md`'s own Review Process for the first time.
+20. DONE (2026-08-12, via /next) (R5) — run `AI/memory/learnings.md`'s own Review Process for the first time.
 
 Problem: 65.2 KB, 23 entries, 4.1 KB → 65.2 KB in 11 days. The file documents a Review Process that promotes Critical/Important reusable learnings into `AI/policies/` or `conventions.md`. DECISION-011 made that promotion a checkpoint inside `init-project.md` Step 8. It has never been executed here — the promotion exists as a rule with no run behind it.
 
@@ -202,6 +202,26 @@ Target: execute the Review Process as written. Promote what belongs in a policy 
 Independent of items 18, 19, 21-23 — no ordering constraint, listed here because its cost is low and it is on the bootstrap path.
 
 Validated when: each promoted learning is findable in the policy that now carries it, and no learning is lost — the archive is complete, not lossy.
+
+Premise checked before scoping, per OF-04 and Learning-023, and two numbers had moved: **24 entries, 76 KB**, not the 23 and 65.2 KB written when the item was scheduled — Learning-024 landed after. The structural premises held: the Review Process exists (`AI/memory/learnings.md` → "Review Process"), the `init-project.md` checkpoint exists (Step 8, "before deleting the previous product's recorded learnings, run the Review Process first"), and it had never run — `grep -rl "Learning-0" .kenovis/AI/policies/` returned nothing.
+
+Shipped, and the item's own framing turned out to understate the defect. The process was not merely unrun; it was **unrunnable to completion**. It said where a rule goes and never what happens to the entry afterwards, so "move it" had no finished state — which is why 18 of 24 entries carried a disposition reading "candidate for promotion by item 20" and no rule had ever moved. Recorded as Learning-025.
+
+- **22 learnings promoted into 5 policy sections**, each citing the learning ids whose reasoning produced it: `policies/coding.md` (2.2 → 2.3) → "Guards, Recorded State, And Permissive Paths" (Learning-004/005/006/007/008/010/011/013); `policies/architecture.md` (1.0 → 1.1) → "Distribution Is Part Of The Architecture" (Learning-003/004/009/014/020); `policies/testing.md` (2.0 → 2.1) → "A Check Is Not Verified Until It Has Been Run" (Learning-015/020/021/022); `policies/documentation.md` (2.7 → 2.8) → "A Claim Is Read Back Off The Artifact" and "An Instruction Is Reachable, And Its Sink Is Read" (Learning-016/017/018/019/023/024); `policies/git.md` (2.1 → 2.2) → "Promotion Chains And Content Sync" (Learning-012).
+- **`AI/memory/LEARNINGS-ARCHIVE.md`** holds those 22 entries verbatim. `AI/memory/learnings.md` (1.13 → 1.14) keeps one line each in a new "Promoted And Archived" table naming the policy section that now carries the rule.
+- **`conventions.md` received nothing, and that is the honest result.** The Review Process offers it as a destination for naming rules; not one of the 24 learnings was a naming rule. Recorded so the next run does not read the empty result as a missed step.
+- **The missing half of the process is now written**, not just performed: `policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline" states the completion condition (rule into the policy, policy cites the learning id, entry archived verbatim, one line left behind), and `.kenovis/AI/templates/product-layer/AI/memory/learnings.md` (1.6 → 1.7) → "What 'Move It' Means" carries the same to every Installation, including "create the archive when the first learning closes, not before".
+
+Two CI changes were forced by this work rather than chosen:
+
+- `check_future_actions.py` scanned one file. After the split it would have reported a clean pass over a corpus that had silently shrunk from 24 future actions to 2 — the precise defect it exists to catch, one level up. Its population is now both files, and prints per file.
+- `check_document_size.py` treated `PRODUCT/ROADMAP-ARCHIVE.md`'s over-threshold size as an *exemption citing item 21*, which was a fudge: no item will ever close an archive, so that exemption could never be satisfied. Archives are now a third classification (`archive_of`) that names the active document they absorb weight for, must point at a real file, and still print their size. The exemption mechanism keeps its original meaning — a temporary state with an item behind it.
+
+New guard, `.github/scripts/check_learning_promotions.py`, wired into CI. Written because this item's own validation criterion ("each promoted learning is findable in the policy that now carries it") is over an enumerable population, and the rule promoted into `policies/testing.md` in this same round says that a check over an enumerable population belongs in CI rather than in a session's scrollback. Population exact and cross-checked in both directions (a learning archived with no index row fails; a row with no archived entry fails). Classifier structural: it verifies the named policy file exists, the named section is a real heading, and the policy cites the learning id — it cannot tell whether that section contains the rule it claims. It found a real defect on its first run: `coding.md` carried Learning-010's rule nowhere, and the row claiming otherwise would have shipped.
+
+Measured, off the artifacts: `AI/memory/learnings.md` **76 KB → 12.1 KB**, `AI/memory/LEARNINGS-ARCHIVE.md` 69.8 KB. Entries 24 → 22 archived + 2 active, ids preserved exactly; all 22 archived blocks confirmed byte-identical substrings of the pre-split file, and the pair is larger than the original (81.9 KB vs 73.0 KB) by exactly the archive header and the index table — nothing summarised away.
+
+Validated: nine guards pass on the tree. `check_document_size.py` confirmed to fail on both new error paths (a governed document over threshold with its exemption removed; an archive naming an active file that does not exist). `check_learning_promotions.py` confirmed to fail when a cited policy section is renamed. The failing-case test for the learnings threshold is deliberately *not* claimed: at 12.1 KB the file is under threshold, so removing its split cannot fail the guard — the first attempt at that test passed and was wrong, not the guard.
 
 21. DONE (2026-08-12, via /analyze) (R4) — `AI/policies/documentation.md` gains document lifecycle rules, enforced in CI.
 
@@ -267,7 +287,7 @@ Validated when: the run's citations are checked against the bodies it actually o
 
 Problem: five guards run in this repository's CI (`check_links`, `check_markers`, `check_changelog`, `check_template_refs`, `check_artifact_destinations`, plus `check_decision_index` from item 18 — six). A customer Installation runs none. `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` plus the customer README; `.github/` is not in the bundle, verified in item 17. Every rule this repository enforces mechanically, a customer holds as prose.
 
-The gap widens with each round rather than staying still: item 21 adds a seventh guard under the same mechanism. That is the shape of the dogfooding caveat at the head of this block, applied to enforcement instead of retrieval — this repository is measurably better protected than the product it ships.
+The gap widens with each round rather than staying still: item 21 adds a seventh guard under the same mechanism, and item 20 a ninth. Count corrected in place on 2026-08-12 by reading it off the tree rather than off this paragraph — `ls .github/scripts/check_*.py | wc -l` → **9** (`check_links`, `check_markers`, `check_changelog`, `check_template_refs`, `check_artifact_destinations`, `check_decision_index`, `check_future_actions`, `check_document_size`, `check_learning_promotions`). That is the shape of the dogfooding caveat at the head of this block, applied to enforcement instead of retrieval — this repository is measurably better protected than the product it ships, by a margin that grows every round.
 
 Target: a `kenovis check` subcommand — filesystem-only, no network, inside ENGINEERING/ARCHITECTURE.md's Hard Rules and DECISION-013 — running the subset of rules **a customer can actually violate**: an incomplete Decision Index, a Product-layer file with no `PROJECT-SPECIFIC` marker, an artifact written under `.kenovis/`. Not a port of all six scripts; most of what they guard is framework content a customer never edits.
 

@@ -6,7 +6,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Added
+
+- **`.github/scripts/check_learning_promotions.py`, wired into CI.** Every row of the learnings file's "Promoted And Archived" index must name a policy section that exists and that cites the learning id, and every archived learning must have exactly one row — checked in both directions, so a learning archived without a pointer fails too. It found a real defect on its first run: a rule claimed to be in `coding.md` that the policy never cited. As with every guard here, it runs in this repository's CI and not in an Installation — `kenovis check` (`PRODUCT/ROADMAP.md` item 25) is what closes that gap.
+
 ### Changed
+
+- **A learning that becomes a rule now moves into a policy, and the move has a finished state.** `.kenovis/AI/policies/documentation.md` (2.7 → 2.8), `.kenovis/AI/templates/product-layer/AI/memory/learnings.md` (1.6 → 1.7) → "What 'Move It' Means". The learnings file has always documented a Review Process that promotes a recurring lesson into the policy that should enforce it. It said where the rule goes and never what happens to the entry afterwards, so "move it" had no completion condition — and in this repository it ran zero times across 24 learnings, 18 of which had a disposition line explicitly identifying themselves as candidates. A promotion is now done when the rule is in the policy, the policy cites the learning id, the entry is archived verbatim, and one line stays behind naming where the rule went.
+
+- **Five policies gained the rules this framework had already learned and never written down.** `coding.md` (2.2 → 2.3) → "Guards, Recorded State, And Permissive Paths"; `architecture.md` (1.0 → 1.1) → "Distribution Is Part Of The Architecture"; `testing.md` (2.0 → 2.1) → "A Check Is Not Verified Until It Has Been Run"; `documentation.md` → "A Claim Is Read Back Off The Artifact" and "An Instruction Is Reachable, And Its Sink Is Read"; `git.md` (2.1 → 2.2) → "Promotion Chains And Content Sync". Twenty-two learnings, each cited by id from the section that now carries its rule. If you have been reading this project's learnings to understand how it works, the rules are now in the policies your agents already load per task.
+
+- **An archive over the size threshold is classified, not exempted.** `check_document_size.py` treated `PRODUCT/ROADMAP-ARCHIVE.md`'s size as an exemption citing a roadmap item, which no item could ever close. Archives now declare which active document they absorb weight for, must point at a file that exists, and still print their size on every run. The exemption mechanism keeps its original meaning: a temporary state with real work behind it.
 
 - **An `Open` finding the AI cannot execute now names who executes it and what input they need.** `.kenovis/AI/policies/documentation.md` (2.6 → 2.7). `Open` was a valid disposition under the rule shipped in [0.13.0] and also the easiest place to hide: a finding whose executor is not the AI — a decision only the human can make, work that needs an external party, a number nobody has — sat in the queue in perfect compliance and moved for no one. Found immediately after [0.13.0] shipped, by asking whether three findings tagged "founder call" were actually planned. They were recorded, which is not the same thing.
 
