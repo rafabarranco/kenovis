@@ -9,6 +9,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 ### Added
 
 
+- **Closed roadmap items move to a verbatim archive.** `.kenovis/AI/policies/documentation.md` (2.4 → 2.5) → "Closed Work Is Archived, Not Kept Inline": a document that accumulates closed entries splits, the active file keeps one line each plus a pointer, and the archive is never on the session-initialization path. Nothing is summarised away — the archive preserves the trail, it does not compress it. The Product-layer roadmap template (1.3 → 1.4) tells an Installation to create its archive when its first item closes, not in advance.
+
+  In this repository: 31 closed items moved to `PRODUCT/ROADMAP-ARCHIVE.md` and `PRODUCT/ROADMAP.md` went 164.7 KB → 42.2 KB. Combined with the Decision Index above, the full bootstrap path goes 374.3 KB → 133.9 KB.
+
 - **`PRODUCT/ROADMAP.md` gains an `Open Findings` queue, shipped in the Product-layer template** (1.2 → 1.3) so every Installation starts with it. A scheduled item is dimensioned work; a finding is a candidate that is not. Four dispositions — Scheduled, Open, Deferred, Rejected — and `commands/next.md` Step 3 (2.2 → 2.3) reads the queue alongside the scheduled items, so an open finding competes on the priority formula instead of waiting to be remembered. See DECISION-025.
 
 - **`.github/scripts/check_future_actions.py`, wired into CI.** Most of the disposition rule cannot be checked by a machine — detecting a finding inside prose has no pattern (Learning-015). This is the part that can: `AI/memory/learnings.md` has fixed structure, so every `Future action:` must carry a `Disposition:` citing an id or stating that no work is implied. Confirmed to fail on the pre-sweep tree naming all 23 future actions.

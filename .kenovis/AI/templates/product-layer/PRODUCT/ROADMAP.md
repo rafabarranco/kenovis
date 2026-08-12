@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.3
+Version: 1.4
 ---
 Purpose
 
@@ -18,6 +18,8 @@ It establishes:
 - What we deliberately avoid.
 
 The roadmap exists to protect product focus.
+
+Closed items move to `PRODUCT/ROADMAP-ARCHIVE.md` verbatim once this document passes the size threshold in `.kenovis/AI/policies/documentation.md`; one line stays here per closed item, with a pointer. Finished work otherwise costs the same to load as scheduled work, on every session, forever. Create the archive when the first item closes, not before — an empty archive file is noise.
 ---
 Product Vision
 
