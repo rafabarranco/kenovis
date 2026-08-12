@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.45
+Version: 1.46
 ---
 Purpose
 
@@ -259,7 +259,7 @@ Not a smoke test. This repository has run those all day, and they only prove the
 
 Validated when: a real external team's run is recorded with its findings dispositioned, and `AUTOMATIONS/user-feedback.md` either worked or was corrected.
 
-34. IN PROGRESS (2026-08-12, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 20 and the `Open`-finding-executor fix.
+34. DONE (2026-08-12, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 20 and the `Open`-finding-executor fix.
 
 Chosen for the reason the previous "Next" gave and nothing displaced: fifteen files sat on `development` that no Installation could see. Item 20's half is unusually customer-visible for a framework-only release — five policies gained rules an Installation's agents already load per task, so the upgrade changes what those agents do rather than only what they are told. Competing items were item 24 (a seeded fixture, no release required), item 32 (founder input, not `/next` work) and OF-13; none of them reach a customer at all, which is the axis this item is on.
 
@@ -269,13 +269,17 @@ Also carried, because the lifecycle rule item 21 wrote came due on the document 
 
 RA2 gate applied before the move, not after: item 20's narrative carried a validation criterion it stated rather than claimed — the failing-case test for the learnings threshold, impossible to run at 12.1 KB. Queued as **OF-14** first, so archiving did not make it disappear. Items 19, 21 and 31 left nothing homeless; item 21's `CHANGELOG.md` exemption is already OF-13.
 
-Cut: `cli/package.json`/`package-lock.json` 0.13.0 → 0.14.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.14.0] - 2026-08-12`.
+Shipped: `cli/package.json`/`package-lock.json` 0.13.0 → 0.14.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.14.0] - 2026-08-12` (PR #86). Both promotions ran exactly as `policies/git.md` → "Promotion Chains And Content Sync" prescribes — each downstream branch verified byte-identical to `8711711`, the `0.13.0` cut, so a strict older snapshot with nothing unique on it but previous sync commits; tree set with `git read-tree -u --reset`; empty diff confirmed before opening (PRs #87, #88). All three branches byte-identical afterwards. `kenovis@0.14.0` published from CI with provenance; `npm view kenovis version` → `0.14.0`, `dist-tags.latest` → `0.14.0`.
 
-Validated when: `npm view kenovis version` returns `0.14.0`, and a `sync` from the published package into a real Installation delivers the five changed policies — checked against the *published* package on the sequence a real upgrader runs, not against this repository.
+Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.13.0 add` on a scratch brownfield repository, then `npx kenovis@0.14.0 sync`. Baseline reproduced first and it was zero: none of the seven new policy sections existed, and `grep -rho "Learning-0[0-9][0-9]" .kenovis/AI/policies/` returned nothing. After the sync: transition reported `0.13.0 -> 0.14.0`, **7 paths changed inside `.kenovis/`** listed off `git status` rather than recalled (five policies, the learnings template, `.framework-version`), all seven sections present, **22 distinct learning ids** cited from the policies, `.setup-pending` preserved as `adopt-project`, all 18 Product-layer templates delivered with the `[ANSWER:` corpus unchanged at 127, no Product-layer file created at the target's root, and the target's own `README.md`, `src/` and `package.json` untouched.
+
+One check in that sweep returned zero and was the check being wrong, not the artifact: the search string for the `Open`-finding-executor rule carried the policy's `**` bold markers inside it. The rule is at `policies/documentation.md` line 408. Recorded because it is `policies/documentation.md` → "A Claim Is Read Back Off The Artifact" working in the direction it is usually not tested in — a false negative, caught by reading the file instead of trusting the count.
+
+Solo-maintainer note, unchanged since `0.6.0`: all three pull requests came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin`. Not a misconfiguration.
 
 Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident.
 
-Next (updated 2026-08-12, while item 34 is in flight): once `kenovis@0.14.0` is published, nothing sits unpublished, so for the first time in this block the leading candidate is not a release. Two items compete, and they are the same two the previous "Next" listed behind the release.
+Next (updated 2026-08-12, after item 34 closed): `kenovis@0.14.0` is published and all three branches are byte-identical, so nothing sits unpublished — for the first time in this block the leading candidate is not a release. Two items compete, and they are the same two the previous "Next" listed behind the release.
 
 **Item 24** is the recommendation: validate that an agent opens a decision body instead of paraphrasing the index. It needs no release (the instruction under test shipped in `0.13.0` and is now live), its dependency list is empty, and it is the only unmet criterion left from item 18 — the item this whole block opened with. Its one real cost is the fixture: an Installation's `DECISIONS.md` starts empty, so a populated log has to be seeded before the run exercises anything. OF-02 or OF-03 can be its vehicle, which is what makes it cheap: `/architect` and `/release` have never been run end to end from a real published Installation, and six for six such runs have found a maximal-Pain defect.
 
