@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.34
+Version: 1.36
 ---
 Purpose
 
@@ -205,6 +205,8 @@ Phase 0 is closed. All eight "Immediate Priority" items are DONE, and Phase 0's 
 Phase 1 — Immediate Priority (added 2026-08-07, from /next after Phase 0 closed)
 
 Two items, in this order. Neither is blocked. Ordering matters: item 1 lands a real customer-facing bug fix, item 2 packages it — doing them in this order means one release carries both instead of cutting two.
+
+Items 3-17 continued that alternation of work and release. Items 18-23 are a second priority block, added 2026-08-12 and founder-flagged maximum priority — see its own header below.
 
 1. DONE (2026-08-07, via /next) — close Learning-010: `sync` disarms DECISION-018's first-session auto-trigger.
 
@@ -558,6 +560,102 @@ Solo-maintainer note, unchanged from previous releases: all four PRs came back b
 
 Next: Learning-022's future action has `/architect` and `/release` still unrun from a real published Installation, one per round — five for five have surfaced a maximal-Pain defect. `/release` is back on that list deliberately: Learning-021 dropped it after item 14 fixed its Step 8, but fixing one step is not executing the command. The other standing candidates are unchanged: making `sync` name the paths it removes (item 12's backlog finding), the active npm-registry version check (Phase 2), and the paid-tier ADR.
 
+---
+Phase 1 — Immediate Priority, second block (added 2026-08-12, from /analyze on framework context scalability, founder-flagged maximum priority — ahead of any other Phase 1/2/3 item)
+
+Six items, items 18-23, in the order written. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
+
+The R-tags (R1-R6) are the recommendation labels from the 2026-08-12 `/analyze` run that produced this block, kept so the items stay traceable to their analysis. Execution order is not R-tag order: R5 is cheap and independent so it lands with the other Do-Now items, and R4 precedes R3 because a lifecycle rule that does not exist cannot govern the restructuring that R3 performs.
+
+Measured finding this block exists to close, from git history over 2026-07-30 → 2026-08-10 (11 days, 58 commits): `DECISIONS.md` 9.8 KB → 119.9 KB, `PRODUCT/ROADMAP.md` 5.0 KB → 124.9 KB, `AI/memory/learnings.md` 4.1 KB → 65.2 KB, `CHANGELOG.md` 1.5 KB → 54.3 KB. Combined ~31 KB/day, append-only, with no archival, rotation or size rule anywhere in the framework. `CLAUDE.md` → "Session Initialization Protocol" mandates an unconditional full read of `COMPANY_OS.md` + `DECISIONS.md` + `AI/SYSTEM.md` — ~137 KB (~34k tokens) before any work starts — and a full `/bootstrap` reaches ~357 KB (~89k tokens). The growth rate is from an intense bootstrap phase and will slow; the direction does not depend on the rate. At one quarter of it, `DECISIONS.md` still passes 200 KB of mandatory per-session reading inside 90 days.
+
+Why it outranks everything else on this document's own priority formula: it is not an infrastructure problem — Kenovis operates no backend to scale, per DECISION-013 — it is the documentation-as-memory discipline of DECISION-009 and DECISION-011 compounding with no retrieval or lifecycle counterpart. COMPANY_OS.md → Competitive Advantages names that same discipline as the customer's accumulated switching cost. The mechanism that creates the moat is the mechanism that hits the wall, so the failure lands inside the value proposition rather than beside it. And because Kenovis holds zero central infrastructure, it can neither observe nor remediate a customer's own accumulated Product layer — only ship framework changes through `sync`. Every Installation carries this unaided.
+
+Dogfooding caveat, stated because it makes this repository unrepresentative: this repo has `graphify-out/` and a `CLAUDE.md` rule that routes questions through a knowledge graph before reading raw files. `bootstrap.md` Steps 2-4 honour that. No customer Installation receives any of it — graphify is third-party and not part of Kenovis — so a real Installation is measurably worse off than the evidence gathered here. Item 18's validation must be run against a real published Installation, not against this repository.
+
+Deliberately short entries. Every item below states its problem, its target and its validation, and stops. This document is itself one of the four files the block exists to bound, and the 17 completed items above are the bulk of its 124.9 KB — writing this block in their style would enlarge the very measurement it is trying to reduce.
+
+18. DONE (2026-08-12, via /next) (R1) — the session-initialization protocol reads the decision index, not every decision body.
+
+Problem, measured: `CLAUDE.md` → "Session Initialization Protocol" says read `DECISIONS.md`, with no condition and no escape. The file is append-only by design and stands at 119.9 KB / 17 decisions, ~7 KB per decision. Every session in every Installation pays the whole log to consult none of it.
+
+Target: `COMPANY_OS.md` and `AI/SYSTEM.md` stay full reads. `DECISIONS.md` is read as its index only. A decision body is loaded on demand, at the moment an agent cites it.
+
+**Two premises of this item were wrong, found in the bootstrap that opened the round, and they set its real scope.** (a) "The index already exists at the head of the file and already carries one line of substance per decision" — no index existed. The head of `DECISIONS.md` carried a "Document Layers" paragraph naming fourteen of the seventeen decisions by bare title, and the Product-layer template shipped no index section at all. (b) "Applies to the framework `CLAUDE.md` stub every Installation receives" — the stub carries no read-list; it points at `.kenovis/AI/SYSTEM.md` and stops, so the Installation-facing half landed in `SYSTEM.md` → "Context Loading Rules" and `commands/bootstrap.md` Step 2 instead. Both are one command to check and neither was checked when the item was written. Recorded as `AI/memory/learnings.md` Learning-023, whose future action is to check items 19-23's own premises before scoping each of them.
+
+Shipped: `DECISIONS.md` (2.10 → 2.11) gains a `# Decision Index` — one substantive line per decision, folding in the framework-level (`‡`) and cited-by-ID (`★`) marks so the previous list cannot disagree with it. `.kenovis/AI/templates/product-layer/DECISIONS.md` (1.1 → 1.2) ships the section empty, with its format and the rule. `.kenovis/AI/SYSTEM.md` (1.4 → 1.5), `.kenovis/AI/commands/bootstrap.md` (2.5 → 2.6) and root `CLAUDE.md` (2.1 → 2.2) state the index-only read and that citing a decision requires opening it. `.kenovis/AI/policies/documentation.md` (2.2 → 2.3) makes body-and-index-line one change, never two.
+
+Two further read sites were found in review by enumerating every instruction that reads the log rather than the three this item named — Learning-022's rule applied to this round's own work: `agents/database.md` (1.1 → 1.2) sent a designer to the whole log for the engine and tenancy model, and `workflows/framework-review.md` (1.0 → 1.1) scoped its reading to "DECISION-001, 009, 010, and any later ones marked framework-level", a list that had to be maintained by hand and now reads the index's own marks. The three "applies only if multi-tenancy is a documented decision in DECISIONS.md" sites were left alone deliberately: they are lookups, which the index answers and then sends the reader to one body.
+
+The risk this item named — an agent citing a decision it never opened — is closed on the instruction side only. `.github/scripts/check_decision_index.py` (CI, beside the three existing docs-integrity guards) enforces that the index is complete in both directions and that a line says more than a title; no check can see an agent paraphrasing an index line it did not open, and the script says so. Population exact (every `# DECISION-NNN` heading, every `- **DECISION-NNN**` line, both counts printed); substance test an explicit length heuristic, per Learning-022. Confirmed to fail on the pre-change tree before being kept. Scope stated in the script: the bundle ships `.kenovis/AI/`, not `.github/`, so an Installation carries the rule as an instruction with no guard behind it.
+
+No ADR, per this item — it bounds how an existing document is read. The standing per-session context-budget decision entry this block implements is still outstanding and still a founder call, as noted at the end of this block.
+
+Validated: 109 `cli/` tests pass, typecheck and build clean, `check_links.py`, `check_markers.py`, `check_template_refs.py` and `check_artifact_destinations.py` all pass. No CLI code changed. Smoke-tested against the *published* package on the sequence a real upgrader runs — `npx kenovis@0.12.0 add` on a scratch brownfield repository, which reproduced the baseline (no index rule in `SYSTEM.md`, no `DECISIONS.md` in `bootstrap.md` Step 2, no index in the template, no rule in `documentation.md`), then a `sync` from the fixed bundle: exactly 6 paths changed inside `.kenovis/` (`SYSTEM.md`, `commands/bootstrap.md`, `policies/documentation.md`, `templates/product-layer/DECISIONS.md`, `agents/database.md`, `workflows/framework-review.md`), listed off `git status` rather than recalled, every defect closed, `.setup-pending` preserved, all 18 Product-layer templates delivered with the `[ANSWER:` corpus unchanged at 127, and the target's own `README.md`, `src/`, `package.json` and `CLAUDE.md` untouched.
+
+Measured on the read path, three cases rather than one, because the honest answer differs by case: this repository 138.2 KB → 22.2 KB (**-84%**); an Installation whose log has grown to this repository's size, 135.6 KB → 19.7 KB (-85%); a day-one Installation still holding the template log, 19.2 KB → 16.6 KB (-14%), because there is nothing accumulated yet to bound. The item's ~-85% expectation holds where a log exists.
+
+Not validated, and stated rather than claimed: the behavioural half of this item's own criterion — "a `/feature` or `/bug` run against that Installation still cites the decisions it should, opening them rather than paraphrasing the index." A fresh Installation's log is empty, so it has no decision to cite, and the session that authored the instruction is not independent evidence that an agent will follow it. It belongs in the next round that runs a workflow end to end from an Installation with a real log — `/architect` and `/release` are already scheduled for exactly that.
+
+19. SCHEDULED (R2) — completed roadmap items move to an archive; the active roadmap keeps one line each.
+
+Problem, measured: the 17 DONE items above retain their full narrative inline and are the bulk of this file's 124.9 KB, all of it on `/bootstrap`'s Step 2 path forever. Finished work costs the same to load as scheduled work.
+
+Target: `PRODUCT/ROADMAP-ARCHIVE.md` receives closed items verbatim — nothing is summarised away, the reasoning trail is preserved exactly as `DECISIONS.md` preserves superseded entries. The active `ROADMAP.md` keeps one line per closed item plus a pointer. The framework's Product-layer template and `documentation.md` gain the archive file so every Installation starts with the split rather than discovering it at 100 KB.
+
+Expected effect: ~-90 KB off the bootstrap path in this repository.
+
+Risk: existing links and anchors into completed items break. Enumerate them exactly before moving — `check_links.py` covers markdown links, and per Learning-018 and Learning-022 the population that matters is "references to a completed item", which is larger than "links that resolve".
+
+Validated when: `/bootstrap` context measured before and after, and `check_links.py` passes.
+
+20. SCHEDULED (R5) — run `AI/memory/learnings.md`'s own Review Process for the first time.
+
+Problem: 65.2 KB, 23 entries, 4.1 KB → 65.2 KB in 11 days. The file documents a Review Process that promotes Critical/Important reusable learnings into `AI/policies/` or `conventions.md`. DECISION-011 made that promotion a checkpoint inside `init-project.md` Step 8. It has never been executed here — the promotion exists as a rule with no run behind it.
+
+Target: execute the Review Process as written. Promote what belongs in a policy into that policy; archive the rest alongside item 19's archive; keep the active file to entries that still change behaviour.
+
+Independent of items 18, 19, 21-23 — no ordering constraint, listed here because its cost is low and it is on the bootstrap path.
+
+Validated when: each promoted learning is findable in the policy that now carries it, and no learning is lost — the archive is complete, not lossy.
+
+21. SCHEDULED (R4) — `AI/policies/documentation.md` gains document lifecycle rules, enforced in CI.
+
+Problem: the policy has no rule about size, splitting, archiving or retirement — confirmed by grep across `documentation.md`, `DECISIONS.md`, `learnings.md` and this file. DECISION-011 hardened the write side (CI requires a CHANGELOG bullet; a DECISIONS entry on mechanics changes) and nothing governs the read side or the exit. Rigor is asymmetric: cheap to add, forbidden to remove — `DECISIONS.md` states the no-remove rule explicitly, keeping superseded decisions in place for the reasoning trail.
+
+Target: explicit lifecycle rules — a size threshold that triggers a split, archive-on-close for completed work, and supersede-means-move-not-mark for decisions, with the archive preserving the trail so nothing DECISION-011 protects is lost. Mechanically checkable, following the `check_changelog.py` / `check_template_refs.py` / `check_artifact_destinations.py` precedent: a CI script that fails when a governed document passes its threshold with no archive.
+
+Precedes item 22 deliberately. Items 18-20 are one-time reductions; without this rule they are a cleanup that recurs. This is what makes the bound permanent.
+
+Per Learning-022, state the guard's population and its classifier separately, and print both counts, so the cut stays reviewable rather than assumed.
+
+Validated when: the script fails against the current `development` tree naming the documents over threshold, and passes after items 19 and 20 land.
+
+22. SCHEDULED (R3) — `DECISIONS.md` becomes a directory, one file per decision, with the current file as its index.
+
+Problem: granularity of storage does not match granularity of use. A decision is consulted one at a time and stored in a 119.9 KB monolith, so no retrieval — item 18's index included — can load DECISION-024 without the other sixteen being present in the same file.
+
+Target: `DECISIONS/DECISION-NNN-*.md`, with `DECISIONS.md` retained as the index item 18 already reads. This is the item that turns item 18's deferral into a real ceiling.
+
+Highest risk in the block, and the reason it is last: it changes a path that exists inside every customer Installation. `sync` mirror-replaces `.kenovis/` and never touches the Product layer, so shipping new framework files does not migrate anyone — an existing Installation keeps a monolithic `DECISIONS.md` that the new framework instructions no longer describe, which is Learning-022's shape exactly: a document that reads perfectly and is wrong. Migration has to be designed, not assumed. Blast radius to enumerate exactly before starting: the Product-layer templates, `init-project.md`, `adopt-project.md`, `check_artifact_destinations.py`, `check_template_refs.py`, `check_links.py`, `check_markers.py`, and every framework cross-reference of the form "see DECISIONS.md DECISION-0NN".
+
+Requires `/architect` and an ADR before any file is touched. Do not start this item from `/next` without that.
+
+Validated when: the migration is exercised against a real published Installation on the upgrade sequence a customer actually runs — install the previous version, sync forward, confirm the Product layer migrated and nothing outside `.kenovis/` was touched.
+
+23. SCHEDULED (R6) — a native retrieval command in the CLI.
+
+Problem: the dogfooding caveat above. This repository routes context through graphify; no Installation has it. After items 18-22 the framework bounds what is read, but an Installation still has no way to ask its own accumulated context a question.
+
+Target: a `kenovis context "<query>"` — filesystem-only, no network, no backend, inside ENGINEERING/ARCHITECTURE.md's Hard Rules and DECISION-013.
+
+Blocked behind items 18-22 and deliberately not started early. If bounding and lifecycle are enough, this is not needed; building it first would be building a retrieval layer over a corpus that should have been bounded instead. Reassess against measurements from items 18-22, not from the analysis that produced this block.
+
+Explicitly out of scope for this block, and recorded here so it is not proposed again: a hosted backend, a vector database, or any Kenovis-operated service to hold customer context. It contradicts COMPANY_OS.md → Competitive Advantages ("Zero central infrastructure to scale") and → What The Company Will NOT Become, and DECISION-013. This is a data-lifecycle problem, not an infrastructure problem.
+
+Next: item 18 reaches no customer until published. The release carrying it is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9, 11, 13, 15 and 17 performed — or item 19 first, so one release carries both, as items 1+2 and 3+4 did. Per Learning-023, check item 19's own premise against `PRODUCT/ROADMAP.md` before scoping it.
+
+Not yet recorded, and outstanding after this block is scheduled: a `DECISIONS.md` entry establishing the per-session context budget as a first-class architectural constraint — the standing rule the six items above implement — and an `AI/memory/learnings.md` entry that documentation-as-memory without a retrieval and lifecycle counterpart is accumulation rather than memory. Both are founder calls, not `/next` work.
 ---
 Phase 1 — MVP
 

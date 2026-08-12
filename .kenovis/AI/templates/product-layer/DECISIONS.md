@@ -4,9 +4,28 @@
 
 Company Decision Log
 
-Version: 1.1
+Version: 1.2
 
 Last updated: —
+
+---
+
+# Decision Index
+
+This index is what a session reads. The decision bodies below it are not on the session-initialization path — see `.kenovis/AI/SYSTEM.md` → "Context Loading Rules" and `.kenovis/AI/commands/bootstrap.md` Step 2. A log is append-only and grows without bound; an index is what keeps consulting one decision from costing all of them.
+
+Open a decision's body before citing it. The index states what a decision settled, never why it was settled that way, and a citation without the reasoning behind it is a preference wearing a decision's ID.
+
+Every decision recorded in this file gets exactly one line here, added in the same change that records the decision. One line, stating what the decision settled in enough substance that a reader can tell whether they need to open it — not just the title.
+
+Format, once decisions exist:
+
+```
+- **DECISION-001** — Title. One sentence stating what it settled.
+- **DECISION-002** — Title. Superseded by DECISION-007; body kept for the reasoning trail.
+```
+
+[No decisions recorded yet. Add a line here for each decision as it is made — do not invent decisions to fill this section.]
 
 ---
 

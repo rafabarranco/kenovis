@@ -6,6 +6,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Changed
+
+- **The session-initialization protocol reads `DECISIONS.md` as an index, not as seventeen decision bodies.** A decision log is append-only by design and grows without bound; every session was paying the whole file to consult none of it. Measured over 2026-07-30 → 2026-08-10 in this repository, `DECISIONS.md` went 9.8 KB → 119.9 KB in eleven days, and the mandatory read of `COMPANY_OS.md` + `DECISIONS.md` + `AI/SYSTEM.md` stood at ~138 KB before any work started.
+
+  `COMPANY_OS.md` and `.kenovis/AI/SYSTEM.md` stay full reads. `DECISIONS.md` is read as its Decision Index — one line per decision, stating what that decision settled. A body is opened on demand, and **citing a decision requires opening it**: the index says what was settled, never why, and a citation built on the index alone is a preference wearing a decision's ID.
+
+  Stated in `.kenovis/AI/SYSTEM.md` → "Context Loading Rules" (1.4 → 1.5), `.kenovis/AI/commands/bootstrap.md` Step 2 (2.5 → 2.6), and this repository's own root `CLAUDE.md` (2.1 → 2.2). Two further sites told an agent to read the log rather than the index and were found by enumerating every read instruction rather than the three the item named (Learning-022's rule): `agents/database.md` (1.1 → 1.2), which sent a designer to the whole log for the engine and tenancy model, and `workflows/framework-review.md` (1.0 → 1.1), whose reading scope named DECISION-001/009/010 by number and now names the index's framework-level marks. Measured on the read path: this repository 138.2 KB → 22.2 KB (**-84%**); an Installation whose log has grown to the same size, 135.6 KB → 19.7 KB (-85%). A day-one Installation whose log is still the template saves 2.6 KB of 19.2 KB — the bound matters as the log accumulates, which is the point.
+
+### Added
+
+- **`DECISIONS.md` gains a Decision Index**, and the Product-layer template ships the section empty so every Installation starts with it (`.kenovis/AI/templates/product-layer/DECISIONS.md` 1.1 → 1.2) instead of discovering the need for one at 100 KB. The item that scheduled this work assumed the index already existed; it did not — what sat at the head of the file listed fourteen of seventeen decisions by bare title. See `AI/memory/learnings.md` Learning-023.
+
+- **`.github/scripts/check_decision_index.py`, wired into CI** beside the three existing docs-integrity guards. Reading an index instead of a log is only safe while the index is complete: a decision body with no index line is invisible to every session that follows it. The check fails on a body without an index line, an index line without a body, a duplicate, or a line that states a title and little else. Confirmed to fail on the pre-change tree before being kept.
+
+  Per Learning-021 and Learning-022 the script states which of its parts is exact and which is not: the population — every `# DECISION-NNN` heading and every `- **DECISION-NNN**` index line — is exact and both counts print on every run; the substance test is a length heuristic and cannot tell a long empty line from a short useful one. Its scope is this repository only, because the bundle ships `.kenovis/AI/` and not `.github/` — a customer Installation carries the rule as an instruction with no guard behind it.
+
+- **`.kenovis/AI/policies/documentation.md` → "A Decision Is Not Recorded Until Its Index Line Exists"** (2.2 → 2.3): writing a decision body and writing its index line are one change, never two; the index line says what was settled and never why; superseding updates the index line and leaves the body in place.
+
 ## [0.12.0] - 2026-08-10
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.11.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2, and for the fifth release running the habitual answer would have been patch: not one line of CLI code changed and everything here is a bug fix. But this package bundles the framework files themselves, and fourteen of them changed — eight instruction documents changed behaviour across ten sites, six workflows changed content. An Installation syncing to this release gets `/review`, `/bug`, `/analyze`, `/feature`, `/next`, `/architect` and `/bootstrap` telling an agent where what they produce belongs, where before they said nothing. That is the same distinction [0.5.0], [0.7.0], [0.8.0], [0.10.0] and [0.11.0] drew.

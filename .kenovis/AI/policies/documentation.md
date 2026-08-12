@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.2
+Version: 2.3
 
 ---
 
@@ -347,6 +347,20 @@ Major Decision
 Update DECISIONS.md
 
 Never leave documentation outdated after implementation.
+
+---
+
+# A Decision Is Not Recorded Until Its Index Line Exists
+
+`DECISIONS.md` opens with a Decision Index: one line per decision, stating what that decision settled in enough substance that a reader can tell whether they need to open the body.
+
+That index is what the session-initialization protocol reads (`.kenovis/AI/SYSTEM.md` → "Context Loading Rules"). A decision whose body exists with no index line is invisible to every session that follows it, which is worse than not recording it — the reasoning is on disk and nothing points at it.
+
+So:
+
+- Writing a decision body and writing its index line are one change, never two.
+- The index line states what was settled. It never states why — that is the body's job, and it is why citing a decision requires opening it.
+- Superseding a decision updates its index line to say so, and names the decision that replaced it. The body stays where it is.
 
 ---
 

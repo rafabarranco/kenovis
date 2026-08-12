@@ -1,6 +1,6 @@
 # Bootstrap Command
 
-Version: 2.5
+Version: 2.6
 
 ---
 
@@ -77,6 +77,14 @@ Understand:
 ---
 
 # Step 2 - Load Project Context
+
+Read `COMPANY_OS.md` in full.
+
+Read `DECISIONS.md` as its Decision Index only — the section at the head of that file, one line per decision. Not the bodies. A decision log is append-only and grows without bound, so a session that loads it whole pays more every week to consult none of it.
+
+Open a decision's body when it becomes relevant, and open it before citing it: the index says what a decision settled, never why. See `.kenovis/AI/SYSTEM.md` → "Context Loading Rules".
+
+Then load the rest of the project context.
 
 If `graphify-out/graph.json` exists and is not stale (no code/doc changes since last build):
 

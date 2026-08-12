@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.9
+Version: 1.10
 ---
 Scope
 
@@ -117,6 +117,39 @@ Operations
 ---
 Learning Examples
 
+Example: Process — a scheduled item's premise was never checked before it was scheduled
+
+## Learning-023
+
+Date:
+2026-08-12
+
+Category:
+Process
+
+Context:
+Executing `PRODUCT/ROADMAP.md` Phase 1 item 18 via `/next` — the first item of the second Immediate Priority block, which exists to bound what a session must read.
+
+Problem:
+The item states its own target as a read-instruction change: "`DECISIONS.md` is read as its index only — the index already exists at the head of the file and already carries one line of substance per decision." No index existed. What sits at the head of `DECISIONS.md` is a "Document Layers" paragraph listing the fourteen framework-level decisions by bare title, missing DECISION-013, DECISION-015 and DECISION-020, and carrying no substance about what any of them settled. The Product-layer template ships no index section at all, so no Installation has one either.
+
+The item also says the change "applies to the framework `CLAUDE.md` stub every Installation receives". The stub contains no read-list — it points at `.kenovis/AI/SYSTEM.md` and stops. The Installation-facing mandate lives in `SYSTEM.md` → "Context Loading Rules" and `commands/bootstrap.md`, which is where the customer-facing half of the fix had to land instead.
+
+What happened:
+Both errors are cheap to check and neither was checked when the item was written — `grep -n "Index" DECISIONS.md` and reading `claudeStubContent` answer them in seconds. The work the item actually required was authoring seventeen index lines and a CI guard, not editing three read instructions.
+
+Root cause:
+The `/analyze` run that produced the block reasoned from measured file sizes, which were right, and from a recalled belief about the files' internal structure, which was not. A measurement in the same paragraph as an assumption lends the assumption its credibility.
+
+This is [[Learning-019]] in the scheduling step rather than the deferral step: there, an unverified cost note in a backlog entry nearly deferred a maximal-Pain fix indefinitely; here, an unverified structural claim in a scheduled item understated its scope. Both are unchecked premises inside a document whose job is to be trusted later, when the person acting on it has less context than the person who wrote it.
+
+Learning:
+An item's premise about a file's contents is a claim, not context. Verify it while writing the item — the check is one command — or write it as a claim ("assumed: the index already exists; confirm before scoping"). A scheduled item is read by whoever executes it, and if its premise is wrong, the cost lands on the round that can least afford to re-plan.
+
+Future action:
+Items 19-23 of this block carry the same kind of premise: "the 17 DONE items are the bulk of this file's 124.9 KB" (item 19), "the policy has no rule about size, splitting, archiving or retirement" (item 21), "the index already exists at the head" (item 22, inherited from item 18 and now true because item 18 made it so). Check each against the file before scoping that item's work, and correct the item in place when it is wrong, as this round did.
+
+---
 Example: Process — an exact population, of the wrong question
 
 ## Learning-022

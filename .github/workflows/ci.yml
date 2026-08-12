@@ -39,6 +39,9 @@ jobs:
       - name: Check every produced artifact names where it goes
         run: python3 .github/scripts/check_artifact_destinations.py
 
+      - name: Check every decision has a Decision Index line
+        run: python3 .github/scripts/check_decision_index.py
+
   cli-tests:
     name: cli/ build, typecheck and tests
     runs-on: ubuntu-latest
