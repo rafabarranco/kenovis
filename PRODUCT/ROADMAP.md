@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.53
+Version: 1.54
 ---
 Purpose
 
@@ -319,7 +319,9 @@ Population is exact and structural — every `NN. DONE` item whose body is a nar
 
 Run against the pre-fix tree first, per `policies/testing.md`: it failed, naming item 34 — the only closed narrative that had never declared anything. That produced **OF-18**, backfilled from item 34's own "Backlog note, not an item", which is what being described in prose looks like from the inside. All seven branches then exercised in a fixture: declares existing ids (0), declares none (0), no declaration line (1), declares an id absent from the queue (1), declaration with neither id nor none (1), archive pointer skipped, `SCHEDULED` not required to declare.
 
-Findings this item did not fix: **OF-18** (backfilled from item 34 by this item's own first run).
+Findings this item did not fix: **OF-18** (backfilled from item 34 by this item's own first run) and **OF-21**, added later the same session.
+
+OF-21 is this item's own blind spot and it is worth stating here rather than only in the queue, because this narrative otherwise reads as having closed the class. It did not. The population is *closed items*; findings are round-scoped. Two findings in this very session — OF-19, born inside DECISION-026's body as evidence for rejecting an option, and OF-20, born in a conversation message as a proposal that was dropped — were attached to no closing item and were therefore structurally invisible to the guard this item shipped. Both were found by a hand audit the founder asked for, which is not a mechanism.
 
 37. SCHEDULED (founder-flagged maximum priority, 2026-08-12) — every rule this repository enforces mechanically gets its Framework-layer home, or is recorded as having none.
 
@@ -399,6 +401,8 @@ First pass, 2026-08-12, over the 13 parked findings in this document and the sta
 | OF-19 | `gh pr merge --rebase --admin` — this repository's standard merge, used on every round since `0.6.0` — bypasses required status checks, not only the required review. So all ten CI guards are advisory: they are bypassable by the same command and the same person they constrain, on the merge that lands the work. Five PRs were merged that way on 2026-08-12 alone. | DECISION-026 / item 36, 2026-08-12 | **Open.** Strengthens DECISION-026 rather than competing with it — it is a second, independent reason CI is not enforcement, and the reason item 37 is the priority instead of adding an eleventh guard. Item 34's "Solo-maintainer note... Not a misconfiguration" is about the *review* half and is still correct; the *checks* half was never examined. Priority: Pain medium (the guards have caught real defects and no round has knowingly merged red), Frequency high (every merge), Cost low to *decide* — the real question is whether required reviews should stop being required for a solo maintainer so `--admin` is not needed at all, which is a repository-settings call, not code. |
 
 | OF-20 | A Claude Code hook (`Stop`/`PreToolUse`) was proposed in the same session as the layer that would fire in-thread rather than at merge time, and abandoned when DECISION-026 redirected the work — without a disposition. | This session, 2026-08-12 | **Rejected.** It fails DECISION-010 before it reaches DECISION-026: a hook is one tool's configuration, and everything under `.kenovis/AI/` stays tool-agnostic plain markdown so any model or client can enter through `SYSTEM.md`. It also lives in local settings, not in the bundle, so it would repeat exactly the `.github/` mistake in a newer place. Recorded so it is not re-proposed the next time someone wants enforcement that fires earlier than CI. |
+
+| OF-21 | `check_item_findings.py` binds its population to closed items, but findings are round-scoped, not item-scoped. The two findings this session missed — OF-19, born inside DECISION-026's body as evidence for rejecting an option, and OF-20, born in conversation as a proposal that was dropped — were both structurally invisible to it: neither was attached to a closing item. The guard shipped in item 36 cannot catch the class of miss that produced it. | This session, 2026-08-12, founder-raised | **Open.** Two distinct mechanisms, both confirmed by example rather than reasoned: (1) a fact used as *evidence* inside a decision body stops reading as a finding, because it was already written down and already served a purpose — `policies/documentation.md` already forbids exactly this and it still happened, in the decision written about it; (2) a round audits what it *did* and not what it *proposed and dropped*, so a rejected option leaves no record and gets re-proposed. Priority: Pain high (it is the same leak, one layer out, and today's fix does not reach it), Frequency high, Cost unknown — the first output is deciding whether the declaration should be round-scoped instead of item-scoped, which changes the guard's population rather than adding a guard. Do not add an eleventh guard for it before item 37 runs; see DECISION-026 and OF-19. |
 
 Findings closed by disposition and kept here so they are not re-proposed: a CI guard asserting this repository's Product layer stays free of `[ANSWER:` markers (**Rejected**, item 6 — it would pass trivially and forever, and the real risk is a question written with a plain bracket, which no pattern separates from a legitimate survivor); a CI guard detecting an inherited answer in an authored Product-layer document (**Rejected**, item 8 — an answer phrased in generic words is invisible to any check, and claiming otherwise repeats Learning-015's failure in a new place).
 ---
