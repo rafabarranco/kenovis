@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.2
+Version: 1.4
 ---
 Purpose
 
@@ -18,6 +18,8 @@ It establishes:
 - What we deliberately avoid.
 
 The roadmap exists to protect product focus.
+
+Closed items move to `PRODUCT/ROADMAP-ARCHIVE.md` verbatim once this document passes the size threshold in `.kenovis/AI/policies/documentation.md`; one line stays here per closed item, with a pointer. Finished work otherwise costs the same to load as scheduled work, on every session, forever. Create the archive when the first item closes, not before — an empty archive file is noise.
 ---
 Product Vision
 
@@ -186,6 +188,35 @@ Objective
 Possible capabilities:
 
 [ANSWER: Speculative, explicitly. Nothing here is committed.]
+---
+Open Findings
+
+A scheduled item is dimensioned work. A finding is a candidate that is not dimensioned yet. Without a place for the second, findings end up in the narrative of whichever item was open when they were found — with no id, no priority, and no life once that item closes.
+
+This section is that place. Every finding a round does not fix appears here with one of four dispositions:
+
+**Scheduled** — it is an item; name it.
+
+**Open** — real, unscheduled, competing for the next round.
+
+**Deferred** — deliberately not now, with the reason and the condition that would change it.
+
+**Rejected** — decided against, with the reason, so it is not proposed again. This is a first-class outcome; most findings should not become work.
+
+Being described in prose is not a disposition. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+
+`/next` reads this section alongside the scheduled items when it chooses the next objective, so a finding recorded here competes on the priority formula below instead of waiting to be remembered.
+
+Format:
+
+```
+| Id | Finding | Source | Disposition |
+|---|---|---|---|
+| OF-01 | One line stating what is wrong or missing. | The round that found it | Open. Pain/Frequency/Cost in one line. |
+```
+
+[No findings recorded yet. Add a row for each finding a round does not fix — do not invent findings to fill this section.]
+
 ---
 Features Backlog Philosophy
 

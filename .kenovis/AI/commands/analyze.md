@@ -1,6 +1,6 @@
 # Analyze Command
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -410,9 +410,17 @@ AI must:
 
 AI must not:
 
-- Modify files.
 - Implement fixes.
+- Change code, configuration, or any product document to apply a finding.
 - Invent missing requirements.
+
+AI must record, and this is not an exception to the line above — it is the difference between analysis and implementation:
+
+- Every finding this analysis does not fix gets a disposition, per `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+- The destinations are the ones Step 9 already names: the findings queue in `PRODUCT/ROADMAP.md`, a chosen approach in `DECISIONS.md`, a reusable lesson in `AI/memory/learnings.md`.
+- Do it in the same session. An analysis whose findings are recorded nowhere has to be run again, and in practice is not — it stays in the transcript and dies there.
+
+This command detects and records. It never fixes.
 
 ---
 
