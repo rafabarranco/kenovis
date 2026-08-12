@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.3
+Version: 2.4
 
 ---
 
@@ -413,6 +413,8 @@ Examples:
 The summary is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. The recommended next action belongs in `PRODUCT/ROADMAP.md`, written in Step 13, so the next `/next` run reads it instead of re-deriving it.
 
 The same applies to everything this round found and did not fix. A round finds more than it fixes; each of those findings is scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason, in Step 13, before this summary is written. Describing a finding in this summary, or in the narrative of the item just closed, is not a disposition — see `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected". The summary below then states the disposition of each, which is only possible because they already have one.
+
+Ordering alone has already failed, twice, so it is no longer the only defence. The closed item carries a line — `Findings this item did not fix:` — naming the queued ids or stating none. Write it in Step 13, before this step exists. A round that found nothing writes "none"; a round that found something and skipped the queue now has to write "none" and be wrong on the record, instead of simply saying nothing. This is the one part of the rule a machine can hold you to, and it does.
 
 After completion:
 
