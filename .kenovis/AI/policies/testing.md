@@ -1,6 +1,6 @@
 # Testing Policy
 
-Version: 2.0
+Version: 2.1
 
 ---
 
@@ -298,6 +298,24 @@ Flaky tests destroy confidence.
 Fix or remove them immediately.
 
 Never ignore unstable tests.
+
+---
+
+# A Check Is Not Verified Until It Has Been Run
+
+Not every check in a repository is a test. Greps, marker conventions, CI scripts and manual verification steps written into a command are all checks, and none of them are covered by the test suite. They fail the same way tests do and nothing reports it.
+
+**Run a new check against a known-good corpus in the round that introduces it.** A check that has only ever been reasoned about encodes its author's mental model of what a bad case looks like, and silently misclassifies everything that model did not contain. Reading a grep is indistinguishable from running it, right up to the moment the two disagree. Zero matches against a document set already known to be correct is the acceptance criterion, and it costs one command. If the check's own documentation lives inside the scanned corpus, say so rather than quietly reporting a number that excludes it. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-015.)
+
+**Enumerate the population, not the matches.** When fixing a class of defect, a pattern built from the instances already found can only ever report instances of that shape. Ask "where could this live?" — usually a structural set, like every reference to a path, or every step block in a command — and check each member against the rule. A pattern that matches *defects* cannot be complete; a pattern that enumerates *sites* can be. (Learning-021.)
+
+**Write the protected property as a sentence before choosing the population.** An exact population feels like completeness in a way a pattern does not, which is exactly what stops the search too early. Check that the population is the set of places the property could be violated — not the set of places the known violations happened to sit. (Learning-022.)
+
+**A guard states which of its parts is exact and which is a heuristic, and prints both counts.** A population that is structurally enumerable is exact; a classifier deciding which members are in scope usually is not, and cannot be. Saying so in the script lets the next round check the question the guard asks instead of re-verifying its answer. A check that hides its own cut invites a clean pass to be read as proof. (Learning-022.)
+
+**If the population is mechanically enumerable, the check belongs in CI**, not in a session's scrollback. Confirm it fails against the pre-fix state before keeping it. (Learning-021.)
+
+**For anything installed elsewhere, "has this been run from an installed copy?" predicts latent defects better than any review pass.** Instructions that are correct in the origin repository can be destructive in an Installation without a word of them changing. Run each command end to end from a real published installation, one per round. (Learning-020.)
 
 ---
 

@@ -21,7 +21,11 @@ WHAT THIS CHECK CAN AND CANNOT DO, per AI/memory/learnings.md Learning-021 and
 Learning-022:
 
   - The POPULATION is exact: every `Future action:` inside a `## Learning-NNN`
-    block. The count prints on every run.
+    block, in the active learnings file AND in its archive. The per-file counts
+    print on every run. The archive is in the population deliberately: item 20
+    moved 22 of 24 learnings there, and a corpus that silently shrank from 24 to
+    2 while still reporting a pass is the exact failure this guard exists to
+    catch, one level up.
 
   - The CLASSIFIER is trivial and honest about being shallow: a disposition
     counts when it cites an id (`OF-NN`, `item N`) or contains the explicit
@@ -42,7 +46,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-LEARNINGS = ROOT / "AI" / "memory" / "learnings.md"
+LEARNINGS = [
+    ROOT / "AI" / "memory" / "learnings.md",
+    ROOT / "AI" / "memory" / "LEARNINGS-ARCHIVE.md",
+]
 
 LEARNING_HEADING = re.compile(r"^## (Learning-\d{3})\s*$", re.MULTILINE)
 FUTURE_ACTION = re.compile(r"^Future action:\s*$", re.MULTILINE)
@@ -61,31 +68,38 @@ def learning_blocks(text: str):
 
 
 def main() -> int:
-    if not LEARNINGS.exists():
-        print(f"{LEARNINGS.relative_to(ROOT)} not found.")
-        return 1
-
-    text = LEARNINGS.read_text(encoding="utf-8")
     total = 0
     errors = []
 
-    for learning_id, body in learning_blocks(text):
-        if not FUTURE_ACTION.search(body):
-            continue
-        total += 1
-        disposition = DISPOSITION.search(body)
-        if not disposition:
-            errors.append(
-                f"{learning_id}: future action with no `Disposition:` line — "
-                f"the work it names exists nowhere else"
-            )
-            continue
-        stated = disposition.group(1)
-        if not (CITES_ID.search(stated) or NO_WORK.search(stated)):
-            errors.append(
-                f"{learning_id}: `Disposition:` neither cites an id (OF-NN, item N) "
-                f"nor states that no work is implied"
-            )
+    for path in LEARNINGS:
+        if not path.exists():
+            print(f"{path.relative_to(ROOT)} not found.")
+            return 1
+
+        text = path.read_text(encoding="utf-8")
+        in_file = 0
+
+        for learning_id, body in learning_blocks(text):
+            if not FUTURE_ACTION.search(body):
+                continue
+            in_file += 1
+            where = f"{path.name} {learning_id}"
+            disposition = DISPOSITION.search(body)
+            if not disposition:
+                errors.append(
+                    f"{where}: future action with no `Disposition:` line — "
+                    f"the work it names exists nowhere else"
+                )
+                continue
+            stated = disposition.group(1)
+            if not (CITES_ID.search(stated) or NO_WORK.search(stated)):
+                errors.append(
+                    f"{where}: `Disposition:` neither cites an id (OF-NN, item N) "
+                    f"nor states that no work is implied"
+                )
+
+        print(f"  {path.relative_to(ROOT)}: {in_file} future actions")
+        total += in_file
 
     if not total:
         print("No future actions found — the corpus is empty, which is not a pass.")
