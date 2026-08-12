@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.44
+Version: 1.45
 ---
 Purpose
 
@@ -171,81 +171,9 @@ Dogfooding caveat, stated because it makes this repository unrepresentative: thi
 Deliberately short entries. Every item below states its problem, its target and its validation, and stops. This document is itself one of the four files the block exists to bound, and the 17 completed items above are the bulk of its 124.9 KB — writing this block in their style would enlarge the very measurement it is trying to reduce.
 
 18. DONE (2026-08-12, via /next) (R1) — the session-initialization protocol reads the decision index, not every decision body. → `PRODUCT/ROADMAP-ARCHIVE.md`
-19. DONE (2026-08-12, via /analyze) (R2) — completed roadmap items move to an archive; the active roadmap keeps one line each.
-
-Problem, measured: the 17 DONE items above retain their full narrative inline and are the bulk of this file's 124.9 KB, all of it on `/bootstrap`'s Step 2 path forever. Finished work costs the same to load as scheduled work.
-
-Target: `PRODUCT/ROADMAP-ARCHIVE.md` receives closed items verbatim — nothing is summarised away, the reasoning trail is preserved exactly as `DECISIONS.md` preserves superseded entries. The active `ROADMAP.md` keeps one line per closed item plus a pointer. The framework's Product-layer template and `documentation.md` gain the archive file so every Installation starts with the split rather than discovering it at 100 KB.
-
-Expected effect: ~-90 KB off the bootstrap path in this repository.
-
-Risk: existing links and anchors into completed items break. Enumerate them exactly before moving — `check_links.py` covers markdown links, and per Learning-018 and Learning-022 the population that matters is "references to a completed item", which is larger than "links that resolve".
-
-Also in scope (RA2, added 2026-08-12 from the second `/analyze` run): **an open validation criterion is never archived.** Item 18 closed DONE carrying one criterion it could not meet, written in its own narrative — and this item moves that narrative out of the active roadmap, leaving one line behind. A criterion with no owner and no location stops existing. Before archiving, every closed item's unmet validation is promoted to an active item (item 24 is the first instance, promoted by hand); the rule itself belongs in the lifecycle policy item 21 writes, so it governs every future close rather than this one archive pass. Enumerate the population the same way this item's own risk demands: closed items whose text states something was not validated, not just items marked DONE.
-
-Shipped: `PRODUCT/ROADMAP-ARCHIVE.md` holds 31 closed items verbatim — Phase 0's eight, the first block's seventeen, and the six closed in the second block — grouped by the block they came from. This document keeps one line each plus a pointer. `.kenovis/AI/templates/product-layer/PRODUCT/ROADMAP.md` (1.3 → 1.4) tells an Installation to create its archive when its first item closes, not before, and `.kenovis/AI/policies/documentation.md` (2.4 → 2.5) → "Closed Work Is Archived, Not Kept Inline" makes the rule general: closed entries move verbatim, the active document keeps one line, the archive is never on the session-initialization path, and an entry is archived only after its open findings have a home. `.github/scripts/check_markers.py` gained the new file.
-
-RA2 satisfied by construction: item 29 ran first and moved every parked finding into the queue, so nothing archived here holds the only copy of an unresolved finding.
-
-Measured: `PRODUCT/ROADMAP.md` 164.7 KB → 42.2 KB, **-120 KB**, against the ~-90 KB this item estimated. The full bootstrap path — session initialization plus `ROADMAP.md` plus `learnings.md` — goes 374.3 KB → 133.9 KB across today's work, of which item 18 accounts for ~100 KB and this item for ~120 KB.
-
-One stale label was corrected in passing, because archiving surfaced it: Phase 0 item 3 read `IN PROGRESS` while the paragraph four lines below it said "Phase 0 is closed. All eight Immediate Priority items are DONE." It shipped in `kenovis@0.1.0` through `0.5.0` and was true of none of them.
-
-Validated: all six docs-integrity guards pass, `check_links.py` included; nothing was summarised away — the archive is the extracted text verbatim, and roadmap plus archive together are larger than the original by exactly the 31 pointer lines.
-
-20. DONE (2026-08-12, via /next) (R5) — run `AI/memory/learnings.md`'s own Review Process for the first time.
-
-Problem: 65.2 KB, 23 entries, 4.1 KB → 65.2 KB in 11 days. The file documents a Review Process that promotes Critical/Important reusable learnings into `AI/policies/` or `conventions.md`. DECISION-011 made that promotion a checkpoint inside `init-project.md` Step 8. It has never been executed here — the promotion exists as a rule with no run behind it.
-
-Target: execute the Review Process as written. Promote what belongs in a policy into that policy; archive the rest alongside item 19's archive; keep the active file to entries that still change behaviour.
-
-Independent of items 18, 19, 21-23 — no ordering constraint, listed here because its cost is low and it is on the bootstrap path.
-
-Validated when: each promoted learning is findable in the policy that now carries it, and no learning is lost — the archive is complete, not lossy.
-
-Premise checked before scoping, per OF-04 and Learning-023, and two numbers had moved: **24 entries, 76 KB**, not the 23 and 65.2 KB written when the item was scheduled — Learning-024 landed after. The structural premises held: the Review Process exists (`AI/memory/learnings.md` → "Review Process"), the `init-project.md` checkpoint exists (Step 8, "before deleting the previous product's recorded learnings, run the Review Process first"), and it had never run — `grep -rl "Learning-0" .kenovis/AI/policies/` returned nothing.
-
-Shipped, and the item's own framing turned out to understate the defect. The process was not merely unrun; it was **unrunnable to completion**. It said where a rule goes and never what happens to the entry afterwards, so "move it" had no finished state — which is why 18 of 24 entries carried a disposition reading "candidate for promotion by item 20" and no rule had ever moved. Recorded as Learning-025.
-
-- **22 learnings promoted into 5 policy sections**, each citing the learning ids whose reasoning produced it: `policies/coding.md` (2.2 → 2.3) → "Guards, Recorded State, And Permissive Paths" (Learning-004/005/006/007/008/010/011/013); `policies/architecture.md` (1.0 → 1.1) → "Distribution Is Part Of The Architecture" (Learning-003/004/009/014/020); `policies/testing.md` (2.0 → 2.1) → "A Check Is Not Verified Until It Has Been Run" (Learning-015/020/021/022); `policies/documentation.md` (2.7 → 2.8) → "A Claim Is Read Back Off The Artifact" and "An Instruction Is Reachable, And Its Sink Is Read" (Learning-016/017/018/019/023/024); `policies/git.md` (2.1 → 2.2) → "Promotion Chains And Content Sync" (Learning-012).
-- **`AI/memory/LEARNINGS-ARCHIVE.md`** holds those 22 entries verbatim. `AI/memory/learnings.md` (1.13 → 1.14) keeps one line each in a new "Promoted And Archived" table naming the policy section that now carries the rule.
-- **`conventions.md` received nothing, and that is the honest result.** The Review Process offers it as a destination for naming rules; not one of the 24 learnings was a naming rule. Recorded so the next run does not read the empty result as a missed step.
-- **The missing half of the process is now written**, not just performed: `policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline" states the completion condition (rule into the policy, policy cites the learning id, entry archived verbatim, one line left behind), and `.kenovis/AI/templates/product-layer/AI/memory/learnings.md` (1.6 → 1.7) → "What 'Move It' Means" carries the same to every Installation, including "create the archive when the first learning closes, not before".
-
-Two CI changes were forced by this work rather than chosen:
-
-- `check_future_actions.py` scanned one file. After the split it would have reported a clean pass over a corpus that had silently shrunk from 24 future actions to 2 — the precise defect it exists to catch, one level up. Its population is now both files, and prints per file.
-- `check_document_size.py` treated `PRODUCT/ROADMAP-ARCHIVE.md`'s over-threshold size as an *exemption citing item 21*, which was a fudge: no item will ever close an archive, so that exemption could never be satisfied. Archives are now a third classification (`archive_of`) that names the active document they absorb weight for, must point at a real file, and still print their size. The exemption mechanism keeps its original meaning — a temporary state with an item behind it.
-
-New guard, `.github/scripts/check_learning_promotions.py`, wired into CI. Written because this item's own validation criterion ("each promoted learning is findable in the policy that now carries it") is over an enumerable population, and the rule promoted into `policies/testing.md` in this same round says that a check over an enumerable population belongs in CI rather than in a session's scrollback. Population exact and cross-checked in both directions (a learning archived with no index row fails; a row with no archived entry fails). Classifier structural: it verifies the named policy file exists, the named section is a real heading, and the policy cites the learning id — it cannot tell whether that section contains the rule it claims. It found a real defect on its first run: `coding.md` carried Learning-010's rule nowhere, and the row claiming otherwise would have shipped.
-
-Measured, off the artifacts: `AI/memory/learnings.md` **76 KB → 12.1 KB**, `AI/memory/LEARNINGS-ARCHIVE.md` 69.8 KB. Entries 24 → 22 archived + 2 active, ids preserved exactly; all 22 archived blocks confirmed byte-identical substrings of the pre-split file, and the pair is larger than the original (81.9 KB vs 73.0 KB) by exactly the archive header and the index table — nothing summarised away.
-
-Validated: nine guards pass on the tree. `check_document_size.py` confirmed to fail on both new error paths (a governed document over threshold with its exemption removed; an archive naming an active file that does not exist). `check_learning_promotions.py` confirmed to fail when a cited policy section is renamed. The failing-case test for the learnings threshold is deliberately *not* claimed: at 12.1 KB the file is under threshold, so removing its split cannot fail the guard — the first attempt at that test passed and was wrong, not the guard.
-
-21. DONE (2026-08-12, via /analyze) (R4) — `AI/policies/documentation.md` gains document lifecycle rules, enforced in CI.
-
-Problem: the policy has no rule about size, splitting, archiving or retirement — confirmed by grep across `documentation.md`, `DECISIONS.md`, `learnings.md` and this file. DECISION-011 hardened the write side (CI requires a CHANGELOG bullet; a DECISIONS entry on mechanics changes) and nothing governs the read side or the exit. Rigor is asymmetric: cheap to add, forbidden to remove — `DECISIONS.md` states the no-remove rule explicitly, keeping superseded decisions in place for the reasoning trail.
-
-Target: explicit lifecycle rules — a size threshold that triggers a split, archive-on-close for completed work, and supersede-means-move-not-mark for decisions, with the archive preserving the trail so nothing DECISION-011 protects is lost. Mechanically checkable, following the `check_changelog.py` / `check_template_refs.py` / `check_artifact_destinations.py` precedent: a CI script that fails when a governed document passes its threshold with no archive.
-
-Precedes item 22 deliberately. Items 18-20 are one-time reductions; without this rule they are a cleanup that recurs. This is what makes the bound permanent.
-
-Per Learning-022, state the guard's population and its classifier separately, and print both counts, so the cut stays reviewable rather than assumed.
-
-Scope, to be stated in the item's own text rather than discovered later (RA4, added 2026-08-12 from the second `/analyze` run): **"enforced in CI" means enforced in this repository and nowhere else.** `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` plus the customer README — not `.github/` — verified in item 17. A customer Installation receives the lifecycle rule as an instruction with no mechanism behind it, exactly as it receives the Decision Index rule item 18 shipped. Today that gap stands at five guards this repository runs and zero a customer does. Say so in this item's delivered work, and say whether it depends on item 25 or ships independently of it.
-
-Also in scope: the archive-on-close rule this item writes carries item 19's RA2 addition — a closed item's unmet validation criterion is promoted to an active item before that item is archived.
-
-Shipped: `.kenovis/AI/policies/documentation.md` (2.5 → 2.6) → "Document Lifecycle: A Size Threshold, An Archive, And An Exit" — four governed documents (those that accumulate entries; documents describing a current state are rewritten, not appended to, and are deliberately not governed), a **60 KB** threshold, and three acceptable answers to crossing it: an archive sibling, an index that bounds what is read, or a split into a directory. Superseded entries move rather than being marked in place. An exemption is allowed and **must name the roadmap item that closes it** — an exemption with no item is this rule's own failure mode wearing a permission slip.
-
-`.github/scripts/check_document_size.py`, wired into CI. Every governed document's size prints on every run, so growth is visible before it is a problem. Population exact and hardcoded; satisfaction test structural — it cannot tell whether an archive is being used or whether a named item is progressing, and an exemption nobody closes passes forever, which is why each one prints on every run.
-
-RA4 satisfied: the guard runs in this repository's CI only. `kenovis check` (item 25) is what carries it to an Installation, and this item ships independently of it rather than waiting.
-
-Current state, printed by the guard: `ROADMAP.md` 42.8 KB (under, via item 19's archive), `learnings.md` 70.2 KB (exempt → item 20), `DECISIONS.md` 125.8 KB (exempt → item 22, already index-bounded by item 18), `ROADMAP-ARCHIVE.md` 126.4 KB (exempt → off the session path by design), `CHANGELOG.md` 60.6 KB (exempt → OF-13, a finding this item raised and queued rather than described).
-
-Validated: the guard passes on the current tree, and was confirmed to fail — naming `learnings.md` — when its exemption was removed.
+19. DONE (2026-08-12, via /analyze) (R2) — completed roadmap items move to an archive; the active roadmap keeps one line each. → `PRODUCT/ROADMAP-ARCHIVE.md`
+20. DONE (2026-08-12, via /next) (R5) — run `AI/memory/learnings.md`'s own Review Process for the first time. → `PRODUCT/ROADMAP-ARCHIVE.md`
+21. DONE (2026-08-12, via /analyze) (R4) — `AI/policies/documentation.md` gains document lifecycle rules, enforced in CI. → `PRODUCT/ROADMAP-ARCHIVE.md`
 
 22. SCHEDULED (R3) — `DECISIONS.md` becomes a directory, one file per decision, with the current file as its index.
 
@@ -303,19 +231,7 @@ Validated when: `kenovis check` run inside a real published Installation catches
 29. DONE (2026-08-12, via /analyze) (RB5) — triage the parked findings and the learnings' future actions, before item 19 archives them. → `PRODUCT/ROADMAP-ARCHIVE.md`
 30. DONE (2026-08-12, via /analyze) (RB4) — the one part of this that a machine can check. → `PRODUCT/ROADMAP-ARCHIVE.md`
 
-31. DONE (2026-08-12, via /analyze) — promote `development` → `preproduction` → `main` and publish the release carrying items 18, 19, 21 and 26-30.
-
-Chosen because none of that work reaches a customer until published — the same packaging step items 2, 5, 7, 9, 11, 13, 15 and 17 performed. Against this document's own priority formula nothing competed: every `0.12.0` Installation reads its whole decision log at the start of every session, and every command in it still leaves an unfixed finding in prose.
-
-Version call, decided at cut time: **minor, `kenovis@0.13.0`**. Per Phase 1 item 2's standing instruction this is decided rather than assumed, and for the sixth release running no CLI code changed — but the argument is the strongest of any framework-only release so far: the session-initialization protocol itself changed, seven commands and three workflows changed behaviour, three CI guards are new, and two Product-layer templates gained structural sections every Installation carries. `1.0.0` rejected again for `0.9.0`'s reason, now recorded as OF-11 and OF-12 rather than re-argued each release.
-
-The `[0.13.0]` header and the GitHub Release both lead with what the upgrade cannot do: `sync` never touches a Product-layer file already authored, so an existing Installation's `DECISIONS.md` gains no Decision Index and its `PRODUCT/ROADMAP.md` gains no Open Findings section. Both are a copy-paste from `.kenovis/AI/templates/product-layer/`, and until then the new instructions describe sections those files do not have.
-
-Shipped: `cli/package.json`/`package-lock.json` 0.12.0 → 0.13.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.13.0] - 2026-08-12` (PR #79, after PR #78 merged the work). Both promotions ran exactly as Learning-012 prescribes — each downstream branch verified as a strict older snapshot, tree set with `git read-tree -u --reset`, empty diff confirmed before opening (PRs #80, #81). All three branches byte-identical. `kenovis@0.13.0` published from CI with provenance; `npm view kenovis version` → `0.13.0`, `dist-tags.latest` → `0.13.0`.
-
-Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.12.0 add` on a scratch brownfield repository, then `npx kenovis@0.13.0 sync`. Baseline reproduced first (no Decision Index in the template, no Open Findings section, the disposition rule cited from zero files). After the sync: transition reported `0.12.0 -> 0.13.0`, **17 paths changed inside `.kenovis/`** listed off `git status` rather than recalled, the rule cited from 11 files, all 18 Product-layer templates delivered with the `[ANSWER:` corpus unchanged at 127, no Product-layer file created at the target's root, `.setup-pending` preserved, and the target's own `README.md`, `src/` and `package.json` untouched.
-
-Solo-maintainer note, unchanged from previous releases: all four PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin`. Not a misconfiguration.
+31. DONE (2026-08-12, via /analyze) — promote `development` → `preproduction` → `main` and publish the release carrying items 18, 19, 21 and 26-30. → `PRODUCT/ROADMAP-ARCHIVE.md`
 
 32. SCHEDULED — the three decisions only the founder can make, and the gap in item 27's own rule that let them sit.
 
@@ -343,11 +259,29 @@ Not a smoke test. This repository has run those all day, and they only prove the
 
 Validated when: a real external team's run is recorded with its findings dispositioned, and `AUTOMATIONS/user-feedback.md` either worked or was corrected.
 
+34. IN PROGRESS (2026-08-12, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 20 and the `Open`-finding-executor fix.
+
+Chosen for the reason the previous "Next" gave and nothing displaced: fifteen files sat on `development` that no Installation could see. Item 20's half is unusually customer-visible for a framework-only release — five policies gained rules an Installation's agents already load per task, so the upgrade changes what those agents do rather than only what they are told. Competing items were item 24 (a seeded fixture, no release required), item 32 (founder input, not `/next` work) and OF-13; none of them reach a customer at all, which is the axis this item is on.
+
+Version call, decided at cut time per Phase 1 item 2's standing instruction: **minor, `kenovis@0.14.0`**. Seventh framework-only release running with no CLI code changed, and the argument is item 20's: a policy is loaded per task, a learnings file is not, so moving twenty-two rules from the second into the first changes behaviour in every Installation that syncs. `1.0.0` rejected for the seventh time on OF-11's still-unset number, which is now item 32's to close rather than each release's to re-argue.
+
+Also carried, because the lifecycle rule item 21 wrote came due on the document that scheduled it: `PRODUCT/ROADMAP.md` stood at **58.0 KB** against a 60 KB threshold with this item still to write. Items 19, 20, 21 and 31 — DONE and still inline, closed after item 19's own archive pass ran — moved verbatim to `PRODUCT/ROADMAP-ARCHIVE.md`, one line each left behind. The move alone took it **59410 → 42904 bytes (-16.1 KB)**; this item's own text and OF-14 put 3,962 of them back, for **46866 bytes (45.8 KB)** read off the file. The archive grew by exactly the 17,155 bytes extracted plus four separator newlines — 129415 → 146574 — checked by asserting each moved block is still a substring of the archive, so nothing was summarised away.
+
+RA2 gate applied before the move, not after: item 20's narrative carried a validation criterion it stated rather than claimed — the failing-case test for the learnings threshold, impossible to run at 12.1 KB. Queued as **OF-14** first, so archiving did not make it disappear. Items 19, 21 and 31 left nothing homeless; item 21's `CHANGELOG.md` exemption is already OF-13.
+
+Cut: `cli/package.json`/`package-lock.json` 0.13.0 → 0.14.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.14.0] - 2026-08-12`.
+
+Validated when: `npm view kenovis version` returns `0.14.0`, and a `sync` from the published package into a real Installation delivers the five changed policies — checked against the *published* package on the sequence a real upgrader runs, not against this repository.
+
 Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident.
 
-Next (updated 2026-08-12, after item 20 closed): two things sit unpublished on `development` — item 20's policy promotions and the `Open`-finding-names-its-executor fix that scheduled items 32 and 33. Neither reaches a customer until a release is cut, which makes that the leading candidate, the same packaging step items 2, 5, 7, 9, 11, 13, 15, 17 and 31 performed. Item 20's half is unusually customer-visible for a framework-only release: five policies gained rules that an Installation's agents already load per task, so the upgrade changes behaviour rather than only instructions.
+Next (updated 2026-08-12, while item 34 is in flight): once `kenovis@0.14.0` is published, nothing sits unpublished, so for the first time in this block the leading candidate is not a release. Two items compete, and they are the same two the previous "Next" listed behind the release.
 
-Competing without a release first: item 24 (needs a seeded fixture, no release required — the instruction under test is already on `development`), item 32 (founder input, not `/next` work), OF-13 (`CHANGELOG.md` archive, cheap and now the only governed document over threshold with a still-open exemption). Item 22 and item 25 both require `/architect` and an ADR before any file is touched; do not start either from `/next`.
+**Item 24** is the recommendation: validate that an agent opens a decision body instead of paraphrasing the index. It needs no release (the instruction under test shipped in `0.13.0` and is now live), its dependency list is empty, and it is the only unmet criterion left from item 18 — the item this whole block opened with. Its one real cost is the fixture: an Installation's `DECISIONS.md` starts empty, so a populated log has to be seeded before the run exercises anything. OF-02 or OF-03 can be its vehicle, which is what makes it cheap: `/architect` and `/release` have never been run end to end from a real published Installation, and six for six such runs have found a maximal-Pain defect.
+
+**OF-13** is the cheaper alternative and now the only governed document over threshold with a still-open exemption: `CHANGELOG.md` at 66.1 KB, same shape as item 19's roadmap archive and cheap for the same reason — nobody reads `[0.2.0]` at session start. Take it if the fixture work in item 24 turns out to be larger than one round.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 and item 25 both require `/architect` and an ADR before any file is touched; do not start either from `/next`.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it — item 20's premise had drifted by one entry and 11 KB in the four days between being written and being executed.
 ---
@@ -373,7 +307,8 @@ First pass, 2026-08-12, over the 13 parked findings in this document and the sta
 | OF-10 | Two records this block implements but never wrote: a `DECISIONS.md` entry making the per-session context budget a first-class constraint, and a `learnings.md` entry that documentation-as-memory without lifecycle is accumulation, not memory. | Second block header, 2026-08-12 | **Open — founder call, item 32.** That item names the input the decision needs. Still not `/next` work, but no longer only a queue row. |
 | OF-11 | `MVP Success Metrics` → Usage has no target: "N installations (target not yet set)". Every release round since `0.9.0` has rejected `1.0.0` partly on this, so an unset number is gating the version. | Phase 1 → MVP Success Metrics | **Open — founder call, item 32.** Product decision, not an engineering item. Until it exists, `1.0.0` has no criterion to meet and each release re-argues the same rejection — six so far. |
 | OF-12 | One external team has validated the product, on 2026-08-06, against `kenovis@0.3.0` — eight releases ago. `AUTOMATIONS/user-feedback.md` describes a feedback loop that has never run. | Phase 1 → Real External Validation | **Scheduled — item 33.** Every "deferred on unvalidated Pain" disposition above traces to this one gap. Previously tagged a founder call, which was wrong: it is work, and tagging work as a decision is a way of parking it. |
-| OF-13 | `CHANGELOG.md` has no archive rule — 60.6 KB and growing one released section at a time, with every past release kept inline. The lifecycle rule exempts it pending this finding. | Item 21, 2026-08-12 | **Open.** Same shape as item 19's roadmap archive and cheap for the same reason; nobody reads `[0.2.0]` at session start. |
+| OF-13 | `CHANGELOG.md` has no archive rule — 66.1 KB and growing one released section at a time, with every past release kept inline. The lifecycle rule exempts it pending this finding. | Item 21, 2026-08-12 | **Open.** Same shape as item 19's roadmap archive and cheap for the same reason; nobody reads `[0.2.0]` at session start. Size read off the file on 2026-08-12, not off the 60.6 KB this row was written with. |
+| OF-14 | `check_document_size.py`'s failing case has never been exercised for `AI/memory/learnings.md`. Item 20 stated this rather than claiming it: at 12.1 KB the file is under threshold, so removing its split cannot make the guard fail, and the first attempt at that test passed for the wrong reason. | Item 20, 2026-08-12 | **Open.** Promoted out of item 20's narrative by item 34's RA2 gate before that narrative was archived. Cost is one fixture — a governed document temporarily grown past 60 KB — not a code change. Priority: Pain low (the guard's other error paths are both exercised), Cost low, but it is an unrun check, which is the exact shape `policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" exists to forbid. |
 
 Findings closed by disposition and kept here so they are not re-proposed: a CI guard asserting this repository's Product layer stays free of `[ANSWER:` markers (**Rejected**, item 6 — it would pass trivially and forever, and the real risk is a question written with a plain bracket, which no pattern separates from a legitimate survivor); a CI guard detecting an inherited answer in an authored Product-layer document (**Rejected**, item 8 — an answer phrased in generic words is invisible to any check, and claiming otherwise repeats Learning-015's failure in a new place).
 ---
