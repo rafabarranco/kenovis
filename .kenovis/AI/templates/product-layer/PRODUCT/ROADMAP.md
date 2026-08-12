@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.4
+Version: 1.5
 ---
 Purpose
 
@@ -204,6 +204,8 @@ This section is that place. Every finding a round does not fix appears here with
 **Rejected** — decided against, with the reason, so it is not proposed again. This is a first-class outcome; most findings should not become work.
 
 Being described in prose is not a disposition. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+
+A closed item states what it left behind, on one line: `Findings this item did not fix:` naming the ids queued here, or stating none. Ordering the work — dispositions first, summary second — is not enough on its own; it has failed that way more than once. The declaration makes the omission visible, because a round that skipped the queue then has to write "none" and be wrong on the record rather than simply saying nothing.
 
 `/next` reads this section alongside the scheduled items when it chooses the next objective, so a finding recorded here competes on the priority formula below instead of waiting to be remembered.
 

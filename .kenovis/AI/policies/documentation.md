@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.9
+Version: 3.0
 
 ---
 
@@ -408,6 +408,12 @@ So every finding a round does not fix gets exactly one disposition, stated where
 **Being described in prose is not a disposition.**
 
 `Open` is a real disposition and also the easiest place to hide. A finding whose executor is not the AI — a decision only the human can make, work that needs an external party, a number nobody has — sits in the queue in perfect compliance with this rule and moves for no one. So an `Open` finding that the AI cannot execute names two more things: **who executes it, and what input they need to decide.** Without those, the queue becomes the new place where things stay still, with an id.
+
+**A closed item declares what it left behind, in one line, or the omission is invisible.** The three dispositions above only work if someone remembers to apply them, and remembering is exactly what fails — a round that finds something late, while writing its summary, takes the cheap path and describes it there. Nothing distinguishes that from a round that genuinely found nothing.
+
+So closing an item includes the line `Findings this item did not fix:` naming the queued ids, or stating none. A round that found nothing writes "none" and is done. A round that found something can no longer stay silent about it; it has to write "none" and be wrong on the record, which is a different act from forgetting.
+
+This is the inversion that makes the rule checkable at all. Detecting a finding inside narrative prose has no pattern — which is why guards built on classifying prose were correctly rejected twice. Requiring a declaration does: the population is every closed item, and a missing line is exact. `.github/scripts/check_item_findings.py` enforces it, including that every declared id exists in the queue.
 
 Two rules that follow from this, because both failure modes have already happened:
 

@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.48
+Version: 1.49
 ---
 Purpose
 
@@ -154,7 +154,7 @@ Items 3-17 continued that alternation of work and release. Items 18-23 are a sec
 ---
 Phase 1 — Immediate Priority, second block (added 2026-08-12, from /analyze on framework context scalability, founder-flagged maximum priority — ahead of any other Phase 1/2/3 item)
 
-Eighteen items, items 18-35 — sixteen as originally written, plus items 34 and 35 added as the block ran. In the order written, except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
+Nineteen items, items 18-36 — sixteen as originally written, plus items 34, 35 and 36 added as the block ran. In the order written, except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
 
 The R-tags (R1-R6) are the recommendation labels from the 2026-08-12 `/analyze` run that produced this block, kept so the items stay traceable to their analysis. Execution order is not R-tag order: R5 is cheap and independent so it lands with the other Do-Now items, and R4 precedes R3 because a lifecycle rule that does not exist cannot govern the restructuring that R3 performs.
 
@@ -277,7 +277,9 @@ One check in that sweep returned zero and was the check being wrong, not the art
 
 Solo-maintainer note, unchanged since `0.6.0`: all three pull requests came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin`. Not a misconfiguration.
 
-Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident.
+Findings this item did not fix: **OF-14** (queued by this item's own RA2 gate) and **OF-18**, backfilled on 2026-08-12 when `check_item_findings.py` was written and this item was the one it caught.
+
+OF-18 was written here as "Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident." Calling it a backlog note is what "described in prose" looks like from the inside: it reads as handled, has no id, and nothing reads it when choosing the next action.
 
 35. DONE (2026-08-12, via /next) — close OF-13: `CHANGELOG.md` archives its own released sections.
 
@@ -295,7 +297,23 @@ Findings this item did not fix: **OF-15** (the new archive is 6.9 KB from the th
 
 OF-17 is this round's own defect and the founder raised it: OF-15 and OF-16 were written into the session summary instead of the queue, which is being described in prose, which is not a disposition. `next.md` Step 15 requires the disposition first and the summary second, precisely so a finding cannot die with the thread. The round that closed a lifecycle item reproduced the failure mode items 27-30 were created to end, one round after shipping the rule against it.
 
-Next (updated 2026-08-12, after item 35 closed): unpublished work now sits on `development` again — a policy at 2.9, the changelog split, and two doc files — so a release is a live candidate for the first time since item 34. It is not the recommendation.
+36. DONE (2026-08-12, via /next) — close OF-17: an omission becomes a missing line, not a silence.
+
+Founder-raised, twice, and the second time was the one that mattered: queuing OF-17 as `Open — someone should decide whether this is checkable` was the same inaction the finding described, one level up. *"¿Y de qué me vale si en el siguiente thread harás lo mismo?"* is answerable only with a mechanism, so this item built it in the same round rather than scheduling it.
+
+`check_future_actions.py`'s own docstring had already ruled this out — findings parked in `PRODUCT/ROADMAP.md` prose are "the larger half of the same leak" with "no mechanical form". That holds for *detecting* a finding inside prose, which has no pattern and is why guards built on classifying prose were rejected in items 6 and 8. Inverting it does have a form: do not detect the finding, require the declaration. Every closed item carries `Findings this item did not fix:` naming queued ids or stating none. An omission is invisible; a missing required line is exact.
+
+What that changes, precisely: a round that found nothing writes "none" and passes. A round that found something and skipped the queue can no longer do it by staying quiet — it has to write "none" and be wrong on the record. It does not make a round honest, and no check can; it removes the silent path, which was the one actually being taken.
+
+Shipped: `.github/scripts/check_item_findings.py` wired into CI as the ninth guard; `policies/documentation.md` (2.9 → 3.0) and `commands/next.md` (2.3 → 2.4) carry the rule; `templates/product-layer/PRODUCT/ROADMAP.md` (1.4 → 1.5) ships it to every Installation on sync.
+
+Population is exact and structural — every `NN. DONE` item whose body is a narrative rather than an archive pointer, the pointers excluded by their own fixed literal form rather than a length heuristic. Archived items are deliberately out of scope: they closed before the rule existed, and rewriting closed narratives to satisfy a later guard is the retroactive editing the archive rule forbids. The classifier is shallow and says so: an item that found four things and declares one passes.
+
+Run against the pre-fix tree first, per `policies/testing.md`: it failed, naming item 34 — the only closed narrative that had never declared anything. That produced **OF-18**, backfilled from item 34's own "Backlog note, not an item", which is what being described in prose looks like from the inside. All seven branches then exercised in a fixture: declares existing ids (0), declares none (0), no declaration line (1), declares an id absent from the queue (1), declaration with neither id nor none (1), archive pointer skipped, `SCHEDULED` not required to declare.
+
+Findings this item did not fix: **OF-18** (backfilled from item 34 by this item's own first run).
+
+Next (updated 2026-08-12, after item 36 closed): unpublished work now sits on `development` again — a policy at 2.9, the changelog split, and two doc files — so a release is a live candidate for the first time since item 34. It is not the recommendation.
 
 **Item 24** is the recommendation, for the reason the previous "Next" gave and this round did not displace: it needs no release, its dependency list is empty, and it is the only unmet criterion left from item 18. What this round adds is the execution constraint, now concrete — run it from a session that has read the index and not the bodies (the state under test), and get the observation from an agent that did not author the instruction. OF-02 or OF-03 is still its cheapest vehicle: `/architect` and `/release` have never been run end to end from a real published Installation, and six for six such runs have found a maximal-Pain defect.
 
@@ -336,7 +354,9 @@ First pass, 2026-08-12, over the 13 parked findings in this document and the sta
 
 | OF-15 | `CHANGELOG-ARCHIVE.md` is 53.1 KB on the day it was created and grows one released section per release — roughly 4-5 KB each, so it crosses the 60 KB threshold in about two releases. It is registered `archive_of`, so the guard will classify it over-threshold-by-design and never fail on it. | Item 35, 2026-08-12 | **Deferred.** Correct by construction — an archive is where the weight goes and is never on the session-initialization path, which is exactly what `archive_of` encodes. Recorded because the classification means no check will ever raise this file again, and `PRODUCT/ROADMAP-ARCHIVE.md` reached 143.1 KB the same way. Condition to revisit: an archive is read often enough that its size costs something, or a second-level archive becomes cheaper than one flat file. |
 | OF-16 | Released changelog prose now carries cross-references to sections that moved — `[0.14.0]` reads "same as `[0.2.0]` through `[0.13.0]`" and `[0.2.0]` is no longer a heading in that file. Every future trim adds more of these. | Item 35, 2026-08-12 | **Rejected.** Editing shipped prose to tidy a cross-reference is the compression the archive rule exists to forbid, and the "Earlier releases" table makes every archived version discoverable by name. Recorded so it is not re-proposed each time the trim runs. `check_links.py` is unaffected — these are plain bracketed text, not markdown links. |
-| OF-17 | This round found OF-15 and OF-16 and wrote them into the session summary instead of this queue, leaving them with no id and no life after the thread. `.kenovis/AI/commands/next.md` Step 15 requires every unfixed finding to have a disposition **before** the summary is written; nothing detects that it did not happen. | Item 35, 2026-08-12, founder-raised | **Open.** The rule (DECISION-025, `policies/documentation.md`) was already correct and already loaded — this is a compliance failure, not a gap in the framework, which is what makes it hard: the round that closed a lifecycle item reproduced the exact defect items 27-30 exist to end. Priority: Pain high (it is the failure mode the whole second block was created to stop, recurring inside it), Frequency high (every round produces findings), Cost unknown until someone decides whether any part of it is mechanically checkable. First question for whoever takes it: whether a guard can compare a round's closing narrative against the queue ids it cites, or whether the only real enforcement is the Step 15 ordering already written down. |
+| OF-17 | This round found OF-15 and OF-16 and wrote them into the session summary instead of this queue, leaving them with no id and no life after the thread. `.kenovis/AI/commands/next.md` Step 15 requires every unfixed finding to have a disposition **before** the summary is written; nothing detects that it did not happen. | Item 35, 2026-08-12, founder-raised | **Fixed** (2026-08-12, via /next) — item 36. Queuing it `Open` was the same inaction one level up, which the founder said in the round that wrote it. `check_item_findings.py` now requires every closed item to declare the ids it left behind or state none. |
+
+| OF-18 | Scheduling changes and implementation changes land in the same commit when the working tree already holds uncommitted scheduling. Item 18's commit carried its own block's scheduling for that reason. | Item 34, 2026-08-12 (backfilled) | **Rejected** as work. It is a commit-hygiene habit, not a deliverable, and `policies/git.md` already governs commit scope; adding an item for it would be scheduling a reminder. Recorded because it was sitting as a "backlog note, not an item" — prose that reads as handled — and because it is the second finding `check_item_findings.py` surfaced on its first run. |
 
 Findings closed by disposition and kept here so they are not re-proposed: a CI guard asserting this repository's Product layer stays free of `[ANSWER:` markers (**Rejected**, item 6 — it would pass trivially and forever, and the real risk is a question written with a plain bracket, which no pattern separates from a legitimate survivor); a CI guard detecting an inherited answer in an authored Product-layer document (**Rejected**, item 8 — an answer phrased in generic words is invisible to any check, and claiming otherwise repeats Learning-015's failure in a new place).
 ---

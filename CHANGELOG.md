@@ -6,7 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Added
+
+- **`.github/scripts/check_item_findings.py`, wired into CI as the ninth guard.** Every closed roadmap item must state, on one line, the finding ids it queued or that it queued none — and every id it names must exist in the queue. `check_future_actions.py` enforced the half of this rule with a fixed form and its docstring recorded why it stopped: findings parked in roadmap prose are "the larger half of the same leak" with "no mechanical form". That is true of *detecting* a finding inside prose, which is why guards built on classifying prose were rejected twice here. Requiring the declaration instead does have a form — an omission is invisible, a missing required line is exact. It found a real gap on its first run against the pre-fix tree, which is now `OF-18`.
+
 ### Changed
+
+- **A closed item now declares what it left behind, and a machine holds you to it.** `.kenovis/AI/policies/documentation.md` (2.9 → 3.0) → "A Finding Is Fixed, Scheduled, Or Rejected", `.kenovis/AI/commands/next.md` (2.3 → 2.4) Step 15, `.kenovis/AI/templates/product-layer/PRODUCT/ROADMAP.md` (1.4 → 1.5). The rule that a finding gets a disposition, and the ordering that puts dispositions before the closing summary, were both already written and both already loaded — and a round still found three things, queued none, and wrote two into a session summary nothing later reads. Ordering alone was the only defence and it had failed more than once. A round that found nothing now writes "none" and is done; a round that skipped the queue has to write "none" and be wrong on the record, rather than staying silent. Your Installation gets the rule in its roadmap template on sync; the guard behind it stays in this repository until `kenovis check` ships.
 
 - **A changelog now archives its own released sections, and the rule says what "closed" means for one.** `.kenovis/AI/policies/documentation.md` (2.8 → 2.9) → "Closed Work Is Archived, Not Kept Inline". The archive rule named `PRODUCT/ROADMAP-ARCHIVE.md` and `AI/memory/LEARNINGS-ARCHIVE.md` and stopped there, so `CHANGELOG.md` sat over the 60 KB lifecycle threshold on an exemption pointing at an unscheduled finding rather than at work. The gap was in the rule, not the file: every released section is closed the moment it ships, so archiving on "closed" alone would leave a changelog holding nothing but `[Unreleased]` — useless to the one reader it has, someone deciding whether to upgrade. The rule now keeps `[Unreleased]` plus the two most recent released versions inline, archives the rest verbatim, and runs the trim as a step of cutting a release instead of as cleanup somebody notices late.
 
