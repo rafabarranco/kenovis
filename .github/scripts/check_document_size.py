@@ -26,9 +26,16 @@ Learning-022:
     actually being used, or whether the named item is progressing. An exemption
     that nobody ever closes passes forever -- which is why each one prints.
 
+Framework-layer home: not yet dispositioned. PRODUCT/ROADMAP.md item 37 works
+the guards one at a time and this one is outstanding. Until it names a home or
+records that its rule has no Framework-layer form, this check protects this
+repository only.
+
 Scope: this repository's CI only. The bundle ships `.kenovis/AI/`, not
-`.github/`, so an Installation carries the rule as an instruction until
-`kenovis check` ships (PRODUCT/ROADMAP.md item 25).
+`.github/`, so an Installation carries the rule as an instruction with no guard
+behind it. An earlier version of this paragraph said that lasted "until
+`kenovis check` ships (PRODUCT/ROADMAP.md item 25)"; item 25 is rejected and
+`kenovis check` will not ship (DECISIONS.md DECISION-026).
 """
 
 import sys

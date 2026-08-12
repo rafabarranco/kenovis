@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.54
+Version: 1.55
 ---
 Purpose
 
@@ -339,7 +339,28 @@ The test each one has to pass, from DECISION-026: **does this change reach a cus
 
 Validated when: each of the ten has a recorded disposition — Framework-layer home named, or no-form recorded with the reason — and no round can add a guard again without stating its Framework-layer half.
 
-Findings this item did not fix: none — the guard-count drift above is corrected in place rather than queued, and the underlying misdirection is DECISION-026, not a finding.
+Progress — round 1 (2026-08-13, via /next): the mechanism, plus the two guards the ordering constraint puts first.
+
+Where a disposition lives, decided here rather than assumed: **the guard's own module docstring**, on a `Framework-layer home:` line. A separate register — a table in `ENGINEERING/`, or in this item — would be a second copy of a fact that changes whenever a guard changes, and it would drift from the scripts, which is Learning-023's shape. `ENGINEERING/ARCHITECTURE.md` (1.5 → 1.6) → "CI Guards Are A Local Net, And Each One Names Its Framework-Layer Home" states the convention and points at the scripts; it deliberately does not restate the ten dispositions.
+
+The rule itself went to the Framework layer, which is the item's whole point: `.kenovis/AI/policies/testing.md` (2.2 → 2.3) → "A Guard Belongs Where The Work Is Loaded". Agents load it per task and `sync` delivers it, so it passes DECISION-026's own test — a table in `.github/` would not, in the round that shipped that test.
+
+Dispositioned, each verified against the files it names rather than off this item's text:
+
+- `check_item_findings` → `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"; `commands/next.md` Step 15; `templates/product-layer/PRODUCT/ROADMAP.md` → "Open Findings".
+- `check_future_actions` → the `Future action:` clause of that same policy section; `templates/product-layer/AI/memory/learnings.md` → "Learning Format".
+
+Both needed no rule written — their Framework-layer halves already existed and the work was recording them. That is exactly what the ordering constraint selected for, and it means the remaining eight are larger than these two rather than the same size. Do not read this round's cost as the per-guard cost.
+
+The other eight now carry `Framework-layer home: not yet dispositioned` in their own docstrings instead of nothing, so the population is visible where a guard is edited and none can be silently missing the field. Two state an expected outcome — `check_links` and `check_changelog`, both expected to end as "no Framework-layer form" — which is a prediction recorded so it can be checked, not a disposition.
+
+No eleventh guard was added to enforce the `Framework-layer home:` field. It would fail DECISION-026's test in the round that shipped that test, and OF-21 forbids it explicitly until this item runs.
+
+Also corrected, because it was found while reading the docstrings: four guards (`check_document_size`, `check_future_actions`, `check_item_findings`, `check_learning_promotions`) cited item 25 — rejected on 2026-08-12 — as the work that would eventually reach a customer. Each read as scheduled and was not. The instances are fixed; the class is **OF-22**.
+
+Remaining, in the order this item sets: `check_markers`, `check_artifact_destinations`, `check_template_refs`, `check_decision_index`, `check_document_size`, `check_learning_promotions`, then `check_links` and `check_changelog` last.
+
+Findings this item did not fix: **OF-22** and **OF-23**. The guard-count drift above is corrected in place rather than queued, and the underlying misdirection is DECISION-026, not a finding.
 
 38. SCHEDULED — `sync` names what it removed from `.kenovis/`. Closes OF-01.
 
@@ -353,9 +374,13 @@ Dependency: none. First item to test DECISION-026 in the direction it is hardest
 
 Findings this item did not fix: none.
 
-Next (updated 2026-08-12, after DECISION-026): **item 37**, and it is not a close call — the founder flagged it maximum priority and it changes what every other item on this document is allowed to produce.
+Next (updated 2026-08-13, after item 37's first round): **item 37, round 2** — `check_markers`, then `check_artifact_destinations`, then `check_template_refs`, one at a time as the item requires.
 
-Take it before item 24, before OF-14, before a release. The reason is not that those are unimportant; it is that until item 37 runs, a round can still close work by improving this repository instead of the product, which is what the last four rounds did while recording that they should not. Every item below it inherits the DECISION-026 test — *does this reach a customer's next task without anyone doing anything?* — and item 37 is what makes that test answerable per rule rather than per round.
+The mechanism now exists and the pattern is set, so round 2 is the first real test of it: unlike the two guards round 1 dispositioned, these three have no Framework-layer half written yet, so each one either produces a rule in `.kenovis/AI/` or a recorded no-form. That is where the item's actual cost lives, and round 1 deliberately did not sample it.
+
+**OF-23** is the cheapest thing on the board and should be taken alongside round 2 if round 2 runs short: this document is 72.1 KB against a 60 KB threshold, its guard will never say so, and the archive pass that fixes it has a written procedure that has been run twice.
+
+Still ahead of item 24, OF-14 and a release, for the reason that has not changed: until item 37 completes, a round can still close work by improving this repository instead of the product, which is what four consecutive rounds did while recording that they should not. Every item below it inherits the DECISION-026 test — *does this reach a customer's next task without anyone doing anything?*
 
 **Item 24** is next after it, unchanged and still the only unmet criterion from item 18: run it from a session that has read the decision index and not the bodies, with the observation coming from an agent that did not author the instruction. OF-02 or OF-03 is its cheapest vehicle.
 
@@ -403,6 +428,10 @@ First pass, 2026-08-12, over the 13 parked findings in this document and the sta
 | OF-20 | A Claude Code hook (`Stop`/`PreToolUse`) was proposed in the same session as the layer that would fire in-thread rather than at merge time, and abandoned when DECISION-026 redirected the work — without a disposition. | This session, 2026-08-12 | **Rejected.** It fails DECISION-010 before it reaches DECISION-026: a hook is one tool's configuration, and everything under `.kenovis/AI/` stays tool-agnostic plain markdown so any model or client can enter through `SYSTEM.md`. It also lives in local settings, not in the bundle, so it would repeat exactly the `.github/` mistake in a newer place. Recorded so it is not re-proposed the next time someone wants enforcement that fires earlier than CI. |
 
 | OF-21 | `check_item_findings.py` binds its population to closed items, but findings are round-scoped, not item-scoped. The two findings this session missed — OF-19, born inside DECISION-026's body as evidence for rejecting an option, and OF-20, born in conversation as a proposal that was dropped — were both structurally invisible to it: neither was attached to a closing item. The guard shipped in item 36 cannot catch the class of miss that produced it. | This session, 2026-08-12, founder-raised | **Open.** Two distinct mechanisms, both confirmed by example rather than reasoned: (1) a fact used as *evidence* inside a decision body stops reading as a finding, because it was already written down and already served a purpose — `policies/documentation.md` already forbids exactly this and it still happened, in the decision written about it; (2) a round audits what it *did* and not what it *proposed and dropped*, so a rejected option leaves no record and gets re-proposed. Priority: Pain high (it is the same leak, one layer out, and today's fix does not reach it), Frequency high, Cost unknown — the first output is deciding whether the declaration should be round-scoped instead of item-scoped, which changes the guard's population rather than adding a guard. Do not add an eleventh guard for it before item 37 runs; see DECISION-026 and OF-19. |
+
+| OF-22 | A rejected roadmap item stays cited elsewhere in the tree as the plan that closes a gap. Item 25 (`kenovis check`) was rejected on 2026-08-12; four guard docstrings kept naming it as what would eventually reach a customer, and read as scheduled for a full round afterwards. Nothing detects it — `check_links.py` sees no link, and the citation is prose. | Item 37, 2026-08-13 | **Open.** The four instances are fixed in item 37's first round; the class is not. Two mechanisms worth separating before scoping: a rejection is written into the item in `PRODUCT/ROADMAP.md` and nothing walks the tree for inbound references to it, and a citation of the form "`PRODUCT/ROADMAP.md` item N" asserts nothing about item N's status, so it cannot be wrong on its face. Priority: Pain medium — a dead plan reading as a live one is precisely what item 27 exists to prevent, and here it survived inside the guards that enforce item 27. Frequency low-medium (rejections are rare; item 25 is the first). Cost unknown; the first output is deciding whether the inbound reference or the rejection carries the check. Do not add an eleventh guard for it before item 37 completes — see DECISION-026 and OF-21. |
+
+| OF-23 | `PRODUCT/ROADMAP.md` is over the 60 KB lifecycle threshold — **72107 bytes (70.4 KB)** read off the file with `wc -c PRODUCT/ROADMAP.md` on 2026-08-13, at a stated point: after item 37's progress block and before this row and OF-22 were written. No end-of-round figure is given, because this row is inside the file it measures and every correction to the number changes it — the anchor is the measurement point, not a total. Item 34 left the file at 46866 bytes on 2026-08-12 having just run the archive pass, so it gained **25,241 bytes in one day** across items 35, 36, 37, OF-19/20/21 and this round's item-37 block. `check_document_size.py` passes it and always will: `PRODUCT/ROADMAP.md` is registered with a permanent `split`, and a registered split satisfies the guard at any size. | Item 37 round 1, 2026-08-13 | **Open.** The guard is not wrong — the split is the correct structural answer and item 19 built it. What has no trigger is *running* the pass: a split satisfies the rule once and forever, so the document that item 19 archived is free to grow back past threshold with a clean CI. Items 35 and 36 are DONE with inline narratives and are the obvious next candidates. Not fixed here because an archive pass carries its own byte-substring integrity procedure (items 34 and 35 both ran it) and folding it into item 37's round would put two unrelated changes in one commit — OF-18's shape. Priority: Pain medium (this file is on the session-initialization path and every `/next` reads it whole), Frequency high (every round appends to it), Cost low and known — the pass has been run twice with a written procedure. Cheapest work on the board after item 37. |
 
 Findings closed by disposition and kept here so they are not re-proposed: a CI guard asserting this repository's Product layer stays free of `[ANSWER:` markers (**Rejected**, item 6 — it would pass trivially and forever, and the real risk is a question written with a plain bracket, which no pattern separates from a legitimate survivor); a CI guard detecting an inherited answer in an authored Product-layer document (**Rejected**, item 8 — an answer phrased in generic words is invisible to any check, and claiming otherwise repeats Learning-015's failure in a new place).
 ---

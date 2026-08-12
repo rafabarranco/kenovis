@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Verify every relative markdown link in the repo resolves to a real file."""
+"""Verify every relative markdown link in the repo resolves to a real file.
+
+Framework-layer home: not yet dispositioned, and expected to end as "no
+Framework-layer form" — a broken relative link is a filesystem fact with no
+judgement in it, and "do not write links that do not resolve" is not a rule an
+agent needs told. PRODUCT/ROADMAP.md item 37 orders this guard last for that
+reason and records the outcome either way.
+"""
 
 import re
 import sys

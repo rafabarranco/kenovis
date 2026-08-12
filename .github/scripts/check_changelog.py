@@ -6,6 +6,12 @@ Per CONTRIBUTING.md -> "Framework Definition of Done": a PR that touches
 title/description contains "[skip changelog]" (reserved for wording/typo
 edits that don't change behavior). Only runs on pull_request events — a
 push to a protected branch has already been through this check on its PR.
+
+Framework-layer home: not yet dispositioned, and expected to end as "no
+Framework-layer form" — the rule is about this repository's own contribution
+process, and pull requests are a hosting platform's concept rather than
+anything an AI-OS operates on. PRODUCT/ROADMAP.md item 37 orders this guard
+last for that reason and records the outcome either way.
 """
 
 import json

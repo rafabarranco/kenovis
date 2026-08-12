@@ -4,7 +4,7 @@ ARCHITECTURE.md
 
 Software Architecture
 
-Version: 1.5
+Version: 1.6
 ---
 Purpose
 
@@ -95,6 +95,18 @@ Hard Rules (No Exceptions)
 - The CLI must write the Framework layer under `.kenovis/` in the target repository (`.kenovis/AI/`, `.kenovis/README.md`), never at repo root — except `CLAUDE.md` (stub loading `.kenovis/AI/SYSTEM.md`) and `.claude/`, which stay at repo root because Claude Code requires it. The CLI must never overwrite, append to, or otherwise touch the target repository's own existing `README.md`, and must never fabricate one if none exists. See DECISIONS.md DECISION-017.
 - The CLI must never shell out to an AI tool's binary (`claude` or otherwise) to auto-run `/init-project` or `/adopt-project`. Auto-triggering those commands is achieved only through the `CLAUDE.md` stub's content (parametrized by pending/steady-state) and the `.kenovis/.setup-pending` marker file — both plain, tool-agnostic filesystem artifacts, never a spawned external process. See DECISIONS.md DECISION-018.
 - Exception to the rule above: this repository's own root `README.md` and root `CLAUDE.md` are never written or overwritten by `kenovis init`/`add`/`sync`, even if one of those commands is ever run against this repository's own working tree. Both stay hand-authored at repo root — this repository is the Framework layer's origin and its own dogfooded product simultaneously, not a generic Installation, and its root README/CLAUDE.md carry real content (public landing page; repo-specific Role/Layers/Source-Of-Truth/graphify prose) a generated stub would discard. Only `.kenovis/AI/agents/`, `.kenovis/AI/workflows/`, `.kenovis/AI/policies/`, `.kenovis/AI/commands/`, `.kenovis/AI/templates/`, `.kenovis/AI/SYSTEM.md` relocate to `.kenovis/AI/` for this repository. See DECISIONS.md DECISION-020.
+---
+CI Guards Are A Local Net, And Each One Names Its Framework-Layer Home
+
+`ls .github/scripts/check_*.py | wc -l` → **10** (2026-08-13). Guards a customer Installation runs: **0**. `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` and the customer README; `.github/` is not in the bundle, verified in PRODUCT/ROADMAP.md Phase 1 item 17.
+
+That split is correct and is not a gap to close by shipping the scripts. Per DECISIONS.md DECISION-026 and `.kenovis/AI/policies/testing.md` → "A Guard Belongs Where The Work Is Loaded", the rule is what travels: it lives in the policy, command, workflow, agent or template the AI loads to do the work, and `sync` delivers it. The script is this repository's own net over its own dogfooding.
+
+**Where a disposition lives: the guard's own module docstring**, on a `Framework-layer home:` line naming the policy section, command step or template that carries the rule — or recording that the rule has no Framework-layer form, and why. One location, read at the moment the guard is edited. A separate register would be a second copy of the same fact and would drift from the scripts within a round or two.
+
+A guard whose line reads `not yet dispositioned` is outstanding work under PRODUCT/ROADMAP.md item 37, which works them one at a time rather than as a sweep.
+
+Adding a guard without that line is the failure this section exists to stop: it is enforcement that ends at this repository's edge while reading as if it did not.
 ---
 Database
 
