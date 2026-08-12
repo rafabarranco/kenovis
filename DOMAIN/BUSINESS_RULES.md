@@ -4,7 +4,7 @@ BUSINESS_RULES.md
 
 Business Rules
 
-Version: 1.2
+Version: 1.3
 ---
 Purpose
 
@@ -63,6 +63,26 @@ Framework Release syncs must be reversible.
 Entities affected: Installation, Framework Release.
 
 Rule: A sync must never perform an in-place, non-version-controlled rewrite. The customer's own git history and PR review are the rollback mechanism — the CLI must produce a diff the customer can review and revert, not an irreversible overwrite.
+
+---
+
+### RULE-INST-03
+
+The AI-OS layer belongs to the AI-OS. A product neither owns it nor edits it.
+
+Entities affected: Installation, Framework Release.
+
+Rule: RULE-INST-01 states one direction — a sync never writes the customer's Product layer. This is the other, and until now it was only implied by the CLI's behaviour. `.kenovis/` is the AI-OS's own layer inside a customer's repository. The customer's product does not extend it, override it, or keep content there: a sync mirror-replaces that directory wholesale, so anything a product places inside it is transient by construction, not by accident.
+
+That is deliberate, and it is what makes the AI-OS the same team in every repository it is injected into. A per-product edit to the AI-OS layer would fork the team quietly, and the fork would disappear on the next sync anyway — the worst of both.
+
+A product's own knowledge has a place, and it is the Product layer: `COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/`. That is where the AI-OS records what it learns about the product it was injected into, and RULE-INST-01 protects it.
+
+Because the removal is correct but not obvious, a sync states what it removed from `.kenovis/`. Deleting is the rule working; deleting silently is the rule being unreadable.
+
+Example (valid): a customer records a house testing convention in `AI/memory/conventions.md`, which survives every sync. Example (invalid): the same convention appended to `.kenovis/AI/policies/testing.md`, which the next sync discards.
+
+**The exception, and it is exactly one repository.** In Kenovis's own repository the product *is* the AI-OS, so its Product layer holds what Kenovis has learned about itself, and it is the only Installation permitted to modify the AI-OS layer — because there, doing so *is* developing the product. Everywhere else that same edit is a fork with a countdown on it. See DECISIONS.md DECISION-020 and DECISION-026.
 
 ---
 
