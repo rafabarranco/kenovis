@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.11
+Version: 2.12
 
 Last updated: —
 
@@ -37,6 +37,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-022** ‡ — `[ANSWER: ...]` Is The Only Bracket Form That Means "Unanswered Question". Every other bracket form is content — a format specification, an example, a deliberate "nothing recorded yet" — and legitimately survives into an authored document.
 - **DECISION-023** ‡★ — The PROJECT-SPECIFIC Marker States Layer, Not State. Line 1 of a Product-layer file says which layer it belongs to and that `sync` never overwrites it, never that its content is placeholder.
 - **DECISION-024** ‡★ — A Template Is A Form, Never A Destination. No framework instruction may name a path under `.kenovis/` as a place to write, because `sync` mirror-replaces that directory wholesale.
+- **DECISION-025** ‡★ — A Finding Is Fixed, Scheduled, Or Rejected. A finding a round does not fix carries one of three dispositions, prose is not one of them, and `PRODUCT/ROADMAP.md` gains an `Open Findings` queue that `/next` Step 3 reads alongside the scheduled items.
 
 ---
 
@@ -44,7 +45,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 
 A decision log is product-specific. A customer Installation's log starts empty and accumulates that company's own decisions — see DECISION-021 and `.kenovis/AI/templates/product-layer/DECISIONS.md`. The index above is the structural exception: it ships in that template as an empty section, because a log without one cannot be read without being read whole.
 
-This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Fourteen of them are framework-level in effect and nine are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
+This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Fifteen of them are framework-level in effect and ten are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
 
 The framework-level list previously said "Eight", named eight, and claimed all eight were cited by ID inside the framework layer — four of them are not, while five decisions that are cited were missing. Corrected in the round that added DECISION-024 (`PRODUCT/ROADMAP.md` Phase 1 item 12), which had to edit this paragraph anyway; the citation counts were read off the tree with `grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI`, per `AI/memory/learnings.md` Learning-016.
 
@@ -2033,6 +2034,82 @@ Negative:
 - Nothing enforces this. A future instruction can name a template path as a destination again, and no check distinguishes that from a legitimate citation. Stated rather than papered over, per DECISION-022's own precedent.
 - `kenovis sync` still deletes anything a customer chooses to put under `.kenovis/` without naming what it removed. This decision removes every framework instruction that would lead them there; it does not make `sync` defensive, which is a separate change with its own design — recorded as a backlog finding in `PRODUCT/ROADMAP.md` Phase 1 item 12 rather than folded in here.
 - An Installation that already followed the old instruction has lost that artifact and cannot recover it from Kenovis. Its own `git history` is the only copy, which is the same recovery path RULE-INST-02 relies on elsewhere.
+
+---
+
+# DECISION-025
+
+# A Finding Is Fixed, Scheduled, Or Rejected — And The Roadmap Carries A Queue
+
+Date:
+
+2026-08-12
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+When the Open Findings queue has run for a full phase, or when it exceeds the size at which it stops being read — whichever comes first.
+
+---
+
+## Context
+
+The founder's observation, 2026-08-12: the AI-OS detects gaps and then leaves them in prose, so they are never planned and never resolved.
+
+Measured across this repository before the change: 13 findings parked in `PRODUCT/ROADMAP.md` narrative ("Backlog finding, left out of this item's scope", "Deliberately not built", "stays deferred"), 23 `Future action:` entries in `AI/memory/learnings.md` of which 5 named the roadmap, and the oldest open finding — `kenovis sync` never naming the paths it deletes — repeated in four consecutive rounds' closing paragraphs since 2026-08-09 without ever becoming an item.
+
+The structural cause: the framework has three sinks for knowledge — `DECISIONS.md` records *why*, `learnings.md` records the *lesson*, `PRODUCT/ROADMAP.md` records *what and when* — and every command routed findings to the first two. Only the third is read to decide what to do next. `commands/review.md` and `workflows/review.md` explicitly sent a deferred improvement to `DECISIONS.md`, which is correct for its reasoning and wrong as a queue: a well-documented deferral reads as closed.
+
+`commands/analyze.md` made it worse by contradicting itself — Step 9 required recording the residue in the roadmap while "AI Responsibilities" forbade modifying files, so the one command whose entire purpose is detection could not record what it detected.
+
+---
+
+## Options Considered
+
+**Option A — leave it to discipline.** Each round is already expected to write good closing prose. Rejected: four rounds of evidence say prose is where findings go to die, and the failure is invisible precisely because the prose is good.
+
+**Option B — every finding becomes a scheduled roadmap item.** Rejected: it turns the roadmap into a dumping ground and makes the priority order meaningless. Most findings should not become work; what they need is a recorded decision that they will not.
+
+**Option C — three dispositions, and a queue that is not the item list.** A finding is fixed, scheduled with an id, or rejected with a reason. Findings that are neither fixed nor rejected live in an `Open Findings` queue — separate from scheduled items, because a scheduled item is dimensioned work and a finding is not — and `/next` reads both when choosing an objective.
+
+---
+
+## Decision
+
+Adopt Option C.
+
+- `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" states the rule once. **Being described in prose is not a disposition.** Rejection is first-class.
+- The rule is cited from every instruction that can produce a finding: `commands/analyze.md`, `bug.md`, `review.md`, `feature.md`, `next.md`, `architect.md`, `workflows/review.md`, `workflows/hotfix.md`.
+- `PRODUCT/ROADMAP.md` gains an `Open Findings` section, shipped in the Product-layer template so every Installation starts with it. `commands/next.md` Step 3 reads it alongside the scheduled items.
+- `AI/memory/learnings.md`: every `Future action:` cites an id or states that no work is implied. `.github/scripts/check_future_actions.py` enforces it in CI.
+- `commands/analyze.md`'s prohibition is corrected to forbid implementing rather than recording.
+
+---
+
+## Reason
+
+The queue is the smallest structure that makes the failure impossible to reach by accident. A finding with an id and a disposition can be wrong, deprioritised or rejected — all recoverable states. A finding in prose has no state at all.
+
+Separating the queue from the item list preserves what the roadmap is for. Items stay dimensioned work in priority order; the queue holds candidates that have not earned that yet, and the priority formula decides when one graduates.
+
+---
+
+## Consequences
+
+Positive:
+
+Every round can be asked a question it previously could not answer: what happened to each thing you found? The queue makes an unresolved finding visible at the moment `/next` chooses work, rather than at the moment someone happens to re-read a closed item's narrative. Rejection being first-class means the queue does not grow monotonically.
+
+Negative:
+
+The queue is another append-only document in a repository whose per-session context is already the subject of this priority block — it must stay a table of one-line entries, and it falls under whatever lifecycle rule item 21 writes. The disposition rule is also mostly unenforceable: only the `Future action:` half has a mechanical guard, because detecting a finding inside prose has no pattern (Learning-015). And that guard, like every other, runs in this repository's CI and not in any Installation until `kenovis check` ships (item 25).
 
 ---
 

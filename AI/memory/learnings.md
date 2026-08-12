@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.11
+Version: 1.12
 ---
 Scope
 
@@ -151,6 +151,8 @@ An item's premise about a file's contents is a claim, not context. Verify it whi
 Future action:
 Items 19-23 of this block carry the same kind of premise: "the 17 DONE items are the bulk of this file's 124.9 KB" (item 19), "the policy has no rule about size, splitting, archiving or retirement" (item 21), "the index already exists at the head" (item 22, inherited from item 18 and now true because item 18 made it so). Check each against the file before scoping that item's work, and correct the item in place when it is wrong, as this round did.
 
+Disposition: OF-04 — verify items 19-23's structural premises at the start of each item rather than as its own round.
+
 ---
 Example: Process — an exact population, of the wrong question
 
@@ -185,6 +187,8 @@ A guard should also state which of its parts is exact and which is a heuristic. 
 
 Future action:
 `/architect` remains unrun from a real published Installation; five for five have surfaced a maximal-Pain defect. `/release` should be added back to that list — [[Learning-021]] dropped it after item 14 fixed its Step 8, but fixing one step is not executing the command. When adding a CI guard, state in the script what population it enumerates and what question that population answers, so the next round can check the question rather than re-verify the answer.
+
+Disposition: OF-02 and OF-03. The guard-writing rule (state the population and the question it answers) is a standing rule, already followed by `check_decision_index.py`; candidate for promotion by item 20.
 
 ---
 Example: Process — the fix's scope was set by the grep that found the bug
@@ -221,6 +225,8 @@ That is the difference from the case [[Learning-015]] settled, where no guard wa
 Future action:
 Run the remaining post-setup commands — `/review`, `/architect` — from a real published Installation, one per round; four for four have surfaced a maximal-Pain defect. When a round fixes N instances found by a search, state in the change what population was checked and how, not just what was fixed. And when a check can be written, write it in the same round: this defect had a fix, a decision and a learning behind it, and still shipped, because none of the three was executable.
 
+Disposition: OF-02 and OF-03. The counting rule it adds is a standing rule; candidate for promotion by item 20.
+
 ---
 Example: Process — an instruction was never executed in the place it was written for
 
@@ -252,6 +258,8 @@ A framework that is *installed* has two execution environments, and its own repo
 Future action:
 Run each remaining post-setup workflow — `/bug`, `/review`, `/release`, `/architect` — from a real published Installation, one per round, before assuming it works. When an instruction tells an agent to produce an artifact, name three things separately: what is produced, where its durable residue is recorded, and which form shapes it; never let one path stand for two of them ([[DECISION-024]]). And when a distribution mechanism changes — as `.kenovis/` packaging did — re-read the instructions that write files against it, because that is the class of change that turns correct prose into a destructive command without editing a word of it.
 
+Disposition: OF-02 and OF-03 — `/architect` and `/release` still unrun from a real published Installation. The rest of this future action (name the destination when an instruction produces an artifact) shipped in items 12, 14 and 16 and is now enforced by `check_artifact_destinations.py`.
+
 ---
 Example: Architecture
 
@@ -280,6 +288,8 @@ External services should be hidden behind interfaces.
 
 Future action:
 Use adapters for external integrations.
+
+Disposition: No work implied — a standing engineering rule. Candidate for promotion into `.kenovis/AI/policies/architecture.md` by item 20.
 
 ---
 Example: Process — an unverified cost estimate is a decision, and it was made by nobody
@@ -310,6 +320,8 @@ An unverified claim in a backlog note is a decision made by whoever was tired at
 Future action:
 When deferring an item, either verify the cost or say it is unverified — and when the note names a specific mechanism as the reason something is expensive ("X matches on this string", "Y depends on this file"), check that claim before writing it, because it is the load-bearing part. When picking up any deferred item, re-derive its cost before ranking it rather than trusting the note; one grep is cheaper than a round of wrong prioritisation. Item 8's original note is left visible in `PRODUCT/ROADMAP.md` with the correction beneath it, rather than rewritten, so the mis-estimate stays legible as the finding.
 
+Disposition: No work implied as a rule, and the specific check it asks for is OF-04 — items 19-23's own premises are verified at the start of each item.
+
 ---
 Example: Project — a count without its scope is unverifiable, even when it is right
 
@@ -338,6 +350,8 @@ Verifying a count requires reproducing its scope, and a scope stated only in pro
 
 Future action:
 State the command alongside the count, not the scope in words. Write "net +11 across `ENGINEERING/SECURITY.md`, `AUTOMATIONS/release-process.md`, `AUTOMATIONS/user-feedback.md` (5 → 9, 6 → 11, 1 → 3)" rather than "eleven across the three files" — the per-file transitions are self-checking and name their own scope. When a corpus-wide number disagrees with a scoped one, reconcile the difference before treating either as a defect; the difference is usually a file that belongs to one set and not the other. Item 9's roadmap entry records this reconciliation explicitly so the next release does not repeat the investigation.
+
+Disposition: No work implied — a standing rule about stating a count's scope. Candidate for promotion by item 20.
 
 ---
 Example: Project — a template that was derived by deletion kept the answers nobody deleted
@@ -368,6 +382,8 @@ A check that finds *unanswered* questions cannot find *wrongly answered* ones, a
 Future action:
 When deriving a template from a real document, the passing condition is not "the questions are marked" but "no sentence in this file is true of only one product." Read every section that was not rewritten and ask whether it would survive a product with the opposite shape — no database, no users, no published artifact. `.kenovis/AI/templates/product-layer/README.md` → "How a template goes wrong, and how to see it" carries the two questions and a starting grep. Both commands' Verify now say to read back what came over verbatim, and `/adopt-project`'s contrast check extends to `AUTOMATIONS/` — where two of these three were. None of that is a gate; no pattern distinguishes an inherited answer from a legitimate one, which is why the rule is stated as a reading discipline and the limitation is written down rather than papered over.
 
+Disposition: No work implied — a standing rule about deriving templates. Candidate for promotion by item 20.
+
 ---
 Example: Project — the round that fixed an unexecuted check shipped an uncounted count
 
@@ -396,6 +412,8 @@ This is [[Learning-015]] one round later in a different costume. There the unver
 
 Future action:
 Any count in a changelog, decision or roadmap entry (files touched, instructions converted, tests added) gets read off the artifact with the command that produces it, in the same round, and that command goes in the entry: `git show --stat <commit> -- <path>`, `grep -rc`, the test runner's own total. If the number is not worth one command, do not state it — "several templates" is honest and costs nothing. When a published number turns out wrong, correct it where it was published (including the GitHub Release notes) and say it was corrected, per DECISION-009's discipline: the trail is the point, the same way DECISION-015 → DECISION-016 was kept rather than rewritten.
+
+Disposition: No work implied — a standing rule about counts. Candidate for promotion by item 20.
 
 ---
 Example: Project — a verification step that has never been run against a passing case
@@ -426,6 +444,8 @@ A verification step needs its passing case exercised at least as much as its fai
 Future action:
 When a framework command introduces a mechanical check, run it against this repository's own Product layer in the same round and record the result in the change. Zero matches on a known-good corpus is the acceptance criterion; anything else means the check is measuring something other than what its prose claims — and if the framework's own documentation of the check is itself inside the scanned corpus, say so explicitly rather than quietly reporting a number that excludes it. That happened here: this repository's Product layer matches ten times on prose describing the marker, which is the Learning-009 self-referential case again, not a defect. This applies to any grep, marker convention or CI script the framework asks an agent to run — see [[DECISION-022]] for the case that produced this rule, and Learning-014 for the adjacent failure mode (a document, rather than a check, that was never re-read against the world it now runs in).
 
+Disposition: No work implied — a standing rule about mechanical checks. Candidate for promotion into `.kenovis/AI/policies/documentation.md` by item 20.
+
 ---
 Example: Project — a command written for the old distribution mechanism keeps passing review because nobody re-reads it against the new one
 
@@ -455,6 +475,8 @@ When a change replaces how an artifact reaches its consumer, the artifact's own 
 Future action:
 When a decision changes the set of paths the CLI writes into a target repository — or stops writing one — walk `init-project.md` and `adopt-project.md` end to end against the resulting layout as part of that decision's own implementation, not as a follow-up. Concretely: after any change to `runInit`/`runAdd`/`runSync`'s written paths, re-read both commands' pre-flight checks, Steps and Completion Criteria and ask which of them assume a file the CLI no longer creates, or never did.
 
+Disposition: No work implied — a standing rule about CLI path changes. Candidate for promotion by item 20.
+
 Example: Project — ship the fact inside the artifact instead of tracking it alongside
 
 ## Learning-013
@@ -482,6 +504,8 @@ Before adding to a registry of special cases, ask whether the new fact belongs t
 
 Future action:
 When a new file must exist inside a mirrored/replaced directory, first try to make the bundle ship it. Only when the value genuinely cannot be known at build time (it depends on the target, like `.setup-pending`'s greenfield/brownfield result, or on what was written, like `.claude-md.sha256`) does it belong in `INSTALL_TIME_OWNED_ENTRIES`. Record the reasoning at the constant itself, so the next contributor sees why a given file is or is not a member.
+
+Disposition: No work implied — a standing rule about bundle-shipped facts. Candidate for promotion by item 20.
 
 ---
 Example: Project — the fix for branch drift is itself a source of branch drift
@@ -512,6 +536,8 @@ A promotion chain of protected branches merged with "Rebase and Merge" only cann
 Future action:
 Treat the content-sync branch as the *standard* promotion procedure for this repository, not an exceptional repair. Each release: verify the downstream tree is a strict older snapshot (`git diff origin/<downstream> <last-release-cut-commit>` empty, nothing unique downstream), then `git read-tree -u --reset origin/<upstream>` on a `sync/<downstream>-to-<upstream>-<version>` branch, confirm `git diff origin/<upstream> HEAD` is empty, PR and rebase-merge. `read-tree --reset` is the correct primitive — `git checkout <ref> -- .` does not delete files removed upstream, which matters whenever a release moves or retires paths (as the `.kenovis/` migration did).
 
+Disposition: No work implied — the content-sync promotion is now this repository's documented standard procedure, followed by every release since `0.5.0`. Candidate for promotion into `.kenovis/AI/policies/git.md` by item 20.
+
 ---
 Example: Project — a guard's own bookkeeping outlives the state it described
 
@@ -541,6 +567,8 @@ A guard that compares against recorded state has two obligations, not one: detec
 Future action:
 When adding a recorded-state guard, enumerate every writer of the guarded file, framework commands included, and give each an explicit update-or-invalidate step. Cheapest correct option is usually invalidate (delete the record) and let the next CLI run re-record it, rather than teaching a markdown command to compute a hash.
 
+Disposition: No work implied — a standing rule about recorded-state guards. Candidate for promotion by item 20.
+
 ---
 Example: Project — `sync` silently disarms the first-session auto-trigger it never installed
 
@@ -569,6 +597,8 @@ Pre-existing, not a regression from this round — but it means "mirror-replace"
 
 Future action:
 Backlog item, not fixed here (out of this migration's scope): `runSync` should preserve `.setup-pending` when it exists, and write the pending-form stub in that case, so syncing never advances an Installation past a setup it hasn't done. Verify against the smoke-test sequence above.
+
+Disposition: No work implied — closed by Phase 1 item 1.
 
 Closed 2026-08-07 via `/next` (ROADMAP Phase 1 item 1): `runSync` now does exactly that, and `INSTALL_TIME_OWNED_ENTRIES` (`cli/src/domain/installation.ts`) makes the general rule explicit — every CLI-written file inside `.kenovis/` is tagged `preserved` or `rewritten`, so the next one is not a third coincidence. Fixing it surfaced Learning-011, the same failure mode one layer up.
 
@@ -601,6 +631,8 @@ When a packaging/distribution rule is designed by reasoning about "the customer,
 Future action:
 See DECISIONS.md DECISION-020 — root `README.md`/`CLAUDE.md` are now a documented, standing exception for this repository specifically. When designing a future rule that treats "the framework" and "an Installation" as distinct parties, add a checklist item: does this repository's own dual nature (framework origin + dogfooded product) break the assumption?
 
+Disposition: No work implied — a standing rule about framework/Installation asymmetry. Candidate for promotion by item 20.
+
 ---
 Example: Project — a startsWith check only proves "not a foreign file," not "nothing appended"
 
@@ -629,6 +661,8 @@ When a "did we write this" check is a prefix/marker match rather than a full-con
 
 Future action:
 Closing this gap properly (e.g. hashing/diffing the stub's own known content against what's on disk, or requiring customer notes to live in a separate file) is scoped as a real backlog item, not silently fixed inside this round's work — see PRODUCT/ROADMAP.md Phase 0 item 6 follow-up. Until then, `cli/README.md` documents the limitation explicitly instead of overstating the guard's coverage.
+
+Disposition: No work implied — closed by Phase 1 item 7 (hash sidecar).
 
 Closed by Learning-008: a recorded content hash replaces the prefix check as the primary signal.
 
@@ -661,6 +695,8 @@ When replacing a weak "did we write this" check, ask what the new check's refere
 Future action:
 None — this closes Learning-007. The remaining, explicitly accepted gap: an Installation that has never run install/sync under this fix has no recorded hash yet, so its very next sync still relies on the prefix check for that one transition, same limitation as before. Documented in `cli/README.md`'s Upgrading section rather than silently assumed away.
 
+Disposition: OF-05 (Deferred) — the accepted residual gap: an Installation with no recorded hash relies on the prefix check for one transition, and self-heals on its first sync.
+
 ---
 Example: Project — a "forced" file-write path was never audited against a file the CLI doesn't fully own
 
@@ -689,6 +725,8 @@ Learning:
 
 Future action:
 When adding a new "CLI writes to a fixed, tool-owned path" pattern in the future, explicitly design the "what if something is already there and it isn't ours" case up front — do not let it wait for a follow-up `/analyze`. Cross-check new `--force`/overwrite code paths against existing ones (`sync`) for behavioral parity before shipping.
+
+Disposition: No work implied — a standing rule about fixed tool-owned paths. Candidate for promotion by item 20.
 
 ---
 Example: Project — an unrecognized CLI flag silently fell through to a real install against cwd
@@ -719,6 +757,8 @@ A catch-all "no subcommand means bare mode" dispatch needs its flag/help handlin
 Future action:
 When adding new bare-dispatch or mirror-whatever-you're-given CLI paths in the future, explicitly enumerate what should NOT reach that path (here: `--help`/`-h`) before wiring the fallback, rather than discovering the gap via smoke testing after the fact. `cli/src/cli/bin.ts`'s `main()` now checks `--help`/`-h` first, unconditionally.
 
+Disposition: No work implied — a standing CLI rule. Candidate for promotion into `.kenovis/AI/policies/coding.md` by item 20.
+
 ---
 Example: Project — `sync --source` mirrors whatever directory it's pointed at, unfiltered
 
@@ -747,6 +787,8 @@ An unvalidated "mirror this directory" flag will faithfully reproduce whatever l
 
 Future action:
 DECISIONS.md DECISION-017's Phase 2 (this repository migrates its own Framework layer into `.kenovis/` using the CLI's own sync mechanism on itself) must run `sync` against the built `dist/framework-assets/` bundle, never against the raw repo root — otherwise it will self-pollute `.kenovis/` with this repository's own Product-layer content. Consider adding a lightweight source-directory validation (e.g., reject a `--source` whose top level contains recognizably Product-layer names) before Phase 2 executes.
+
+Disposition: No work implied — closed by Phase 1 item 8, which ran the migration against the built bundle exactly as this says.
 
 Closed by `kenovis@0.2.0`: `invalidFrameworkSourceEntries`/`InvalidFrameworkSourceError` (`cli/src/domain/installation.ts`) validate `--source` before `init`/`sync` touch anything. Built as an allowlist of the known Framework-bundle shape (`AI/`, `README.md`) rather than the blocklist of Product-layer names suggested above — a blocklist would have been a name-based rule, and no name-based rule may ever apply to a target repository, which may legitimately contain any name at all (DECISION-016). Noted here because the closure was never recorded when it shipped.
 
@@ -780,6 +822,8 @@ When a business rule's own prose names the actual rollback mechanism (here: the 
 Future action:
 When Phase 2's diff-preview work starts, treat it as a UX/ergonomics layer on top of the existing mirror-replace `runSync`, not a rewrite of its core reversibility guarantee.
 
+Disposition: OF-09 (Deferred) — `sync` diff preview belongs to Phase 2 ergonomics. The rule about treating it as a layer over `runSync` is a standing rule; candidate for item 20.
+
 ---
 Example: Product
 
@@ -808,6 +852,8 @@ Users should reach the first valuable action as quickly as possible.
 
 Future action:
 Prioritize simple onboarding flows.
+
+Disposition: No work implied — a standing product rule. Candidate for promotion into `PRODUCT/` guidance by item 20.
 
 ---
 Learning Validation

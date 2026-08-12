@@ -6,6 +6,24 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Added
+
+
+- **`PRODUCT/ROADMAP.md` gains an `Open Findings` queue, shipped in the Product-layer template** (1.2 → 1.3) so every Installation starts with it. A scheduled item is dimensioned work; a finding is a candidate that is not. Four dispositions — Scheduled, Open, Deferred, Rejected — and `commands/next.md` Step 3 (2.2 → 2.3) reads the queue alongside the scheduled items, so an open finding competes on the priority formula instead of waiting to be remembered. See DECISION-025.
+
+- **`.github/scripts/check_future_actions.py`, wired into CI.** Most of the disposition rule cannot be checked by a machine — detecting a finding inside prose has no pattern (Learning-015). This is the part that can: `AI/memory/learnings.md` has fixed structure, so every `Future action:` must carry a `Disposition:` citing an id or stating that no work is implied. Confirmed to fail on the pre-sweep tree naming all 23 future actions.
+
+  Population exact and printed; classifier declared shallow — it cannot tell a correct disposition from a plausible one. It does not cover findings parked in roadmap prose, and says so. This repository's CI only, until `kenovis check` ships.
+
+
+- **`DECISIONS.md` gains a Decision Index**, and the Product-layer template ships the section empty so every Installation starts with it (`.kenovis/AI/templates/product-layer/DECISIONS.md` 1.1 → 1.2) instead of discovering the need for one at 100 KB. The item that scheduled this work assumed the index already existed; it did not — what sat at the head of the file listed fourteen of seventeen decisions by bare title. See `AI/memory/learnings.md` Learning-023.
+
+- **`.github/scripts/check_decision_index.py`, wired into CI** beside the three existing docs-integrity guards. Reading an index instead of a log is only safe while the index is complete: a decision body with no index line is invisible to every session that follows it. The check fails on a body without an index line, an index line without a body, a duplicate, or a line that states a title and little else. Confirmed to fail on the pre-change tree before being kept.
+
+  Per Learning-021 and Learning-022 the script states which of its parts is exact and which is not: the population — every `# DECISION-NNN` heading and every `- **DECISION-NNN**` index line — is exact and both counts print on every run; the substance test is a length heuristic and cannot tell a long empty line from a short useful one. Its scope is this repository only, because the bundle ships `.kenovis/AI/` and not `.github/` — a customer Installation carries the rule as an instruction with no guard behind it.
+
+- **`.kenovis/AI/policies/documentation.md` → "A Decision Is Not Recorded Until Its Index Line Exists"** (2.2 → 2.3): writing a decision body and writing its index line are one change, never two; the index line says what was settled and never why; superseding updates the index line and leaves the body in place.
+
 ### Changed
 
 - **A finding a round does not fix is now scheduled or rejected, never just described.** The framework had three sinks for knowledge — `DECISIONS.md` (why), `AI/memory/learnings.md` (lesson), `PRODUCT/ROADMAP.md` (what and when) — and every command routed findings to the first two. Only the third is read to decide what to do next. Nothing anywhere said that a finding implying work becomes a scheduled item, so findings landed in the narrative of whichever item was open, with no id, no priority and no life after that item closed.
@@ -21,16 +39,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
   `COMPANY_OS.md` and `.kenovis/AI/SYSTEM.md` stay full reads. `DECISIONS.md` is read as its Decision Index — one line per decision, stating what that decision settled. A body is opened on demand, and **citing a decision requires opening it**: the index says what was settled, never why, and a citation built on the index alone is a preference wearing a decision's ID.
 
   Stated in `.kenovis/AI/SYSTEM.md` → "Context Loading Rules" (1.4 → 1.5), `.kenovis/AI/commands/bootstrap.md` Step 2 (2.5 → 2.6), and this repository's own root `CLAUDE.md` (2.1 → 2.2). Two further sites told an agent to read the log rather than the index and were found by enumerating every read instruction rather than the three the item named (Learning-022's rule): `agents/database.md` (1.1 → 1.2), which sent a designer to the whole log for the engine and tenancy model, and `workflows/framework-review.md` (1.0 → 1.1), whose reading scope named DECISION-001/009/010 by number and now names the index's framework-level marks. Measured on the read path: this repository 138.2 KB → 22.2 KB (**-84%**); an Installation whose log has grown to the same size, 135.6 KB → 19.7 KB (-85%). A day-one Installation whose log is still the template saves 2.6 KB of 19.2 KB — the bound matters as the log accumulates, which is the point.
-
-### Added
-
-- **`DECISIONS.md` gains a Decision Index**, and the Product-layer template ships the section empty so every Installation starts with it (`.kenovis/AI/templates/product-layer/DECISIONS.md` 1.1 → 1.2) instead of discovering the need for one at 100 KB. The item that scheduled this work assumed the index already existed; it did not — what sat at the head of the file listed fourteen of seventeen decisions by bare title. See `AI/memory/learnings.md` Learning-023.
-
-- **`.github/scripts/check_decision_index.py`, wired into CI** beside the three existing docs-integrity guards. Reading an index instead of a log is only safe while the index is complete: a decision body with no index line is invisible to every session that follows it. The check fails on a body without an index line, an index line without a body, a duplicate, or a line that states a title and little else. Confirmed to fail on the pre-change tree before being kept.
-
-  Per Learning-021 and Learning-022 the script states which of its parts is exact and which is not: the population — every `# DECISION-NNN` heading and every `- **DECISION-NNN**` index line — is exact and both counts print on every run; the substance test is a length heuristic and cannot tell a long empty line from a short useful one. Its scope is this repository only, because the bundle ships `.kenovis/AI/` and not `.github/` — a customer Installation carries the rule as an instruction with no guard behind it.
-
-- **`.kenovis/AI/policies/documentation.md` → "A Decision Is Not Recorded Until Its Index Line Exists"** (2.2 → 2.3): writing a decision body and writing its index line are one change, never two; the index line says what was settled and never why; superseding updates the index line and leaves the body in place.
 
 ## [0.12.0] - 2026-08-10
 
