@@ -1,6 +1,6 @@
 # Framework Review Workflow
 
-Version: 1.0
+Version: 1.1
 
 ---
 
@@ -51,7 +51,7 @@ Read:
 README.md
 CONTRIBUTING.md
 CHANGELOG.md
-DECISIONS.md (framework-level entries only — DECISION-001, 009, 010, and any later ones marked framework-level)
+DECISIONS.md — its Decision Index, then the bodies of the entries the index marks framework-level. Not the product-specific ones, and not the whole log.
 ```
 
 Do not load product-layer content (`COMPANY_OS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`) — it is out of scope for this workflow.

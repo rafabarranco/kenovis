@@ -1,6 +1,6 @@
 # Feature Command
 
-Version: 2.2
+Version: 2.3
 
 ---
 
@@ -410,6 +410,8 @@ DECISIONS.md
 # Step 13 - Completion Report
 
 The summary is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. What survives was written in Step 12: `PRODUCT/FEATURES.md`, `DOMAIN/`, `ENGINEERING/` and `DECISIONS.md`.
+
+Anything this feature surfaced and deliberately left out of scope is scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason, before this report is written — "Out Of Scope" states what was excluded, not what happens to it. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 
 Generate summary:
 
