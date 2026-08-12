@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.38
+Version: 1.39
 ---
 Purpose
 
@@ -691,17 +691,17 @@ Ordering: with or after item 21, never before it. Item 21 decides what the lifec
 
 Validated when: `kenovis check` run inside a real published Installation catches a seeded violation of each rule it claims to cover, and is silent on a clean Installation.
 
-26. SCHEDULED (RB2) — `/analyze` is forbidden from doing what its own Step 9 requires.
+26. DONE (2026-08-12, via /analyze) (RB2) — `/analyze` is forbidden from doing what its own Step 9 requires.
 
 Problem: `commands/analyze.md` Step 9 says an analysis with a durable residue belongs in "a scheduled item in `PRODUCT/ROADMAP.md`". Sixty lines below, "AI Responsibilities" says **"AI must not: Modify files."** The command whose only job is to detect is forbidden from recording what it detects. Reproduced twice on 2026-08-12: the morning run wrote items 18-23 in violation of its own rule, and the afternoon run produced five recommendations and wrote nothing until the founder asked for them.
 
 Target: the prohibition carves out the residue Step 9 already mandates — the roadmap queue, `DECISIONS.md`, `AI/memory/learnings.md`. It keeps forbidding what it exists to forbid: implementation, fixes, invented requirements. `/analyze` records findings; it never fixes them.
 
-Blocks item 27, which `/analyze` cannot comply with while this stands.
+Shipped: `commands/analyze.md` (2.1 → 2.2) — the prohibition now names what it means to forbid (implementing, changing product code or documents to apply a finding, inventing requirements) and states the recording obligation beside it, pointing at item 27's rule. The command detects and records; it never fixes.
 
-Validated when: an `/analyze` run that finds something schedulable writes it to the queue in the same session, without being asked.
+Validated: the `/analyze` run that produced items 26-30 wrote the `Open Findings` queue and this block in the same session. Still to observe on a later run: that it does so **without being asked**, which this one was.
 
-27. SCHEDULED (RB1) — a finding that is not fixed is scheduled or rejected. Never just mentioned.
+27. DONE (2026-08-12, via /analyze) (RB1) — a finding that is not fixed is scheduled or rejected. Never just mentioned.
 
 Problem, and it is the root cause behind items 24-26 and behind this whole block needing a founder to ask for it: no framework instruction says a finding that implies work becomes a scheduled item. Commands say where the *artifact* goes (DECISION-024) and where the *lesson* goes (`learnings.md`). None says where the *pending work* goes. `commands/review.md` and `workflows/review.md` send a deferred improvement to `DECISIONS.md` — correct for the reasoning, wrong as a queue: nothing reads `DECISIONS.md` to decide what to do next, and a well-documented deferral reads as closed.
 
@@ -711,7 +711,11 @@ Target: every command that can produce a finding (`analyze`, `bug`, `review`, `f
 
 Stated in `.kenovis/AI/policies/documentation.md` once and cited from the commands, the shape item 14 established for the Collision Guard rather than repeating it eight times.
 
-Validated when: a round that finds something out of its scope closes with that finding carrying an id, and the closing summary can name the disposition of every finding it raised.
+Shipped: `.kenovis/AI/policies/documentation.md` (2.3 → 2.4) → "A Finding Is Fixed, Scheduled, Or Rejected", cited from `analyze.md`, `bug.md` Step 12, `review.md` Step 12, `feature.md` Step 13, `next.md` Step 15, `architect.md` Step 5, `workflows/review.md` Phase 10 and `workflows/hotfix.md`'s Final Principle — the shape item 14 established for the Collision Guard, stated once and cited, rather than repeated eight times. The learnings template (1.2 → 1.3) and this repository's own `learnings.md` (1.10 → 1.11) require a `Future action:` to cite an id or state that no work is implied.
+
+Deliberately not built here: the CI guard for it. Detecting "a finding" in prose is not mechanically possible (Learning-015), and the part that is — the `Future action:` field — would fail immediately against the 24 existing entries, none of which cite an id. That is item 30, and it is gated behind item 29's sweep.
+
+Validated: the guards pass and the rule is cited from all eight sites. Its real validation is behavioural and comes from the next rounds — a round that finds something out of its scope must close with that finding carrying an id, and its summary must be able to name the disposition of every finding it raised.
 
 28. SCHEDULED (RB3) — the roadmap carries a findings queue, not only phase narrative.
 

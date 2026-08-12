@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.3
+Version: 2.4
 
 ---
 
@@ -347,6 +347,31 @@ Major Decision
 Update DECISIONS.md
 
 Never leave documentation outdated after implementation.
+
+---
+
+# A Finding Is Fixed, Scheduled, Or Rejected
+
+A round finds more than it fixes. That is healthy — a round that only ever found what it had budgeted for would not be looking.
+
+What is not healthy is the third outcome: a finding described in the narrative of the item that was open at the time, with no id, no priority and no owner. It reads as handled. It is not. Once that item closes, and certainly once it is archived, the finding exists only in prose that nothing reads to decide what to do next.
+
+So every finding a round does not fix gets exactly one disposition, stated where the round's work is recorded:
+
+**Fixed** — done in this round. Say so, with the evidence.
+
+**Scheduled** — it becomes an entry with an id in `PRODUCT/ROADMAP.md`: the finding, its source, and enough of its shape to be picked up by someone with less context than the person who wrote it. A scheduled item and a queued finding are different things — a scheduled item is dimensioned work, a queued finding is a candidate that is not dimensioned yet — and both live in that document.
+
+**Rejected** — decided against, with the reason, recorded so it is not proposed again. This is a first-class outcome, not a failure. Most findings should not become work.
+
+**Being described in prose is not a disposition.**
+
+Two rules that follow from this, because both failure modes have already happened:
+
+- A deferred improvement is a decision, so its reasoning goes to `DECISIONS.md` — and its *work* still needs a disposition. `DECISIONS.md` records why something was not done; it is not a queue, and nothing reads it to choose the next objective.
+- A `Future action:` in `AI/memory/learnings.md` either cites the id of a queued or scheduled entry, or states that no work is implied. A future action naming work that exists nowhere else is the same defect wearing a different field name.
+
+When a round closes, it must be able to name the disposition of every finding it raised.
 
 ---
 

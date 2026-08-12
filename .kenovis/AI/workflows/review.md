@@ -1,6 +1,6 @@
 # Code Review Workflow
 
-Version: 2.3
+Version: 2.4
 
 ---
 
@@ -242,7 +242,7 @@ Check:
 
 # Phase 10 - Final Review Result
 
-The result is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024. Phase 9 names what survives: `PRODUCT/`, `DOMAIN/`, `ENGINEERING/` and `AI/memory/`. A required improvement that is deferred rather than made is a decision, and belongs in `DECISIONS.md`.
+The result is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024. Phase 9 names what survives: `PRODUCT/`, `DOMAIN/`, `ENGINEERING/` and `AI/memory/`. A required improvement that is deferred rather than made is a decision, and belongs in `DECISIONS.md` — and its *work* still needs a disposition, scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 
 Generate result:
 

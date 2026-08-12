@@ -1,6 +1,6 @@
 # Architect Command
 
-Version: 2.2
+Version: 2.3
 
 ---
 
@@ -177,6 +177,8 @@ Do not design in isolation.
 # Step 5 - Generate Options
 
 The options are presented to the human in this session; they are not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. What survives is the chosen option and the reasoning behind the rejected ones, recorded as the ADR in Step 8.
+
+A rejected option is disposed of by the ADR itself. Work the analysis surfaced that the chosen option does not cover is not — that gets scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason, before Step 8 closes. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 
 Create multiple possible solutions.
 
