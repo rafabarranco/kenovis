@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.2
+Version: 2.3
 
 ---
 
@@ -85,6 +85,8 @@ Understand:
 ---
 
 # Step 3 - Identify Next Objective
+
+Read both inputs, not one: the scheduled items, and `PRODUCT/ROADMAP.md` → "Open Findings", the queue of findings earlier rounds did not fix. A finding carrying `Open` competes here on the same priority formula as a scheduled item — that is the whole reason the queue exists, and skipping it is how a known problem stays unresolved for months while rounds pick from the items that happen to be written up.
 
 Determine:
 

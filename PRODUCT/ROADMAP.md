@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.39
+Version: 1.40
 ---
 Purpose
 
@@ -717,7 +717,7 @@ Deliberately not built here: the CI guard for it. Detecting "a finding" in prose
 
 Validated: the guards pass and the rule is cited from all eight sites. Its real validation is behavioural and comes from the next rounds — a round that finds something out of its scope must close with that finding carrying an id, and its summary must be able to name the disposition of every finding it raised.
 
-28. SCHEDULED (RB3) — the roadmap carries a findings queue, not only phase narrative.
+28. DONE (2026-08-12, via /analyze) (RB3) — the roadmap carries a findings queue, not only phase narrative.
 
 Problem: a scheduled item is dimensioned work; a finding is an undimensioned candidate. The framework's roadmap has a place for the first and none for the second, so findings land in the narrative of whichever item was open when they were found — where they have no id, no priority score, and no existence once that item closes.
 
@@ -725,23 +725,23 @@ Target: an `Open Findings` section in `PRODUCT/ROADMAP.md` — id, source round,
 
 This repository's own queue was authored on 2026-08-12 in the same session that scheduled this item, below the block, so the triage was not blocked on the framework change. This item is the framework half: template, `/next` Step 3, and the policy rule.
 
-Requires a `DECISIONS.md` entry (mechanics change reaching every Installation, DECISION-011). No ADR expected beyond that — it adds a section to a document, it does not change how the CLI or `sync` behave.
+Shipped: `.kenovis/AI/templates/product-layer/PRODUCT/ROADMAP.md` (1.2 → 1.3) carries the `Open Findings` section — the four dispositions, the table format, and a "no findings recorded yet" statement rather than an invented example row. `commands/next.md` Step 3 (2.2 → 2.3) reads the queue alongside the scheduled items, so an `Open` finding competes on the same priority formula instead of waiting to be remembered. DECISION-025 records the decision and its negative consequences; `DECISIONS.md` 2.11 → 2.12, fifteen framework-level entries now, ten cited by ID.
 
-Validated when: a fresh Installation's `PRODUCT/ROADMAP.md` template carries the section, and a `/next` run cites the queue as an input to its choice of objective.
+Validated: all six docs-integrity guards pass, and the section arrives in a real Installation — confirmed against a scratch brownfield repository by syncing the built bundle. Its behavioural half — that a `/next` run actually cites the queue when choosing — comes from the next round, like item 24's.
 
-29. SCHEDULED (RB5) — triage the parked findings and the learnings' future actions, before item 19 archives them.
+29. DONE (2026-08-12, via /analyze) (RB5) — triage the parked findings and the learnings' future actions, before item 19 archives them.
 
 Problem: item 19 moves closed items verbatim to an archive and leaves one line each. The 13 parked findings live in exactly that prose. Archiving before triage converts a visible backlog into an invisible one, in one commit.
 
 Target: every parked finding and every `Future action:` in `learnings.md` receives a disposition in the queue. The 24 future actions split cleanly in principle — most are standing rules about how to work, which belong in a policy via item 20's Review Process, not in a work queue — so the triage's first job is that split, and its second is giving the remainder an id.
 
-The first pass over this document's own parked findings ran on 2026-08-12 and is recorded in the queue below. What remains: the `learnings.md` sweep, and re-checking the queue against the archive item 19 produces.
+Shipped: both passes. The queue below holds the 12 findings from this document's own prose, and all 23 `Future action:` entries in `AI/memory/learnings.md` (1.11 → 1.12) now carry a `Disposition:` line. The split the item predicted held — 18 of the 23 are standing rules about how to work, not work, and are marked as candidates for promotion by item 20; the remaining 5 map onto OF-02, OF-03, OF-04, OF-05 and OF-09.
 
-**Gates item 19.** Item 19 does not start until this is complete.
+**Gate on item 19 released.** Item 19 may now archive: no closed item's prose holds a finding that exists nowhere else.
 
-Validated when: no closed item's prose holds a finding that exists nowhere else, checked before the archive move rather than after.
+Validated: `check_future_actions.py` (item 30) passes over all 23, and was confirmed to fail on the pre-sweep tree naming every one of them.
 
-30. SCHEDULED (RB4) — the one part of this that a machine can check.
+30. DONE (2026-08-12, via /analyze) (RB4) — the one part of this that a machine can check.
 
 Problem: detecting "a finding" in prose is not mechanically possible — Learning-015 settled that, and item 6 correctly refused to build a check where no pattern could work. So most of item 27 is a rule with no guard.
 
@@ -749,9 +749,11 @@ Target: the part that *is* mechanical. `AI/memory/learnings.md` has a fixed stru
 
 Covers the future-action half of the leak. It does not cover findings parked in roadmap prose, and the script must say so rather than implying coverage it does not have — the failure Learning-022 records.
 
-Scope, per item 21's RA4 addition: this runs in this repository's CI only until item 25 ships.
+Scope, per item 21's RA4 addition: this runs in this repository's CI only until item 25 ships. The script says so rather than implying coverage it does not have.
 
-Validated when: the script fails against the current tree naming the future actions with no disposition, and passes after item 29's sweep.
+Shipped: `.github/scripts/check_future_actions.py`, wired into CI's `docs-integrity` job beside the other five. Population exact (every `Future action:` inside a `## Learning-NNN` block, count printed); classifier trivial and declared shallow — it cannot tell a correct disposition from a plausible one, and citing the wrong item passes.
+
+Validated: fails on the pre-sweep tree naming all 23 future actions, passes on the post-sweep tree at 23/23. Built after item 29 deliberately — built before, it would have failed CI on its first commit.
 
 Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident.
 

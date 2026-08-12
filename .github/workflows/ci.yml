@@ -42,6 +42,9 @@ jobs:
       - name: Check every decision has a Decision Index line
         run: python3 .github/scripts/check_decision_index.py
 
+      - name: Check every future action has a disposition
+        run: python3 .github/scripts/check_future_actions.py
+
   cli-tests:
     name: cli/ build, typecheck and tests
     runs-on: ubuntu-latest
