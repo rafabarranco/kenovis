@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-08-12
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.13.0]. Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2. Seventh framework-only release running with no CLI code changed, and the argument is simple: a policy is loaded by your agents on every task, a learnings file is not. Twenty-two rules moved from the second into the first, so this upgrade changes what your agents do rather than only what they are told.
+
+`1.0.0` was considered and rejected for the seventh time, on the reason [0.9.0] onward gave and OF-11 now records: the MVP Success Metrics still have no target, and one external team is on record — against `kenovis@0.3.0`, ten releases ago. Both are now scheduled work (`PRODUCT/ROADMAP.md` items 32 and 33) instead of an argument each release repeats.
+
+**Nothing breaks for an existing Installation**, and the same two limits from [0.13.0] still apply: `sync` never touches a Product-layer file you already authored, so your `DECISIONS.md` gains no Decision Index and your `PRODUCT/ROADMAP.md` gains no Open Findings section. Both are a copy-paste from `.kenovis/AI/templates/product-layer/`.
+
 ### Added
 
 - **`.github/scripts/check_learning_promotions.py`, wired into CI.** Every row of the learnings file's "Promoted And Archived" index must name a policy section that exists and that cites the learning id, and every archived learning must have exactly one row — checked in both directions, so a learning archived without a pointer fails too. It found a real defect on its first run: a rule claimed to be in `coding.md` that the policy never cited. As with every guard here, it runs in this repository's CI and not in an Installation — `kenovis check` (`PRODUCT/ROADMAP.md` item 25) is what closes that gap.
