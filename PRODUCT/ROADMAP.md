@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.37
+Version: 1.38
 ---
 Purpose
 
@@ -563,11 +563,13 @@ Next: Learning-022's future action has `/architect` and `/release` still unrun f
 ---
 Phase 1 — Immediate Priority, second block (added 2026-08-12, from /analyze on framework context scalability, founder-flagged maximum priority — ahead of any other Phase 1/2/3 item)
 
-Eight items, items 18-25, in the order written. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
+Thirteen items, items 18-30, in the order written — except where an item states its own ordering constraint, and three do. **Item 26 comes first** (it unblocks 27), **item 27 next** (it is the root cause behind this block needing to be asked for at all), and **item 29 gates item 19**, because archiving before triage converts a visible backlog into an invisible one. Item 25 goes with or after item 21, never before. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
 
 The R-tags (R1-R6) are the recommendation labels from the 2026-08-12 `/analyze` run that produced this block, kept so the items stay traceable to their analysis. Execution order is not R-tag order: R5 is cheap and independent so it lands with the other Do-Now items, and R4 precedes R3 because a lifecycle rule that does not exist cannot govern the restructuring that R3 performs.
 
-Items 24-25 and the two scope additions inside items 19 and 21 come from a second `/analyze` run the same day, on the three open risks item 18 closed with rather than closed. Their tags are RA1-RA4, kept distinct from R1-R6 so the two analyses stay separable. Both new items sit at the end of the block deliberately: neither blocks 19-23, and item 25 must not precede item 21, for the reason item 25 states.
+Items 24-25 and the two scope additions inside items 19 and 21 come from a second `/analyze` run the same day, on the three open risks item 18 closed with rather than closed. Their tags are RA1-RA4, kept distinct from R1-R6 so the two analyses stay separable.
+
+Items 26-30 come from a third `/analyze` run the same day, tagged RB1-RB5, on the founder's observation that the AI-OS detects gaps and then leaves them to die in prose: *"lo que pasa ahora es simple, está detectándolo pero no está planificándolo, por lo que siempre se queda ahí, muerto, sin resolver."* The evidence held — 13 findings parked in this document's prose and 24 `Future action:` entries in `learnings.md`, of which 5 name the roadmap, with the oldest open one untouched since 2026-08-09. These five items are the highest-leverage in the block: they are why the other eight needed a human to notice them. The `Open Findings` queue that follows this block is their first output.
 
 Measured finding this block exists to close, from git history over 2026-07-30 → 2026-08-10 (11 days, 58 commits): `DECISIONS.md` 9.8 KB → 119.9 KB, `PRODUCT/ROADMAP.md` 5.0 KB → 124.9 KB, `AI/memory/learnings.md` 4.1 KB → 65.2 KB, `CHANGELOG.md` 1.5 KB → 54.3 KB. Combined ~31 KB/day, append-only, with no archival, rotation or size rule anywhere in the framework. `CLAUDE.md` → "Session Initialization Protocol" mandates an unconditional full read of `COMPANY_OS.md` + `DECISIONS.md` + `AI/SYSTEM.md` — ~137 KB (~34k tokens) before any work starts — and a full `/bootstrap` reaches ~357 KB (~89k tokens). The growth rate is from an intense bootstrap phase and will slow; the direction does not depend on the rate. At one quarter of it, `DECISIONS.md` still passes 200 KB of mandatory per-session reading inside 90 days.
 
@@ -689,11 +691,94 @@ Ordering: with or after item 21, never before it. Item 21 decides what the lifec
 
 Validated when: `kenovis check` run inside a real published Installation catches a seeded violation of each rule it claims to cover, and is silent on a clean Installation.
 
+26. SCHEDULED (RB2) — `/analyze` is forbidden from doing what its own Step 9 requires.
+
+Problem: `commands/analyze.md` Step 9 says an analysis with a durable residue belongs in "a scheduled item in `PRODUCT/ROADMAP.md`". Sixty lines below, "AI Responsibilities" says **"AI must not: Modify files."** The command whose only job is to detect is forbidden from recording what it detects. Reproduced twice on 2026-08-12: the morning run wrote items 18-23 in violation of its own rule, and the afternoon run produced five recommendations and wrote nothing until the founder asked for them.
+
+Target: the prohibition carves out the residue Step 9 already mandates — the roadmap queue, `DECISIONS.md`, `AI/memory/learnings.md`. It keeps forbidding what it exists to forbid: implementation, fixes, invented requirements. `/analyze` records findings; it never fixes them.
+
+Blocks item 27, which `/analyze` cannot comply with while this stands.
+
+Validated when: an `/analyze` run that finds something schedulable writes it to the queue in the same session, without being asked.
+
+27. SCHEDULED (RB1) — a finding that is not fixed is scheduled or rejected. Never just mentioned.
+
+Problem, and it is the root cause behind items 24-26 and behind this whole block needing a founder to ask for it: no framework instruction says a finding that implies work becomes a scheduled item. Commands say where the *artifact* goes (DECISION-024) and where the *lesson* goes (`learnings.md`). None says where the *pending work* goes. `commands/review.md` and `workflows/review.md` send a deferred improvement to `DECISIONS.md` — correct for the reasoning, wrong as a queue: nothing reads `DECISIONS.md` to decide what to do next, and a well-documented deferral reads as closed.
+
+Measured: 13 parked findings in this document's prose ("Backlog finding, left out of this item's scope", "Deliberately not built", "stays deferred") and 24 `Future action:` entries in `learnings.md`, of which 5 name the roadmap. The oldest open one — `sync` never naming the paths it deletes — has been prose since 2026-08-09 and was repeated in four rounds' closing paragraphs without ever becoming an item.
+
+Target: every command that can produce a finding (`analyze`, `bug`, `review`, `feature`, `next`, `architect`, `hotfix`, and the workflows behind them) gains one rule: **a finding this round does not fix gets exactly one of three dispositions — fixed, scheduled with an id, or rejected with a reason. Being described in prose is not a disposition.** Rejection is first-class and expected; the failure mode this closes is the undisposed middle, not the deliberate no.
+
+Stated in `.kenovis/AI/policies/documentation.md` once and cited from the commands, the shape item 14 established for the Collision Guard rather than repeating it eight times.
+
+Validated when: a round that finds something out of its scope closes with that finding carrying an id, and the closing summary can name the disposition of every finding it raised.
+
+28. SCHEDULED (RB3) — the roadmap carries a findings queue, not only phase narrative.
+
+Problem: a scheduled item is dimensioned work; a finding is an undimensioned candidate. The framework's roadmap has a place for the first and none for the second, so findings land in the narrative of whichever item was open when they were found — where they have no id, no priority score, and no existence once that item closes.
+
+Target: an `Open Findings` section in `PRODUCT/ROADMAP.md` — id, source round, one-line statement, disposition, and this document's own priority score. `/next` Step 3 reads it alongside the scheduled items when choosing the next objective. Ships in the Product-layer template so every Installation starts with the queue rather than inventing one.
+
+This repository's own queue was authored on 2026-08-12 in the same session that scheduled this item, below the block, so the triage was not blocked on the framework change. This item is the framework half: template, `/next` Step 3, and the policy rule.
+
+Requires a `DECISIONS.md` entry (mechanics change reaching every Installation, DECISION-011). No ADR expected beyond that — it adds a section to a document, it does not change how the CLI or `sync` behave.
+
+Validated when: a fresh Installation's `PRODUCT/ROADMAP.md` template carries the section, and a `/next` run cites the queue as an input to its choice of objective.
+
+29. SCHEDULED (RB5) — triage the parked findings and the learnings' future actions, before item 19 archives them.
+
+Problem: item 19 moves closed items verbatim to an archive and leaves one line each. The 13 parked findings live in exactly that prose. Archiving before triage converts a visible backlog into an invisible one, in one commit.
+
+Target: every parked finding and every `Future action:` in `learnings.md` receives a disposition in the queue. The 24 future actions split cleanly in principle — most are standing rules about how to work, which belong in a policy via item 20's Review Process, not in a work queue — so the triage's first job is that split, and its second is giving the remainder an id.
+
+The first pass over this document's own parked findings ran on 2026-08-12 and is recorded in the queue below. What remains: the `learnings.md` sweep, and re-checking the queue against the archive item 19 produces.
+
+**Gates item 19.** Item 19 does not start until this is complete.
+
+Validated when: no closed item's prose holds a finding that exists nowhere else, checked before the archive move rather than after.
+
+30. SCHEDULED (RB4) — the one part of this that a machine can check.
+
+Problem: detecting "a finding" in prose is not mechanically possible — Learning-015 settled that, and item 6 correctly refused to build a check where no pattern could work. So most of item 27 is a rule with no guard.
+
+Target: the part that *is* mechanical. `AI/memory/learnings.md` has a fixed structure, so every `Future action:` can be required to either cite a queue id / roadmap item, or state that no work is implied. Population exact (every `Future action:` block, count printed); classifier trivial (does the body cite an id or the explicit no-work phrase). CI script, same precedent as `check_template_refs.py` / `check_artifact_destinations.py` / `check_decision_index.py`.
+
+Covers the future-action half of the leak. It does not cover findings parked in roadmap prose, and the script must say so rather than implying coverage it does not have — the failure Learning-022 records.
+
+Scope, per item 21's RA4 addition: this runs in this repository's CI only until item 25 ships.
+
+Validated when: the script fails against the current tree naming the future actions with no disposition, and passes after item 29's sweep.
+
 Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident.
 
 Next: item 18 reaches no customer until published. The release carrying it is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9, 11, 13, 15 and 17 performed — or item 19 first, so one release carries both, as items 1+2 and 3+4 did. Per Learning-023, check item 19's own premise against `PRODUCT/ROADMAP.md` before scoping it.
 
-Not yet recorded, and outstanding after this block is scheduled: a `DECISIONS.md` entry establishing the per-session context budget as a first-class architectural constraint — the standing rule the eight items above implement — and an `AI/memory/learnings.md` entry that documentation-as-memory without a retrieval and lifecycle counterpart is accumulation rather than memory. Both are founder calls, not `/next` work.
+Not yet recorded, and outstanding after this block is scheduled: a `DECISIONS.md` entry establishing the per-session context budget as a first-class architectural constraint — the standing rule the thirteen items above implement — and an `AI/memory/learnings.md` entry that documentation-as-memory without a retrieval and lifecycle counterpart is accumulation rather than memory. Both are founder calls, not `/next` work. Tracked as OF-10 below so they stop depending on being remembered.
+---
+Open Findings (queue, added 2026-08-12)
+
+A scheduled item is dimensioned work. A finding is a candidate that is not dimensioned yet, and before this section existed there was nowhere to put one — so findings landed in the narrative of whichever item happened to be open, where they had no id, no priority and no life after that item closed. That is the defect item 27 fixes as a rule and item 28 ships to every Installation; this section is this repository's own instance of it, authored first so the triage was not blocked on the framework change.
+
+Every finding carries one of four dispositions. **Scheduled** — it is an item, named here. **Open** — real, unscheduled, competing for the next round. **Deferred** — deliberately not now, with the reason and the condition that would change it. **Rejected** — decided against, with the reason, so it is not proposed again. Prose is not a disposition.
+
+First pass, 2026-08-12, over the 13 parked findings in this document and the standing candidates named in items 13-17's closing paragraphs. The `AI/memory/learnings.md` sweep (24 `Future action:` entries) is item 29 and is not done here.
+
+| Id | Finding | Source | Disposition |
+|---|---|---|---|
+| OF-01 | `kenovis sync` deletes anything a customer put under `.kenovis/` without naming what it removed. `already up to date` is printed while files disappear. | Item 12, 2026-08-09 | **Open.** Oldest open finding — prose for four rounds. CLI change with its own design; needs a decision on report-vs-refuse. Priority: Pain high (silent data loss), Frequency low (item 12 removed the instructions that led customers there), Cost medium. |
+| OF-02 | `/architect` has never been executed end to end from a real published Installation. Six for six such runs have found a maximal-Pain defect. | Learning-020/021/022 | **Open.** Highest expected yield of any unscheduled item on precedent alone. Item 24 may use it as its vehicle. |
+| OF-03 | `/release` has never been executed end to end from a real published Installation. Item 14 fixed its Step 8; fixing one step is not running the command. | Learning-021/022 | **Open.** Same class as OF-02, one round behind it. |
+| OF-04 | Items 19-23 carry structural premises about file contents that were never verified when written — the defect Learning-023 records against item 18. | Learning-023, 2026-08-12 | **Open.** Cost is one command per item. Do it at the start of each item rather than as its own round. |
+| OF-05 | An Installation that has never run install/sync since the hash sidecar shipped has no recorded hash, so its next `CLAUDE.md` transition still relies on the old prefix check. | Learning-008, item 7 | **Deferred.** Accepted and documented at the time; self-heals on the first sync. Revisit only if a customer reports a lost `CLAUDE.md`. |
+| OF-06 | `/framework-review` has never been run as an audit pass over the post-migration framework layer. | Items 3, 6, 8, 11 closing paragraphs | **Deferred.** Expected yield low — items 6, 8, 10, 12, 14, 16 and 18 each swept the same surface. Revisit after items 19-30 land, when the surface has changed again. |
+| OF-07 | No active version check: nothing tells an installed customer a newer Framework Release exists. `cli/README.md` → "Upgrading" covers discovery at near-zero cost today. | Phase 2 → New Capabilities, 2026-08-06 | **Deferred.** First network dependency in the CLI's core logic; Pain and Frequency unvalidated against one external team. Condition to revisit: real Phase 2 usage data. |
+| OF-08 | The paid open-core tier has no ADR on its gating mechanism, and must not ship without one. | Phase 2 → Prerequisite, 2026-08-06 | **Deferred.** Premature on one external team's data. Blocks "additional specialized agents" when Phase 2 opens. |
+| OF-09 | `sync` has no diff preview or conflict detection before it mirror-replaces. | Phase 0 item 3 slice 4 | **Deferred.** Reversibility is satisfied by the target's own git history; ergonomics belong to Phase 2. |
+| OF-10 | Two records this block implements but never wrote: a `DECISIONS.md` entry making the per-session context budget a first-class constraint, and a `learnings.md` entry that documentation-as-memory without lifecycle is accumulation, not memory. | Second block header, 2026-08-12 | **Open — founder call.** Not `/next` work. Listed so it stops depending on being remembered. |
+| OF-11 | `MVP Success Metrics` → Usage has no target: "N installations (target not yet set)". Every release round since `0.9.0` has rejected `1.0.0` partly on this, so an unset number is gating the version. | Phase 1 → MVP Success Metrics | **Open — founder call.** Product decision, not an engineering item. Until it exists, `1.0.0` has no criterion to meet and each release re-argues the same rejection. |
+| OF-12 | One external team has validated the product, on 2026-08-06, against `kenovis@0.3.0` — eight releases ago. `AUTOMATIONS/user-feedback.md` describes a feedback loop that has never run. | Phase 1 → Real External Validation | **Open.** Every "deferred on unvalidated Pain" disposition above traces to this one gap. It is the cheapest way to unblock OF-07 and OF-08 at once. |
+
+Findings closed by disposition and kept here so they are not re-proposed: a CI guard asserting this repository's Product layer stays free of `[ANSWER:` markers (**Rejected**, item 6 — it would pass trivially and forever, and the real risk is a question written with a plain bracket, which no pattern separates from a legitimate survivor); a CI guard detecting an inherited answer in an authored Product-layer document (**Rejected**, item 8 — an answer phrased in generic words is invisible to any check, and claiming otherwise repeats Learning-015's failure in a new place).
 ---
 Phase 1 — MVP
 
