@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-08-12
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.12.0] — see `cli/package.json` and `cli/README.md` → "Cutting a release". Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2. No CLI code changed in this release either, but the argument is the strongest of any framework-only release so far: the session-initialization protocol itself changed, seven commands and three workflows changed behaviour, three CI guards are new, and two Product-layer templates gained structural sections every Installation will carry — a Decision Index and an Open Findings queue.
+
+`1.0.0` was considered and rejected again, for the reason [0.9.0] through [0.12.0] gave: it would signal maturity Phase 1 has not validated, with one external team on record — against `kenovis@0.3.0`, eight releases ago — and the MVP Success Metrics still without a target. Both of those are now recorded as findings (OF-11, OF-12) instead of being re-argued each release.
+
+**Nothing breaks for an existing Installation.** Two things the upgrade cannot do for you, both stated because `sync` never touches a Product-layer file you already authored: your `DECISIONS.md` will not gain a Decision Index and your `PRODUCT/ROADMAP.md` will not gain an Open Findings section — the new templates carry both, but only for documents authored after upgrading. Adding them by hand is a copy-paste from `.kenovis/AI/templates/product-layer/`, and until you do, the new instructions describe sections your files do not have.
+
 ### Added
 
 
