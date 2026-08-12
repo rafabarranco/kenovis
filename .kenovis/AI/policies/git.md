@@ -1,6 +1,6 @@
 # Git Policy
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -267,6 +267,24 @@ Production. Always deployable, stable, tested and documented.
 Never merge experimental work into a protected branch.
 
 Automatic backmerges between protected branches carry `[skip ci]` in the commit message.
+
+---
+
+# Promotion Chains And Content Sync
+
+A promotion chain of protected branches merged with rebase only cannot stay history-aligned once any step introduces a commit the upstream branch will never contain. A content-sync commit on the downstream branch is exactly such a commit — so applying that fix guarantees the next promotion needs it again.
+
+That is a steady state, not a repair, and it is an acceptable one: what matters is that the branches are byte-identical after every promotion, not that their histories match. What is not acceptable is rediscovering it every release and spending the investigation again. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-012.)
+
+A repository in that state promotes like this, every release:
+
+1. Verify the downstream branch is a strict older snapshot — `git diff origin/<downstream> <last-release-cut-commit>` is empty, and nothing unique sits downstream except previous sync commits.
+2. Branch `sync/<downstream>-<version>` from the downstream branch.
+3. `git read-tree -u --reset origin/<upstream>`. This is the correct primitive: `git checkout <ref> -- .` does not delete files removed upstream, which matters on any release that moves or retires paths.
+4. Confirm `git diff origin/<upstream> HEAD` is empty before opening the pull request.
+5. Open the pull request and rebase-merge it.
+
+Record which mode the repository is in — true fast-forward or permanent content-sync — where the release process is documented, so no release has to re-derive it.
 
 ---
 
