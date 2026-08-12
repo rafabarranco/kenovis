@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.52
+Version: 1.53
 ---
 Purpose
 
@@ -397,6 +397,8 @@ First pass, 2026-08-12, over the 13 parked findings in this document and the sta
 | OF-18 | Scheduling changes and implementation changes land in the same commit when the working tree already holds uncommitted scheduling. Item 18's commit carried its own block's scheduling for that reason. | Item 34, 2026-08-12 (backfilled) | **Rejected** as work. It is a commit-hygiene habit, not a deliverable, and `policies/git.md` already governs commit scope; adding an item for it would be scheduling a reminder. Recorded because it was sitting as a "backlog note, not an item" — prose that reads as handled — and because it is the second finding `check_item_findings.py` surfaced on its first run. |
 
 | OF-19 | `gh pr merge --rebase --admin` — this repository's standard merge, used on every round since `0.6.0` — bypasses required status checks, not only the required review. So all ten CI guards are advisory: they are bypassable by the same command and the same person they constrain, on the merge that lands the work. Five PRs were merged that way on 2026-08-12 alone. | DECISION-026 / item 36, 2026-08-12 | **Open.** Strengthens DECISION-026 rather than competing with it — it is a second, independent reason CI is not enforcement, and the reason item 37 is the priority instead of adding an eleventh guard. Item 34's "Solo-maintainer note... Not a misconfiguration" is about the *review* half and is still correct; the *checks* half was never examined. Priority: Pain medium (the guards have caught real defects and no round has knowingly merged red), Frequency high (every merge), Cost low to *decide* — the real question is whether required reviews should stop being required for a solo maintainer so `--admin` is not needed at all, which is a repository-settings call, not code. |
+
+| OF-20 | A Claude Code hook (`Stop`/`PreToolUse`) was proposed in the same session as the layer that would fire in-thread rather than at merge time, and abandoned when DECISION-026 redirected the work — without a disposition. | This session, 2026-08-12 | **Rejected.** It fails DECISION-010 before it reaches DECISION-026: a hook is one tool's configuration, and everything under `.kenovis/AI/` stays tool-agnostic plain markdown so any model or client can enter through `SYSTEM.md`. It also lives in local settings, not in the bundle, so it would repeat exactly the `.github/` mistake in a newer place. Recorded so it is not re-proposed the next time someone wants enforcement that fires earlier than CI. |
 
 Findings closed by disposition and kept here so they are not re-proposed: a CI guard asserting this repository's Product layer stays free of `[ANSWER:` markers (**Rejected**, item 6 — it would pass trivially and forever, and the real risk is a question written with a plain bracket, which no pattern separates from a legitimate survivor); a CI guard detecting an inherited answer in an authored Product-layer document (**Rejected**, item 8 — an answer phrased in generic words is invisible to any check, and claiming otherwise repeats Learning-015's failure in a new place).
 ---
