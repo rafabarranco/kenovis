@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.4
+Version: 1.5
 ---
 Purpose
 
@@ -226,6 +226,16 @@ The AI must understand:
 5. Previous decisions.
 
 The AI must never implement based only on a user sentence.
+
+What is read in full, and what is not:
+
+COMPANY_OS.md is read in full. So is this file.
+
+DECISIONS.md is read as its Decision Index only — the section at the head of that file, one line per decision. A decision log is append-only by design and grows without bound; loading every body to consult none of them makes the start of a session cost more each week, in every Installation, forever.
+
+A decision body is opened on demand, at the moment it becomes relevant. Citing a decision requires opening it: the index states what a decision settled, never why, and a citation built on the index alone is a preference wearing a decision's ID.
+
+If the index is missing or an entry is too thin to decide against, read the body and fix the index in the same session.
 
 If `.kenovis/.setup-pending` exists, run the command it names (`init-project` or `adopt-project`) before any other action this session, regardless of how the session was entered. See DECISIONS.md DECISION-018.
 ---

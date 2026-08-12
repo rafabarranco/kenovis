@@ -4,34 +4,49 @@
 
 Company Decision Log
 
-Version: 2.10
+Version: 2.11
 
 Last updated: —
 
 ---
 
+# Decision Index
+
+This index is what a session reads. The bodies below are not on the session-initialization path — see `.kenovis/AI/SYSTEM.md` → "Context Loading Rules" and `.kenovis/AI/commands/bootstrap.md` Step 2.
+
+Open a decision's body before citing it. The index states what a decision settled, never why it was settled that way, and a citation without the reasoning behind it is a preference wearing a decision's ID.
+
+Every decision recorded below has exactly one line here, added in the same change that records the decision. `.github/scripts/check_decision_index.py` fails CI when a body has no index line, or an index line no body.
+
+`‡` marks a decision that is framework-level in effect — it governs how the framework behaves for every Installation and would survive a repurposing of this repository. `★` marks one also cited by ID from inside `.kenovis/AI/`.
+
+- **DECISION-001** ‡★ — AI-Native Company Operating Model. AI agents carry execution across engineering, product, documentation and research; strategic decisions stay human-controlled.
+- **DECISION-009** ‡ — Documentation As Company Memory. Company knowledge lives in a fixed document set (COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AI/), not in chat history.
+- **DECISION-010** ‡ — AI Tooling Strategy. Claude Code is the primary interface and autoloads root CLAUDE.md; everything under `AI/` stays tool-agnostic plain markdown, entered through SYSTEM.md by any other tool.
+- **DECISION-011** ‡ — Framework Contribution & Memory Discipline. A framework-layer PR requires a CHANGELOG bullet (CI-enforced, `[skip changelog]` for typos) and a DECISIONS entry when it changes agent responsibilities, workflow phases or policy mechanics.
+- **DECISION-012** ‡★ — Graphify Exception To Tool-Agnosticism. One named exception to DECISION-010, scoped to graphify's query CLI in `bootstrap.md` and three workflows; the generated graph stays gitignored.
+- **DECISION-013** — Kenovis Product Definition & Initial Distribution Model. CLI/template distribution, open-core, and no backend, database or hosted dashboard in v1 — so no tenancy model exists to design against.
+- **DECISION-014** ‡ — Brownfield Adoption Path. `/adopt-project` audits an existing implementation first, tags every reconstructed fact with a confidence level and a file citation, and never rewrites the customer's code.
+- **DECISION-015** — Adoption Never Relocates Customer Code. **Superseded by DECISION-016** the same day. Do not follow its "a dedicated README.md is the fixed pointer" resolution; the body stays for the reasoning trail.
+- **DECISION-016** ‡★ — No Framework-Mandated Directory Name For Customer Code. `ENGINEERING/ARCHITECTURE.md` is the single place recording where an implementation lives, and adoption never moves it.
+- **DECISION-017** ‡★ — Framework Layer Packaging. The CLI writes the Framework layer under `.kenovis/`; root `CLAUDE.md` becomes a stub, and the target's own `README.md` is never touched.
+- **DECISION-018** ‡★ — Auto-Trigger init-project/adopt-project. `.kenovis/.setup-pending` plus a kind-parametrized `CLAUDE.md` stub make the first session run setup with no manual slash command; no AI binary is ever shelled out to.
+- **DECISION-019** ‡★ — Collision Guard Against Silent Product-Layer Overwrite. Both setup commands stop and ask the human before overwriting a pre-existing file that carries no `PROJECT-SPECIFIC` marker.
+- **DECISION-020** — Kenovis's Own Root README.md and CLAUDE.md Are Exempt From The `.kenovis/` Self-Migration. Those two files stay hand-authored at repo root; only the five `AI/` subdirectories and `AI/SYSTEM.md` relocated.
+- **DECISION-021** ‡★ — An Installation Receives Its Product Layer From Framework Templates. The bundle ships one template per Product-layer document, authored by the setup commands; the CLI never creates a Product-layer file.
+- **DECISION-022** ‡ — `[ANSWER: ...]` Is The Only Bracket Form That Means "Unanswered Question". Every other bracket form is content — a format specification, an example, a deliberate "nothing recorded yet" — and legitimately survives into an authored document.
+- **DECISION-023** ‡★ — The PROJECT-SPECIFIC Marker States Layer, Not State. Line 1 of a Product-layer file says which layer it belongs to and that `sync` never overwrites it, never that its content is placeholder.
+- **DECISION-024** ‡★ — A Template Is A Form, Never A Destination. No framework instruction may name a path under `.kenovis/` as a place to write, because `sync` mirror-replaces that directory wholesale.
+
+---
+
 # Document Layers
 
-A decision log is product-specific. A customer Installation's log starts empty and accumulates that company's own decisions — see DECISION-021 and `.kenovis/AI/templates/product-layer/DECISIONS.md`.
+A decision log is product-specific. A customer Installation's log starts empty and accumulates that company's own decisions — see DECISION-021 and `.kenovis/AI/templates/product-layer/DECISIONS.md`. The index above is the structural exception: it ships in that template as an empty section, because a log without one cannot be read without being read whole.
 
-This repository is the exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Fourteen of them are framework-level in effect — they govern how the framework behaves for every Installation and would survive a repurposing of this repository. Nine are also cited by ID from inside `.kenovis/AI/` (marked ★):
+This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Fourteen of them are framework-level in effect and nine are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
 
-- DECISION-001 ★ — AI-Native Company Operating Model.
-- DECISION-009 — Documentation As Company Memory.
-- DECISION-010 — AI Tooling Strategy.
-- DECISION-011 — Framework Contribution & Memory Discipline.
-- DECISION-012 ★ — Graphify Exception To Tool-Agnosticism.
-- DECISION-014 — Brownfield Adoption Path: adopt-project Command.
-- DECISION-016 ★ — No Framework-Mandated Directory Name For Customer Code (supersedes DECISION-015).
-- DECISION-017 ★ — Framework Layer Packaging: `.kenovis/` Hidden Directory.
-- DECISION-018 ★ — Auto-Trigger init-project/adopt-project Without A Manual Slash Command.
-- DECISION-019 ★ — Collision Guard Against Silent Product-Layer Overwrite In init-project/adopt-project.
-- DECISION-021 ★ — An Installation Receives Its Product Layer From Framework Templates.
-- DECISION-022 — `[ANSWER: ...]` Is The Only Bracket Form That Means "Unanswered Question".
-- DECISION-023 ★ — The PROJECT-SPECIFIC Marker States Layer, Not State.
-- DECISION-024 ★ — A Template Is A Form, Never A Destination.
-
-The list previously said "Eight", named eight, and claimed all eight were cited by ID inside the framework layer — four of them are not, while five decisions that are cited were missing. Corrected in the round that added DECISION-024 (`PRODUCT/ROADMAP.md` Phase 1 item 12), which had to edit this paragraph anyway; the citation counts were read off the tree with `grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI`, per `AI/memory/learnings.md` Learning-016.
+The framework-level list previously said "Eight", named eight, and claimed all eight were cited by ID inside the framework layer — four of them are not, while five decisions that are cited were missing. Corrected in the round that added DECISION-024 (`PRODUCT/ROADMAP.md` Phase 1 item 12), which had to edit this paragraph anyway; the citation counts were read off the tree with `grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI`, per `AI/memory/learnings.md` Learning-016.
 
 Everything else is product-specific and should be recorded as real decisions get made. See .kenovis/AI/commands/init-project.md.
 
