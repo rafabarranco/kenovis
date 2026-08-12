@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.36
+Version: 1.37
 ---
 Purpose
 
@@ -563,9 +563,11 @@ Next: Learning-022's future action has `/architect` and `/release` still unrun f
 ---
 Phase 1 — Immediate Priority, second block (added 2026-08-12, from /analyze on framework context scalability, founder-flagged maximum priority — ahead of any other Phase 1/2/3 item)
 
-Six items, items 18-23, in the order written. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
+Eight items, items 18-25, in the order written. Founder flagged this block maximum priority on 2026-08-12: it is executed before `/architect` and `/release` end-to-end runs, before the `sync`-names-removed-paths backlog finding, before the npm-registry version check, and before the paid-tier ADR — all of which stay scheduled behind it.
 
 The R-tags (R1-R6) are the recommendation labels from the 2026-08-12 `/analyze` run that produced this block, kept so the items stay traceable to their analysis. Execution order is not R-tag order: R5 is cheap and independent so it lands with the other Do-Now items, and R4 precedes R3 because a lifecycle rule that does not exist cannot govern the restructuring that R3 performs.
+
+Items 24-25 and the two scope additions inside items 19 and 21 come from a second `/analyze` run the same day, on the three open risks item 18 closed with rather than closed. Their tags are RA1-RA4, kept distinct from R1-R6 so the two analyses stay separable. Both new items sit at the end of the block deliberately: neither blocks 19-23, and item 25 must not precede item 21, for the reason item 25 states.
 
 Measured finding this block exists to close, from git history over 2026-07-30 → 2026-08-10 (11 days, 58 commits): `DECISIONS.md` 9.8 KB → 119.9 KB, `PRODUCT/ROADMAP.md` 5.0 KB → 124.9 KB, `AI/memory/learnings.md` 4.1 KB → 65.2 KB, `CHANGELOG.md` 1.5 KB → 54.3 KB. Combined ~31 KB/day, append-only, with no archival, rotation or size rule anywhere in the framework. `CLAUDE.md` → "Session Initialization Protocol" mandates an unconditional full read of `COMPANY_OS.md` + `DECISIONS.md` + `AI/SYSTEM.md` — ~137 KB (~34k tokens) before any work starts — and a full `/bootstrap` reaches ~357 KB (~89k tokens). The growth rate is from an intense bootstrap phase and will slow; the direction does not depend on the rate. At one quarter of it, `DECISIONS.md` still passes 200 KB of mandatory per-session reading inside 90 days.
 
@@ -587,7 +589,7 @@ Shipped: `DECISIONS.md` (2.10 → 2.11) gains a `# Decision Index` — one subst
 
 Two further read sites were found in review by enumerating every instruction that reads the log rather than the three this item named — Learning-022's rule applied to this round's own work: `agents/database.md` (1.1 → 1.2) sent a designer to the whole log for the engine and tenancy model, and `workflows/framework-review.md` (1.0 → 1.1) scoped its reading to "DECISION-001, 009, 010, and any later ones marked framework-level", a list that had to be maintained by hand and now reads the index's own marks. The three "applies only if multi-tenancy is a documented decision in DECISIONS.md" sites were left alone deliberately: they are lookups, which the index answers and then sends the reader to one body.
 
-The risk this item named — an agent citing a decision it never opened — is closed on the instruction side only. `.github/scripts/check_decision_index.py` (CI, beside the three existing docs-integrity guards) enforces that the index is complete in both directions and that a line says more than a title; no check can see an agent paraphrasing an index line it did not open, and the script says so. Population exact (every `# DECISION-NNN` heading, every `- **DECISION-NNN**` line, both counts printed); substance test an explicit length heuristic, per Learning-022. Confirmed to fail on the pre-change tree before being kept. Scope stated in the script: the bundle ships `.kenovis/AI/`, not `.github/`, so an Installation carries the rule as an instruction with no guard behind it.
+The risk this item named — an agent citing a decision it never opened — is closed on the instruction side only. `.github/scripts/check_decision_index.py` (CI, beside the three existing docs-integrity guards) enforces that the index is complete in both directions and that a line says more than a title; no check can see an agent paraphrasing an index line it did not open, and the script says so. Population exact (every `# DECISION-NNN` heading, every `- **DECISION-NNN**` line, both counts printed); substance test an explicit length heuristic, per Learning-022. Confirmed to fail on the pre-change tree before being kept. Scope stated in the script: the bundle ships `.kenovis/AI/`, not `.github/`, so an Installation carries the rule as an instruction with no guard behind it — now item 25, scheduled below, which covers the same gap for every guard rather than this one.
 
 No ADR, per this item — it bounds how an existing document is read. The standing per-session context-budget decision entry this block implements is still outstanding and still a founder call, as noted at the end of this block.
 
@@ -595,7 +597,7 @@ Validated: 109 `cli/` tests pass, typecheck and build clean, `check_links.py`, `
 
 Measured on the read path, three cases rather than one, because the honest answer differs by case: this repository 138.2 KB → 22.2 KB (**-84%**); an Installation whose log has grown to this repository's size, 135.6 KB → 19.7 KB (-85%); a day-one Installation still holding the template log, 19.2 KB → 16.6 KB (-14%), because there is nothing accumulated yet to bound. The item's ~-85% expectation holds where a log exists.
 
-Not validated, and stated rather than claimed: the behavioural half of this item's own criterion — "a `/feature` or `/bug` run against that Installation still cites the decisions it should, opening them rather than paraphrasing the index." A fresh Installation's log is empty, so it has no decision to cite, and the session that authored the instruction is not independent evidence that an agent will follow it. It belongs in the next round that runs a workflow end to end from an Installation with a real log — `/architect` and `/release` are already scheduled for exactly that.
+Not validated, and stated rather than claimed: the behavioural half of this item's own criterion — "a `/feature` or `/bug` run against that Installation still cites the decisions it should, opening them rather than paraphrasing the index." A fresh Installation's log is empty, so it has no decision to cite, and the session that authored the instruction is not independent evidence that an agent will follow it. Now item 24, scheduled below — which also fixes the method this sentence originally proposed: an Installation's log starts empty, so the fixture has to be seeded before any run exercises the instruction.
 
 19. SCHEDULED (R2) — completed roadmap items move to an archive; the active roadmap keeps one line each.
 
@@ -607,7 +609,9 @@ Expected effect: ~-90 KB off the bootstrap path in this repository.
 
 Risk: existing links and anchors into completed items break. Enumerate them exactly before moving — `check_links.py` covers markdown links, and per Learning-018 and Learning-022 the population that matters is "references to a completed item", which is larger than "links that resolve".
 
-Validated when: `/bootstrap` context measured before and after, and `check_links.py` passes.
+Also in scope (RA2, added 2026-08-12 from the second `/analyze` run): **an open validation criterion is never archived.** Item 18 closed DONE carrying one criterion it could not meet, written in its own narrative — and this item moves that narrative out of the active roadmap, leaving one line behind. A criterion with no owner and no location stops existing. Before archiving, every closed item's unmet validation is promoted to an active item (item 24 is the first instance, promoted by hand); the rule itself belongs in the lifecycle policy item 21 writes, so it governs every future close rather than this one archive pass. Enumerate the population the same way this item's own risk demands: closed items whose text states something was not validated, not just items marked DONE.
+
+Validated when: `/bootstrap` context measured before and after, `check_links.py` passes, and no closed item carrying an unmet criterion was archived without that criterion existing somewhere active.
 
 20. SCHEDULED (R5) — run `AI/memory/learnings.md`'s own Review Process for the first time.
 
@@ -629,7 +633,11 @@ Precedes item 22 deliberately. Items 18-20 are one-time reductions; without this
 
 Per Learning-022, state the guard's population and its classifier separately, and print both counts, so the cut stays reviewable rather than assumed.
 
-Validated when: the script fails against the current `development` tree naming the documents over threshold, and passes after items 19 and 20 land.
+Scope, to be stated in the item's own text rather than discovered later (RA4, added 2026-08-12 from the second `/analyze` run): **"enforced in CI" means enforced in this repository and nowhere else.** `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` plus the customer README — not `.github/` — verified in item 17. A customer Installation receives the lifecycle rule as an instruction with no mechanism behind it, exactly as it receives the Decision Index rule item 18 shipped. Today that gap stands at five guards this repository runs and zero a customer does. Say so in this item's delivered work, and say whether it depends on item 25 or ships independently of it.
+
+Also in scope: the archive-on-close rule this item writes carries item 19's RA2 addition — a closed item's unmet validation criterion is promoted to an active item before that item is archived.
+
+Validated when: the script fails against the current `development` tree naming the documents over threshold, passes after items 19 and 20 land, and the item's own text states which side of the repository/Installation line its enforcement falls on.
 
 22. SCHEDULED (R3) — `DECISIONS.md` becomes a directory, one file per decision, with the current file as its index.
 
@@ -653,9 +661,39 @@ Blocked behind items 18-22 and deliberately not started early. If bounding and l
 
 Explicitly out of scope for this block, and recorded here so it is not proposed again: a hosted backend, a vector database, or any Kenovis-operated service to hold customer context. It contradicts COMPANY_OS.md → Competitive Advantages ("Zero central infrastructure to scale") and → What The Company Will NOT Become, and DECISION-013. This is a data-lifecycle problem, not an infrastructure problem.
 
+24. SCHEDULED (RA1) — validate that an agent opens a decision body instead of paraphrasing the index.
+
+Problem: item 18 closed DONE with its own second validation criterion unmet, and said so rather than claiming it. Nothing checks it. `check_decision_index.py` proves the index is complete; no check can see an agent citing a decision from an index line it never opened, which is the failure the whole read-bound is exposed to. Item 18's fix made the risk cheap to run into: the index is now good enough to sound sufficient.
+
+Second defect in the method item 18 itself proposed, and the reason this is an item rather than a note: "run `/architect` or `/release` end-to-end from an Installation with a real log" does not work as written. An Installation authors `DECISIONS.md` from the template, so its log is **empty** — there is no decision to cite and nothing to paraphrase. The fixture has to be seeded before the run exercises anything.
+
+Target: a brownfield fixture Installation whose `DECISIONS.md` carries a populated log (≥10 decisions with real bodies, index lines that summarise without answering), then one post-setup workflow — `/architect` or `/release`, both still unrun end to end — executed against it. Observe whether the run opens the bodies it cites. Record what it did, not what it should have done.
+
+Run it in a session that did not author the instruction. The `/next` round that wrote the protocol knows the decision bodies already, so its own behaviour is not evidence.
+
+Dependency: none. Independent of items 19-23, and it needs no release first — the instruction under test is already on `development`.
+
+Validated when: the run's citations are checked against the bodies it actually opened, and the result is written down either way. A negative result is the useful one — it means the index needs the body's shape, not more summary.
+
+25. SCHEDULED (RA3) — a customer Installation can run a check, not just read a rule.
+
+Problem: five guards run in this repository's CI (`check_links`, `check_markers`, `check_changelog`, `check_template_refs`, `check_artifact_destinations`, plus `check_decision_index` from item 18 — six). A customer Installation runs none. `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` plus the customer README; `.github/` is not in the bundle, verified in item 17. Every rule this repository enforces mechanically, a customer holds as prose.
+
+The gap widens with each round rather than staying still: item 21 adds a seventh guard under the same mechanism. That is the shape of the dogfooding caveat at the head of this block, applied to enforcement instead of retrieval — this repository is measurably better protected than the product it ships.
+
+Target: a `kenovis check` subcommand — filesystem-only, no network, inside ENGINEERING/ARCHITECTURE.md's Hard Rules and DECISION-013 — running the subset of rules **a customer can actually violate**: an incomplete Decision Index, a Product-layer file with no `PROJECT-SPECIFIC` marker, an artifact written under `.kenovis/`. Not a port of all six scripts; most of what they guard is framework content a customer never edits.
+
+Requires `/architect` and an ADR before any file is touched: a new CLI subcommand is an architecture decision, the same call DECISION-016/017/021/024 each needed. Two questions the ADR must settle rather than assume — where the rule definitions live so Python and TypeScript cannot drift apart, and whether this shares surface with item 23's `kenovis context` or stays separate.
+
+Ordering: with or after item 21, never before it. Item 21 decides what the lifecycle rules are; building the enforcement first would enforce rules that do not exist yet.
+
+Validated when: `kenovis check` run inside a real published Installation catches a seeded violation of each rule it claims to cover, and is silent on a clean Installation.
+
+Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident.
+
 Next: item 18 reaches no customer until published. The release carrying it is the leading candidate for the next item, the same packaging step items 2, 5, 7, 9, 11, 13, 15 and 17 performed — or item 19 first, so one release carries both, as items 1+2 and 3+4 did. Per Learning-023, check item 19's own premise against `PRODUCT/ROADMAP.md` before scoping it.
 
-Not yet recorded, and outstanding after this block is scheduled: a `DECISIONS.md` entry establishing the per-session context budget as a first-class architectural constraint — the standing rule the six items above implement — and an `AI/memory/learnings.md` entry that documentation-as-memory without a retrieval and lifecycle counterpart is accumulation rather than memory. Both are founder calls, not `/next` work.
+Not yet recorded, and outstanding after this block is scheduled: a `DECISIONS.md` entry establishing the per-session context budget as a first-class architectural constraint — the standing rule the eight items above implement — and an `AI/memory/learnings.md` entry that documentation-as-memory without a retrieval and lifecycle counterpart is accumulation rather than memory. Both are founder calls, not `/next` work.
 ---
 Phase 1 — MVP
 
