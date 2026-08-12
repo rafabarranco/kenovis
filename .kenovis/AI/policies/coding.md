@@ -1,6 +1,6 @@
 # Coding Policy
 
-Version: 2.2
+Version: 2.3
 
 ---
 
@@ -333,6 +333,26 @@ Validate boundaries.
 Do not over-validate trusted internal code.
 
 Balance safety with simplicity.
+
+---
+
+# Guards, Recorded State, And Permissive Paths
+
+A guard is code that decides whether something is safe to overwrite, safe to accept, or ours to touch. Guards fail quietly — a wrong guard reports success — so they get their own rules.
+
+**Owning a path is not permission to discard what is in it.** "This tool is allowed to write this file" and "this tool may discard whatever is currently there" are different guarantees, and the first does not imply the second. When a file is written to a fixed path for tooling reasons — an autoloaded config, a convention, a marker — still check what is already there before overwriting it. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-006.)
+
+**Know what a check's reference point is.** A prefix or marker match answers "did we originate this file", not "is everything in this file still ours" — content appended below the marker is invisible to it. A guard that compares against a *recorded* fact, captured when the file was written, survives the reference itself legitimately changing across versions; a guard that compares against what the current code *would* generate breaks the first time that output legitimately changes. Recording the extra state is the point, not overhead to trim. (Learning-007, Learning-008.)
+
+**Enumerate every writer of a guarded file.** A guard comparing against recorded state has two obligations: detect foreign changes, and stay accurate across every sanctioned one. Every other actor allowed to modify that file — including the framework's own markdown commands, which no compiler or test reaches — updates or invalidates the record in the same step. Invalidating (deleting the record, letting the next run re-record it) is usually the cheapest correct option. (Learning-011.)
+
+**A permissive fallback needs its exclusions enumerated first.** A catch-all dispatch ("anything unrecognised means do the default thing") will faithfully serve callers who never meant to reach it. Write down what must *not* reach that path — help flags, version flags, empty input — and handle those before the fallback, not inside it. The same applies to any "do exactly what I was given" input: it reproduces whatever mistake the caller made. (Learning-004, Learning-005.)
+
+**State living inside a directory that gets replaced wholesale needs an explicit preserve-or-recompute rule.** "Mirror-replace this directory" and "keep local state in that directory" are in direct conflict, and the conflict is silent: the replace succeeds, reports success, and never names what it removed. Every file written into such a directory by something other than the replace is tagged — preserved, or rewritten afterwards — in one visible registry, so the next one is a decision rather than a third coincidence. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-010.)
+
+**Before adding to a registry of special cases, ask whether the fact belongs to the artifact.** A registry of exceptions ("these files survive the replace", "these keys are not validated") is good, and having one makes adding the next entry feel like the well-trodden path. But the question it answers assumes the fact must live outside the mechanism in the first place. A fact that ships inside the artifact being copied needs no synchronization rule, because it has exactly one writer. (Learning-013.)
+
+**Two code paths solving the same problem are cross-checked for parity.** A divergence between them is a bug waiting to be found even when neither path is wrong in isolation. (Learning-006.)
 
 ---
 

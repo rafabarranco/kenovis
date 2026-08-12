@@ -32,6 +32,7 @@ FULL_FILE_MARKER_REQUIRED = [
     "AI/memory/glossary.md",
     "AI/memory/conventions.md",
     "AI/memory/learnings.md",
+    "AI/memory/LEARNINGS-ARCHIVE.md",
 ]
 
 ANYWHERE_MARKER_REQUIRED = [

@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.6
+Version: 2.8
 
 ---
 
@@ -364,6 +364,8 @@ So the governed documents — the ones that accumulate entries rather than descr
 
 **An exemption is allowed and must name its fix.** A governed document may sit over the threshold while the work that splits it is scheduled — but the exemption cites the roadmap item that closes it. An exemption with no item is the failure this whole rule exists to prevent, wearing a permission slip.
 
+**An archive is over the threshold on purpose, and is not exempted — it is classified.** An archive is where the weight went; it is never on the session-initialization path, and no roadmap item will ever close it. Giving one an exemption would mean naming an item that can never be satisfied, which is the same failure in the opposite direction. It stays listed and its size stays printed, because an archive nobody watches is how the next hundred kilobytes arrive unnoticed.
+
 `.github/scripts/check_document_size.py` enforces this: it fails when a governed document passes the threshold with neither a split nor an exemption naming an item.
 
 ---
@@ -376,12 +378,14 @@ That is correct, and it has a cost nobody pays until it is large: finished work 
 
 So a document that accumulates closed entries splits:
 
-- Closed entries move to a sibling archive — `PRODUCT/ROADMAP-ARCHIVE.md` for the roadmap — **verbatim**. Nothing is summarised away; the archive exists to preserve the trail, not to compress it.
+- Closed entries move to a sibling archive — `PRODUCT/ROADMAP-ARCHIVE.md` for the roadmap, `AI/memory/LEARNINGS-ARCHIVE.md` for the learnings — **verbatim**. Nothing is summarised away; the archive exists to preserve the trail, not to compress it.
 - The active document keeps one line per closed entry and a pointer to the archive.
 - The archive is read on demand. It is never on the session-initialization path.
 - An entry is archived only when it is genuinely closed. An open finding it raised moves to the findings queue first — see the section below. Archiving a document that still holds the only copy of an unresolved finding is how a visible backlog becomes an invisible one.
 
 Create the archive when the first entry closes, not in advance. An empty archive is noise.
+
+**A learning closes when its rule has been promoted.** `AI/memory/learnings.md` documents a Review Process that moves a recurring lesson into the policy that should enforce it. "Move" is the whole instruction: the rule is written into the policy in that policy's voice, the policy cites the learning id so the reasoning stays one hop away, and the entry then closes and is archived like any other closed entry. A rule left in both places is loaded twice — once per task from the policy, once per session from the learnings — and only one of those two documents is bounded.
 
 ---
 
@@ -400,6 +404,8 @@ So every finding a round does not fix gets exactly one disposition, stated where
 **Rejected** — decided against, with the reason, recorded so it is not proposed again. This is a first-class outcome, not a failure. Most findings should not become work.
 
 **Being described in prose is not a disposition.**
+
+`Open` is a real disposition and also the easiest place to hide. A finding whose executor is not the AI — a decision only the human can make, work that needs an external party, a number nobody has — sits in the queue in perfect compliance with this rule and moves for no one. So an `Open` finding that the AI cannot execute names two more things: **who executes it, and what input they need to decide.** Without those, the queue becomes the new place where things stay still, with an id.
 
 Two rules that follow from this, because both failure modes have already happened:
 
@@ -421,6 +427,34 @@ So:
 - Writing a decision body and writing its index line are one change, never two.
 - The index line states what was settled. It never states why — that is the body's job, and it is why citing a decision requires opening it.
 - Superseding a decision updates its index line to say so, and names the decision that replaced it. The body stays where it is.
+
+---
+
+# A Claim Is Read Back Off The Artifact
+
+Prose in `CHANGELOG.md`, `DECISIONS.md`, `PRODUCT/ROADMAP.md` and the rest of this document set is a product, not commentary about one. A number in it carries the same obligation as a number in code, with none of the tooling — nothing compiles it, nothing tests it, and every later reader is reading a restatement rather than the artifact.
+
+**Every count is read off the artifact with the command that produces it, in the same round, and the command goes in the entry.** `git show --stat <commit> -- <path>`, `grep -rc <pattern> <dir>`, the test runner's own total. If a number is not worth one command, do not state it — "several templates" is honest and costs nothing. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-016.)
+
+**State the command, not the scope in words.** "Eleven across the three files" is precise about the number and puts the scope in a sentence, so any later verification has to reconstruct which files were meant — and the obvious command silently answers a different question. Per-file transitions are self-checking: "net +11 across A, B, C (5 → 9, 6 → 11, 1 → 3)". When a broad number disagrees with a scoped one, reconcile the difference before treating either as a defect. (Learning-018.)
+
+**A published number that turns out wrong is corrected where it was published**, and said to have been corrected. The trail is the point.
+
+**An item's premise about a file's contents is a claim, not context.** Verify it while writing the item — usually one command — or write it explicitly as an assumption to confirm before scoping. A scheduled item is executed by whoever has less context than the person who wrote it, and a wrong premise lands its cost on the round that can least afford to re-plan. A measurement sitting in the same paragraph as an assumption lends the assumption its credibility. (Learning-023.)
+
+**An unverified cost estimate in a deferred item is a decision made by nobody.** Priority formulas divide by implementation cost, so a wrong cost does not merely mislead — it suppresses the item, and the more wrong it is the longer it stays suppressed. Over-estimating is invisible, because the item simply never comes up again. So: verify the cost, or write that it is unverified. When the note names a specific mechanism as the reason something is expensive, check that claim first — it is the load-bearing part. When picking up a deferred item, re-derive its cost before ranking it. (Learning-019.)
+
+**A template's passing condition is "no sentence here is true of only one product",** not "the questions are marked". A check that finds unanswered questions cannot find wrongly answered ones, and the two are not symmetric: an unanswered question is visibly incomplete, while an inherited answer looks decided and gets built on. When a template is derived from a real document by deleting its answers, there is no completion signal — nothing tells you which deletions you skipped. Read back every section that was not rewritten and ask whether it survives a product of the opposite shape. (Learning-017.)
+
+---
+
+# An Instruction Is Reachable, And Its Sink Is Read
+
+Two failure modes that make a correctly written instruction produce nothing.
+
+**A document that instructs an outcome must permit the action that produces it.** A prohibition written for one purpose ("do not implement") silently swallows a different one ("do not record") when it is phrased by mechanism rather than by intent. A rule a command is structurally prevented from following is not a weak rule, it is an absent one, and no amount of care in following it helps. When writing "do X" into a command, re-read that command's own constraints for whatever forbids X. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-024.)
+
+**Knowledge sinks are not interchangeable.** This framework has three: `DECISIONS.md` records *why*, `AI/memory/learnings.md` records the *lesson*, `PRODUCT/ROADMAP.md` records *what and when*. Only the third is read to decide what happens next. Before writing "record it in X", ask what reads X and when. A destination nothing consults at decision time is a place to put something down, not a place for it to be picked up — and a well-documented deferral in the wrong sink reads as closed. (Learning-024.)
 
 ---
 
