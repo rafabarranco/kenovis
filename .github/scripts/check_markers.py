@@ -7,10 +7,19 @@ disappearing during edits, not a claim that these are the only such files
 (README.md and .gitignore carry the marker inside a section/comment, not
 as the first line, and are checked separately).
 
-Framework-layer home: not yet dispositioned. PRODUCT/ROADMAP.md item 37 works
-the guards one at a time and this one is outstanding. Until it names a home or
-records that its rule has no Framework-layer form, this check protects this
-repository only.
+Framework-layer home: `.kenovis/AI/policies/architecture.md` -> "Distribution
+Is Part Of The Architecture" carries the rule for the case that was missing --
+a new Product-layer document carries the marker when it is created, and the
+marker states layer and never completion state. The setup path was already
+covered: `.kenovis/AI/SYSTEM.md` -> "Project Context",
+`.kenovis/AI/commands/init-project.md`, `.kenovis/AI/commands/adopt-project.md`,
+`.kenovis/AI/templates/product-layer/README.md`, and line 1 of all 18
+product-layer templates. Verified 2026-08-13 (PRODUCT/ROADMAP.md item 37).
+
+What the framework half could not cover, and why this script still exists here:
+the marker disappearing from a file that already has one. That is an editing
+accident with no instruction to attach to -- nobody decides to delete it -- so
+it is a genuine local-net case rather than a missing rule.
 """
 
 import sys

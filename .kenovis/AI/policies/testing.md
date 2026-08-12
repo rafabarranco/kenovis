@@ -1,6 +1,6 @@
 # Testing Policy
 
-Version: 2.3
+Version: 2.4
 
 ---
 
@@ -321,19 +321,15 @@ Not every check in a repository is a test. Greps, marker conventions, CI scripts
 
 ---
 
-# A Guard Belongs Where The Work Is Loaded
+# A Guard Declares Its Loaded-Layer Home, Inside The Guard
 
-A mechanical check — a CI script, a pre-commit hook, a linter — protects the repository it runs in and nothing else. It is not part of what `sync` delivers, so no Installation receives it, and it fires at merge time, after the work and the decision are already done.
+`.kenovis/AI/policies/architecture.md` → "An Improvement Lands Where The Work Is Loaded" is the rule: a mechanical check is a local net over one repository's own practice and never the answer to "how is this enforced", and a round that adds one states what the loaded-layer half is, or records that the rule has no loaded-layer form and why. That section is not restated here. What follows is the part specific to checks.
 
-That makes a check a local net over one repository's own practice. It is never the answer to the question "how is this enforced". The rule it encodes has its home in the layer the AI already loads to do the work — a policy, a command step, a workflow phase, an agent's responsibilities, a template. That is what is in force on the next task, in every repository the AI-OS was injected into, with nothing to invoke. See DECISIONS.md DECISION-026.
+**The declaration goes inside the check itself**, on one line naming the policy section, command step or template that carries the rule — or recording the no-form outcome and its reason. Not in a register kept beside the checks: a register is a second copy of a fact that changes whenever a check changes, and it drifts. The docstring is read at the moment the check is edited, which is the moment the declaration is either true or newly wrong.
 
-The test that separates the two: *does this change reach a customer's next task without anyone doing anything?* A CI script fails it. A CLI subcommand fails it. A rule in a policy the agents already load passes it.
+A check with no such line is enforcement that stops at one repository's edge while reading as if it did not. The failure mode is cumulative rather than acute — each round adds a check, records the gap as a caveat, and the distance between the repository and the product it ships grows by one check per round, with every individual round defensible.
 
-**So a round that adds a mechanical check states that check's Framework-layer home inside the check itself**, on one line: the policy section, command step or template that carries the rule. Or it records that the rule has no Framework-layer form, and why — which is a valid outcome, not a failure. Most of what a repository's own scaffolding guards is scaffolding.
-
-A check with neither line is enforcement that stops at one repository's edge while reading as if it did not. The failure mode is cumulative rather than acute: each round adds a guard, records the gap as a caveat, and the distance between the repository and the product it ships grows by exactly one guard per round. Nothing reports it, because every individual round is defensible.
-
-**A check that cites the work which will close its gap is citing something that can be rejected.** When that happens the check keeps pointing at it, reads as scheduled, and is not. A guard's own reference to its Framework-layer half is documentation like any other and is corrected when it stops being true.
+**A check that cites the work which will close its gap is citing something that can be rejected.** When that happens the check keeps pointing at it, reads as scheduled, and is not. A check's reference to its loaded-layer half is documentation like any other and is corrected when it stops being true.
 
 **A permanent satisfier turns a recurring trigger into a one-time gate.** When a threshold rule accepts a structural answer — a registered split, a declared archive, a named exception — the answer is usually registered once and never re-evaluated, so the guard passes forever while the condition it was built to catch comes straight back. The check is not wrong and the structure is not wrong; what is missing is that satisfying the rule once was mistaken for satisfying it continuously. So when a guard's passing condition is a permanent registration, say in the guard what it stops being able to see, and put the recurring half — running the pass, re-reading the number — where the work is loaded rather than in the guard. (`PRODUCT/ROADMAP.md` OF-23: a roadmap registered with a split grew from 45.8 KB back to 70.4 KB against a 60 KB threshold in one day, with a clean CI throughout.)
 

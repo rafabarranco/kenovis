@@ -18,10 +18,12 @@ phrased "Use:" survived it and shipped in `kenovis@0.10.0`. A pattern that
 defines its own scope cannot report what it missed; this one enumerates every
 reference instead.
 
-Framework-layer home: not yet dispositioned. PRODUCT/ROADMAP.md item 37 works
-the guards one at a time and this one is outstanding. Until it names a home or
-records that its rule has no Framework-layer form, this check protects this
-repository only.
+Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "An Instruction
+That Produces An Artifact Names Where It Goes, And A Template Is Never Where",
+second half. Before that section existed the rule lived only as the sentence
+itself, repeated at each of the reference sites -- which is the artifact, not
+the rule: an agent adding a new template reference had nothing telling it the
+sentence was required. Verified 2026-08-13 (PRODUCT/ROADMAP.md item 37).
 """
 
 import re
