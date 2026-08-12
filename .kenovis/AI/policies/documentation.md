@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 2.5
+Version: 2.6
 
 ---
 
@@ -347,6 +347,24 @@ Major Decision
 Update DECISIONS.md
 
 Never leave documentation outdated after implementation.
+
+---
+
+# Document Lifecycle: A Size Threshold, An Archive, And An Exit
+
+Documentation rigor in this framework is asymmetric: cheap to add, and until now impossible to remove. `DECISIONS.md` states the no-remove rule explicitly, and it is right to — the reasoning trail is the value. But a rule that only ever adds produces documents that every session pays for and nobody reads whole.
+
+So the governed documents — the ones that accumulate entries rather than describing a current state — carry a lifecycle:
+
+**Governed documents.** `DECISIONS.md`, `PRODUCT/ROADMAP.md`, `AI/memory/learnings.md`, `CHANGELOG.md`. Documents that describe a current state (`COMPANY_OS.md`, `DOMAIN/`, `ENGINEERING/`) are rewritten rather than appended to, and are not governed by this section.
+
+**Threshold: 60 KB.** Past it, a governed document must have a split — an archive sibling, an index that bounds what is read, or a directory. The number is a trigger for a decision, not a law: crossing it means "decide how this document sheds weight", not "delete something".
+
+**The exit.** Closed entries move to the archive verbatim, per the section above. Superseded entries move rather than being marked in place, so the active document holds what is live and the archive holds the trail.
+
+**An exemption is allowed and must name its fix.** A governed document may sit over the threshold while the work that splits it is scheduled — but the exemption cites the roadmap item that closes it. An exemption with no item is the failure this whole rule exists to prevent, wearing a permission slip.
+
+`.github/scripts/check_document_size.py` enforces this: it fails when a governed document passes the threshold with neither a split nor an exemption naming an item.
 
 ---
 

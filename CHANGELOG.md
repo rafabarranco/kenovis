@@ -9,6 +9,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 ### Added
 
 
+- **Governed documents now have a lifecycle, enforced in CI.** `.kenovis/AI/policies/documentation.md` (2.5 → 2.6) → "Document Lifecycle: A Size Threshold, An Archive, And An Exit". Rigor in this framework was asymmetric — cheap to add, impossible to remove — and four documents grew from ~20 KB combined to ~360 KB in eleven days, all of it on every session's reading path.
+
+  Four governed documents, a 60 KB threshold, and three acceptable answers to crossing it: an archive, an index, or a split. Exemptions are allowed and must name the roadmap item that closes them. `.github/scripts/check_document_size.py` enforces it and prints every governed document's size on every run, so growth is visible before it is a problem. Confirmed to fail when an exemption is removed.
+
 - **Closed roadmap items move to a verbatim archive.** `.kenovis/AI/policies/documentation.md` (2.4 → 2.5) → "Closed Work Is Archived, Not Kept Inline": a document that accumulates closed entries splits, the active file keeps one line each plus a pointer, and the archive is never on the session-initialization path. Nothing is summarised away — the archive preserves the trail, it does not compress it. The Product-layer roadmap template (1.3 → 1.4) tells an Installation to create its archive when its first item closes, not in advance.
 
   In this repository: 31 closed items moved to `PRODUCT/ROADMAP-ARCHIVE.md` and `PRODUCT/ROADMAP.md` went 164.7 KB → 42.2 KB. Combined with the Decision Index above, the full bootstrap path goes 374.3 KB → 133.9 KB.

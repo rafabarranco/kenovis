@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.41
+Version: 1.42
 ---
 Purpose
 
@@ -203,7 +203,7 @@ Independent of items 18, 19, 21-23 — no ordering constraint, listed here becau
 
 Validated when: each promoted learning is findable in the policy that now carries it, and no learning is lost — the archive is complete, not lossy.
 
-21. SCHEDULED (R4) — `AI/policies/documentation.md` gains document lifecycle rules, enforced in CI.
+21. DONE (2026-08-12, via /analyze) (R4) — `AI/policies/documentation.md` gains document lifecycle rules, enforced in CI.
 
 Problem: the policy has no rule about size, splitting, archiving or retirement — confirmed by grep across `documentation.md`, `DECISIONS.md`, `learnings.md` and this file. DECISION-011 hardened the write side (CI requires a CHANGELOG bullet; a DECISIONS entry on mechanics changes) and nothing governs the read side or the exit. Rigor is asymmetric: cheap to add, forbidden to remove — `DECISIONS.md` states the no-remove rule explicitly, keeping superseded decisions in place for the reasoning trail.
 
@@ -217,7 +217,15 @@ Scope, to be stated in the item's own text rather than discovered later (RA4, ad
 
 Also in scope: the archive-on-close rule this item writes carries item 19's RA2 addition — a closed item's unmet validation criterion is promoted to an active item before that item is archived.
 
-Validated when: the script fails against the current `development` tree naming the documents over threshold, passes after items 19 and 20 land, and the item's own text states which side of the repository/Installation line its enforcement falls on.
+Shipped: `.kenovis/AI/policies/documentation.md` (2.5 → 2.6) → "Document Lifecycle: A Size Threshold, An Archive, And An Exit" — four governed documents (those that accumulate entries; documents describing a current state are rewritten, not appended to, and are deliberately not governed), a **60 KB** threshold, and three acceptable answers to crossing it: an archive sibling, an index that bounds what is read, or a split into a directory. Superseded entries move rather than being marked in place. An exemption is allowed and **must name the roadmap item that closes it** — an exemption with no item is this rule's own failure mode wearing a permission slip.
+
+`.github/scripts/check_document_size.py`, wired into CI. Every governed document's size prints on every run, so growth is visible before it is a problem. Population exact and hardcoded; satisfaction test structural — it cannot tell whether an archive is being used or whether a named item is progressing, and an exemption nobody closes passes forever, which is why each one prints on every run.
+
+RA4 satisfied: the guard runs in this repository's CI only. `kenovis check` (item 25) is what carries it to an Installation, and this item ships independently of it rather than waiting.
+
+Current state, printed by the guard: `ROADMAP.md` 42.8 KB (under, via item 19's archive), `learnings.md` 70.2 KB (exempt → item 20), `DECISIONS.md` 125.8 KB (exempt → item 22, already index-bounded by item 18), `ROADMAP-ARCHIVE.md` 126.4 KB (exempt → off the session path by design), `CHANGELOG.md` 60.6 KB (exempt → OF-13, a finding this item raised and queued rather than described).
+
+Validated: the guard passes on the current tree, and was confirmed to fail — naming `learnings.md` — when its exemption was removed.
 
 22. SCHEDULED (R3) — `DECISIONS.md` becomes a directory, one file per decision, with the current file as its index.
 
@@ -303,6 +311,7 @@ First pass, 2026-08-12, over the 13 parked findings in this document and the sta
 | OF-10 | Two records this block implements but never wrote: a `DECISIONS.md` entry making the per-session context budget a first-class constraint, and a `learnings.md` entry that documentation-as-memory without lifecycle is accumulation, not memory. | Second block header, 2026-08-12 | **Open — founder call.** Not `/next` work. Listed so it stops depending on being remembered. |
 | OF-11 | `MVP Success Metrics` → Usage has no target: "N installations (target not yet set)". Every release round since `0.9.0` has rejected `1.0.0` partly on this, so an unset number is gating the version. | Phase 1 → MVP Success Metrics | **Open — founder call.** Product decision, not an engineering item. Until it exists, `1.0.0` has no criterion to meet and each release re-argues the same rejection. |
 | OF-12 | One external team has validated the product, on 2026-08-06, against `kenovis@0.3.0` — eight releases ago. `AUTOMATIONS/user-feedback.md` describes a feedback loop that has never run. | Phase 1 → Real External Validation | **Open.** Every "deferred on unvalidated Pain" disposition above traces to this one gap. It is the cheapest way to unblock OF-07 and OF-08 at once. |
+| OF-13 | `CHANGELOG.md` has no archive rule — 60.6 KB and growing one released section at a time, with every past release kept inline. The lifecycle rule exempts it pending this finding. | Item 21, 2026-08-12 | **Open.** Same shape as item 19's roadmap archive and cheap for the same reason; nobody reads `[0.2.0]` at session start. |
 
 Findings closed by disposition and kept here so they are not re-proposed: a CI guard asserting this repository's Product layer stays free of `[ANSWER:` markers (**Rejected**, item 6 — it would pass trivially and forever, and the real risk is a question written with a plain bracket, which no pattern separates from a legitimate survivor); a CI guard detecting an inherited answer in an authored Product-layer document (**Rejected**, item 8 — an answer phrased in generic words is invisible to any check, and claiming otherwise repeats Learning-015's failure in a new place).
 ---
