@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.1
+Version: 3.2
 
 ---
 
@@ -45,6 +45,8 @@ Documentation that is no longer true is worse than no documentation.
 Every piece of knowledge should have exactly one authoritative location.
 
 Avoid duplicated documentation.
+
+**This applies to the policies themselves, and that is the case it gets missed in.** Before adding a section to a policy, read the section headings of its siblings — the whole set is small, and the rule being written is usually general enough to already live under a heading that does not sound like it. Two copies of a rule do not stay identical: each is edited by whoever is looking at that file, neither reader opens the other, and the policy set ends up contradicting itself with both halves reading as authoritative. When the rule does already exist, cite that section and add only what is genuinely new to the narrower context.
 
 Example:
 
