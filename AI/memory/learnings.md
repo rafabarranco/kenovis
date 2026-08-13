@@ -341,6 +341,40 @@ Future action:
 Disposition: Open — rule not yet promoted to a policy. The commit clause belongs in `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" and touches `policies/git.md`, which is the seam it falls through; the cadence clause belongs wherever item 41 step 2 puts the conformance criterion. Deliberately not written before OF-45 is decided, since the instance and the rule are one round's work and splitting them is how the instance gets fixed and the rule does not.
 
 ---
+
+## Learning-031
+
+Date:
+2026-08-13
+
+Category:
+Process
+
+Context:
+`PRODUCT/ROADMAP.md` item 42 part 1 — the third archive pass, scheduled as the cheapest change on the board with a written procedure that had already been run twice.
+
+Problem:
+The pass ran, and running it broke CI. `check_item_findings.py` failed with "No closed items with a narrative — nothing to check, which is not a pass", on a repository that had just done precisely what `policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline" requires.
+
+What happened:
+Two rules, each correct in isolation. The archive rule says closed items move out and leave one line. The findings guard says every closed item declares what it left behind, and treats an empty population as a corpus that was never written. Archive the last inline narrative and the guard's population is zero — so the archive rule, run to completion, makes the findings rule unenforceable and then unsatisfiable.
+
+Nothing had detected it because the two had never been in the same state at the same time: every previous pass left some inline narratives behind, not by design but because there were always more items than the pass moved.
+
+Root cause:
+**A rule that constrains a population never says what happens when the population empties, and another rule is usually what empties it.** The findings guard's author reasoned about a corpus that grows. The archive rule's author reasoned about a corpus that sheds. Neither reasoned about the corpus reaching zero, which is the state the two rules jointly produce and which each one reads as an error in the other's direction.
+
+Learning:
+**Two lifecycle rules can be individually correct and jointly unsatisfiable, and the collision only appears when one of them is run to completion.** Partial compliance hides it indefinitely — which means the collision surfaces on the day someone finally does the thing properly, and looks like their change broke something.
+
+Second half, and it is the one with teeth: **a rule written before a section exists does not cover that section by implication.** The archive rule was written in item 21 and named a document's "entries"; the findings queue arrived in item 28. For two archive passes the queue was simply outside the rule, and it reached 44% of the document with a clean guard, because nothing anywhere said the rule did not apply to it. Absence of an exclusion read as inclusion, and no measurement contradicted it because the guard the queue was invisible to was passing.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-61** carries the residue: the guard is now permanently inert in a fully-archived roadmap, and the fix makes that inertness pass silently. It is OF-21's question from the other side and is deliberately not resolved before item 37 completes (DECISION-026 forbids an eleventh guard). **OF-62** carries the other consequence — the archive rule has no lever left on a 129 KB document whose remaining weight is all live. The rule half of this learning is already promoted: `policies/documentation.md` 3.4 states that a closed entry is not only a numbered item, and names the queue, superseded planning prose and rejected entries explicitly.
+
+Disposition: Open — the second half is promoted, the first is not. "Check what empties this population, and what that other rule then reads" has no policy home yet; the plausible one is `policies/testing.md` → "A Check Is Not Verified Until It Has Been Run", widened from "run the failing case" to "run the case where the population is empty". Not written here because it is a policy section and this round already added two, and OF-24's rule against restating a sibling policy's section applies to me as much as to anyone.
+
+---
 Learning Examples
 
 The two entries below are the format examples every Installation receives in its template (see `.kenovis/AI/commands/init-project.md` Step 8). They are not learnings this product recorded.
