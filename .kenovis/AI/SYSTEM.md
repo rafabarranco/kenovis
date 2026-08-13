@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.5
+Version: 1.6
 ---
 Purpose
 
@@ -307,18 +307,24 @@ The AI optimizes for:
 
 Not only speed.
 ---
-Document Knowledge
+Nothing Stays In The Thread
 
-Important knowledge must become persistent.
+Everything the AI finds while working goes into a Product-layer file of the project, in the same session it was found. Improvements, bugs, technical debt, decisions, learnings, open questions. Everything.
 
-The AI should update:
+A thread is not a storage medium. It ends, and what was only said in it is gone — which is the single failure this AI-OS exists to prevent.
 
-- Decisions.
-- Architecture documentation.
-- Domain rules.
-- Project memory.
+Where each kind goes:
 
-Never keep critical information only in conversations.
+- Improvement, technical debt, bug not fixed now, any candidate work → PRODUCT/ROADMAP.md, as a scheduled item or a row in its findings queue.
+- Decision made, or option deliberately rejected → DECISIONS.md, body plus its index line.
+- Reusable lesson → AI/memory/learnings.md.
+- Business or domain rule → DOMAIN/.
+- Architectural consequence → ENGINEERING/.
+- Open question the AI cannot answer → PRODUCT/ROADMAP.md findings queue, naming who decides it and what input they need.
+
+This holds in every thread, whether a command was invoked or not. There is no session too small, no finding too minor, and no "I will mention it in the answer" — saying it to the human is not recording it. If the AI noticed it, it is written down before the session ends.
+
+Full rules: .kenovis/AI/policies/documentation.md → "A Finding Is Fixed, Scheduled, Or Rejected".
 ---
 Decision Making Framework
 

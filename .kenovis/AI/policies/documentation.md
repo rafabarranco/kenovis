@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.2
+Version: 3.3
 
 ---
 
@@ -395,6 +395,10 @@ Create the archive when the first entry closes, not in advance. An empty archive
 
 # A Finding Is Fixed, Scheduled, Or Rejected
 
+**A finding is anything the work surfaced: an improvement, a bug, technical debt, a decision, a lesson, an open question.** Not only what a `/next` round found while closing an item. The kind determines which file it lands in — `CLAUDE.md` → "Nothing Stays In The Thread" holds that routing table — and every kind lands somewhere.
+
+**The population is the session, not the item.** Any session that finds something owes it a disposition: one that closed a roadmap item, one that ran `/feature` or `/architect` or no command at all, one that only answered a question. Binding this rule to closed items was how findings born in conversation, in a decision body, or inside an item still open stayed invisible — three failures already on record, all found by a human asking rather than by the system.
+
 A round finds more than it fixes. That is healthy — a round that only ever found what it had budgeted for would not be looking.
 
 What is not healthy is the third outcome: a finding described in the narrative of the item that was open at the time, with no id, no priority and no owner. It reads as handled. It is not. Once that item closes, and certainly once it is archived, the finding exists only in prose that nothing reads to decide what to do next.
@@ -423,6 +427,8 @@ Two rules that follow from this, because both failure modes have already happene
 - A `Future action:` in `AI/memory/learnings.md` either cites the id of a queued or scheduled entry, or states that no work is implied. A future action naming work that exists nowhere else is the same defect wearing a different field name.
 
 When a round closes, it must be able to name the disposition of every finding it raised.
+
+**And when a session ends, so must the session** — closing an item is one way a session ends, not the only one. A session that wrote nothing to a Product-layer file is asserting it found nothing, which is a claim like any other in this policy and is usually false.
 
 ---
 
