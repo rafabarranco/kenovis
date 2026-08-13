@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.3
+Version: 3.4
 
 ---
 
@@ -387,7 +387,17 @@ So a document that accumulates closed entries splits:
 
 Create the archive when the first entry closes, not in advance. An empty archive is noise.
 
+**The pass runs on a trigger, not on someone noticing.** Declaring a split satisfies a size rule once and forever, so a document that has already been archived once is free to grow back past the threshold with nothing complaining — which is exactly what happened here: an archived roadmap returned to 2.7× its threshold in one day, and every round read the whole thing. So the trigger is a step of the round that appends: **a round that writes to an archiving document checks that document's size before it closes, and runs the pass if it is over.** Not a separate cleanup task, and not a size somebody notices late.
+
 **A learning closes when its rule has been promoted.** `AI/memory/learnings.md` documents a Review Process that moves a recurring lesson into the policy that should enforce it. "Move" is the whole instruction: the rule is written into the policy in that policy's voice, the policy cites the learning id so the reasoning stays one hop away, and the entry then closes and is archived like any other closed entry. A rule left in both places is loaded twice — once per task from the policy, once per session from the learnings — and only one of those two documents is bounded.
+
+**A closed entry is not only a numbered item.** The rule above says "entries", and an entry is anything the document accumulates and then finishes with. Three kinds are routinely missed because they do not look like items:
+
+- **A findings queue's closed rows.** A row whose disposition is `Fixed` or `Rejected` is finished; only `Open`, `Deferred` and `Scheduled` are live. Measured in this framework's own repository on 2026-08-13: the queue had reached 44% of the active roadmap while every archive pass moved items and left the queue untouched, because the archive rule was written before the queue existed and never named it. A rule that predates a section does not cover it by implication.
+- **Superseded planning prose.** A "what to do next" block that a later block replaces is closed the moment it is superseded. Keeping it inline under a "kept for the trail" note keeps the trail and pays for it on every session; the archive is what "kept for the trail" is supposed to mean.
+- **A rejected entry.** A rejection is closed work. Its reasoning must survive so the option is not re-proposed — which is what the archive is for, not what the active document is for.
+
+**Archiving a queue row compacts it; it does not remove it.** Ids are cited by name from closed entries and from across the framework layer, so the row stays as one line — id, the finding in a clause, its disposition, and the pointer — and the reasoning goes to the archive. Deleting the row instead breaks every citation of it, silently.
 
 **A changelog section closes on release, so "closed" is not the trim rule there.** Every released section is closed the moment it ships, and archiving on that alone would leave a changelog holding only `[Unreleased]` — useless to the one reader it has, someone deciding whether to upgrade. So the changelog keeps `[Unreleased]` plus the **two most recent released versions** inline, which is what an upgrade from the previous version needs, and archives the rest. The trim runs as a step of cutting a release, not as a separate cleanup: a document that is only trimmed when someone notices its size is a document that gets noticed late.
 

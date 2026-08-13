@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.4
+Version: 2.5
 
 ---
 
@@ -389,6 +389,8 @@ DECISIONS.md
 ```
 
 when required.
+
+Then check the size of every document this round appended to, and run the archive pass on any that is over threshold — see `.kenovis/AI/policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline". This is the step that triggers it. A document that has declared a split satisfies its size rule permanently, so nothing else will ever raise it again, and the round that added the weight is the last one that can cheaply remove it.
 
 ---
 

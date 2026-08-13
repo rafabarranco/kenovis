@@ -48,7 +48,24 @@ Learning-022:
 
   - Every declared id must exist in the Open Findings queue. A declaration
     naming `OF-99` fails: citing an id that was never written is the same defect
-    wearing a citation.
+    wearing a citation. This is why a closed queue row is compacted to one line
+    rather than removed when it is archived -- the id has to stay resolvable.
+
+  - THE POPULATION CAN EMPTY, AND THAT IS THE OTHER RULE WORKING. An empty
+    population used to be a hard failure, on the reasoning that a corpus with no
+    closed items is a corpus that was never written. The archive pass of
+    2026-08-13 (PRODUCT/ROADMAP.md item 42 part 1) proved that wrong by running
+    the archive rule to completion: all four remaining inline narratives moved
+    out, `checked` fell to 0, and this check failed a repository that had done
+    exactly what `.kenovis/AI/policies/documentation.md` -> "Closed Work Is
+    Archived, Not Kept Inline" requires. Two lifecycle rules that cannot both be
+    satisfied at steady state. So the empty case now splits: no closed items and
+    no pointers is a missing corpus and still fails; no closed items with
+    pointers present is the archive rule having completed, and passes while
+    saying plainly that it checked nothing. The residue -- that a fully archived
+    roadmap leaves this guard with no population at all, while the rule's own
+    population is the session -- is PRODUCT/ROADMAP.md OF-61, and it is OF-21's
+    class rather than a new one.
 
 Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "A Finding Is
 Fixed, Scheduled, Or Rejected" states the rule; `.kenovis/AI/commands/next.md`
@@ -144,9 +161,19 @@ def main() -> int:
     print(f"  {ROADMAP.relative_to(ROOT)}: {checked} closed items with a narrative, "
           f"{pointers} archive pointers skipped, {len(queued)} queue rows")
 
-    if not checked:
-        print("No closed items with a narrative — nothing to check, which is not a pass.")
+    if not checked and not pointers:
+        print("No closed items at all — the corpus is missing, which is not a pass.")
         return 1
+
+    if not checked:
+        print(
+            f"Every closed item ({pointers}) is an archive pointer. The item-scoped "
+            "population is legitimately empty — that is the archive rule having run to "
+            "completion, not a missing corpus. This check sees nothing today; the "
+            "round-scoped half of the rule it enforces is outside its population by "
+            "construction (PRODUCT/ROADMAP.md OF-21, OF-61)."
+        )
+        return 0
 
     if errors:
         print("\nA closed item does not say what it left behind:\n")

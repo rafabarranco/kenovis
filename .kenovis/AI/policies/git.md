@@ -1,6 +1,6 @@
 # Git Policy
 
-Version: 2.2
+Version: 2.3
 
 ---
 
@@ -243,6 +243,17 @@ Resolve conflicts carefully.
 Rebasing your own unmerged working branch is expected. Rewriting history on a protected branch is never allowed.
 
 Never overwrite another engineer's work without understanding the conflict.
+
+**After a merge, the branch you land on is behind.** Merging a pull request with `--delete-branch` deletes the working branch and returns the checkout to the base branch — a *local* base branch, which does not contain the merge that just landed and which no local command will admit is stale. `git status` compares against the local tracking ref, so until something fetches, it reports "up to date" or a confidently wrong "ahead by N".
+
+So fetch and level up immediately after a merge, before starting anything:
+
+```
+git fetch origin
+git rev-list --count HEAD..origin/development   # must be 0
+```
+
+This costs one command. Skipping it costs a whole round of work built on superseded context, which is undetectable from inside that round because everything it reads is internally consistent. See `.kenovis/AI/commands/bootstrap.md` Step 5, which requires the same check at session start.
 
 ---
 
