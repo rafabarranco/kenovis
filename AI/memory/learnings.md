@@ -153,7 +153,7 @@ And a recurring "candidate for" note is data, not bookkeeping. Eighteen entries 
 Future action:
 `.kenovis/AI/policies/documentation.md` and both learnings templates now state the completion condition — rule into the policy, policy cites the learning id, entry archived verbatim, one line left behind. `.github/scripts/check_learning_promotions.py` enforces the pointer half in this repository's CI; it found a real gap on its first run (a rule promoted into `coding.md` that never cited Learning-010). It cannot check that a policy section contains the rule it claims, only that the section and the citation exist.
 
-Disposition: No work implied — the process gap is closed by item 20 itself. The customer-facing half of the enforcement is item 25, which carries every guard this repository runs and an Installation does not.
+Disposition: No work implied — the process gap is closed by item 20 itself. The customer-facing half of the enforcement was item 25, **which was rejected on 2026-08-12** (DECISION-026: an on-demand CLI subcommand is a linter beside the AI-OS, not the AI-OS). It is carried by item 37 — each guard's rule gets a Framework-layer home in `.kenovis/AI/`, delivered by `sync`, in force on the next task with nothing to invoke. Corrected 2026-08-13; the stale citation is `PRODUCT/ROADMAP.md` OF-59 and its class is OF-22.
 
 ---
 

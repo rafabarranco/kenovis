@@ -40,6 +40,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-026** ‡★ — An Improvement Lands In The Framework Layer, Because That Is The Product. Rules go into `.kenovis/AI/`, which agents load on every task and `sync` delivers to every Installation; `.github/` is local scaffolding and never the deliverable, and `kenovis check` is rejected because an on-demand command is not an AI-OS operating on a repository.
 - **DECISION-025** ‡★ — A Finding Is Fixed, Scheduled, Or Rejected. A finding a round does not fix carries one of three dispositions, prose is not one of them, and `PRODUCT/ROADMAP.md` gains an `Open Findings` queue that `/next` Step 3 reads alongside the scheduled items.
 - **DECISION-027** ‡★ — Nothing Stays In The Thread. Everything a session finds — improvement, bug, technical debt, decision, learning, open question — is written to a Product-layer file in that session, routed by kind; the rule and its routing table live in the `CLAUDE.md` stub every Installation autoloads, not behind a command.
+- **DECISION-028** ‡★ — Kenovis Replaces The Conventional Development Team, Not The Human Who Owns The Product. `PRODUCT/OPERATING_MODEL.md` §1 wins over `SYSTEM.md`'s "the objective is not to replace engineering teams", which is deleted; the operating model outranks the constitution wherever they conflict.
 
 ---
 
@@ -2111,7 +2112,7 @@ Every round can be asked a question it previously could not answer: what happene
 
 Negative:
 
-The queue is another append-only document in a repository whose per-session context is already the subject of this priority block — it must stay a table of one-line entries, and it falls under whatever lifecycle rule item 21 writes. The disposition rule is also mostly unenforceable: only the `Future action:` half has a mechanical guard, because detecting a finding inside prose has no pattern (Learning-015). And that guard, like every other, runs in this repository's CI and not in any Installation until `kenovis check` ships (item 25).
+The queue is another append-only document in a repository whose per-session context is already the subject of this priority block — it must stay a table of one-line entries, and it falls under whatever lifecycle rule item 21 writes. The disposition rule is also mostly unenforceable: only the `Future action:` half has a mechanical guard, because detecting a finding inside prose has no pattern (Learning-015). And that guard, like every other, runs in this repository's CI and not in any Installation. (Deleted 2026-08-13, founder instruction: this sentence named `kenovis check` / item 25 as the work that would close that gap. Item 25 was rejected on 2026-08-12 — see DECISION-026. Item 37 carries it: each guard's rule gets a Framework-layer home that `sync` delivers.)
 
 ---
 
@@ -2260,6 +2261,76 @@ Telling the human is not recording it. Neither is describing it in the narrative
 The rule now reaches a customer's next session with nobody doing anything, which is DECISION-026's test. A CLI test fixes it in the stub so a future edit cannot quietly drop it.
 
 What this does not do is detect a violation. Compliance rests on the rule being loaded, unmissable, and stated in the first file read — the same footing as every other instruction in this AI-OS. The detection half stays OF-21, deliberately unbuilt for now.
+
+---
+
+# DECISION-028
+
+# Kenovis Replaces The Conventional Development Team, Not The Human Who Owns The Product
+
+Date:
+
+2026-08-13
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+When an external team's run (item 33) produces evidence about which claim customers actually buy.
+
+---
+
+## Context
+
+Two documents that every session loads stated opposite missions, and neither knew about the other.
+
+`.kenovis/AI/SYSTEM.md` → "Final Principle", present since initialization, read in full at the start of every session and shipped by `sync` to every Installation:
+
+> The AI-OS exists to amplify human creativity and decision making.
+>
+> The objective is not to replace engineering teams.
+
+`PRODUCT/OPERATING_MODEL.md` §1, authored by the founder and recorded on 2026-08-13:
+
+> Its primary mission is to enable products to be developed, maintained, evolved, and supported **without requiring a conventional human development team**.
+
+`grep -rn "not to replace engineering teams" PRODUCT/ DECISIONS.md AI/memory/` → **0** before this decision. Four consecutive `/analyze` rounds ran on the question of whether this AI-OS still served its purpose, and none found the sentence in which the constitution denies it — because the constitution is loaded as authoritative and read for instruction, not audited against a specification that until that day did not exist on disk (OF-36, `AI/memory/learnings.md` Learning-028).
+
+`COMPANY_OS.md` → Company Vision carried the same weaker claim by omission ("gives any small, ambitious team the execution capacity of a full specialized organization"). That was already recorded as OF-36's open half. This decision settles both.
+
+## Decision
+
+**§1 wins.** Kenovis's mission is to let a product be built, maintained, evolved and supported without a conventional human development team.
+
+The negation is deleted rather than softened: `SYSTEM.md`'s "The objective is not to replace engineering teams" and its paired "amplify human creativity" framing are removed, and `COMPANY_OS.md` → Company Vision is restated against §1. A sentence that contradicts the specification is not improved by qualification; it is the thing the specification exists to overrule.
+
+What is *not* claimed, and the boundary matters because it is the difference between a product and a fantasy: Kenovis does not replace the human who owns the product. `PRODUCT/OPERATING_MODEL.md` §4 assigns the founder product direction, strategy, business decisions, approval and prioritisation, and assigns Kenovis engineering awareness, technical debt tracking, architectural consistency, technical planning, discovery tracking and roadmap completeness. The replaced party is the *conventional development team* — the roles, the process, and the institutional memory. The retained party is the owner.
+
+Ranking, stated because OF-39 has not settled the general hierarchy and this conflict could not wait for it: **where `PRODUCT/OPERATING_MODEL.md` and any framework document conflict, the operating model wins.** It is the founder's statement of what the product is for; the framework describes how it is built. This is a specific ruling on a specific conflict, not the general hierarchy — OF-39 still has to reconcile `CLAUDE.md`'s and `SYSTEM.md`'s two disagreeing Source Of Truth Hierarchies, neither of which lists the operating model at any rank.
+
+## Alternatives Considered
+
+**`SYSTEM.md` wins — augmentation.** Rejected by the founder. It is the more defensible commercial position and the one `COMPANY_OS.md` already held, and that is precisely what made it dangerous: it was never chosen, it was inherited from the template and never compared to what the founder actually wanted. Keeping it would have meant every round continued to optimise against a mission the owner does not hold.
+
+**Scope both — "replaces the conventional team, does not replace the responsible human".** Rejected as the *resolution*, retained as the *content* of this decision's second half. As a resolution it would have left both sentences standing and required every future reader to reconcile them; the boundary is better stated once, here, than implied by two surviving sentences that appear to disagree.
+
+**Wait for OF-39.** Rejected. OF-39 asks which of two hierarchies governs in general; this is a flat contradiction between two named sentences, and it does not need the general rule to be settled. Sequencing it behind OF-39 would have left the constitution denying the specification for another N rounds, which is the parking that `PRODUCT/ROADMAP.md` item 27 exists to forbid.
+
+## Consequences
+
+`SYSTEM.md`'s Final Principle changes for every Installation on its next `sync`. That is the intended blast radius: an Installation whose agents read "do not aim to replace an engineering team" before every task was being told the opposite of the product's mission.
+
+`COMPANY_OS.md` → Company Vision, Company Thesis and the Ideal Customer Profile now make a stronger claim than the market has validated. One external team has run this product, on 2026-08-06, against `kenovis@0.3.0` (OF-12, item 33). The claim is the founder's to make and the evidence to support it does not exist yet — recorded here so that gap is visible rather than discovered later.
+
+`PRODUCT/OPERATING_MODEL.md` is now cited by a decision, which does not by itself put it on any session-initialization path — that is OF-50 and stays open.
+
+The unscoped "The AI is not an autonomous decision maker" in `SYSTEM.md` and `CLAUDE.md` is **not** settled here. It is a scoping defect rather than a contradiction of mission, it survives this decision unchanged, and it stays OF-58 — separated deliberately so that a ruling on replacement does not silently also rule on autonomy.
 
 ---
 

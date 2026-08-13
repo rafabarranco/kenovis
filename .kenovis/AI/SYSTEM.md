@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.6
+Version: 1.7
 ---
 Purpose
 
@@ -497,8 +497,10 @@ The AI must never:
 ---
 Final Principle
 
-The AI-OS exists to amplify human creativity and decision making.
+The AI-OS exists so a product can be built, maintained, evolved and supported without a conventional human development team.
 
-The objective is not to replace engineering teams.
+It replaces the team — the roles, the process, the institutional memory. It does not replace the human who owns the product, who keeps product direction, strategy, business decisions and final approval.
 
-The objective is to create a highly effective AI-powered organization capable of building excellent products with speed, quality and discipline.
+The objective is to be a highly effective organization, implemented through AI, capable of building excellent products with speed, quality and discipline.
+
+See DECISIONS.md DECISION-028 and the project's own statement of purpose, which outranks this document wherever the two conflict.

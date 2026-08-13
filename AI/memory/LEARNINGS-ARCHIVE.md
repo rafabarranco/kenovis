@@ -55,9 +55,11 @@ When a command instructs an outcome, check that the same command permits the act
 And: knowledge sinks are not interchangeable. Before adding a "record it in X" instruction, ask what reads X and when. A destination nothing reads at decision time is a place to put something down, not a place for it to be picked up.
 
 Future action:
-Items 24 and 25 remain — the behavioural check that an agent opens a decision body rather than paraphrasing its index, and `kenovis check` so an Installation can run a rule rather than only read it. Item 20 remains: 18 of the 23 future actions are standing rules awaiting promotion into policies, which is a rule with no run behind it since DECISION-011.
+Item 24 remains — the behavioural check that an agent opens a decision body rather than paraphrasing its index. Item 20 remains: 18 of the 23 future actions are standing rules awaiting promotion into policies, which is a rule with no run behind it since DECISION-011.
 
-Disposition: item 20, item 24 and item 25 — all three scheduled in `PRODUCT/ROADMAP.md`.
+Disposition: item 20 and item 24, both scheduled in `PRODUCT/ROADMAP.md`.
+
+Edited 2026-08-13 on founder instruction, the one exception to this archive's verbatim rule and recorded so it is visible: both lines named item 25 (`kenovis check`) as scheduled work. It was rejected on 2026-08-12 (DECISION-026) and item 37 carries the gap instead. Nothing else in this entry is altered.
 
 ---
 Example: Process — a scheduled item's premise was never checked before it was scheduled
