@@ -375,6 +375,38 @@ Future action:
 Disposition: Open — the second half is promoted, the first is not, and it now has an id: `PRODUCT/ROADMAP.md` → **OF-63**. The unpromoted rule is "check what empties this population, and what that other rule then reads"; the plausible home is `policies/testing.md` → "A Check Is Not Verified Until It Has Been Run", widened from "run the failing case" to "run the empty case". Not written in the same round because it is a policy section and that round already added two, and OF-24's rule against restating a sibling policy's section applies here as much as anywhere. **The id was added afterwards, and the gap is worth naming:** the deferral was originally recorded in this field with a reason and no id, which reads as handled and is not — [[Learning-025]]'s exact shape, in the file that records it. `check_future_actions.py` reads `Future action:` and not `Disposition:`, so it passed.
 
 ---
+
+## Learning-032
+
+Date:
+2026-08-13
+
+Category:
+Process
+
+Context:
+A session that invoked no command, in which the founder instructed that every analysis, execution, learning, decision and finding be checked against `PRODUCT/ROADMAP.md` and planned there if absent.
+
+Problem:
+The framework already required a finding to be recorded (DECISION-025) and recorded in-session (DECISION-027). It required neither of the two things that turn a record into a plan: comparing the finding against what is already scheduled, and writing it in a form the ranking can compare.
+
+What happened:
+Measured before writing anything: `grep -rni "already scheduled\|already covered\|duplicate finding\|existing item covers" .kenovis/AI/` → **0**, and `grep -rn "Pain" .kenovis/AI/policies/ .kenovis/AI/commands/` → **0**. Yet 41 of this repository's 47 `Open` rows already carried Pain, Frequency and Cost. The practice was near-universal and written nowhere an agent loads — the ranking formula lives at `.kenovis/AI/templates/product-layer/PRODUCT/ROADMAP.md:246`, a Product-layer template the customer owns.
+
+Root cause:
+**A practice that forty rounds performed correctly generates no evidence that it is unwritten.** Compliance and a rule look identical from inside the repository that has the habit; they diverge only in an Installation that has no rounds behind it, and no Installation reports back (OF-12). So the gap was invisible to every mechanism here and visible immediately to the founder, who was reasoning about what a *fresh* thread would do.
+
+Learning:
+**Recording is not planning.** A finding on disk and absent from the roadmap has been remembered, not scheduled — and remembering is precisely what a thread already does badly. This is the same distinction [[Learning-024]] draws between knowledge sinks: only `PRODUCT/ROADMAP.md` is read to decide what happens next, so a disposition that does not reach it is a well-documented deferral in the wrong place.
+
+Second half: **the strongest habits are the likeliest to be unwritten**, because nothing ever fails to prompt the writing. Look for rules in what a repository always does and never states, not only in what it gets wrong.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-66** (six `Open` rows predate the rule and do not meet it), **OF-67** (the policy now requires terms whose definition ships only in a customer-owned template), **OF-68** (`DECISIONS.md` restates index facts in prose and they go stale on every added decision). The rule half is promoted: `policies/documentation.md` 3.5, recorded as DECISION-029.
+
+Disposition: Fixed as a rule — `policies/documentation.md` 3.5, DECISION-029 — with three residues queued as **OF-66**, **OF-67** and **OF-68**. No unpromoted half. The ids are repeated here rather than only in `Future action:` above because [[Learning-031]]'s disposition failed exactly that way, and `check_future_actions.py` caught this entry doing it again on first run.
+
+---
 Learning Examples
 
 The two entries below are the format examples every Installation receives in its template (see `.kenovis/AI/commands/init-project.md` Step 8). They are not learnings this product recorded.
