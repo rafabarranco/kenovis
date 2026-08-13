@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.4
+Version: 3.5
 
 ---
 
@@ -424,6 +424,14 @@ So every finding a round does not fix gets exactly one disposition, stated where
 **Being described in prose is not a disposition.**
 
 `Open` is a real disposition and also the easiest place to hide. A finding whose executor is not the AI — a decision only the human can make, work that needs an external party, a number nobody has — sits in the queue in perfect compliance with this rule and moves for no one. So an `Open` finding that the AI cannot execute names two more things: **who executes it, and what input they need to decide.** Without those, the queue becomes the new place where things stay still, with an id.
+
+**A finding is checked against `PRODUCT/ROADMAP.md` before it is dispositioned, and that check has two outcomes, never zero.** Either something already covers it — a scheduled item or a queue row — and the finding cites that id and adds what this session learned to it; or nothing does, and it enters the queue with a new id. Writing without looking is how one defect acquires three ids. Looking without writing is how a session concludes "that is already known" about something that is on no document at all. Both fail the same way: the roadmap stops being the complete representation of known future work, which is the one property that makes it worth reading.
+
+**Recording is not planning.** A finding written to a Product-layer file and absent from the roadmap has been remembered, not scheduled — and remembering is what a thread already does badly. The disposition is not complete until the roadmap shows it.
+
+**An `Open` finding is dimensioned where it is written, or it is prose with an id.** The row carries **Pain, Frequency and Cost** — the terms the roadmap's own priority formula divides — in one line. A term that is unknown is written as unknown; that ranks, and it names the first output of picking the finding up. A term simply left out does not rank, and the finding drops silently out of every selection that follows, which is indistinguishable from never having recorded it.
+
+Promotion is a separate act. A queue row becomes a scheduled item when a round picks it up and dimensions it into work — problem, target, validation. Demanding a full item at the moment of discovery is what pushes a late finding back into prose, which is the failure this whole section exists to prevent.
 
 **A closed item declares what it left behind, in one line, or the omission is invisible.** The three dispositions above only work if someone remembers to apply them, and remembering is exactly what fails — a round that finds something late, while writing its summary, takes the cheap path and describes it there. Nothing distinguishes that from a round that genuinely found nothing.
 

@@ -41,6 +41,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-025** ‡★ — A Finding Is Fixed, Scheduled, Or Rejected. A finding a round does not fix carries one of three dispositions, prose is not one of them, and `PRODUCT/ROADMAP.md` gains an `Open Findings` queue that `/next` Step 3 reads alongside the scheduled items.
 - **DECISION-027** ‡★ — Nothing Stays In The Thread. Everything a session finds — improvement, bug, technical debt, decision, learning, open question — is written to a Product-layer file in that session, routed by kind; the rule and its routing table live in the `CLAUDE.md` stub every Installation autoloads, not behind a command.
 - **DECISION-028** ‡★ — Kenovis Replaces The Conventional Development Team, Not The Human Who Owns The Product. `PRODUCT/OPERATING_MODEL.md` §1 wins over `SYSTEM.md`'s "the objective is not to replace engineering teams", which is deleted; the operating model outranks the constitution wherever they conflict.
+- **DECISION-029** ‡ — A Finding Is Checked Against The Roadmap, And An Open Finding Is Dimensioned. Before a finding is dispositioned it cites the roadmap id that already covers it or takes a new one; an `Open` row carries Pain, Frequency and Cost, writing `unknown` where a term is unknown; promotion to a scheduled item is a separate act.
 
 ---
 
@@ -48,9 +49,11 @@ Every decision recorded below has exactly one line here, added in the same chang
 
 A decision log is product-specific. A customer Installation's log starts empty and accumulates that company's own decisions — see DECISION-021 and `.kenovis/AI/templates/product-layer/DECISIONS.md`. The index above is the structural exception: it ships in that template as an empty section, because a log without one cannot be read without being read whole.
 
-This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Fifteen of them are framework-level in effect and ten are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
+This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Nineteen of them are framework-level in effect and thirteen are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
 
 The framework-level list previously said "Eight", named eight, and claimed all eight were cited by ID inside the framework layer — four of them are not, while five decisions that are cited were missing. Corrected in the round that added DECISION-024 (`PRODUCT/ROADMAP.md` Phase 1 item 12), which had to edit this paragraph anyway; the citation counts were read off the tree with `grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI`, per `AI/memory/learnings.md` Learning-016.
+
+Corrected again in the round that added DECISION-029: it still read "Fifteen" and "ten" four decisions later. Both figures were re-read off the artifact — `‡` and `★` counted in the index itself, and the citation count with the same `grep` — giving nineteen and thirteen. The paragraph is stale by construction, because it restates in prose two facts the index already carries as marks; that recurrence is a finding rather than a typo, and it is **OF-68**.
 
 Everything else is product-specific and should be recorded as real decisions get made. See .kenovis/AI/commands/init-project.md.
 
@@ -2331,6 +2334,74 @@ Ranking, stated because OF-39 has not settled the general hierarchy and this con
 `PRODUCT/OPERATING_MODEL.md` is now cited by a decision, which does not by itself put it on any session-initialization path — that is OF-50 and stays open.
 
 The unscoped "The AI is not an autonomous decision maker" in `SYSTEM.md` and `CLAUDE.md` is **not** settled here. It is a scoping defect rather than a contradiction of mission, it survives this decision unchanged, and it stays OF-58 — separated deliberately so that a ruling on replacement does not silently also rule on autonomy.
+
+---
+
+# DECISION-029
+
+# A Finding Is Checked Against The Roadmap, And An Open Finding Is Dimensioned
+
+Date:
+
+2026-08-13
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+When item 41 step 2's conformance table has one closing round's worth of evidence on whether the comparison is actually being performed.
+
+---
+
+## Context
+
+Founder instruction, given in this session and quoted so the rule stays traceable to what was asked: *"quiero que TRAS CADA analisis, ejecucion, aprendizaje, decision tomada, hallazgo encontrado... revises SIEMPRE si eso esta planificado en el roadmap, y si no lo esta, que lo añadas y lo planifiques"*.
+
+DECISION-025 requires a finding to carry a disposition. DECISION-027 requires it to be written to a Product-layer file in the session that found it. Neither requires the finding to be **compared against what is already planned**, and neither requires a queued finding to be **comparable to the others** once it is there. Both are the difference between a record and a plan.
+
+Measured 2026-08-13, each read off the tree:
+
+- `grep -rni "already scheduled\|already covered\|duplicate finding\|existing item covers" .kenovis/AI/` → **0**. Nothing anywhere in the framework tells an agent to look at the roadmap before writing a finding into it.
+- `grep -rn "Pain" .kenovis/AI/policies/ .kenovis/AI/commands/` → **0**. The formula the queue is ranked by — `(Customer Pain × Frequency × Business Impact)` — lives at `.kenovis/AI/templates/product-layer/PRODUCT/ROADMAP.md:246`, a product-layer template, and nowhere an agent loads per task.
+- Of **47** `Open` rows in this repository's queue, **41** carry Pain, Frequency and Cost and **6** do not — OF-02, OF-03, OF-04, OF-10, OF-11, OF-14.
+
+That last figure is the shape of the problem rather than its size: dimensioning is already the habit *here*, after forty rounds of it. A habit is exactly what a fresh Installation does not have, and the framework was shipping the practice as an example inside a form the customer owns. Same state §2 of the operating model was in before item 39 — the rule was real, and it was not anywhere an agent reads.
+
+## Decision
+
+Two rules, added to `.kenovis/AI/policies/documentation.md` (3.4 → 3.5) → "A Finding Is Fixed, Scheduled, Or Rejected":
+
+**Check before writing.** A finding is compared against `PRODUCT/ROADMAP.md` before it is dispositioned. Two outcomes, never zero: it cites the id that already covers it and adds what this session learned to that entry, or it takes a new id. Writing without looking gives one defect three ids; looking without writing concludes "already known" about something that is on no document at all.
+
+**Dimension the row, not the item.** An `Open` row states **Pain, Frequency and Cost** in one line, and writes `unknown` where a term is unknown — an unknown term ranks and names the first output of picking the finding up, while an omitted one drops the finding out of every subsequent selection, which is indistinguishable from never recording it. Promotion to a scheduled item — problem, target, validation — is a separate act, performed by the round that picks the finding up.
+
+And the sentence the instruction turns on, stated in the policy in those words: **recording is not planning.** A finding on disk and absent from the roadmap has been remembered, not scheduled.
+
+## Alternatives Considered
+
+**Every finding becomes a `SCHEDULED` item immediately.** Presented to the founder and rejected. It would close OF-32 by construction, and it puts the highest cost at the exact moment the round is least able to pay it — discovery is usually late in a session, which is when a round takes the cheap path and writes prose instead. It also accelerates the one document this framework currently cannot bound: `PRODUCT/ROADMAP.md` is **143,904 bytes** against a 60 KB threshold with the archive rule already run to its limit (OF-62).
+
+**Per-finding judgement — item if executable now, row if not.** Rejected. The criterion would be applied by the same agent whose lapse produced the finding, and nothing checks the application. That is the shape of every failure this policy section already exists to catch.
+
+**A CI guard on the comparison.** Not proposed, and recorded so it is not proposed again. DECISION-026 and OF-21 hold the eleventh guard until item 37 completes, and an unmade comparison leaves no artifact to classify — Learning-015's point exactly.
+
+**Keep it as this repository's behaviour only.** Presented and rejected by the founder. It fails DECISION-026's test outright: no Installation would receive it, and the Installations are where the habit does not exist.
+
+## Consequences
+
+The rule reaches a customer's next task through `sync` with nobody invoking anything, because `policies/documentation.md` is loaded per task. DECISION-026's test, passed.
+
+It names terms defined in a file it does not ship alongside. The priority formula lives in the product-layer template, which an Installation owns and may edit or delete, so a customer can end up holding a policy that cites a formula their roadmap no longer contains. Recorded as **OF-67**, not fixed here.
+
+Six `Open` rows in this repository do not meet the rule on the day it is written. Backfilled as **OF-66**, so the exception is a queued row rather than a silence.
+
+This does not settle **OF-38** — when a session ends is still an event nothing detects — and it does not settle **OF-32**, which is about findings being *resolved* rather than dimensioned. It makes both smaller and neither disappears.
 
 ---
 
