@@ -42,6 +42,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-027** ‡★ — Nothing Stays In The Thread. Everything a session finds — improvement, bug, technical debt, decision, learning, open question — is written to a Product-layer file in that session, routed by kind; the rule and its routing table live in the `CLAUDE.md` stub every Installation autoloads, not behind a command.
 - **DECISION-028** ‡★ — Kenovis Replaces The Conventional Development Team, Not The Human Who Owns The Product. `PRODUCT/OPERATING_MODEL.md` §1 wins over `SYSTEM.md`'s "the objective is not to replace engineering teams", which is deleted; the operating model outranks the constitution wherever they conflict.
 - **DECISION-029** ‡ — A Finding Is Checked Against The Roadmap, And An Open Finding Is Dimensioned. Before a finding is dispositioned it cites the roadmap id that already covers it or takes a new one; an `Open` row carries Pain, Frequency and Cost, writing `unknown` where a term is unknown; promotion to a scheduled item is a separate act.
+- **DECISION-030** ‡ — `/next` Starts From The Pointer, And Stops Rather Than Descends. Step 3 reads three inputs including the `Next` pointer the previous round wrote, and a departure from it is recorded; when the highest-ranked objective needs a human, the round presents the decision with the input already named, records that it stopped and on what, and stops — descending the priority order to find something executable is forbidden.
 
 ---
 
@@ -49,7 +50,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 
 A decision log is product-specific. A customer Installation's log starts empty and accumulates that company's own decisions — see DECISION-021 and `.kenovis/AI/templates/product-layer/DECISIONS.md`. The index above is the structural exception: it ships in that template as an empty section, because a log without one cannot be read without being read whole.
 
-This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Nineteen of them are framework-level in effect and thirteen are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
+This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Twenty of them are framework-level in effect and thirteen are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
 
 The framework-level list previously said "Eight", named eight, and claimed all eight were cited by ID inside the framework layer — four of them are not, while five decisions that are cited were missing. Corrected in the round that added DECISION-024 (`PRODUCT/ROADMAP.md` Phase 1 item 12), which had to edit this paragraph anyway; the citation counts were read off the tree with `grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI`, per `AI/memory/learnings.md` Learning-016.
 
@@ -2402,6 +2403,68 @@ It names terms defined in a file it does not ship alongside. The priority formul
 Six `Open` rows in this repository do not meet the rule on the day it is written. Backfilled as **OF-66**, so the exception is a queued row rather than a silence.
 
 This does not settle **OF-38** — when a session ends is still an event nothing detects — and it does not settle **OF-32**, which is about findings being *resolved* rather than dimensioned. It makes both smaller and neither disappears.
+
+---
+
+# DECISION-030
+
+# `/next` Starts From The Pointer, And Stops Rather Than Descends
+
+Date:
+
+2026-08-13
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder — `PRODUCT/ROADMAP.md` item 42 parts 2-3, from the founder-supplied usage model in `PRODUCT/OPERATING_MODEL.md` → Addendum A.
+
+Review Date:
+
+After the first round that actually reaches a founder-call item and stops, which is expected to be the very next one.
+
+---
+
+## Context
+
+Addendum A states the cadence this product is actually used under: **one thread per `/next`**. A fresh thread inherits no conversation, so everything a round needs has to be on disk and has to be pointed at.
+
+Two defects, both measured, both firing on the next round:
+
+**The pointer is written and never read.** Step 15 has said since 2.4 that the recommended next action goes in `PRODUCT/ROADMAP.md` *"so the next `/next` run reads it instead of re-deriving it"*. Step 3 named exactly two inputs — the scheduled items and the `Open Findings` queue — and never the pointer. `awk '/^# Step 3/,/^# Step 4/' .kenovis/AI/commands/next.md | grep -c 'Next` pointer'` → **0** before this change. So every round re-derived the ordering from the priority formula over a **153,375-byte** document while the previous round's four paragraphs of sequencing reasoning sat unread a few hundred lines away. (OF-46's own row anchored that document at 131 KB, which was already stale when this round read it — the fourth instance of OF-04.)
+
+**A human-only objective has no defined behaviour.** `grep -cin "founder\|human decision\|cannot execute\|who executes" .kenovis/AI/commands/next.md` → **0** before this change. `policies/documentation.md` requires an `Open` finding the AI cannot execute to name who executes it and what input they need — the write side shipped, and nothing consumed it. The top of the board is item 41 step 1, a founder call on OF-39; items 32 and 33 are the same shape. Step 9's *"do not continue blindly, update plan"* is the only thing that speaks to it, and it speaks to neither outcome.
+
+## Decision
+
+Both rules go in **Step 3**, `.kenovis/AI/commands/next.md` 2.5 → 2.6.
+
+**Three inputs, and the round starts from the pointer.** A round may depart from it, and when it does it says why in `PRODUCT/ROADMAP.md` in the same round. A departure that is not written down is indistinguishable from never having read the pointer. When no pointer exists, rank from the other two inputs and write one in Step 15.
+
+**When the objective is not the AI's to execute: present, record, stop.** Present the decision with the input the item already names; record in `PRODUCT/ROADMAP.md` that the round reached that item and stopped, and on what; stop. If the human answers in the same session, continue from Step 4.
+
+**Descending the priority order to find something executable is forbidden**, in those words.
+
+## Alternatives Considered
+
+**Leave the pointer implicit — Step 15 already says the next run reads it.** Rejected. An instruction whose reader is never told to read it is not a weak instruction, it is an absent one; `policies/documentation.md` → "An Instruction Is Reachable, And Its Sink Is Read" names exactly this failure, and it was happening inside the command that ships that policy's workflow.
+
+**Descend to the next executable item when the top one needs a human.** Rejected explicitly, and written into the command as a prohibition rather than left unstated. It is the most natural thing for a round to do and it is invisible: skipping leaves no artifact, so a board whose top item needs a decision silently becomes a board of whatever the AI could do alone, every individual round defensible. That is item 40's drift with a fresh mechanism.
+
+**Put the human-call branch in Step 9 (Check Dependencies).** Rejected. Step 9 runs after Steps 4-8 have activated agents and built a plan, so the round pays the full planning cost for work it cannot execute. And Step 9's existing text is what already failed to cover this — moving the rule there would put it where it had demonstrably not been read.
+
+**Make stopping conditional on the human being present.** Rejected as unknowable. A command cannot detect whether anyone is reading, and a rule that depends on that would resolve to "descend" in exactly the unattended case where the trace matters most.
+
+## Consequences
+
+A board whose top item is a founder call now produces a **stopped round with a written record** instead of lateral work. That will read as less output, and it is the intended behaviour: the alternative was output that misrepresented the state of the board.
+
+The pointer becomes load-bearing. A round that writes a careless one now misdirects the next round rather than being ignored — which is a real cost, and the reason a departure has to be recorded rather than merely permitted.
+
+This does not implement observation (OF-33) or the empty-roadmap terminal behaviour (OF-49). Both stay where they are, in item 42 part 5 and item 41 §16.
 
 ---
 
