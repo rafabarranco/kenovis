@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.5
+Version: 2.6
 
 ---
 
@@ -86,7 +86,35 @@ Understand:
 
 # Step 3 - Identify Next Objective
 
-Read both inputs, not one: the scheduled items, and `PRODUCT/ROADMAP.md` → "Open Findings", the queue of findings earlier rounds did not fix. A finding carrying `Open` competes here on the same priority formula as a scheduled item — that is the whole reason the queue exists, and skipping it is how a known problem stays unresolved for months while rounds pick from the items that happen to be written up.
+Read three inputs, not one.
+
+**The scheduled items.**
+
+**`PRODUCT/ROADMAP.md` → "Open Findings"**, the queue of findings earlier rounds did not fix. A finding carrying `Open` competes here on the same priority formula as a scheduled item — that is the whole reason the queue exists, and skipping it is how a known problem stays unresolved for months while rounds pick from the items that happen to be written up.
+
+**The `Next` pointer the previous round wrote in Step 15.** Start from it. It carries the ordering rationale — dependencies, what unblocks what, why an expensive item is ranked above a cheap one — and that reasoning is written every round and is the first thing a new thread does not have. Re-deriving the order from the priority formula over the whole roadmap is not thoroughness; it is discarding the previous round's work and paying to reach a worse-informed version of the same answer.
+
+A round may depart from the pointer. When it does, it **says why, in `PRODUCT/ROADMAP.md`, in the same round** — new information, a dependency that turned out false, a founder instruction that outranks it. A departure that is not written down is indistinguishable from never having read the pointer.
+
+If no pointer exists yet — a first round, or one whose predecessor left none — rank from the two inputs above and write one in Step 15.
+
+---
+
+## When The Next Objective Is Not Yours To Execute
+
+Some work has an executor that is not this command: a decision only the human can make, work that needs an external party, a number nobody has yet. `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" requires such a finding to name **who executes it and what input they need to decide**. That is the write side. This is the read side, and without it the write side produces nothing.
+
+When the highest-ranked objective is one of those:
+
+- **Present the decision to the human**, with the input the item or finding already names. It is there so nobody has to invent it under pressure at the end of a round.
+- **Record in `PRODUCT/ROADMAP.md` that this round reached that item and stopped**, and on what it is blocked. A blocked round is a real outcome and leaves a real trace.
+- **Stop.**
+
+**Do not descend the priority order looking for something executable.** Skipping leaves no artifact, so a board whose top item needs a human silently becomes a board of whatever the AI could do alone — every round defensible, the ranking quietly inverted, and nothing anywhere showing the top item was passed over. That is the drift `PRODUCT/ROADMAP.md` item 40 describes, and descending is how it happens with a fresh mechanism each time.
+
+If the human answers within the same session, continue from Step 4 with their answer.
+
+---
 
 Determine:
 

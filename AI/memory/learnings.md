@@ -407,6 +407,38 @@ Future action:
 Disposition: Fixed as a rule — `policies/documentation.md` 3.5, DECISION-029 — with three residues queued as **OF-66**, **OF-67** and **OF-68**. No unpromoted half. The ids are repeated here rather than only in `Future action:` above because [[Learning-031]]'s disposition failed exactly that way, and `check_future_actions.py` caught this entry doing it again on first run.
 
 ---
+
+## Learning-033
+
+Date:
+2026-08-13
+
+Category:
+Process
+
+Context:
+Item 42 parts 2-3, closing OF-46 and OF-47 — both defects in `commands/next.md` Step 3, the step that chooses what a round works on.
+
+Problem:
+Step 15 had been writing a `Next` pointer into `PRODUCT/ROADMAP.md` since 2.4, stating in its own text that the following run reads it. Step 3 named two inputs and never the pointer. Every round wrote the ordering rationale and every round threw it away.
+
+What happened:
+The two halves were written eleven versions apart, in the same file, by rounds that each verified their own half. Nothing in either half is wrong. The defect exists only in the relationship between them, and no reader of either step is positioned to see it — Step 15's author is finishing a round and Step 3's author is starting one.
+
+Root cause:
+**A producer and its consumer are written by different rounds in different states of mind, and only the producer feels like a deliverable.** Writing the pointer is the satisfying half: it closes a round. Reading it is the half that has to be *required*, because a fresh round always has the option of deriving the answer itself and that option looks like diligence rather than waste.
+
+Learning:
+When an instruction says "so the next run reads it", that sentence is a claim about a **different file, step or session** than the one being edited, and it is the half least likely to be true. Verify the reader exists, by name, in the same round that writes the producer. [[Learning-024]]'s "before writing *record it in X*, ask what reads X and when" is the same rule; this is its inverse case — there the sink had no reader, here the reader existed and was never told the sink did.
+
+Second half, and it is what makes the pair worth one entry: **the branch a command lacks is the branch for the case it cannot handle**, and that case is invisible precisely because nothing records reaching it. `/next` had no behaviour for an objective only a human can execute, and the observable symptom of that gap is a round doing something *else* — which reads as a productive round. A gap whose symptom is plausible output is not found by reading output.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-70** (the pointer is now load-bearing and no round is held to writing one — this round's fix re-opened OF-46's failure through its own fallback clause) and **OF-71** (the new stop-branch names a file to record in and no section of it). Both created by this round's own change and queued in it. The rule half is shipped: `commands/next.md` 2.6 Step 3, DECISION-030.
+
+Disposition: Fixed as a rule — `commands/next.md` 2.6, DECISION-030 — with two residues queued as **OF-70** and **OF-71**. One half of the work is deliberately unvalidated and said so rather than claimed: the stop-branch fires on the next round, which reaches a founder call, and no round can validate its own behavioural change ([[Learning-031]], OF-30).
+
+---
 Learning Examples
 
 The two entries below are the format examples every Installation receives in its template (see `.kenovis/AI/commands/init-project.md` Step 8). They are not learnings this product recorded.
