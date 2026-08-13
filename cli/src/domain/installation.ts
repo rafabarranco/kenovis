@@ -320,5 +320,21 @@ Read \`${FRAMEWORK_DIR_NAME}/AI/SYSTEM.md\` first — it is the entry point for 
 operate in this repository. Everything under \`${FRAMEWORK_DIR_NAME}/\` is reusable framework;
 this repository's own product context lives at the repository root (COMPANY_OS.md, DECISIONS.md,
 PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, and this repository's own code).
+
+## Nothing stays in the thread
+
+Everything you find while working is written into a Product-layer file, in the session you found
+it — improvements, bugs, technical debt, decisions, learnings, open questions. All of it. A thread
+ends and takes with it whatever was only spoken in it.
+
+- Improvement, technical debt, a bug you are not fixing now, any candidate work → \`PRODUCT/ROADMAP.md\`
+- A decision made, or an option rejected → \`DECISIONS.md\`, body and index line together
+- A reusable lesson → \`AI/memory/learnings.md\`
+- A business or domain rule → \`DOMAIN/\`
+- An architectural consequence → \`ENGINEERING/\`
+- An open question you cannot answer → \`PRODUCT/ROADMAP.md\`, naming who decides it and what they need
+
+Telling the human is not recording it. This applies in every session, including ones that run no
+command and close no item. Full rules: \`${FRAMEWORK_DIR_NAME}/AI/policies/documentation.md\`.
 `;
 }

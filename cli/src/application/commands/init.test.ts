@@ -40,6 +40,31 @@ test("runInit writes a CLAUDE.md stub at the target root", async () => {
   assert.ok(fs.files.has(join("/repo", "CLAUDE.md")));
 });
 
+test("the CLAUDE.md stub carries the routing rule itself, not only a pointer to SYSTEM.md", async () => {
+  const fs = new InMemoryFileSystem();
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+    invokedAs: "init",
+  });
+
+  // The stub is the only file Claude Code autoloads unconditionally. A rule that
+  // lives one hop away, behind "read SYSTEM.md first", is a rule a session can
+  // skip without noticing — which is how findings kept dying in threads.
+  const stub = fs.files.get(result.claudeStubWrittenTo) ?? "";
+  assert.match(stub, /Nothing stays in the thread/i);
+  for (const destination of [
+    "PRODUCT/ROADMAP.md",
+    "DECISIONS.md",
+    "AI/memory/learnings.md",
+    "DOMAIN/",
+    "ENGINEERING/",
+  ]) {
+    assert.ok(stub.includes(destination), `stub names ${destination} as a destination`);
+  }
+});
+
 test("runInit writes a pending CLAUDE.md stub directing the next session to init-project", async () => {
   const fs = new InMemoryFileSystem();
 

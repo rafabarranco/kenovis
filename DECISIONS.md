@@ -39,6 +39,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-024** ‡★ — A Template Is A Form, Never A Destination. No framework instruction may name a path under `.kenovis/` as a place to write, because `sync` mirror-replaces that directory wholesale.
 - **DECISION-026** ‡★ — An Improvement Lands In The Framework Layer, Because That Is The Product. Rules go into `.kenovis/AI/`, which agents load on every task and `sync` delivers to every Installation; `.github/` is local scaffolding and never the deliverable, and `kenovis check` is rejected because an on-demand command is not an AI-OS operating on a repository.
 - **DECISION-025** ‡★ — A Finding Is Fixed, Scheduled, Or Rejected. A finding a round does not fix carries one of three dispositions, prose is not one of them, and `PRODUCT/ROADMAP.md` gains an `Open Findings` queue that `/next` Step 3 reads alongside the scheduled items.
+- **DECISION-027** ‡★ — Nothing Stays In The Thread. Everything a session finds — improvement, bug, technical debt, decision, learning, open question — is written to a Product-layer file in that session, routed by kind; the rule and its routing table live in the `CLAUDE.md` stub every Installation autoloads, not behind a command.
 
 ---
 
@@ -2201,6 +2202,64 @@ Examples:
 - Architecture changes.
 - Business model changes.
 - Partnership decisions.
+
+---
+
+---
+
+# DECISION-027
+
+# Nothing Stays In The Thread
+
+Date:
+
+2026-08-13
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+When a session produces a finding that genuinely belongs in none of the six destinations — that is the test of the routing table, not of the rule.
+
+---
+
+## Context
+
+The founder, on the fourth consecutive day of raising it: *"TODO LO QUE SE ENCUENTRA YA SEA MEJORA, BUG, DEUDA TECNICA, DECISIONES, APRENDIZAJES, DUDAS, TODO DEBE METERSE EN LOS PUTOS ARCHIVOS CORRESPONDIENTES EN KENOVIS."*
+
+This is the product's purpose, not a feature of it. An AI-OS that finds a defect and says nothing is not a development team.
+
+The rule existed. Its reach did not. Counted on 2026-08-13 with `grep -ci "Open Findings\|disposition" .kenovis/AI/commands/*.md .kenovis/AI/workflows/*.md`: named in **5 of 19** commands and workflows, and its one checkable form in **1 of 19**. Every one of those five is a door you have to already have decided to walk through. A session that ran no command was governed by nothing, and an Installation's root `CLAUDE.md` is a minimal stub that points at `SYSTEM.md` rather than carrying any rule itself — so the rule sat two hops from the only file that autoloads.
+
+DECISION-025 established the dispositions. DECISION-026 established that a rule belongs where the work is loaded. This decision is where those two meet a rule that was written in neither place.
+
+## Decision
+
+Everything a session finds is written into a Product-layer file, in that session, routed by kind: candidate work to `PRODUCT/ROADMAP.md`, decisions to `DECISIONS.md`, lessons to `AI/memory/learnings.md`, domain rules to `DOMAIN/`, architectural consequences to `ENGINEERING/`, and questions the AI cannot answer to the findings queue naming who decides and what input they need.
+
+The rule and its routing table live in three places, in descending order of what a session can skip: the `CLAUDE.md` stub the CLI writes into every Installation (autoloaded, no command, no hop), `.kenovis/AI/SYSTEM.md` → "Nothing Stays In The Thread", and `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected", whose population widens from closed roadmap items to sessions.
+
+Telling the human is not recording it. Neither is describing it in the narrative of whatever item was open.
+
+## Alternatives Considered
+
+**Add a terminal step to all 19 commands and workflows.** Rejected as the primary mechanism. It is nineteen copies of one rule — the divergence OF-24 records — and it still misses the case that produced this decision, a session that invokes no command at all.
+
+**A Claude Code hook firing at session end.** Already rejected as OF-20: it is one client's configuration, and everything under `.kenovis/` stays tool-agnostic markdown.
+
+**A CI guard over sessions.** There is no artifact. A session that wrote nothing leaves nothing to check, which is the whole shape of the problem; DECISION-026 and OF-21 also hold the eleventh guard until item 37 completes.
+
+## Consequences
+
+The rule now reaches a customer's next session with nobody doing anything, which is DECISION-026's test. A CLI test fixes it in the stub so a future edit cannot quietly drop it.
+
+What this does not do is detect a violation. Compliance rests on the rule being loaded, unmissable, and stated in the first file read — the same footing as every other instruction in this AI-OS. The detection half stays OF-21, deliberately unbuilt for now.
 
 ---
 
