@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.14
+Version: 1.16
 ---
 Scope
 
@@ -187,6 +187,158 @@ The general form: when a framework and its installations both have a file at pat
 Future action: `PRODUCT/ROADMAP.md` → OF-27 carries the work — deciding which of the two files is authoritative, and whether the stub should be generated from the constitution's framework-level sections. Not scheduled as an item yet; it re-opens a boundary DECISION-020 set.
 
 Disposition: Open — rule not yet promoted to a policy. Candidate destination is `.kenovis/AI/policies/architecture.md` → "Distribution Is Part Of The Architecture", which already holds Learning-009 and is where this belongs if OF-27 confirms the class rather than the instance.
+
+---
+
+## Learning-027
+
+Date:
+2026-08-13
+
+Category:
+Process
+
+Context:
+A `/analyze` run on the founder's question of whether this AI-OS had lost the purpose it was built for. The purpose is stated as: an operating system that acts as a complete software development team, observing continuously, routing each discovery to the role that owns it, refining it into planned work, so the founder never has to ask whether something was noticed.
+
+Problem:
+The capture half of that model is built, enforced and shipped. The processing half is not, and nothing had said so. Counted off the tree the same day: `grep -rin "refine"` across commands, workflows, policies and agents → **2**, both in `designer.md` and both about visual design. `grep -rn "Open Findings\|disposition" .kenovis/AI/agents/*.md` → **0**. Meanwhile ten CI guards, 1198 lines, enforce the capture half, and 18 of 30 queued findings are about that machinery rather than about what the product does for a team.
+
+What happened:
+Every round was honest and every round drifted the same way. `policies/documentation.md` → "A Claim Is Read Back Off The Artifact" made byte counts, grep counts and guard exit codes verifiable, and rounds honoured it. The mission had no such form — no round could show it had moved the product toward replacing a development team — so rounds closed on what they could demonstrate. Four consecutive rounds recorded the drift as a caveat and widened it, which item 37 already stated before this analysis found the reason.
+
+Root cause:
+An operating system optimises what it can verify about itself. Where a purpose has no checkable form and its instrumentation has ten, the instrumentation wins every round on merit, and each individual decision is defensible. The drift is therefore invisible from inside a round and fully visible in the aggregate — which is why it took a human reading eleven rounds at once to name it, the twelfth time in this document that a structural miss was found by asking rather than by the system.
+
+The amplifier is a ranking error. `commands/next.md` Step 3 applies one priority formula — `Pain × Frequency × Business Impact / Cost` — to two populations that do not share an axis: findings whose pain is a customer's, and findings whose pain is the framework's own. The second have low, exactly-known Cost; the first have Cost that is unknown or needs an external party. The formula does not fail, it resolves correctly toward the wrong population, every time.
+
+This is [[Learning-025]] at company scale. There, an instruction with no defined finished state became an optional one and every round did the cheaper half. Here, an objective with no defined verifiable state became an unrankable one, and every round did the measurable half.
+
+Learning:
+A rule that makes claims checkable will, on its own, bend the work toward whatever is cheapest to check. It is not a neutral discipline — it is a selection pressure, and it needs a counterweight written in the same verifiable form, or the mission loses to its own instrumentation while every round's record stays clean.
+
+The general form: when a system can prove it recorded something and cannot prove it advanced, it will record. State the objective as a question a closing round has to answer, or it is not in force no matter how prominently it is written.
+
+And when two kinds of work share a queue, check that they share the axis the queue ranks on before trusting the ordering. Two populations under one formula is not a prioritisation, it is a filter.
+
+Future action:
+`PRODUCT/ROADMAP.md` item 40 carries the work — the objective in checkable form, the queue's two populations separated, and a founder-set constraint on how many rounds may close on instrumentation before external validation runs again. OF-31, OF-32, OF-33 and OF-35 carry the four operating-model steps the framework does not implement.
+
+Disposition: Open — rule not yet promoted to a policy, and deliberately so. The candidate destination is `.kenovis/AI/policies/documentation.md` → "A Claim Is Read Back Off The Artifact", which is the section this learning is about; adding the counterweight there before item 40 settles what the objective's checkable form *is* would write a rule with nothing behind it, which is the shape [[Learning-024]] records.
+
+---
+
+## Learning-028
+
+Date:
+2026-08-13
+
+Category:
+Process
+
+Context:
+A second `/analyze` the same day as [[Learning-027]], on the same founder question. This one had an input the first did not: the founder pasted the actual document — 17 sections defining Kenovis's operating model, its absolute priority, its discovery chain, its role routing and its core invariant — in order to ask whether the system had lost it.
+
+Problem:
+That document is not in the repository, and never was. Measured the same day: `grep -ril "Core Operating Model\|NOTHING DISCOVERED MAY BE LOST\|Non-Negotiable Rules"` over the Product layer → **0**; `"without requiring a conventional human development team"` → **1**, a partial quote inside the roadmap item written about this same gap; `"institutional memory"` → **0**. `COMPANY_OS.md` holds vision, thesis, market, principles. `DOMAIN/BUSINESS_RULES.md` holds five rules, none of which governs how the AI-OS itself must behave.
+
+What happened:
+Item 40 had already found that the mission has no checkable form, and read that as a drafting gap — something to be written later, once the objective was settled. It was not unsettled. It was authored, complete, and held by the founder outside the system, so every round measured itself against the criteria that were on disk, which were all instrumentation.
+
+Root cause:
+A memory system that does not contain its own specification cannot detect its own drift, because the criterion it would measure against is the thing that is missing. Every mechanism this framework built to stop knowledge dying in a thread — the routing table, the dispositions, the queue, the declaration line, ten guards — was aimed at findings produced *during* work. None of them apply to the document that says what the work is for, because that document never enters through a round; it enters through the founder, once, and if it is not written down at that moment there is no later moment.
+
+This is [[Learning-024]]'s sink problem inverted. There, a fact was written to a destination nothing reads. Here, the highest-value fact was never given a destination at all, and its absence is silent in a way a wrong destination is not: nothing is missing from any file, because no file was ever expected to hold it.
+
+Learning:
+The first thing a product's context layer must contain is the statement of what the product is for, in the words of whoever decides it. Not paraphrased into a vision line — the operating rules themselves, at the altitude they were stated, in the documents that already exist to hold non-negotiables.
+
+The general form: **when a human has to paste something in order to ask whether it was lost, it was lost.** The paste is the evidence, not the remedy — and the same is true of every founder answer given in conversation during setup, which is the moment `/init-project` and `/adopt-project` own and the only moment this class of knowledge arrives.
+
+Second half, recorded because it happened inside this entry's own round and is the sharper form of the lesson: **the round that found this filed a queue row asking that the document be written down, while holding the document.** It did not write it. The founder answered with three words and the file exists now — `PRODUCT/OPERATING_MODEL.md`, verbatim, provenance included.
+
+Why that happened, and it is not carelessness: `/analyze` is forbidden from implementing, and "write the founder's document into the Product layer" was classified as implementing. It is not — it is recording, which that command's own text says is the difference between analysis and implementation, in a sentence added by item 26 for this exact reason. [[Learning-024]] one turn later, in the command where [[Learning-024]] was already applied.
+
+The distinction the framework does not draw: **a finding is something the work discovered; a supplied artifact is something a human handed over.** The first gets a disposition. The second gets written down, immediately, and giving it a disposition instead is how it leaves with the thread. Collapsing the two also inverts the founder/AI split — it returns the founder's own text to the founder as a question to answer.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-40** carries the supplied-versus-found distinction. **OF-36** is half fixed (the document is on disk); its reconciliation with `COMPANY_OS.md` and `DOMAIN/BUSINESS_RULES.md` stays Open and is item 40 part 1's now-available input. **OF-39** carries what that reconciliation runs into — two Source Of Truth Hierarchies that disagree, neither ranking the operating model. **OF-37** and **OF-38** are the two other structural findings from the same run.
+
+Disposition: Open — rule not yet promoted to a policy. Two candidate destinations, and they are different rules: the supplied-versus-found clause belongs in `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected", and asking for the founder's own statement of purpose belongs in `/init-project` and `/adopt-project`, which are where it either lands on disk or does not and where neither asks for it today. Deliberately not written before OF-36's reconciliation half settles which documents receive which sections, per the reasoning in [[Learning-027]]'s own disposition.
+
+---
+
+## Learning-029
+
+Date:
+2026-08-13
+
+Category:
+Process
+
+Context:
+A third `/analyze` the same day as [[Learning-027]] and [[Learning-028]], on the same founder question — whether this AI-OS still serves its stated purpose. The operating model was already on disk from the previous round, so this round's only new input was one sentence of founder framing about the repository's own layers.
+
+Problem:
+`PRODUCT/ROADMAP.md` item 40 is the item that diagnoses the drift, and it measures it as `wc -l .github/scripts/*.py` → **1198** against `find cli/src -name '*.ts' | xargs wc -l` → **2604**, concluding "repository-only infrastructure is 46% the size of the shipped product". The shipped product is not `cli/src`. `cli/scripts/bundle-framework-assets.mjs` copies `.kenovis/AI/` verbatim into the published bundle — **64 files, 419,098 bytes** — and the TypeScript is the delivery mechanism for it. Same item, same paragraph: 19 of the last 30 commits touched `.kenovis/AI/policies`, counted as instrumentation, when DECISION-026 defines exactly that directory as where an improvement lands *because that is the product*.
+
+What happened:
+The round that was diagnosing "every round optimises the instrumentation because only the instrumentation is measurable" reached for the measurable thing — lines of code — and thereby defined the product as its code. The finding was correct and its own evidence enacted the error it describes.
+
+Root cause:
+A ratio is an argument, and its denominator is a claim about what the product is. When the product is markdown that an agent loads, `wc -l` over `src/` is not a smaller measurement of it — it is a measurement of something else. The failure is specific to products whose deliverable is not code, which is this one, and it is invisible because every instinct for "measure the product" reaches for the source tree.
+
+Second half, and it is the same error from the other end: the founder described `.kenovis/` as "an example of a build" in the same session. It is the product's source. Both parties were reading the repository as *a CLI with some docs beside it*, when it is *an AI-OS with a CLI that ships it*. The tree says so — `ENGINEERING/ARCHITECTURE.md` line 97, DECISION-020, the bundle script's own header — and being written down did not make either reader hold it.
+
+Learning:
+**Before measuring the product, state what the artifact a customer receives actually is, and check the denominator against that.** For this product it is `.kenovis/AI/` plus the CLI that delivers it, not `cli/src`.
+
+The general form: **a measurement that has to define the product in order to divide by it is making a product decision, and should say so.** When a round's conclusion turns on a ratio, the denominator is the part to verify first — it is the half nobody checks, because it looks like arithmetic rather than judgement.
+
+And the corollary this round adds to [[Learning-028]]: a fact being on disk, correct, in three places, is not the same as it being held. Three documents recorded the layering and both the founder and the analysing round still worked from a different one. `policies/documentation.md` → "An Instruction Is Reachable, And Its Sink Is Read" asks what reads a destination; this asks the harder version — whether what read it came away with the fact.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **item 41** is where all of this now sits: the founder flagged 1:1 conformance to `PRODUCT/OPERATING_MODEL.md` as maximum priority in the same session, and the item carries a section-by-section conformance table — five `Present`, nine `Partial`, three `Absent`. **OF-41** carries the re-count, and it must be settled before item 40 part 3, which is a founder decision on a standing constraint that would otherwise be set against the wrong figures. **OF-42** carries founder/repository model divergence and should be decided with OF-35, which asks the same honest question about whether detection is achievable at all. **OF-43** carries the cost this keeps producing — three full analyses in one day because no document holds the answer.
+
+Disposition: Open — rule not yet promoted to a policy. The candidate destination is `.kenovis/AI/policies/documentation.md` → "A Claim Is Read Back Off The Artifact", which already requires a claim to be read off the artifact and does not yet require the artifact to be the right one. Deliberately not written before OF-41 settles the figures, for the reason [[Learning-027]]'s disposition gives: a counterweight added before its own input exists is a rule with nothing behind it.
+
+---
+
+## Learning-030
+
+Date:
+2026-08-13
+
+Category:
+Process
+
+Context:
+A fourth `/analyze` the same day, this one auditing the product against the now-recorded operating model, with a second supplied artifact in the input: the founder's usage model — one thread per `/next`, `/next` + `/analyze` + `/explain` as the three commands that actually run, the loop ending when the roadmap empties.
+
+Problem:
+Two things, and the second is the one worth keeping.
+
+First: `git status --short` → `?? PRODUCT/OPERATING_MODEL.md`. The document written the previous round to close OF-36 — the founder's specification, ranked by `PRODUCT/ROADMAP.md` item 41 above every other Product-layer file — was **untracked**. Written, correct, verified byte-identical to the founder's paste, and one `git clean` from gone. Neither the round that wrote it nor the round that scheduled a maximum-priority item around it noticed.
+
+Second: knowing the *cadence* changed which defects mattered, and it did so without any new code being read. `commands/next.md` Step 15 writes a "Next" pointer and says the next run reads it; Step 3 names two inputs and not that one. That has been true for every version of the file and read as a minor redundancy — until "one thread per item" made the pointer the *only* carrier of ordering rationale across threads, at which point it became the defect that costs most. Same for the 131 KB roadmap: a slow leak against unbounded sessions, a fixed toll per step under a known cadence.
+
+What happened:
+Every mechanism the framework has for durability ends at "write it to a Product-layer file". `policies/documentation.md` routes findings to files. `policies/git.md` governs commit scope and branch flow. Nothing joins them, so a file can satisfy the disposition rule completely and still not exist tomorrow.
+
+Root cause:
+**The framework's definition of "recorded" is a filesystem write, and the repository's definition is a commit.** In every other respect this AI-OS is careful about the difference between saying something and persisting it — that is the whole product. It carried the same gap one level down, between persisting and committing, and the gap was invisible because a written file *looks* durable in exactly the way a thread does not.
+
+Learning:
+**A finding is not recorded until it is committed.** The disposition rule's destinations are files in a git repository, and an uncommitted file is a working-tree artifact with roughly the durability of the thread that produced it.
+
+And the general form of the second half: **a workflow's cadence is part of its specification, and defects rank differently under different cadences.** The same file, unchanged, held a minor redundancy and a first-order defect depending only on whether threads inherit context. Before ranking work against a workflow, know how the workflow is actually run — and if that is not written down, it is missing input, not a detail.
+
+Corollary that held up and is worth stating because it worked: the founder supplied the cadence in a prompt, and it went to disk verbatim as `PRODUCT/OPERATING_MODEL.md` → Addendum A in the same round, rather than becoming a queue row asking someone to write it. That is [[Learning-028]]'s supplied-versus-found distinction applied on its second occasion, one day after it cost a document.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-45** carries the untracked specification and the rule behind it; it is step 0 of the current Next and is the founder's to close. **Item 42** carries the cadence work — the archive pass (OF-51/OF-23), `/next` reading its own pointer (OF-46), `/next` handling a human-only item (OF-47), `/explain`'s contradicting instruction (OF-48) and the eleven files that may share its shape (OF-52), and the empty-roadmap terminal state (OF-49). **OF-50** puts the specification on the session-initialization path and sequences with item 41 step 1.
+
+Disposition: Open — rule not yet promoted to a policy. The commit clause belongs in `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" and touches `policies/git.md`, which is the seam it falls through; the cadence clause belongs wherever item 41 step 2 puts the conformance criterion. Deliberately not written before OF-45 is decided, since the instance and the rule are one round's work and splitting them is how the instance gets fixed and the rule does not.
 
 ---
 Learning Examples
