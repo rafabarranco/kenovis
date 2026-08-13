@@ -4,9 +4,9 @@
 
 Company Operating System
 
-Version: 2.0
+Version: 2.1
 
-Last updated: —
+Last updated: 2026-08-13 — Company Vision restated against PRODUCT/OPERATING_MODEL.md §1 (DECISIONS.md DECISION-028).
 
 ---
 
@@ -26,7 +26,7 @@ The objective is to build a sustainable, valuable and scalable company.
 
 # Company Vision
 
-Kenovis gives any small, ambitious team the execution capacity of a full specialized organization. The company builds and distributes the Kenovis AI-OS itself — a documented operating system of specialized AI agents, workflows, policies and decision discipline — starting with software development teams, and eventually extending the same operating model to other professional practices (legal, accounting, and beyond).
+Kenovis lets a product be built, maintained, evolved and supported without a conventional human development team. It replaces the team — the specialized roles, the engineering process, the institutional memory that normally dies with the people who held it — while the human who owns the product keeps product direction, strategy, business decisions and final approval (DECISIONS.md DECISION-028, PRODUCT/OPERATING_MODEL.md §1 and §4). The company builds and distributes the Kenovis AI-OS itself — a documented operating system of specialized AI agents, workflows, policies and decision discipline — starting with software development teams, and eventually extending the same operating model to other professional practices (legal, accounting, and beyond).
 
 ---
 
