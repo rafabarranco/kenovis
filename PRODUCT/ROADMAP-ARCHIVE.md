@@ -4,7 +4,7 @@ ROADMAP-ARCHIVE.md
 
 Completed Roadmap Items
 
-Version: 1.1
+Version: 1.2
 ---
 Purpose
 
@@ -610,3 +610,220 @@ Shipped: `cli/package.json`/`package-lock.json` 0.12.0 → 0.13.0, `CHANGELOG.md
 Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.12.0 add` on a scratch brownfield repository, then `npx kenovis@0.13.0 sync`. Baseline reproduced first (no Decision Index in the template, no Open Findings section, the disposition rule cited from zero files). After the sync: transition reported `0.12.0 -> 0.13.0`, **17 paths changed inside `.kenovis/`** listed off `git status` rather than recalled, the rule cited from 11 files, all 18 Product-layer templates delivered with the `[ANSWER:` corpus unchanged at 127, no Product-layer file created at the target's root, `.setup-pending` preserved, and the target's own `README.md`, `src/` and `package.json` untouched.
 
 Solo-maintainer note, unchanged from previous releases: all four PRs came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin`. Not a misconfiguration.
+---
+Archived 2026-08-13 — third archive pass (`PRODUCT/ROADMAP.md` item 42 part 1, closing OF-51 / OF-23)
+
+Items 25, 34, 35, 36 and 39; the four superseded `Next` ordering blocks; and eleven closed rows of the `Open Findings` queue. Verbatim, as always.
+
+This pass widened what the rule covers, and that widening is the round's actual product. `.kenovis/AI/policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline" named a document's *entries* and was written in item 21, before the findings queue existed in item 28. So the queue was never inside the rule: it reached **72,423 characters — 44% of the active roadmap** — with a clean guard, because `check_document_size.py` is satisfied by a declared split at any size. A closed queue row and a superseded ordering block are closed entries; they archive like any other.
+
+A closed row does not vanish from the active queue. It is compacted to one line — id, the finding in a clause, its disposition, and a pointer here — because `OF-NN` ids are cited by name from closed items and from across the framework layer, and `.github/scripts/check_item_findings.py` resolves every declaration against the queue.
+---
+
+
+### item 25 (REJECTED)
+
+25. REJECTED (2026-08-12, founder) — a customer Installation can run a check, not just read a rule. Superseded by DECISION-026 and item 37.
+
+The problem it named is real and stays: nine guards run here, zero in any Installation. The remedy was wrong. `kenovis check` is a subcommand a human invokes on purpose, and an AI-OS that only holds when someone remembers to run it is not operating on the repository — it is a linter standing beside it. It also split every rule into a Python implementation and a TypeScript one, a cost this item's own ADR listed as an open question rather than as a reason not to.
+
+Enforcement belongs in `.kenovis/AI/` — the policies, commands, workflows and templates the agents already load per task, which `sync` already delivers. Item 37 carries the work. The text below is kept unedited so the reasoning trail survives; do not execute it.
+
+---
+
+25-original (rejected, kept verbatim) — a customer Installation can run a check, not just read a rule.
+
+Problem: five guards run in this repository's CI (`check_links`, `check_markers`, `check_changelog`, `check_template_refs`, `check_artifact_destinations`, plus `check_decision_index` from item 18 — six). A customer Installation runs none. `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` plus the customer README; `.github/` is not in the bundle, verified in item 17. Every rule this repository enforces mechanically, a customer holds as prose.
+
+The gap widens with each round rather than staying still: item 21 adds a seventh guard under the same mechanism, and item 20 a ninth. Count corrected in place on 2026-08-12 by reading it off the tree rather than off this paragraph — `ls .github/scripts/check_*.py | wc -l` → **9** (`check_links`, `check_markers`, `check_changelog`, `check_template_refs`, `check_artifact_destinations`, `check_decision_index`, `check_future_actions`, `check_document_size`, `check_learning_promotions`). That is the shape of the dogfooding caveat at the head of this block, applied to enforcement instead of retrieval — this repository is measurably better protected than the product it ships, by a margin that grows every round.
+
+Target: a `kenovis check` subcommand — filesystem-only, no network, inside ENGINEERING/ARCHITECTURE.md's Hard Rules and DECISION-013 — running the subset of rules **a customer can actually violate**: an incomplete Decision Index, a Product-layer file with no `PROJECT-SPECIFIC` marker, an artifact written under `.kenovis/`. Not a port of all six scripts; most of what they guard is framework content a customer never edits.
+
+Requires `/architect` and an ADR before any file is touched: a new CLI subcommand is an architecture decision, the same call DECISION-016/017/021/024 each needed. Two questions the ADR must settle rather than assume — where the rule definitions live so Python and TypeScript cannot drift apart, and whether this shares surface with item 23's `kenovis context` or stays separate.
+
+Ordering: with or after item 21, never before it. Item 21 decides what the lifecycle rules are; building the enforcement first would enforce rules that do not exist yet.
+
+Validated when: `kenovis check` run inside a real published Installation catches a seeded violation of each rule it claims to cover, and is silent on a clean Installation.
+
+
+### item 34
+
+34. DONE (2026-08-12, via /next) — promote `development` → `preproduction` → `main` and publish the release carrying item 20 and the `Open`-finding-executor fix.
+
+Chosen for the reason the previous "Next" gave and nothing displaced: fifteen files sat on `development` that no Installation could see. Item 20's half is unusually customer-visible for a framework-only release — five policies gained rules an Installation's agents already load per task, so the upgrade changes what those agents do rather than only what they are told. Competing items were item 24 (a seeded fixture, no release required), item 32 (founder input, not `/next` work) and OF-13; none of them reach a customer at all, which is the axis this item is on.
+
+Version call, decided at cut time per Phase 1 item 2's standing instruction: **minor, `kenovis@0.14.0`**. Seventh framework-only release running with no CLI code changed, and the argument is item 20's: a policy is loaded per task, a learnings file is not, so moving twenty-two rules from the second into the first changes behaviour in every Installation that syncs. `1.0.0` rejected for the seventh time on OF-11's still-unset number, which is now item 32's to close rather than each release's to re-argue.
+
+Also carried, because the lifecycle rule item 21 wrote came due on the document that scheduled it: `PRODUCT/ROADMAP.md` stood at **58.0 KB** against a 60 KB threshold with this item still to write. Items 19, 20, 21 and 31 — DONE and still inline, closed after item 19's own archive pass ran — moved verbatim to `PRODUCT/ROADMAP-ARCHIVE.md`, one line each left behind. The move alone took it **59410 → 42904 bytes (-16.1 KB)**; this item's own text and OF-14 put 3,962 of them back, for **46866 bytes (45.8 KB)** read off the file. The archive grew by exactly the 17,155 bytes extracted plus four separator newlines — 129415 → 146574 — checked by asserting each moved block is still a substring of the archive, so nothing was summarised away.
+
+RA2 gate applied before the move, not after: item 20's narrative carried a validation criterion it stated rather than claimed — the failing-case test for the learnings threshold, impossible to run at 12.1 KB. Queued as **OF-14** first, so archiving did not make it disappear. Items 19, 21 and 31 left nothing homeless; item 21's `CHANGELOG.md` exemption is already OF-13.
+
+Shipped: `cli/package.json`/`package-lock.json` 0.13.0 → 0.14.0, `CHANGELOG.md` `[Unreleased]` cut into `[0.14.0] - 2026-08-12` (PR #86). Both promotions ran exactly as `policies/git.md` → "Promotion Chains And Content Sync" prescribes — each downstream branch verified byte-identical to `8711711`, the `0.13.0` cut, so a strict older snapshot with nothing unique on it but previous sync commits; tree set with `git read-tree -u --reset`; empty diff confirmed before opening (PRs #87, #88). All three branches byte-identical afterwards. `kenovis@0.14.0` published from CI with provenance; `npm view kenovis version` → `0.14.0`, `dist-tags.latest` → `0.14.0`.
+
+Validated against the *published* package, on the exact sequence a real upgrader runs — `npx kenovis@0.13.0 add` on a scratch brownfield repository, then `npx kenovis@0.14.0 sync`. Baseline reproduced first and it was zero: none of the seven new policy sections existed, and `grep -rho "Learning-0[0-9][0-9]" .kenovis/AI/policies/` returned nothing. After the sync: transition reported `0.13.0 -> 0.14.0`, **7 paths changed inside `.kenovis/`** listed off `git status` rather than recalled (five policies, the learnings template, `.framework-version`), all seven sections present, **22 distinct learning ids** cited from the policies, `.setup-pending` preserved as `adopt-project`, all 18 Product-layer templates delivered with the `[ANSWER:` corpus unchanged at 127, no Product-layer file created at the target's root, and the target's own `README.md`, `src/` and `package.json` untouched.
+
+One check in that sweep returned zero and was the check being wrong, not the artifact: the search string for the `Open`-finding-executor rule carried the policy's `**` bold markers inside it. The rule is at `policies/documentation.md` line 408. Recorded because it is `policies/documentation.md` → "A Claim Is Read Back Off The Artifact" working in the direction it is usually not tested in — a false negative, caught by reading the file instead of trusting the count.
+
+Solo-maintainer note, unchanged since `0.6.0`: all three pull requests came back blocked on the required-review rule, which never counts self-approval, and were merged with `gh pr merge --rebase --admin`. Not a misconfiguration.
+
+Findings this item did not fix: **OF-14** (queued by this item's own RA2 gate) and **OF-18**, backfilled on 2026-08-12 when `check_item_findings.py` was written and this item was the one it caught.
+
+OF-18 was written here as "Backlog note, not an item: scheduling changes and implementation changes belong in separate commits. Item 18's commit carried this block's own scheduling because it was uncommitted in the working tree when the round began. No residue, no defect — recorded so it is a choice next time rather than an accident." Calling it a backlog note is what "described in prose" looks like from the inside: it reads as handled, has no id, and nothing reads it when choosing the next action.
+
+
+### item 35
+
+35. DONE (2026-08-12, via /next) — close OF-13: `CHANGELOG.md` archives its own released sections.
+
+Chosen over item 24, which the previous "Next" recommended, on a validity constraint rather than on cost. Item 24 requires an observer that did not author the instruction under test; the session executing it would have been grading its own run while knowing the criterion, and the only clean fix — an independent agent running `/architect` cold against the fixture — was not available to this round. Founder confirmed the swap. Item 24 stays scheduled, unchanged, and its fixture premise was verified in passing: `.kenovis/AI/templates/product-layer/DECISIONS.md` ships a `Decision Index` section with format guidance and **no decisions**, so the seeding step the item describes is real work, not a formality.
+
+Shipped: `CHANGELOG-ARCHIVE.md` (new, 53.1 KB) holds `[0.12.0]` through `[0.2.0]` verbatim. `CHANGELOG.md` **68908 → 18500 bytes (67.3 → 18.5 KB)**, keeping `[Unreleased]`, `[0.14.0]`, `[0.13.0]`, an eleven-row "Earlier releases" index and the footer. `check_document_size.py` swaps CHANGELOG's exemption for a real `split` and registers the archive as `archive_of`, so the guard now reports **one** exempted document (`DECISIONS.md`, item 22) where it reported two.
+
+The rule, not just the file: `.kenovis/AI/policies/documentation.md` (2.8 → 2.9) → "Closed Work Is Archived, Not Kept Inline" named two archives and stopped, which is why the changelog had no rule to follow. It now names three and states the one thing a changelog does not share with a roadmap or a learnings file — every released section is closed the moment it ships, so "archive what is closed" would leave the file holding only `[Unreleased]`. `[Unreleased]` plus the two most recent released versions stay inline, and the trim is a step of cutting a release (`cli/README.md` → "Cutting a release", `CONTRIBUTING.md`), not cleanup somebody notices late.
+
+Content integrity asserted rather than assumed, the same way item 34 did it: every moved section is a byte-substring of the archive, every kept section a byte-substring of the active file, no archived heading survives in the active file, and every archived version has an index row — all four checked mechanically, all four clean. 53,405 bytes moved; the archive is 988 bytes larger than that, which is its own header.
+
+Per `policies/testing.md` → "A Check Is Not Verified Until It Has Been Run", the guard's failing cases were exercised in a fixture rather than reasoned about, because at 18.5 KB `CHANGELOG.md` now passes by being under threshold and the new `split` registration would otherwise be inert and untested: over-threshold with the archive present passes (0); with the archive deleted fails (1) on both the missing-governed-document path and the no-way-to-shed-weight path; with the archive de-registered so the split branch is isolated, fails (1); with the archive present and its target absent, fails (1) naming the dangling target.
+
+Findings this item did not fix: **OF-15** (the new archive is 6.9 KB from the threshold on its first day), **OF-16** (released prose now cross-references sections that moved) and **OF-17** — all three in the queue below with dispositions.
+
+OF-17 is this round's own defect and the founder raised it: OF-15 and OF-16 were written into the session summary instead of the queue, which is being described in prose, which is not a disposition. `next.md` Step 15 requires the disposition first and the summary second, precisely so a finding cannot die with the thread. The round that closed a lifecycle item reproduced the failure mode items 27-30 were created to end, one round after shipping the rule against it.
+
+
+### item 36
+
+36. DONE (2026-08-12, via /next) — close OF-17: an omission becomes a missing line, not a silence.
+
+Founder-raised, twice, and the second time was the one that mattered: queuing OF-17 as `Open — someone should decide whether this is checkable` was the same inaction the finding described, one level up. *"¿Y de qué me vale si en el siguiente thread harás lo mismo?"* is answerable only with a mechanism, so this item built it in the same round rather than scheduling it.
+
+`check_future_actions.py`'s own docstring had already ruled this out — findings parked in `PRODUCT/ROADMAP.md` prose are "the larger half of the same leak" with "no mechanical form". That holds for *detecting* a finding inside prose, which has no pattern and is why guards built on classifying prose were rejected in items 6 and 8. Inverting it does have a form: do not detect the finding, require the declaration. Every closed item carries `Findings this item did not fix:` naming queued ids or stating none. An omission is invisible; a missing required line is exact.
+
+What that changes, precisely: a round that found nothing writes "none" and passes. A round that found something and skipped the queue can no longer do it by staying quiet — it has to write "none" and be wrong on the record. It does not make a round honest, and no check can; it removes the silent path, which was the one actually being taken.
+
+Shipped: `.github/scripts/check_item_findings.py` wired into CI as the ninth guard; `policies/documentation.md` (2.9 → 3.0) and `commands/next.md` (2.3 → 2.4) carry the rule; `templates/product-layer/PRODUCT/ROADMAP.md` (1.4 → 1.5) ships it to every Installation on sync.
+
+Population is exact and structural — every `NN. DONE` item whose body is a narrative rather than an archive pointer, the pointers excluded by their own fixed literal form rather than a length heuristic. Archived items are deliberately out of scope: they closed before the rule existed, and rewriting closed narratives to satisfy a later guard is the retroactive editing the archive rule forbids. The classifier is shallow and says so: an item that found four things and declares one passes.
+
+Run against the pre-fix tree first, per `policies/testing.md`: it failed, naming item 34 — the only closed narrative that had never declared anything. That produced **OF-18**, backfilled from item 34's own "Backlog note, not an item", which is what being described in prose looks like from the inside. All seven branches then exercised in a fixture: declares existing ids (0), declares none (0), no declaration line (1), declares an id absent from the queue (1), declaration with neither id nor none (1), archive pointer skipped, `SCHEDULED` not required to declare.
+
+Findings this item did not fix: **OF-18** (backfilled from item 34 by this item's own first run) and **OF-21**, added later the same session.
+
+OF-21 is this item's own blind spot and it is worth stating here rather than only in the queue, because this narrative otherwise reads as having closed the class. It did not. The population is *closed items*; findings are round-scoped. Two findings in this very session — OF-19, born inside DECISION-026's body as evidence for rejecting an option, and OF-20, born in a conversation message as a proposal that was dropped — were attached to no closing item and were therefore structurally invisible to the guard this item shipped. Both were found by a hand audit the founder asked for, which is not a mechanism.
+
+
+### item 39
+
+39. DONE (2026-08-13) — the findings rule is carried by the layer every session loads, not by one command. Closes OF-26, and is the vehicle for OF-21's first output.
+
+Problem, founder-raised on 2026-08-13 and the third time this class has been raised by a human rather than found by the system: *"se están quedando MUCHÍSIMAS cosas en threads ahí perdidos, porque lo encuentras y no lo anotas"*. The rule exists and is correct. Its reach is the defect. Counted off the tree the same day with `grep -ci "Open Findings\|disposition" .kenovis/AI/commands/*.md .kenovis/AI/workflows/*.md`: the rule is named in **5 of 19** commands and workflows, and its one checkable form — the `Findings this item did not fix:` line — exists in **1 of 19**, `commands/next.md`. `check_item_findings.py` binds to closed roadmap items, so it can only ever see rounds that closed one.
+
+What that leaves uncovered is most of the product. A thread that runs `/feature`, `/architect`, `/release`, `/hotfix`, `/explain`, `/bootstrap`, `/init-project`, `/adopt-project` or `framework-review` finds things and is never asked to dispose of them. A thread that runs no command at all — the shape of the session that produced OF-19 and OF-20, and of the session raising this — is not covered by anything, because every place the rule is written is a place you have to have already decided to enter.
+
+Target, in the order it must be built:
+
+1. The rule's mandatory half moves to the layer that is loaded unconditionally — `CLAUDE.md` → "Session Initialization Protocol" and `.kenovis/AI/SYSTEM.md` — so a thread with no command still carries it. Today it is reachable only through a command, which is the same "instruction nothing reaches" shape as Learning-024.
+2. Every command and workflow gains one terminal step that **cites** the policy section rather than restating it, per `policies/documentation.md` → "Single Source of Truth" and OF-24. 14 of 19 gain it; the 5 that have it are re-read for drift, not rewritten.
+3. The declaration becomes **round-scoped**, not item-scoped: a round declares what it found wherever that round's work is recorded, including rounds that close no item and rounds inside a `SCHEDULED` item. This is OF-21's stated first output and it belongs here rather than in a separate item.
+
+Explicitly out of scope: widening `check_item_findings.py`'s population, or any new guard. Item 37 is mid-flight and DECISION-026 plus OF-21 both forbid adding the eleventh guard before it completes. This item ships the Framework-layer half — the half that reaches a customer's next task without anyone doing anything — and hands the detection question to whoever takes OF-21 after item 37.
+
+Dependency: none on item 37's completion for steps 1-3; only the guard question waits.
+
+Validated when: a session that runs no command, finds one thing and does not fix it, has a written instruction telling it where that thing goes — and it is loaded before the finding happens, not after.
+
+Shipped, 2026-08-13, and the scope changed once while executing. Step 2 — a terminal step in each of the 14 uncovered commands and workflows — was **dropped**, not deferred: it is nineteen copies of one rule, which is OF-24's divergence by construction, and it would still have missed the session that raised this item, which invoked no command at all. What replaced it is the finding that made this item bigger than written: **an Installation's root `CLAUDE.md` is a stub the CLI generates, not this repository's `CLAUDE.md`**, and it carried a pointer to `SYSTEM.md` rather than any rule. Writing the rule into this repository's constitution alone would have reached no customer — DECISION-026's test failing quietly inside the item created to satisfy it.
+
+So the rule now lands in three files, ordered by what a session can skip: the generated stub (`cli/src/domain/installation.ts`, autoloaded, zero hops), `.kenovis/AI/SYSTEM.md` (1.5 → 1.6), and `policies/documentation.md` (3.2 → 3.3), whose population widens from closed roadmap items to sessions. `CLAUDE.md` (2.2 → 2.3) carries it for this repository. DECISION-027 records why, including the two rejected alternatives. One CLI test pins the rule inside the stub — `npm test` in `cli/`: **110 pass, 0 fail**, up from 109.
+
+No guard was added, which was this item's stated scope limit and still is.
+
+Findings this item did not fix: **OF-27**.
+
+
+### superseded ordering — item 41 first
+
+Earlier ordering, superseded and kept for the trail: *"item 41, step 1 — rank the specification (OF-39), then the conformance table (step 2), then §2's edges (OF-38 + OF-28 + OF-29). Take OF-23's archive pass before or alongside step 2."* It stands except that item 42 now precedes it, for the reason item 42 states: item 41 makes the framework conform to the specification, item 42 makes the loop that executes item 41 work at all.
+
+
+### superseded ordering stack — item 37 round 3 first, and the release argument
+
+Superseded ordering (kept for the trail) — Next (updated 2026-08-13, after item 37's second round): **item 37, round 3** — `check_decision_index`, `check_document_size`, `check_learning_promotions`.
+
+All three are documented-lifecycle guards whose rules already live in `policies/documentation.md`, so round 3 is expected to resemble round 1 (record the home) more than round 2 (write it). Check that before scoping — round 2 found the opposite of what round 1's cost suggested, and OF-04 exists for exactly this.
+
+**OF-23 should be taken before or alongside round 3.** It is the cheapest thing on the board, the archive pass has a written procedure that has been run twice, and this document keeps growing every round while its own guard is structurally unable to say so. Measured rather than counted in rounds: `wc -c PRODUCT/ROADMAP.md` → **79751 bytes (77.9 KB)** on 2026-08-13 against item 34's post-archive 46866, so **+32,885 bytes** since the last pass. An earlier draft of this sentence said "five rounds of item-37 narrative", which was wrong on both readings — item 37 has had two rounds — and is corrected here rather than quietly dropped.
+
+**Item 39 is DONE** (2026-08-13), taken ahead of item 37's round 3 because it adds no guard and its absence was costing findings in every thread that ran. It left **OF-27**, which is the sharper version of the same class: this repository's `CLAUDE.md` and an Installation's generated stub are two different files that every reader treats as one. Take OF-27 before OF-25 — same failure mode, higher blast radius, and it decides a boundary DECISION-020 left open.
+
+**Ahead of everything below, and it is a founder call rather than a `/next` pick: item 40.** A `/analyze` on 2026-08-13, on the founder's question of whether this AI-OS still serves its stated purpose, confirmed the symptom with four measurements and found the mechanism — the mission has no written criterion and the instrumentation has ten, so every round selects toward the instrumentation and records honestly that it did. Item 37, OF-23, OF-25 and round 3 are all instrumentation work, correctly scoped and correctly placed, and taking them next is the exact behaviour item 40 exists to bound. Item 40's parts 2 and 3 need the founder; part 1 is drafting once the objective text is settled. OF-31, OF-32, OF-33 and OF-35 are the structural half and none is `/next` work until part 1 lands — they are the operating model's own steps that the framework does not implement.
+
+**Ahead of all of them: OF-28 with OF-29, one change.** A `/analyze` run the same day, on the founder's question of whether item 39 actually guarantees anything, found that the rule item 39 shipped points a brand-new Installation at five files that do not exist yet — during setup, which is the first session a customer ever runs and, for `/adopt-project`, the one that reads their entire codebase. Item 39 is worth what those two are worth: until they land, the customer-facing half of the rule fires exactly where it cannot be followed.
+
+After item 37 closes, **OF-25** is the first candidate: it is the one finding in the queue with an exact mechanical form and no classifier, and it is being held only because adding a guard mid-item is what DECISION-026 and OF-21 forbid.
+
+Still ahead of item 24, OF-14 and a release, for the reason that has not changed: until item 37 completes, a round can still close work by improving this repository instead of the product, which is what four consecutive rounds did while recording that they should not. Every item below it inherits the DECISION-026 test — *does this reach a customer's next task without anyone doing anything?*
+
+**Item 24** is next after it, unchanged and still the only unmet criterion from item 18: run it from a session that has read the decision index and not the bodies, with the observation coming from an agent that did not author the instruction. OF-02 or OF-03 is its cheapest vehicle.
+
+**OF-14** stays the cheapest thing on the board, one fixture. Take it if item 37's first guard turns out larger than one round.
+
+**A release is now the strongest candidate on this list, and this paragraph is corrected rather than left as written.** It previously said `development` carried "two policies, a command, a template, the changelog split and DECISION-026" and that a release should wait for item 37 to move its first guards, so the cut would carry product change rather than repository change. That argument is satisfied and then some. `git diff --stat main..development -- .kenovis/ cli/` on 2026-08-13 → **9 files, 141 insertions, 19 deletions**, and the contents changed character: item 39's rule inside the generated `CLAUDE.md` stub (`cli/src/domain/installation.ts`, autoloaded by every Installation), DECISION-027's routing table in `SYSTEM.md`, item 37's rules across four policies, and **DECISION-028 rewriting `SYSTEM.md`'s Final Principle**.
+
+That last one is the reason this moved: no Installation's agents have ever read the corrected mission, and until a release ships they keep reading *"the objective is not to replace engineering teams"* before every task. It is the most customer-visible framework change since the `.kenovis/` packaging, it reaches a customer's next task with nobody doing anything (DECISION-026's own test), and it is currently reaching nobody. Version call at cut time per Phase 1 item 2's standing instruction; `1.0.0` still has no criterion (OF-11, item 32).
+
+Sequencing, stated so this does not silently outrank the founder's own ordering: item 42 part 1 (the archive pass) and parts 2-3 still come first — they are cheaper, they fix the loop that cuts the release, and OF-60 makes a stale-branch start a live hazard for exactly the promotion chain a release runs.
+
+
+### queue row OF-13
+
+| OF-13 | `CHANGELOG.md` has no archive rule — 67.3 KB and growing one released section at a time, with every past release kept inline. The lifecycle rule exempts it pending this finding. | Item 21, 2026-08-12 | **Fixed** (2026-08-12, via /next) — item 35. `CHANGELOG-ARCHIVE.md` exists; `CHANGELOG.md` 67.3 → 18.5 KB. The row was written against 66.1 KB and read 67.3 KB off the file at execution, which is Learning-023's drift a third time. |
+
+
+### queue row OF-16
+
+| OF-16 | Released changelog prose now carries cross-references to sections that moved — `[0.14.0]` reads "same as `[0.2.0]` through `[0.13.0]`" and `[0.2.0]` is no longer a heading in that file. Every future trim adds more of these. | Item 35, 2026-08-12 | **Rejected.** Editing shipped prose to tidy a cross-reference is the compression the archive rule exists to forbid, and the "Earlier releases" table makes every archived version discoverable by name. Recorded so it is not re-proposed each time the trim runs. `check_links.py` is unaffected — these are plain bracketed text, not markdown links. |
+
+
+### queue row OF-17
+
+| OF-17 | This round found OF-15 and OF-16 and wrote them into the session summary instead of this queue, leaving them with no id and no life after the thread. `.kenovis/AI/commands/next.md` Step 15 requires every unfixed finding to have a disposition **before** the summary is written; nothing detects that it did not happen. | Item 35, 2026-08-12, founder-raised | **Fixed** (2026-08-12, via /next) — item 36. Queuing it `Open` was the same inaction one level up, which the founder said in the round that wrote it. `check_item_findings.py` now requires every closed item to declare the ids it left behind or state none. |
+
+
+### queue row OF-18
+
+| OF-18 | Scheduling changes and implementation changes land in the same commit when the working tree already holds uncommitted scheduling. Item 18's commit carried its own block's scheduling for that reason. | Item 34, 2026-08-12 (backfilled) | **Rejected** as work. It is a commit-hygiene habit, not a deliverable, and `policies/git.md` already governs commit scope; adding an item for it would be scheduling a reminder. Recorded because it was sitting as a "backlog note, not an item" — prose that reads as handled — and because it is the second finding `check_item_findings.py` surfaced on its first run. |
+
+
+### queue row OF-20
+
+| OF-20 | A Claude Code hook (`Stop`/`PreToolUse`) was proposed in the same session as the layer that would fire in-thread rather than at merge time, and abandoned when DECISION-026 redirected the work — without a disposition. | This session, 2026-08-12 | **Rejected.** It fails DECISION-010 before it reaches DECISION-026: a hook is one tool's configuration, and everything under `.kenovis/AI/` stays tool-agnostic plain markdown so any model or client can enter through `SYSTEM.md`. It also lives in local settings, not in the bundle, so it would repeat exactly the `.github/` mistake in a newer place. Recorded so it is not re-proposed the next time someone wants enforcement that fires earlier than CI. |
+
+
+### queue row OF-24
+
+| OF-24 | A new policy section can restate a rule another policy already carries, and nothing notices. Item 37 round 1 wrote `policies/testing.md` → "A Guard Belongs Where The Work Is Loaded" while `policies/architecture.md` → "An Improvement Lands Where The Work Is Loaded" already held the same rule, the same test sentence verbatim, and the same "state the loaded-layer half or record no-form" instruction. Corrected in round 2. | Item 37 round 2, 2026-08-13 | **Open.** The rule against it already exists — `policies/documentation.md` → "Single Source of Truth" — so this is a missed check, not a missing rule, and the useful question is what would have caught it. Two copies of a rule do not stay identical: each is edited by the round that is looking at it, and the divergence is invisible because neither reader opens the other file. Priority: Pain medium (a diverged rule means the policy set contradicts itself and both halves look authoritative), Frequency medium — eight policies and rounds add sections to them regularly, Cost low to *reduce* (read the sibling policies' section headings before adding one) and unknown to *detect*. A detector would have to classify prose for semantic equivalence, which is the shape items 6 and 8 rejected twice; the cheap half is the habit, not a guard. **The habit half is now Fixed** (2026-08-13): `policies/documentation.md` (3.1 → 3.2) → "Single Source of Truth" says to read the sibling policies' section headings before adding a section, and to cite rather than restate when the rule already exists. Naming a remedy in a finding's own disposition and not applying it is the same prose-as-disposition failure one level in, which is why it was applied in the round that noticed. What stays Open is only the detection half, and it may well end Rejected for the reason above. |
+
+
+### queue row OF-26
+
+| OF-26 | The findings rule reaches a session only through a command that names it, and its checkable form through one command. `grep -ci "Open Findings\|disposition" .kenovis/AI/commands/*.md .kenovis/AI/workflows/*.md` on 2026-08-13 → non-zero in **5 of 19** (`next`, `analyze`, `bug`, `commands/review`, `workflows/review`); the `Findings this item did not fix:` line exists in **1 of 19** (`commands/next.md`). A thread running `/feature`, `/architect`, `/release`, `/hotfix`, `framework-review` or no command at all is never asked for a disposition, and `check_item_findings.py` cannot see it because it closed no item. | This session, 2026-08-13, founder-raised | **Fixed** (2026-08-13) — item 39. Generalises OF-21 rather than duplicating it: OF-21 is about the *guard's* population, this is about the *rule's* reach, and the reach half can be built now while the guard half waits for item 37 — see item 39's scope note. Recorded here in the round it was raised, from a thread that is itself running no command, which is the finding demonstrating itself. |
+
+
+### queue row OF-36
+
+| OF-36 | **The document defining Kenovis's operating model does not exist on disk.** The founder pasted 17 sections of non-negotiable rules — including "ABSOLUTE PRIORITY #1: nothing discovered may be lost", the `DISCOVERY → ANALYZE → CLASSIFY → REFINE → PLAN → ROADMAP` chain, the role-routing model and the core invariant — into a prompt, in order to ask whether the system had lost them. Measured 2026-08-13: `grep -ril "Core Operating Model\|NOTHING DISCOVERED MAY BE LOST\|Non-Negotiable Rules"` over the Product layer → **0** (three hits, all in framework files, all unrelated prose); `"without requiring a conventional human development team"` → **1**, item 40's own partial quote; `"institutional memory"` → **0**. `COMPANY_OS.md` holds vision, thesis, market and principles and not the operating model; `DOMAIN/BUSINESS_RULES.md` holds five rules (INST-01/02/03, VERT-01, COMM-01) and none governs it. | `/analyze`, 2026-08-13 | **Half Fixed** (2026-08-13, same session, after the founder pointed out that the round had reproduced the finding): the document is on disk verbatim at `PRODUCT/OPERATING_MODEL.md`, with its provenance and the greps above recorded in it. Writing it down needed no decision from anyone — the founder authored the text — and the first pass of this round instead filed it as a founder call, which is OF-40. **What stays Open, and is genuinely a founder call:** reconciling it with `COMPANY_OS.md` (which states a weaker claim — augmentation, not replacement) and with `DOMAIN/BUSINESS_RULES.md` (whose five rules do not include §2 or §15, which are non-negotiable rules by their own text), and deciding where it ranks — see OF-39, which has to be settled first because the two hierarchies disagree and neither lists this document. That reconciliation is item 40 part 1's real content, and its input is now on disk rather than in a thread. Priority: Pain maximal — the highest-level statement of what this product is had never been in the repository, at the one altitude where no other mechanism can catch the omission. Frequency: it was the state of the repository from day one until today. Cost low. |
+
+
+### queue row OF-45b
+
+| OF-45b | `claude-info.md` sits untracked at the repository root — the founder's original paste, byte-identical to `PRODUCT/OPERATING_MODEL.md` §1-17 except for a trailing newline (`diff` verified, 2026-08-13). | This session, 2026-08-13 | **Rejected as work, disposition recorded so it is not re-proposed.** Deliberately *not* committed in the round that committed the rest of this session: it would create a second copy of the specification outside the Product layer, which `policies/documentation.md` → "Single Source of Truth" forbids and OF-24 exists about. Deliberately not deleted either — it is the founder's file and deleting a human's artifact to tidy a working tree is not this round's call. It stays untracked and superseded. If it should be gitignored, that is a one-line founder decision, not an item. |
+
+
+### queue row OF-57
+
+| OF-57 | **`.kenovis/AI/SYSTEM.md` explicitly denies the operating model's §1, in its Final Principle, and ships that denial to every Installation.** Line 502: *"The objective is not to replace engineering teams."* `PRODUCT/OPERATING_MODEL.md` §1: *"Its primary mission is to enable products to be developed, maintained, evolved, and supported **without requiring a conventional human development team**."* Line 500 pairs with it: *"The AI-OS exists to amplify human creativity and decision making."* `grep -rn "not to replace engineering teams" PRODUCT/ DECISIONS.md AI/memory/` → **0**: never flagged, in four `/analyze` rounds on this exact question. `SYSTEM.md` is read in full at the start of every session (`CLAUDE.md` → "Session Initialization Protocol") and is shipped by `sync` to every Installation. | This session, 2026-08-13, founder-raised | **Fixed** (2026-08-13) — **DECISION-028**, decided by the founder in the session that found it. §1 wins: `SYSTEM.md` (1.6 → 1.7) → "Final Principle" no longer denies the mission and states the boundary instead — the conventional team is replaced, the human who owns the product is not. `COMPANY_OS.md` (2.0 → 2.1) → Company Vision restated against §1. The decision also rules, for this conflict only, that `PRODUCT/OPERATING_MODEL.md` outranks a framework document — the general hierarchy stays OF-39. Consequence recorded in the decision rather than left implicit: the vision now claims more than one external team's 2026-08-06 run against `0.3.0` supports, which is OF-12 / item 33. Original disposition, kept for the trail: **Open — founder call, and the sharpest instance of OF-36's reconciliation half.** OF-36 recorded that `COMPANY_OS.md` states the weaker claim; this is stronger and worse — `COMPANY_OS.md` merely omits the replacement claim, `SYSTEM.md` asserts its negation, as a *Final Principle*, in the document that defines how the AI-OS operates. Every session since day one has read "do not aim to replace an engineering team" before doing anything. Priority: Pain maximal — the specification and the constitution disagree at the altitude where nothing else can arbitrate, and the constitution is the one that is actually loaded. Frequency: every session, every Installation. Cost low to change and it is genuinely a founder decision, not a drafting fix: §1 and this sentence cannot both stand. Sequence into item 41 step 3, which is now this plus `COMPANY_OS.md` rather than `COMPANY_OS.md` alone. |
+
+
+### queue row OF-59
+
+| OF-59 | **A rejected item is still cited as the live plan inside recorded knowledge.** OF-22's class, two instances found by auditing for contradictions rather than by any mechanism: `AI/memory/learnings.md` Learning-025's `Disposition:` read *"The customer-facing half of the enforcement is item 25, which carries every guard this repository runs and an Installation does not"* — item 25 was rejected on 2026-08-12 and superseded by DECISION-026 and item 37. And `DECISIONS.md` DECISION-025's body still says the guards run in this repository *"and not in any Installation until `kenovis check` ships (item 25)"*. | This session, 2026-08-13 | **Fixed** (2026-08-13, founder instruction — *"elimina lo obsoleto"*, reaffirmed after the append-only objection was raised). All three instances deleted in place, each leaving a dated one-line note saying what was removed and why, so the correction is visible rather than silent: `AI/memory/learnings.md` Learning-025's disposition, `DECISIONS.md` DECISION-025's body, and `AI/memory/LEARNINGS-ARCHIVE.md` lines 58 and 60. The archive edit is a deliberate, recorded exception to that document's verbatim rule and the only one. **What was deliberately not deleted, and this is the boundary the instruction was applied against:** correctly-marked rejection records — item 25's own `REJECTED` entry with its verbatim original, DECISION-015's superseded body, and DECISION-026's reasoning about why `kenovis check` was rejected. Those do not assert anything false; they are the mechanism that stops a rejected option being re-proposed, which is OF-16's and OF-20's whole purpose. Deleting text that states something false is cleanup; deleting the record that it was rejected is amnesia. Priority: Pain medium, Frequency: every rejection, Cost low. The general detection question stays OF-22, behind item 37. |
