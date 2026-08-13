@@ -1,6 +1,6 @@
 # Bootstrap Command
 
-Version: 2.6
+Version: 2.7
 
 ---
 
@@ -204,6 +204,19 @@ Determine:
 - Current work.
 - Unfinished tasks.
 - Potential conflicts.
+
+**First verify the current branch is level with its remote, because nothing else in this step can tell you it is not.**
+
+```
+git fetch origin
+git rev-list --count HEAD..origin/<current-branch>
+```
+
+Local state is internally consistent whether the branch is current or three merges behind, so every other signal in this step passes on a stale branch. `git status` reports against the local tracking ref, which is itself only as fresh as the last fetch — it will report "up to date", or a confident and wrong "ahead by N", without ever contacting the remote.
+
+The common way to arrive here stale is ordinary: merging a pull request with `--delete-branch` returns the checkout to the base branch, which is by definition behind the merge that just landed.
+
+A session that bootstraps on a stale branch reads an outdated product layer and an outdated roadmap, and every conclusion it draws is coherent. Nothing downstream detects it. If the branch is behind, bring it level before any work — a rebuilt context is cheap, a round of reasoning against superseded context is not.
 
 ---
 
