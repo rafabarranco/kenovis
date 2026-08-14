@@ -1,6 +1,6 @@
 # Testing Policy
 
-Version: 2.4
+Version: 2.5
 
 ---
 
@@ -318,6 +318,8 @@ Not every check in a repository is a test. Greps, marker conventions, CI scripts
 **A fix that succeeds can make the guard covering it pass for the wrong reason.** When the remedy removes the condition that puts a document, path or record into the guard's scope, the branch the fix just registered stops executing — and the guard reports a clean pass that is true of the file and silent about the change. The pass is evidence the problem is gone, never evidence the new handling works. Exercise the registered branch in a fixture that still meets the triggering condition, and say which branch the green run actually covered. (`PRODUCT/ROADMAP.md` item 35: a changelog trimmed to 18.5 KB passed its size guard by being under threshold, leaving the `split` registration written for it untested.)
 
 **For anything installed elsewhere, "has this been run from an installed copy?" predicts latent defects better than any review pass.** Instructions that are correct in the origin repository can be destructive in an Installation without a word of them changing. Run each command end to end from a real published installation, one per round. (Learning-020.)
+
+**This discipline is not only for mechanical checks.** A recurring instruction given to an agent — "observe", "review", "scan for X" — degrades the identical way an unbounded guard does when its population is not named: coverage narrows silently to whatever is easiest to notice on a given round, in a way that reads as diligence and is not. `.kenovis/AI/commands/next.md` → "Observe" is written as a fixed, short, named checklist for exactly this reason, not as an open-ended instruction to look for problems — the same population discipline Learning-021/Learning-022 already require of a mechanical check, applied to a step a human never runs but an agent is instructed to. (`AI/memory/learnings.md` Learning-041.)
 
 ---
 

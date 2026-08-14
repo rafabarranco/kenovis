@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.19
+Version: 1.20
 ---
 Scope
 
@@ -118,44 +118,6 @@ Operations
 
 ---
 Recorded Learnings
-
-Example: Process — a process with no exit half runs zero times and reports nothing
-
-## Learning-025
-
-Date:
-2026-08-12
-
-Category:
-Process
-
-Context:
-Executing this file's own Review Process for the first time (`PRODUCT/ROADMAP.md` Phase 1 item 20), via `/next`. The process had been documented since initialization and had a checkpoint pointing at it inside `.kenovis/AI/commands/init-project.md`. It had never run once, over 24 recorded learnings and 76 KB.
-
-Problem:
-Eighteen of the 24 entries carried a `Disposition:` line ending in "candidate for promotion by item 20" — written by the rounds that recorded them, each correctly identifying that its learning was a standing rule belonging in a policy. Every one of those rounds stopped at identifying it. No rule ever moved.
-
-What happened:
-The Review Process said what to look for ("repeated problems, patterns, opportunities to improve policies") and where a rule goes ("move it to `.kenovis/AI/policies/`"). It never said what happens to the entry afterwards. So "move" had no completion state: a round could write the rule into a policy and leave the learning in place, and nothing in the process would call that wrong — the rule would then live in two documents, one loaded per task and one loaded at session start.
-
-Facing that ambiguity, every round did the cheaper half — noted the candidacy in the disposition line and moved on. The note reads like a step in a process. It is a step in no process.
-
-Root cause:
-An instruction with no defined finished state is not a weak instruction, it is an optional one, and what makes it optional is invisible: each individual round's decision to defer looks reasonable, because the alternative was undefined. This is [[Learning-024]] in the same file it was recorded in — there, a command could not perform the action its own step required; here, a process could not tell anyone when its action was complete. Both produce the same artifact: a rule that reads perfectly and executes never.
-
-The multiplier is that the deferral was *recorded*. "Candidate for promotion by item 20" is a well-documented deferral, and a well-documented deferral reads as handled — the same mechanism [[Learning-024]] found routing findings into sinks nothing consults at decision time.
-
-Learning:
-A process that moves something between documents states its completion condition in terms of both ends: what the destination gains, and what the source loses. "Move it to X" is half an instruction; the half that gets skipped is always the removal, because the addition is the part that feels like progress.
-
-And a recurring "candidate for" note is data, not bookkeeping. Eighteen entries independently reaching the same conclusion and none acting on it is evidence that the action was not available, not that eighteen rounds were careless.
-
-Future action:
-`.kenovis/AI/policies/documentation.md` and both learnings templates now state the completion condition — rule into the policy, policy cites the learning id, entry archived verbatim, one line left behind. `.github/scripts/check_learning_promotions.py` enforces the pointer half in this repository's CI; it found a real gap on its first run (a rule promoted into `coding.md` that never cited Learning-010). It cannot check that a policy section contains the rule it claims, only that the section and the citation exist.
-
-Disposition: No work implied — the process gap is closed by item 20 itself. The customer-facing half of the enforcement was item 25, **which was rejected on 2026-08-12** (DECISION-026: an on-demand CLI subcommand is a linter beside the AI-OS, not the AI-OS). It is carried by item 37 — each guard's rule gets a Framework-layer home in `.kenovis/AI/`, delivered by `sync`, in force on the next task with nothing to invoke. Corrected 2026-08-13; the stale citation is `PRODUCT/ROADMAP.md` OF-59 and its class is OF-22.
-
----
 
 ## Learning-026
 
@@ -376,102 +338,6 @@ Disposition: Open — the second half is promoted, the first is not, and it now 
 
 ---
 
-## Learning-032
-
-Date:
-2026-08-13
-
-Category:
-Process
-
-Context:
-A session that invoked no command, in which the founder instructed that every analysis, execution, learning, decision and finding be checked against `PRODUCT/ROADMAP.md` and planned there if absent.
-
-Problem:
-The framework already required a finding to be recorded (DECISION-025) and recorded in-session (DECISION-027). It required neither of the two things that turn a record into a plan: comparing the finding against what is already scheduled, and writing it in a form the ranking can compare.
-
-What happened:
-Measured before writing anything: `grep -rni "already scheduled\|already covered\|duplicate finding\|existing item covers" .kenovis/AI/` → **0**, and `grep -rn "Pain" .kenovis/AI/policies/ .kenovis/AI/commands/` → **0**. Yet 41 of this repository's 47 `Open` rows already carried Pain, Frequency and Cost. The practice was near-universal and written nowhere an agent loads — the ranking formula lives at `.kenovis/AI/templates/product-layer/PRODUCT/ROADMAP.md:246`, a Product-layer template the customer owns.
-
-Root cause:
-**A practice that forty rounds performed correctly generates no evidence that it is unwritten.** Compliance and a rule look identical from inside the repository that has the habit; they diverge only in an Installation that has no rounds behind it, and no Installation reports back (OF-12). So the gap was invisible to every mechanism here and visible immediately to the founder, who was reasoning about what a *fresh* thread would do.
-
-Learning:
-**Recording is not planning.** A finding on disk and absent from the roadmap has been remembered, not scheduled — and remembering is precisely what a thread already does badly. This is the same distinction [[Learning-024]] draws between knowledge sinks: only `PRODUCT/ROADMAP.md` is read to decide what happens next, so a disposition that does not reach it is a well-documented deferral in the wrong place.
-
-Second half: **the strongest habits are the likeliest to be unwritten**, because nothing ever fails to prompt the writing. Look for rules in what a repository always does and never states, not only in what it gets wrong.
-
-Future action:
-`PRODUCT/ROADMAP.md` → **OF-66** (six `Open` rows predate the rule and do not meet it), **OF-67** (the policy now requires terms whose definition ships only in a customer-owned template), **OF-68** (`DECISIONS.md` restates index facts in prose and they go stale on every added decision). The rule half is promoted: `policies/documentation.md` 3.5, recorded as DECISION-029.
-
-Disposition: Fixed as a rule — `policies/documentation.md` 3.5, DECISION-029 — with three residues queued as **OF-66**, **OF-67** and **OF-68**. No unpromoted half. The ids are repeated here rather than only in `Future action:` above because [[Learning-031]]'s disposition failed exactly that way, and `check_future_actions.py` caught this entry doing it again on first run.
-
----
-
-## Learning-033
-
-Date:
-2026-08-13
-
-Category:
-Process
-
-Context:
-Item 42 parts 2-3, closing OF-46 and OF-47 — both defects in `commands/next.md` Step 3, the step that chooses what a round works on.
-
-Problem:
-Step 15 had been writing a `Next` pointer into `PRODUCT/ROADMAP.md` since 2.4, stating in its own text that the following run reads it. Step 3 named two inputs and never the pointer. Every round wrote the ordering rationale and every round threw it away.
-
-What happened:
-The two halves were written eleven versions apart, in the same file, by rounds that each verified their own half. Nothing in either half is wrong. The defect exists only in the relationship between them, and no reader of either step is positioned to see it — Step 15's author is finishing a round and Step 3's author is starting one.
-
-Root cause:
-**A producer and its consumer are written by different rounds in different states of mind, and only the producer feels like a deliverable.** Writing the pointer is the satisfying half: it closes a round. Reading it is the half that has to be *required*, because a fresh round always has the option of deriving the answer itself and that option looks like diligence rather than waste.
-
-Learning:
-When an instruction says "so the next run reads it", that sentence is a claim about a **different file, step or session** than the one being edited, and it is the half least likely to be true. Verify the reader exists, by name, in the same round that writes the producer. [[Learning-024]]'s "before writing *record it in X*, ask what reads X and when" is the same rule; this is its inverse case — there the sink had no reader, here the reader existed and was never told the sink did.
-
-Second half, and it is what makes the pair worth one entry: **the branch a command lacks is the branch for the case it cannot handle**, and that case is invisible precisely because nothing records reaching it. `/next` had no behaviour for an objective only a human can execute, and the observable symptom of that gap is a round doing something *else* — which reads as a productive round. A gap whose symptom is plausible output is not found by reading output.
-
-Future action:
-`PRODUCT/ROADMAP.md` → **OF-70** (the pointer is now load-bearing and no round is held to writing one — this round's fix re-opened OF-46's failure through its own fallback clause) and **OF-71** (the new stop-branch names a file to record in and no section of it). Both created by this round's own change and queued in it. The rule half is shipped: `commands/next.md` 2.6 Step 3, DECISION-030.
-
-Disposition: Fixed as a rule — `commands/next.md` 2.6, DECISION-030 — with two residues queued as **OF-70** and **OF-71**. One half of the work is deliberately unvalidated and said so rather than claimed: the stop-branch fires on the next round, which reaches a founder call, and no round can validate its own behavioural change ([[Learning-031]], OF-30).
-
----
-
-## Learning-034
-
-Date:
-2026-08-14
-
-Category:
-Process
-
-Context:
-Item 41 step 1 — reconciling the two Source Of Truth Hierarchies (OF-39) and putting the specification on the session-initialization path (OF-50), after `/next` stopped on it as a founder call and the founder answered in the same session.
-
-Problem:
-OF-39 was written as "two hierarchies, and they disagree". Closing it required reading `COMPANY_OS.md` in full during bootstrap, and that turned up a **third** ordering — `COMPANY_OS.md` → "Knowledge Hierarchy" — which inverts DOMAIN/ and PRODUCT/ relative to the one just settled and omits `DECISIONS.md` entirely. `grep -c "Knowledge Hierarchy"` over the roadmap and its archive returned **0 and 0**.
-
-What happened:
-The analysis that raised OF-39 grepped the two documents it already suspected — the two loaded as authoritative — and found them. It never asked how many orderings existed, because the question it was answering was "do these two agree". A finding scoped to a suspected pair cannot report a population.
-
-Root cause:
-**A duplicate is found by comparing two things you already have in hand, and a population is found by enumerating.** These are different acts, and the first one feels like the second when it succeeds: OF-39 read as a complete account of the problem for two days, and the fix derived from it corrected two of three copies. Nothing in the framework enumerates rules-restated-elsewhere, which is OF-24's still-open detection half, and this is what that gap costs.
-
-Learning:
-When a finding is "X is duplicated", the finding is incomplete until someone has asked **how many copies exist**, by a method that could have returned a number the author did not expect. Fixing the known copies of an unenumerated duplicate leaves the survivors looking authoritative *and* now inconsistent with a rule that claims to be the only one.
-
-Second half, and it is about where the survivor was: the third copy sits in a **Product-layer** document. The fix that landed touches framework files, which `sync` delivers; a Product-layer contradiction is per-Installation and no sync will ever reach it. **A rule with one framework home can still have as many product-layer contradictions as there are customers**, and the framework has no view of any of them.
-
-Future action:
-`PRODUCT/ROADMAP.md` → **OF-73** carries the third ordering, sequenced into item 41 step 3 which reconciles `COMPANY_OS.md` anyway. **OF-72** carries the other residue of this round — the shipped hierarchy's rank 1 names a document no Installation has. The enumeration half belongs to OF-24's open detection question and is not re-raised here.
-
-Disposition: Fixed as a rule — one hierarchy, `SYSTEM.md` 1.8, DECISION-031 — with **OF-72** and **OF-73** queued. The rule this learning states is not promoted to a policy: it is a heuristic about how to scope a finding, and `policies/documentation.md` already carries the duplication rule it would sit beside ("Single Source of Truth"), so promoting it would restate a sibling section — which is the thing OF-24 added that section to forbid.
-
----
-
 ## Learning-035
 
 Date:
@@ -538,33 +404,35 @@ Disposition: Open — the instance is resolved for this round; the rule (should 
 
 ---
 
-## Learning-040
+## Learning-041
 
 Date:
-2026-08-14
+2026-08-15
 
 Category:
 Process
 
 Context:
-Refining `PRODUCT/ROADMAP.md` OF-02 as the first live instance of DECISION-036's new mechanism — every round refines the lowest-id `Open` queue row, per Learning-023's discipline of checking a premise against the tree before writing.
+Designing `/next`'s new `Observe` step to close `PRODUCT/ROADMAP.md` OF-33, itself blocked by two architectural constraints already settled by DECISION-010 (tool-agnostic, no scheduler) and DECISION-013 (no backend, no runtime) — so the mechanism could only be a step inside a command that already runs, not a new process.
 
 Problem:
-The Learning-023 check was scoped to OF-02's own premise (`/architect` still unrun end to end). It surfaced a second, unrelated stale row instead: `git status --short PRODUCT/OPERATING_MODEL.md` was run in the same pass to confirm an unrelated fact, and came back empty — OF-45 claimed that file was untracked, and it had been committed (`72deb8b`) since OF-45 was written.
+The first draft of the step was an open-ended instruction: look at the tree for anything the round's own objective was not going to touch. That is the exact shape `.kenovis/AI/policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" already rejects for a mechanical check with no named population (Learning-021, Learning-022) — and this repository already has a live instance of that failure, on an instruction rather than a check: `/framework-review` is a real, correct, standalone command built to audit the framework's own surface, and `PRODUCT/ROADMAP.md` OF-06 records seven rounds that had the chance to run it and swept the same surface by hand instead.
 
 What happened:
-OF-45 was not the row being refined. It was found because refining one row means re-reading the tree around it, and the tree does not know which finding a check was run for — a `git status` run to answer OF-02's neighbour question answered OF-45's question for free.
+Learning-021 and Learning-022 were written about a CI guard — code, with a population a script iterates over. Neither entry says its own reasoning is limited to code, but nothing had gone back to check whether it also applied to a step written in prose and followed by an agent instead of a machine. It does, and the failure mode is the same one, just without a script's "0 matches" to report: an unbounded instruction narrows in practice to whatever a round happens to have attention left for, which is indistinguishable from diligence from outside the round and only visible in the aggregate — the same way `/framework-review`'s non-invocation was invisible round by round and obvious across seven of them.
 
 Root cause:
-**A premise check's cost is mostly fixed (open the tree, run the command) and its yield is not limited to the row that motivated it.** Learning-023 was written to stop one item shipping on a stale figure; it does not say the check only counts toward that item. Treating it as scoped to the row being refined would have meant closing OF-45 a second time, later, at full cost, having already paid to discover it was stale.
+**"Enumerate the population" is a property of any repeated judgement call, not specifically of code.** A script and an agent both fail the same way when told to check an unnamed set: the script matches whatever pattern its author happened to write, the agent notices whatever is salient on a given round, and both report success because neither one is wrong about what it actually did.
 
 Learning:
-When a round's own premise-check work turns up a second stale row, disposition it in the same pass rather than filing it to revisit — the discovery cost is already spent, and only the write-up remains.
+Before writing a recurring instruction for an agent — "observe", "review", "watch for X" — name the population it runs over, the same discipline already required of a mechanical check. If the population cannot be named, the instruction will be followed inconsistently in a way indistinguishable from care, and the honest fix is a smaller, fixed, enumerable list rather than a bigger open-ended one.
+
+The general form: a rule requiring a bounded, named scope is not a rule about tooling — it is a rule about repeated judgement, and it applies wherever a policy tells a *reader*, human or agent, to do something on every occurrence.
 
 Future action:
-None — OF-45 is dispositioned in this round's own change (`PRODUCT/ROADMAP.md`, Fixed).
+`PRODUCT/ROADMAP.md` → **OF-87** carries the residue: the current `Observe` checklist covers document-weight drift only, and widening it needs evidence of what the next enumerable population actually is, not a bigger unbounded instruction. The rule is promoted in the same round it was found: `.kenovis/AI/policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" gains one clause generalising Learning-021/Learning-022 past mechanical checks.
 
-Disposition: Fixed as a rule — `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"'s trigger is already "the moment of discovery, not a session boundary" (OF-38), which already covers this; this entry records the instance rather than a new rule.
+Disposition: Fixed as a rule — `.kenovis/AI/policies/testing.md` 2.4 → 2.5, citing this entry, with the residue queued as **OF-87**. No unpromoted half.
 
 ---
 
@@ -645,6 +513,11 @@ A learning is listed as closed only when its rule is findable in the destination
 
 | Learning | What it established | Now carried by |
 |---|---|---|
+| Learning-040 | A round's own premise-check work turns up a second stale row for free; disposition it in the same pass rather than filing it to revisit | Instance-fixed — the row it found (OF-45) was dispositioned in the same round; `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" (OF-38's trigger fix) already covers the general rule |
+| Learning-034 | A finding scoped to a suspected pair is not a population; a rule with one framework home can still have as many Product-layer contradictions as there are customers | Instance-fixed — DECISION-031 (one hierarchy). The heuristic itself is not promoted to a policy — the "Single Source of Truth" section of `.kenovis/AI/policies/documentation.md` already carries the sibling rule it would restate |
+| Learning-033 | A producer and its consumer are written by different rounds in different states of mind; the branch a command lacks is the branch for the case it cannot handle | `commands/next.md` 2.6 Step 3, DECISION-030 |
+| Learning-032 | Recording is not planning; the strongest habits are the likeliest to be unwritten | `.kenovis/AI/policies/documentation.md` 3.5, DECISION-029 |
+| Learning-025 | A process that moves something between documents states its completion condition in terms of both ends — what the destination gains and what the source loses | `.kenovis/AI/policies/documentation.md` and both learnings templates now state the completion condition; `check_learning_promotions.py` enforces the pointer half |
 | Learning-038 | A keyword proxy for "does this file carry rule X" measures a phrasing, not a rule; measure a rule's reach by the exact title of the section that states it | Instance-fixed — `PRODUCT/ROADMAP.md` item 42 parts 4-5's progress block corrects the count where it was published. Not yet a policy rule — that promotion is OF-82's own first output |
 | Learning-037 | A rule that constrains a later session is tested by "which file does that session load, and is this in it", not by "is it written down" | Instance-fixed — `commands/next.md` 2.8 Step 13 carries the population instruction DECISION-033 moved there. The general failure mode this instance is one of was already promoted by Learning-036; deliberately not restated as a fourth mode |
 | Learning-036 | A rule over a population ships whatever creates that population, and states what an empty one means | `policies/documentation.md` → "An Instruction Is Reachable, And Its Sink Is Read" |
