@@ -1274,3 +1274,37 @@ Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an e
 **A release is four rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it. Twelve consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 166,011 bytes and `wc -c PRODUCT/ROADMAP.md` read **168,073** at the start of this round.
+
+Archived 2026-08-14, by the round that closed OF-32 and OF-66, and found OF-45 already closed (DECISION-036, `policies/documentation.md` 3.11, `commands/next.md` 2.11). Three queue rows, compacted in the same round; the superseded `Next` ordering block they replaced.
+
+### OF-32
+
+| OF-32 | The chain stops at capture. `DISCOVERY → ANALYZE → CLASSIFY → REFINE → PLAN → ROADMAP` is the stated model; what is implemented is `DISCOVERY → a row with one of five dispositions`. `grep -rin "refine" .kenovis/AI/{commands,workflows,policies,agents}` → **2** hits on 2026-08-13, both in `designer.md` and both about visual design. No step in the framework dimensions a finding. The queue's own definition concedes it: "a queued finding is a candidate that is not dimensioned yet" — and **17 of 30** rows are `Open`, which is that state made permanent. | `/analyze`, 2026-08-13 | **Open.** `Open` is a valid disposition and this is what it costs: a finding satisfies the rule forever without ever becoming work. The rule already patched the nearest symptom — an `Open` finding the AI cannot execute must name its executor and the input needed — and that constrains who acts, not whether anything is dimensioned. Priority: Pain high (roadmap integrity: 17 undimensioned rows are unprocessed input, not known future work), Frequency: every round, Cost medium — the plausible shape is an ageing rule, an `Open` row that survives N rounds is refined or re-dispositioned rather than re-read. Depends on OF-31 for who does the refining. |
+
+### OF-66
+
+| OF-66 | **Six `Open` rows predate DECISION-029's dimensioning rule and do not meet it.** Read off the file 2026-08-13: of **47** `Open` rows, **41** carry Pain, Frequency and Cost and **6** do not — OF-02, OF-03, OF-04, OF-10, OF-11, OF-14. OF-10 and OF-11 name their executor and their input, which is the other half of the rule, and still carry no ranking terms; OF-02 and OF-03 carry a precedent argument ("six for six such runs have found a maximal-Pain defect") that is stronger than most rows here and is not in the form `/next` ranks. | This session, 2026-08-13, founder instruction (DECISION-029) | **Open.** Backfill, not re-analysis: each row already contains the reasoning, and what is missing is stating it in the three terms. Recorded rather than fixed in the same round on purpose — a rule and its first exception written in one change makes the exception invisible, and this way the six are a queue row someone can check. Priority: Pain low (these six are the best-known rows on the board, so the ranking failure they cause is small *here* — it is a fresh Installation with no such familiarity that the rule protects), Frequency: once, then never again, Cost low — six lines, no new investigation. Take it with any round already editing the queue. |
+
+### OF-45
+
+| OF-45 | **`PRODUCT/OPERATING_MODEL.md` is untracked.** `git status --short` on 2026-08-13 → `?? PRODUCT/OPERATING_MODEL.md`, plus `?? claude-info.md`, a second copy of the same text sitting outside the Product layer at the repository root. The document item 41 ranks above every other Product-layer file, written to close OF-36, exists only in one working tree and is one `git clean` from gone. | `/analyze`, 2026-08-13 | **Open.** It is the core invariant (§15) failing in physical form, one day after the document was created to state it, and it went unnoticed by the round that created it and by the round that scheduled item 41 around it. Nothing in the framework says a Product-layer write is not durable until it is committed — `policies/git.md` governs commit scope and branch flow, not the durability of a finding's destination. Priority: Pain maximal (total loss of the specification), Frequency: every session that writes to the Product layer and does not commit, Cost trivial to fix for this instance and low for the rule. The instance is the founder's to close (`policies/git.md` reserves commits for explicit human instruction); the rule — *a finding is not recorded until it is committed* — belongs in `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected". Take it first, before anything else in item 41 or 42. |
+
+### superseded `Next` ordering block, written after OF-31/OF-55 and replaced by the block that closed OF-32 and OF-66
+
+Next (updated 2026-08-14, after OF-31 and OF-55 — item 41 §12 is closed):
+
+Closed and not repeated below: **OF-31, OF-55** (`policies/documentation.md` 3.10, `ENGINEERING/ARCHITECTURE.md` 1.7, DECISION-035). The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 4 continues: §1 — OF-32.** "Routing by role, then refinement" — §12 named who owns a finding; §1 is whether anyone acts on that ownership. `DISCOVERY → ANALYZE → CLASSIFY → REFINE → PLAN → ROADMAP` is the stated chain; what exists today is `DISCOVERY → a row with a disposition`, and this round's own Role field does not close that gap — it only makes the gap nameable. Item 41 itself calls this and OF-31 together "the largest single piece of work in the item and the one that changes what Kenovis is"; expect this round to be a design question again, not a one-clause fix.
+
+2. **Then §15 (OF-44), §1/§16 (OF-33), §6/§9/§17 (OF-37), §4 (OF-41 before item 40 part 3, then OF-42 with OF-35).** Unchanged from the previous pointer's own statement of item 41 step 4's remaining sequence.
+
+3. **OF-78, OF-79, OF-83, OF-85 and OF-86 are deliberately not ranked above the blocks above; this is the eighth round to say so about OF-78.** Unchanged reasoning.
+
+Everything below stays scheduled and behind item 41: item 37 round 3, OF-25, item 24, OF-14, item 22, the release. Their ranking argument has not changed.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
+
+**A release is five rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Thirteen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 168,073 bytes and `wc -c PRODUCT/ROADMAP.md` read **169,384** at the start of this round.

@@ -48,6 +48,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-033** ‡ — The Closing Round Builds The Conformance Table, And Declares The Two Lines Whose Absence Is Otherwise Invisible. The first closing round in an Installation writes one row per operating-model section with `unmeasured` where it did not verify; `Operating model section served:` and `Next:` become required lines that must say `none` rather than be omitted; the population instruction moves out of the setup commands and the template into `commands/next.md` Step 13, the only place a round loads it.
 - **DECISION-034** ‡★ — One Item Per Round Is The Framework Default, And An Installation's Operating Model Is Where A Different Cadence Is Stated. `commands/next.md` → "Autonomous Mode" stops asserting that a round may continue through multiple roadmap items and defers to the Installation's own `PRODUCT/OPERATING_MODEL.md`, which is rank 1; the default is one item ending with the thread, on the mechanics of context and of a shared disposition pass rather than on one founder's preference.
 - **DECISION-035** ‡★ — Findings Route By Role As Well As By Destination File, And This Repository's Own CTO Owns Its Framework Layer. `policies/documentation.md` requires an `Open` finding to name its owning role from the existing Agent Roster, loaded once rather than copied into twelve agent files; which role owns which kind of finding is a product-specific fact and stays out of the framework layer entirely — this repository's own instance (CTO owns `.kenovis/AI/`) lives in `ENGINEERING/ARCHITECTURE.md`, never in `.kenovis/AI/agents/cto.md`.
+- **DECISION-036** ‡★ — An `Open` Finding Is Refined By Age Order, Not By Whichever Round Reopens It. `commands/next.md` Step 3 and `policies/documentation.md` require every round to refine the lowest-id `Open` row in the findings queue as a second action alongside its own objective; row id order substitutes for a persisted age counter, and no CI guard is added while item 37 stays mid-flight.
 
 ---
 
@@ -2818,6 +2819,72 @@ Separately: most rounds on this board edit `.kenovis/AI/` — policies, commands
 **Nothing enforces that a newly filed `Open` finding actually carries a `Role:` field.** Same shape as OF-44/§15 generally: the rule is loaded, not mechanically checked. A future round auditing queue rows for the field would be doing the same work `policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" already asks of any new rule the first time it is exercised.
 
 **OF-32 — the chain still stops at capture; nothing refines a routed finding — is untouched by this decision and is item 41 §1's own next step.**
+
+---
+
+# DECISION-036
+
+# An `Open` Finding Is Refined By Age Order, Not By Whichever Round Reopens It
+
+Date:
+
+2026-08-14
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-32 (and, as a direct consequence, OF-66 and the remainder of OF-45), inside item 41 §1.
+
+Review Date:
+
+When the Open Findings queue's shape changes structurally — ids stop being assigned in discovery order, or the table starts being reordered — or when the queue is observed large enough that "once every N rounds" stops being a meaningful cadence.
+
+---
+
+## Context
+
+`PRODUCT/OPERATING_MODEL.md` §1 states the chain as `DISCOVERY → ANALYZE → CLASSIFY → REFINE → PLAN → ROADMAP`. What DECISION-025, DECISION-029 and DECISION-035 built is `DISCOVERY → a row with a disposition, dimensioned, and routed to an owning role` — real progress, and none of it is REFINE. An `Open` row satisfies every rule written so far on the day it is created and again on every day after, forever, with no mechanism that revisits it. `PRODUCT/ROADMAP.md` OF-32 names this directly: "the chain stops at capture," measured at 17 of 30 rows `Open` when written and higher since. OF-32 was itself blocked on OF-31 ("depends on OF-31 for who does the refining"), which DECISION-035 closed.
+
+## Decision
+
+**Every `/next` round refines exactly one `Open` row, as a second action alongside the round's own chosen objective: the lowest-id row still carrying `Open`.**
+
+Ids in this queue are assigned in discovery order (DECISION-025 / `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected") and the table is never reordered — closed rows compact in place and archive, never resequence. So the lowest surviving `Open` id is, by construction, the row that has gone longest since it was last written to. No new field, counter or timestamp is needed to know which row is oldest: the ordering already exists and costs nothing to read.
+
+**Refining means the row's own text changes.** One of: its Pain/Frequency/Cost/Role are re-checked against the current tree and rewritten where stale (the backfill OF-66 already asked for, on the six rows DECISION-029 predates); the row is promoted to a scheduled item; or it is re-dispositioned — `Deferred`, `Rejected`, or `Fixed`, if the round discovers the finding no longer holds. A round that reads the row and writes it back unchanged has not refined it.
+
+**The rule lives in `.kenovis/AI/policies/documentation.md`** (loaded every task) **and is pointed to from `commands/next.md` Step 3** (where the queue is already read), matching the split DECISION-035 already drew between a framework-wide rule and the command that exercises it.
+
+**No CI guard.** DECISION-026 and OF-21 forbid an eleventh guard while item 37 is still dispositioning the first ten; this rule has no mechanical enforcement beyond being loaded on every task, the same enforcement every other rule in this section already has.
+
+## Reasoning
+
+**The queue's own id sequence is a free age signal.** An explicit "rounds open" counter was the first shape considered and was rejected for needing a write path nothing else in this framework has: every row would need updating on every round regardless of whether that round touched it, which is more bookkeeping than the thing it tracks. Id order gives the same ordering for zero marginal state, because it already exists for an unrelated reason (unique identification) and happens to be monotonic in the one property this decision needs.
+
+**One row, not the whole queue.** Refining every `Open` row every round was rejected as unbounded cost that grows with the queue itself — the opposite of what OF-32 called for. One row per round means the full queue sweeps once every *(count of `Open` rows)* rounds — cheap and self-limiting, since a queue that stays large simply takes longer to fully sweep rather than costing more per round.
+
+**Refinement rides on Step 3, not a new command surface.** Step 3 already opens `PRODUCT/ROADMAP.md` → "Open Findings" to rank the round's own objective; touching one more row in that same read costs near nothing, versus a dedicated `/next --refine` mode, which would need its own trigger and its own reason a session would choose to run it instead of a normal round.
+
+## Alternatives Considered
+
+**A persisted "rounds open" counter per row.** Rejected — see Reasoning. New state with a write path every round must maintain, to reconstruct an ordering the ids already provide for free.
+
+**A CI guard flagging `Open` rows older than N rounds.** Rejected outright by DECISION-026 and OF-21 until item 37 finishes dispositioning the existing ten guards; adding an eleventh mid-flight is the exact failure item 37 exists to stop.
+
+**A dedicated periodic `/next --refine` mode.** Rejected. A second command surface for one clause, when Step 3 already runs every round and already reads the exact file this needs.
+
+**Refine every `Open` row every round.** Rejected as unbounded per-round cost — see Reasoning.
+
+## Consequences
+
+**The queue sweeps fully once every N rounds, where N is the current `Open` count — not on a fixed schedule.** A queue that grows faster than it is swept still accumulates staleness, just more slowly than before this decision; this bounds the cost per round, not the total staleness in the queue, which is OF-62's own remaining problem and is untouched by this one.
+
+**The behavioural half is unvalidated by the round that wrote it, per OF-30 and Learning-031.** This round performs the first refinement itself — on OF-02, with OF-66's other five rows backfilled in the same pass — as the one data point available to its own author; independent evidence is the next `/next`, in a fresh thread, doing it unprompted.
+
+**OF-66 closes as a direct consequence, not a separate round:** refining OF-02 demonstrates the mechanism, and backfilling the five other rows OF-66 already named costs nothing extra once the queue is open for that purpose — OF-66's own text invited exactly this ("take it with any round already editing the queue").
 
 ---
 

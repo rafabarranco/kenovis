@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.10
+Version: 2.11
 
 ---
 
@@ -150,6 +150,16 @@ Evaluate:
 - Technical dependencies.
 - Risk.
 - Effort.
+
+---
+
+## Refine The Oldest Open Row
+
+Alongside choosing the round's own objective, refine exactly one row from `PRODUCT/ROADMAP.md` → "Open Findings": the lowest-id row still carrying `Open`. Ids are assigned in discovery order and the table is never reordered, so the lowest-id `Open` row is the one that has gone longest without being touched.
+
+Refining means the row's text changes — its Pain/Frequency/Cost/Role re-checked against the current tree, or the row promoted to a scheduled item, or re-dispositioned with the reason. Leaving the row byte-identical is not refinement.
+
+This is a second, low-cost action, separate from the round's own chosen objective — do not let it become the objective itself, and do not skip the round's real work to perform it. See `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" and DECISIONS.md DECISION-036.
 
 ---
 
