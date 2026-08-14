@@ -471,6 +471,40 @@ Future action:
 Disposition: Fixed as a rule — one hierarchy, `SYSTEM.md` 1.8, DECISION-031 — with **OF-72** and **OF-73** queued. The rule this learning states is not promoted to a policy: it is a heuristic about how to scope a finding, and `policies/documentation.md` already carries the duplication rule it would sit beside ("Single Source of Truth"), so promoting it would restate a sibling section — which is the thing OF-24 added that section to forbid.
 
 ---
+
+## Learning-035
+
+Date:
+2026-08-14
+
+Category:
+Engineering
+
+Context:
+Merging two open pull requests where the second was cut from the first's head, on the founder's instruction to merge everything open **without losing any change**.
+
+Problem:
+Merging the base PR with `gh pr merge --rebase` rewrote its commits onto `development`. The stacked PR went `CONFLICTING/DIRTY` carrying three commits — its own, plus two whose content had just landed under different SHAs. The prescribed recovery, rebase and resolve, means resolving conflicts between a branch and an already-merged copy of itself, and a wrong resolution there silently drops work that was already merged.
+
+What happened:
+The branch was rebuilt on the new base instead of rebased, and verified by **asserting tree equality against a hash captured before any merge ran** — `git rev-parse <head>^{tree}` recorded up front, compared to `git write-tree` after the rebuild.
+
+The first attempt failed the assertion. `git add -A` had staged `claude-info.md`, an untracked file whose commit is explicitly rejected (OF-45b: it would put a second copy of the specification outside the Product layer). Unstaging it produced a byte-identical tree, and the same hash then appeared on `development` after the merge.
+
+Root cause:
+**A diff review answers "do these changes look right"; a tree hash answers "is this the same state".** Only the second question has a mechanical answer, and it is the one being asked during a recovery. A reviewer reading that diff would have seen a file addition with a plausible name and no reason to reject it — the assertion had no opinion and was right.
+
+Learning:
+Before an operation that rewrites history, **capture the tree hash of the state that must survive.** Afterwards, assert equality rather than reading the result. It costs one command, it is exact, and it is the only check that distinguishes "nothing lost" from "nothing I noticed lost".
+
+Second half: **`git add -A` is not safe inside a reconstruction.** It stages by working-tree state, which includes untracked files that are deliberately untracked, so it silently widens the very tree being asserted. Stage from the source commit, or assert.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-75** carries the missing rule (nothing in `policies/git.md` covers a stacked PR; `grep -cin "stacked\|dependent branch"` → 0) and **OF-74** carries the other half found by the same merge — `--force-with-lease` is inert when the push target is a URL rather than a tracked remote, which is this repository's only path because of OF-65.
+
+Disposition: Open — no rule promoted yet. The technique belongs in `policies/git.md` beside "Rebasing", and it is queued as OF-75 rather than written here because both git findings should land as one section rather than two, and because this round's mandate was to merge the open PRs, not to change the git policy while doing it.
+
+---
 Learning Examples
 
 The two entries below are the format examples every Installation receives in its template (see `.kenovis/AI/commands/init-project.md` Step 8). They are not learnings this product recorded.
