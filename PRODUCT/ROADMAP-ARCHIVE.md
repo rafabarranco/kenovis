@@ -1334,3 +1334,29 @@ Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an e
 **A release is six rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it. Fourteen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 169,384 bytes and `wc -c PRODUCT/ROADMAP.md` read **170,939** at the start of this round.
+
+Archived 2026-08-15, by the round that closed OF-33 (DECISIONS.md DECISION-038, `commands/next.md` 2.12 Step 3 → "Observe"). One queue row, compacted in the same round; the superseded `Next` ordering block it replaced.
+
+### OF-33
+
+| OF-33 | Nothing observes. All **11** commands are keyed to a human intention ("Execute when…"); every workflow is entered by a command. `/framework-review` is the only audit pass over the framework's own surface and has never been run (OF-06, Deferred since 2026-08-12). Between sessions the product is unobserved, so continuous observation of the product is a property the operating model claims and the framework does not have. | `/analyze`, 2026-08-13 | **Open.** What exists is good recording of whatever a human happened to trigger, which is a different guarantee and a weaker one. Distinct from OF-26/item 39: that made the rule reach a session that runs no command; this is about there being no session at all. Priority: Pain medium-high, Frequency continuous by definition, Cost unknown and the design question is load-bearing — a periodic sweep must not become an eleventh guard (DECISION-026), and a tool-specific scheduler fails DECISION-010 the way OF-20's hook did. The first output is whether observation is a command a round runs on a cadence, or a step inside the commands that already run. |
+
+### superseded `Next` ordering block, written after OF-44 and replaced by the block that closed OF-33
+
+Next (updated 2026-08-14, after OF-44 — item 41 §15 is closed):
+
+Closed and not repeated below: **OF-44** (`DECISIONS.md` DECISION-037, `PRODUCT/OPERATING_MODEL.md` conformance row 15). OF-19 gained a third instance rather than a new id, per DECISION-029. The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 4 continues: §1/§16 — OF-33.** Observation. Unchanged from every previous pointer's own statement: a cadence must not become an eleventh guard (DECISION-026) and must not be tool-specific (DECISION-010, the reason OF-20 was rejected) — expect a design question, not a one-clause fix.
+
+2. **Then §6/§9/§17 (OF-37), §4 (OF-41 before item 40 part 3, then OF-42 with OF-35).** Unchanged — the last two sub-gaps of item 41 step 4's original sequence.
+
+3. **OF-78, OF-79, OF-83, OF-85 and OF-86 are deliberately not ranked above the blocks above; this is the tenth round to say so about OF-78.** Unchanged reasoning.
+
+Everything below stays scheduled and behind item 41: item 37 round 3, OF-25, item 24, OF-14, item 22, the release. Their ranking argument has not changed.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
+
+**A release is seven rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Fifteen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 170,939 bytes and `wc -c PRODUCT/ROADMAP.md` read **173,479** at the start of this round.

@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.11
+Version: 2.12
 
 ---
 
@@ -150,6 +150,21 @@ Evaluate:
 - Technical dependencies.
 - Risk.
 - Effort.
+
+---
+
+## Observe
+
+A third action, alongside choosing the round's own objective and refining the oldest open row — and, like Refine, low-cost and separate from the round's main work rather than a replacement for it.
+
+Between sessions this product is not observed by anything. Every command in `.kenovis/AI/commands/` runs only when a human decides to invoke it, including the one built specifically to audit the framework's own surface — see `PRODUCT/ROADMAP.md` OF-06, unrun across seven opportunities. `PRODUCT/OPERATING_MODEL.md` §1 and §16 name continuous observation as part of this system's own operating model; DECISIONS.md DECISION-038 records why "continuous" is not architecturally achievable here (no scheduler, no backend — DECISION-010, DECISION-013) and why the reachable form is a step inside the command that already runs on this product's actual cadence, rather than a new standalone command nobody invokes.
+
+So this step is **required, unconditional, and deliberately bounded to a fixed, short checklist** — not an open-ended instruction to look for problems, which cannot be audited across rounds and degrades the same way an unrun command does. Run it before ranking the round's objective, so anything it finds can compete on the same priority formula as everything else in Step 3:
+
+1. **Every governed document's size**, not only the one this round's own objective happens to touch. `wc -c` each document `.kenovis/AI/policies/documentation.md` → "Document Lifecycle" names as governed. A document over threshold with no split and no exemption is a new `Open Findings` row, dimensioned on the spot — checked against the roadmap first, per the disposition rule, same as any other finding.
+2. **Every exemption currently in force on an over-threshold governed document.** An exemption names the roadmap item that will close it. Confirm that item still exists and is not `Fixed` or `Rejected` — a closed item cited as a live exemption is the same defect as a stale premise (`.kenovis/AI/policies/documentation.md` → "A Claim Is Read Back Off The Artifact"), and nothing else in this command checks it unprompted.
+
+Two commands, at most a handful of documents. This is not a framework-review audit and does not become one — it is the same kind of bounded, cheap, second action Refine already is, aimed at a class of drift this product has hit unnoticed more than once (`PRODUCT/ROADMAP.md` OF-23, OF-51, OF-62 are three rounds of exactly this on one document alone). Anything the round notices outside this checklist still gets a disposition per the findings rule — this step does not narrow that — but it is not itself grounds to widen the checklist without a decision recording why, for the same reason DECISION-038 rejected an unbounded version of this step in the first place.
 
 ---
 

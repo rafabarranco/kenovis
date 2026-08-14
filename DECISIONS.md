@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.15
+Version: 2.16
 
 Last updated: —
 
@@ -50,6 +50,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-035** ‡★ — Findings Route By Role As Well As By Destination File, And This Repository's Own CTO Owns Its Framework Layer. `policies/documentation.md` requires an `Open` finding to name its owning role from the existing Agent Roster, loaded once rather than copied into twelve agent files; which role owns which kind of finding is a product-specific fact and stays out of the framework layer entirely — this repository's own instance (CTO owns `.kenovis/AI/`) lives in `ENGINEERING/ARCHITECTURE.md`, never in `.kenovis/AI/agents/cto.md`.
 - **DECISION-036** ‡★ — An `Open` Finding Is Refined By Age Order, Not By Whichever Round Reopens It. `commands/next.md` Step 3 and `policies/documentation.md` require every round to refine the lowest-id `Open` row in the findings queue as a second action alongside its own objective; row id order substitutes for a persisted age counter, and no CI guard is added while item 37 stays mid-flight.
 - **DECISION-037** — "Impossible" Is Not Architecturally Achievable For The Core Invariant; "Difficult" Is Partial, And Its Two Gaps Stay Separately Tracked. `PRODUCT/OPERATING_MODEL.md` §15 cannot be satisfied by "impossible" under DECISION-010 (tool-agnostic) and DECISION-013 (no backend/runtime); "difficult" is partially achieved by the required-line pattern (DECISION-033), with two gaps — CI reach (item 37) and admin-merge bypass (OF-19) — that stay open on their own terms rather than being folded into this decision.
+- **DECISION-038** ‡★ — "Continuous" Observation Is Not Achievable; A Bounded Step Inside The Command That Already Runs Is. `PRODUCT/OPERATING_MODEL.md` §1/§16 cannot be satisfied by a scheduler under DECISION-010/DECISION-013, the same architectural reasoning DECISION-037 already applied to §15; `commands/next.md` Step 3 gains a required, bounded `Observe` subsection instead of a new standalone command (`/framework-review`'s zero-invocation record is the evidence against that shape), first instance scoped to document-weight drift with the remaining breadth queued as OF-87.
 
 ---
 
@@ -2951,6 +2952,77 @@ Neither gap is closed by this decision. Both stay `Open`, ranked on their own te
 **OF-19 and item 37 keep their own standing and are not folded into this decision or closed by it.** OF-19 is still a founder call; item 37 is still mid-flight, three guards from done as of this decision.
 
 **A future architectural change to DECISION-010 or DECISION-013 would reopen this decision's premise, not merely its measurement** — which is why the Review Date names those two decisions specifically rather than a re-measurement cadence.
+
+---
+
+# DECISION-038
+
+# "Continuous" Observation Is Not Architecturally Achievable; A Bounded Step Inside The Command That Already Runs Is
+
+Date:
+
+2026-08-15
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-33, inside item 41 §1/§16.
+
+Review Date:
+
+If DECISION-010 (tool-agnosticism) or DECISION-013 (no backend, no runtime) is ever revisited — either would change what kind of scheduler this framework could stand at all.
+
+---
+
+## Context
+
+`PRODUCT/OPERATING_MODEL.md` §1: *"It observes the product continuously."* §16's loop diagram names `Observe` as its first node. Measured against the tree repeatedly across item 41 step 4's own progress, most recently in the round that closed OF-32 (Refine): all **11** commands in `.kenovis/AI/commands/` are keyed to a human "Execute when…" intention, and the one command built specifically as a standalone audit pass — `/framework-review` — has never been run once; `PRODUCT/ROADMAP.md` OF-06 records seven rounds (items 6, 8, 10, 12, 14, 16, 18) that each "swept the same surface" instead of invoking it. Between sessions, nothing looks at the product at all; what exists is faithful recording of whatever a human happened to trigger, which `PRODUCT/ROADMAP.md` OF-33 names as a different and weaker guarantee than "observes continuously."
+
+Item 41 step 4's own sequencing flagged this as the harder kind of gap before it was scoped: *"a cadence must not become an eleventh guard (DECISION-026) and must not be tool-specific (DECISION-010, the reason OF-20 was rejected) — expect a design question, not a one-clause fix."*
+
+## Decision
+
+**"Continuous" is not achievable under this framework's own architecture, for the same two reasons DECISION-037 already settled for §15's "impossible."** A markdown AI-OS that must stay tool-agnostic (DECISION-010) and ship no backend or runtime (DECISION-013) has no process of its own that runs between sessions — there is no scheduler, no daemon, no hook independent of whichever coding agent a human pointed at the repository at a given moment. "Continuous" requires exactly that standing process. Building one means reversing DECISION-010 or DECISION-013, which this decision does not do and is not scoped to.
+
+**The achievable form is an `Observe` step inside the command that already runs on this product's actual cadence, not a new standalone command.** `PRODUCT/OPERATING_MODEL.md` Addendum A §1 establishes that cadence: one thread executes one `/next`, back to back, until the roadmap empties. That is the nearest thing this architecture has to "continuous" — not wall-clock time, but every unit of work the product performs. `/next` gains a required, bounded, unconditional scan (`.kenovis/AI/commands/next.md` Step 3 → "Observe") that runs regardless of what the round's own chosen objective is, so a round notices things nobody pointed it at rather than only what its own item happens to touch.
+
+**Bounded, not a full audit, and the checklist is fixed rather than open-ended.** Two reasons, both already evidenced in this repository rather than hypothetical:
+
+- `PRODUCT/ROADMAP.md` item 40/OF-34 already names the risk of a round spending more effort on the AI-OS's own bookkeeping than on the product it is supposed to advance — eighteen of thirty queue rows at the time item 40 was written were the framework auditing itself. An unbounded "look for anything" instruction added on top of that risk makes it worse, not better.
+- An instruction to "scan for problems" with no named population is exactly the shape `.kenovis/AI/policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" already rejects for a mechanical check (`AI/memory/learnings.md` Learning-021/Learning-022: enumerate the population, don't pattern-match the defects already found). The same discipline applies to a recurring instruction given to an agent: a bounded, named, fixed list is followable and auditable across rounds; "notice things" is not — it degrades to whatever a round happens to have attention left for; identical to what happened to `/framework-review`, except the failure inverts, since here it is loaded and would still not be followed.
+
+The first instance of the checklist is document-weight drift: every round already checks the size of a governed document it happens to write to (`.kenovis/AI/policies/documentation.md` → "Document Lifecycle"), reactively. `PRODUCT/ROADMAP.md` OF-23/OF-51/OF-62 are three rounds of the same undetected drift on `PRODUCT/ROADMAP.md` alone, each one found because a human or an `/analyze` run happened to look, never because a round was required to. The `Observe` step makes that check unconditional and proactive — every governed document, every round, independent of what the round's own item touches.
+
+## Reasoning
+
+**This is DECISION-037's own shape, applied to a sibling gap in the same operating-model paragraph, and reusing rather than re-deriving its architectural conclusion.** §15 asked whether a violation could be made "difficult or impossible"; §1/§16 ask whether observation could be made "continuous." Both disjunctions have an unreachable half for the identical structural reason — no standing process — and both have a reachable half that this framework's markdown-and-cadence mechanism can actually carry. Naming that once, in DECISION-037, and citing it here is cheaper and more honest than re-arguing DECISION-010/DECISION-013 a second time.
+
+**A new standalone command was the first design considered and is rejected on this repository's own evidence, not in the abstract.** `/framework-review` already is that command — audits the framework's own surface, exists, is documented, and has a zero-invocations record across seven rounds that could have run it. A second command with the same shape (call it `/observe`) would carry the identical unforced-invocation problem: nothing in this architecture can make a human, or a fresh thread with no memory of this decision, choose to run it. The one thing this architecture can make happen reliably is a step inside a command a thread is already going to run for another reason — which is exactly how `Refine` (DECISION-036, closing OF-32) was made to hold, one round earlier, on the same document.
+
+**Bounded to document-weight drift first, not to the full breadth §1 names ("problems, risks, inconsistencies, technical debt, missing work, and opportunities").** This decision does not claim the narrower scope satisfies the wider one. It claims the narrower scope is real, cheap, evidenced by three prior rounds hitting the same undetected class, and buildable today without inventing an enumeration this decision has no basis for. Naming the gap this leaves is itself part of "difficult, not impossible" done honestly, the same discipline DECISION-037 §2935 already applied to §15's own row.
+
+## Alternatives Considered
+
+**A new standalone `/observe` command, run at the start of a thread alongside `/bootstrap`.** Rejected. `/framework-review` is this exact shape already, unrun in seven opportunities (OF-06). Adding a second uninvoked command multiplies the failure rather than fixing it.
+
+**A Claude Code hook, cron job, or other scheduler-backed process running between sessions.** Rejected outright by DECISION-010 (tool-agnosticism — the same reasoning that rejected OF-20's hook proposal) and DECISION-013 (no backend, no shipped runtime). Revisiting either is a decision bigger than this one.
+
+**An eleventh CI guard scanning the tree for drift on every push.** Rejected by DECISION-026 (a guard in this repository's own CI reaches zero customer Installations — `.github/` is not in the bundle) and by OF-21, which already forbids adding an eleventh guard before item 37 finishes dispositioning the existing ten.
+
+**An unbounded instruction — "look for anything the round wasn't pointed at" — with no fixed checklist.** Rejected. Unenumerable, for the same reason `policies/testing.md` rejects a mechanical check with no named population (Learning-021/Learning-022): it cannot be audited across rounds, and it is the shape that already produced `/framework-review`'s non-invocation, transplanted into a step instead of a command.
+
+## Consequences
+
+**`.kenovis/AI/commands/next.md` Step 3 gains a required `Observe` subsection**, alongside the existing `Refine The Oldest Open Row` — both bounded, low-cost, second actions a round performs beside its own chosen objective, following the pattern DECISION-036 already established for Refine.
+
+**`PRODUCT/OPERATING_MODEL.md` §1 and §16 stay `Partial`, not `Present`, with the reason changed rather than the grade.** Observe now has a mechanism, on its first instance, covering one narrow class (document-weight drift) of the many §1 names. The row's own rule — "a row does not move to `Present` because a rule was written" — applies here exactly as it applied to Refine's own row a round earlier.
+
+**The remaining breadth of §1 — inconsistencies, undocumented technical debt, missing work, opportunities beyond document weight — stays a named, open gap** (`PRODUCT/ROADMAP.md` OF-87), not folded into this decision as if closed by it.
+
+**A future architectural change to DECISION-010 or DECISION-013 would reopen this decision's premise, not merely its measurement** — which is why the Review Date names those two decisions specifically, matching DECISION-037's own convention.
 
 ---
 
