@@ -52,16 +52,20 @@ test("the CLAUDE.md stub carries the routing rule itself, not only a pointer to 
   // The stub is the only file Claude Code autoloads unconditionally. A rule that
   // lives one hop away, behind "read SYSTEM.md first", is a rule a session can
   // skip without noticing — which is how findings kept dying in threads.
+  //
+  // runInit always leaves the stub pending (setup has not run yet), so none of
+  // the five Product-layer destinations exist — asserting they are named here
+  // would be OF-28's own bug written into the test. What must hold instead: the
+  // routing rule's header is present inline, and it points at the setup command
+  // rather than at paths init-project.md has not created yet.
   const stub = fs.files.get(result.claudeStubWrittenTo) ?? "";
   assert.match(stub, /Nothing stays in the thread/i);
-  for (const destination of [
-    "PRODUCT/ROADMAP.md",
-    "DECISIONS.md",
-    "AI/memory/learnings.md",
-    "DOMAIN/",
-    "ENGINEERING/",
-  ]) {
-    assert.ok(stub.includes(destination), `stub names ${destination} as a destination`);
+  assert.match(stub, /init-project\.md/);
+  for (const destination of ["PRODUCT/ROADMAP.md", "DECISIONS.md", "AI/memory/learnings.md"]) {
+    assert.ok(
+      !stub.includes(`→ \`${destination}\``),
+      `pending stub routes findings to ${destination}, which does not exist yet`,
+    );
   }
 });
 
