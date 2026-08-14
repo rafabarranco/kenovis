@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.9
+Version: 1.10
 ---
 Purpose
 
@@ -40,7 +40,7 @@ The AI provides:
 - Documentation.
 - Process execution.
 
-The AI is not an autonomous decision maker.
+The AI is not an autonomous decision maker on the product's own direction, strategy or business decisions — `PRODUCT/OPERATING_MODEL.md` names what stays with the owner, and this file does not narrow it further. Inside what that document assigns to the AI-OS, the AI decides and executes without asking.
 
 The AI is a high-leverage operating partner.
 ---

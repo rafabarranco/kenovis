@@ -4,7 +4,7 @@ ROADMAP.md
 
 Product Roadmap
 
-Version: 1.66
+Version: 1.67
 ---
 Purpose
 
@@ -498,21 +498,37 @@ Findings this round did not fix: none.
 
 Archive pass, run as a step of this round per `commands/next.md` Step 13 — triggered by `wc -c PRODUCT/ROADMAP.md` → **166,625 bytes** at the start of this round, against the 60 KB threshold. The superseded `Next` ordering block moves to `PRODUCT/ROADMAP-ARCHIVE.md` verbatim; OF-81 and OF-82 compact to a clause each, in the same round they closed — the pattern OF-85 found missing, applied this time rather than deferred. `PRODUCT/ROADMAP.md` **166,625 → 160,826 bytes** immediately after the pass, before this narrative was written; **166,011 bytes** at the end of the round.
 
-Next (updated 2026-08-14, after OF-81 and OF-82 — the whole of the previous pointer's rank 1 is closed):
+OF-58, 2026-08-14, via /next — the constitution stops denying the autonomy the operating model gives Kenovis.
 
-Closed and not repeated below: **OF-81** (`.kenovis/AI/workflows/roadmap.md` deleted) and **OF-82** (`policies/documentation.md` 3.8, reach-by-exact-title convention). The superseded `Next` ordering block they replaced is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+Premise checked before scoping, per Learning-023: `grep -rn "not an autonomous decision maker" .kenovis/AI/SYSTEM.md CLAUDE.md` → both lines present, unscoped, confirming OF-58's row as written. OF-57, the sibling finding this row was originally paired with, is already Fixed (DECISION-028); nothing in this round reopens it.
 
-1. **Item 41 step 3's residue, OF-58, then item 41 step 4's gap sequence beginning with §2 (OF-38 + OF-28 + OF-29).** Unchanged from the previous pointer — OF-58 scopes the unqualified "AI is not an autonomous decision maker" sentence against §4 and §17's actual split of ownership; OF-38, OF-28 and OF-29 are one change apiece to the disposition rule's trigger and a pre-setup Installation's missing destinations.
+`.kenovis/AI/SYSTEM.md` **1.9 → 1.10** and `CLAUDE.md` **2.5 → 2.6**: both scope the sentence to the product's own direction, strategy and business decisions, and name `PRODUCT/OPERATING_MODEL.md` as where that split actually lives — not this repository's own §4/§17, which is this repository's specific content and would be wrong the moment another Installation's operating model numbers its sections differently. The template's own generic shape (`templates/product-layer/PRODUCT/OPERATING_MODEL.md` → "2. What the AI-OS owns" / "3. What the owner owns") confirms every Installation has this split somewhere; only the number differs.
 
-2. **OF-78, OF-79, OF-83, OF-85 and OF-86 are deliberately not ranked above the block above; this is the fifth round to say so about OF-78.** OF-86 joins the unranked group for the same reason the others sit there: its first output — route `gh pr merge` through the same credential-helper detour as `fetch`/`push`, or extend the post-merge relevel check to fire right after any merge a round itself issues, not only at bootstrap — is a decision, not a clause.
+Validation, run rather than reasoned about. `grep -rn "not an autonomous decision maker" .kenovis/AI/SYSTEM.md CLAUDE.md DECISIONS.md` → the two live files carry the scoped form, `DECISIONS.md` still quotes the old unscoped sentence twice inside DECISION-028's own body — correctly: a decision log is a historical record of what was and was not settled at the time, and rewriting a past entry to match a later fix is exactly the compression `policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline" forbids. Ten CI guards pass.
+
+**Operating model section served: §4** — *"The founder should primarily be responsible for... The founder should not be responsible for manually managing the engineering team's memory. Kenovis should own: Engineering awareness..."*. **The row does not move; it stays `Partial`.** What changed: the framework's own constitution no longer contradicts this section — it did, unconditionally, in the two files every session and every Installation loads first. What the row's gap still names (the founder's own model of this repository's layers differing from the tree, with nothing comparing them — OF-35, OF-42) is untouched by this fix and is not what OF-58 was ever scoped to close.
+
+Findings this round did not fix: none.
+
+Archive pass, run as a step of this round per `commands/next.md` Step 13 — `wc -c PRODUCT/ROADMAP.md` → **166,011 bytes** at the start of this round. The superseded `Next` ordering block moves to `PRODUCT/ROADMAP-ARCHIVE.md` verbatim; OF-58 compacts to a clause in the same round it closed. `PRODUCT/ROADMAP.md` **166,011 → 162,675 bytes** immediately after the pass, before this narrative was written; **168,073 bytes** at the end of the round.
+
+Next (updated 2026-08-14, after OF-58 — item 41 step 3 is now fully closed):
+
+Closed and not repeated below: **OF-58** (`SYSTEM.md` 1.10, `CLAUDE.md` 2.6, scoping the autonomy sentence to what `PRODUCT/OPERATING_MODEL.md` reserves to the owner). Item 41 step 3 is complete — OF-57 and OF-58 both Fixed. The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 4 begins: §2 — OF-38 with OF-28 and OF-29, one change.** Unchanged from the previous pointer: the disposition rule's trigger becomes an event that actually occurs (write the finding when it is found, not before a terminus — "session end" — that nothing detects), and a pre-setup Installation's `CLAUDE.md` stub gets one paragraph naming where a finding goes before its five destinations exist. Cheapest step in item 41 step 4's own sequence, and it closes ABSOLUTE PRIORITY #1's remaining edges.
+
+2. **Then item 41 step 4 continues, in the order item 41 itself states:** §12 then §1 (OF-31 then OF-32 — role routing, then refinement; nothing can refine a finding until a role owns it), §15 (OF-44, hardest, may not be fully closeable), §1/§16 (OF-33, observation — a design question first, must not become an eleventh guard), §6/§9/§17 (OF-37, one instruction naming when an archive is opened), §4 (OF-41 before item 40 part 3, then OF-42 with OF-35).
+
+3. **OF-78, OF-79, OF-83, OF-85 and OF-86 are deliberately not ranked above the blocks above; this is the sixth round to say so about OF-78.** Unchanged reasoning from the previous pointer.
 
 Everything below stays scheduled and behind item 41: item 37 round 3, OF-25, item 24, OF-14, item 22, the release. Their ranking argument has not changed.
 
 Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
 
-**A release is two rounds closer to being argued and is still not ranked.** Both items the previous pointer named ahead of it are now closed; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+**A release is three rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
-Per Learning-023, check the next item's own premise against the file it describes before scoping it. Ten consecutive rounds have found their own item's stated figure stale, this one included — though this time in the other direction: the previous pointer anchored 186,168 bytes and `wc -c PRODUCT/ROADMAP.md` read **166,625** at the start of this round, smaller rather than larger, because the previous round's own archive pass had just run.
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Eleven consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 166,625 bytes and `wc -c PRODUCT/ROADMAP.md` read **166,011** at the start of this round.
 ---
 Founder instruction, 2026-08-13 — the roadmap check becomes a step of dispositioning, not a habit
 
@@ -624,8 +640,7 @@ First pass, 2026-08-12, over the 13 parked findings in this document and the sta
 
 | OF-57 | `.kenovis/AI/SYSTEM.md` denied the operating model's §1 in its Final Principle, and shipped that denial to every Installation. | This session, 2026-08-13, founder-raised | **Fixed** (2026-08-13) — DECISION-028. What remains is OF-58. → `PRODUCT/ROADMAP-ARCHIVE.md` |
 
-| OF-58 | **"The AI is not an autonomous decision maker" is unscoped, and as written it contradicts §4 and §17.** `.kenovis/AI/SYSTEM.md` line 43 and `CLAUDE.md` line 17, both loaded unconditionally. The operating model splits ownership rather than denying autonomy: §4 gives the founder product direction, strategy, business decisions and approval, and gives Kenovis *"engineering awareness, technical debt tracking, architectural consistency, technical planning, discovery tracking, roadmap completeness"*; §17 states *"Kenovis owns the continuous engineering process of the product."* An unscoped denial of decision-making covers the engineering half the model explicitly assigns to Kenovis. | This session, 2026-08-13, founder-raised | **Open.** Distinct from OF-57, which is a flat contradiction needing a founder call: this one is a scoping defect with an obvious correct form — the sentence is right about business, product and strategic decisions and wrong about engineering ones, and adding the scope makes it agree with §4 instead of fighting it. Recorded separately so it is not settled by whatever OF-57 decides; the replacement question and the autonomy question are different, and collapsing them would let a "no" on OF-57 silently keep the unscoped denial. Priority: Pain high (it is the sentence that governs what a round believes it may do without asking, which is §3's *"the founder should NOT need to ask"*), Frequency: every session, Cost low. Take it with OF-57 inside item 41 step 3. |
-
+| OF-58 | *"The AI is not an autonomous decision maker"* was unscoped in `SYSTEM.md` and `CLAUDE.md`, contradicting the operating model's own owner/AI-OS split. | This session, 2026-08-13, founder-raised | **Fixed** (2026-08-14) — `SYSTEM.md` 1.9 → 1.10, `CLAUDE.md` 2.5 → 2.6: both now scope the sentence to the product's own direction, strategy and business decisions, naming `PRODUCT/OPERATING_MODEL.md` as where the split actually lives rather than hardcoding this repository's own section numbers. → `PRODUCT/ROADMAP-ARCHIVE.md` |
 | OF-59 | A rejected item was still cited as the live plan inside recorded knowledge — three instances. | This session, 2026-08-13 | **Fixed** (2026-08-13, founder instruction) — deleted in place, each leaving a dated note. Detection stays OF-22. → `PRODUCT/ROADMAP-ARCHIVE.md` |
 
 | OF-60 | `/bootstrap` never checked the branch it is on is current with the remote, and the standard merge leaves it stale in either direction. | This session, 2026-08-13 | **Fixed** (2026-08-13, item 42 part 1) — `commands/bootstrap.md` 2.7 Step 5 and `policies/git.md` 2.3 → "Rebasing" require the branch be verified level with its remote before any work; validated live, unplanned, on the very next merge this repository ran. → `PRODUCT/ROADMAP-ARCHIVE.md` |

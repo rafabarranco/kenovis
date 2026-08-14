@@ -4,7 +4,7 @@ ROADMAP-ARCHIVE.md
 
 Completed Roadmap Items
 
-Version: 1.4
+Version: 1.5
 ---
 Purpose
 
@@ -1180,3 +1180,29 @@ Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an e
 **A release is one round closer to being argued and is still not ranked.** OF-53 closing removes the last item the previous pointer named ahead of it; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it. Nine consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 173,464 bytes and `wc -c PRODUCT/ROADMAP.md` read **186,168** at the start of this round.
+---
+
+Archived 2026-08-14, by the round that closed OF-58 (`SYSTEM.md` 1.10, `CLAUDE.md` 2.6). One queue row, Fixed, compacted in the same round; the superseded `Next` ordering block it replaced.
+
+### OF-58
+
+| OF-58 | **"The AI is not an autonomous decision maker" is unscoped, and as written it contradicts §4 and §17.** `.kenovis/AI/SYSTEM.md` line 43 and `CLAUDE.md` line 17, both loaded unconditionally. The operating model splits ownership rather than denying autonomy: §4 gives the founder product direction, strategy, business decisions and approval, and gives Kenovis *"engineering awareness, technical debt tracking, architectural consistency, technical planning, discovery tracking, roadmap completeness"*; §17 states *"Kenovis owns the continuous engineering process of the product."* An unscoped denial of decision-making covers the engineering half the model explicitly assigns to Kenovis. | This session, 2026-08-13, founder-raised | **Open.** Distinct from OF-57, which is a flat contradiction needing a founder call: this one is a scoping defect with an obvious correct form — the sentence is right about business, product and strategic decisions and wrong about engineering ones, and adding the scope makes it agree with §4 instead of fighting it. Recorded separately so it is not settled by whatever OF-57 decides; the replacement question and the autonomy question are different, and collapsing them would let a "no" on OF-57 silently keep the unscoped denial. Priority: Pain high (it is the sentence that governs what a round believes it may do without asking, which is §3's *"the founder should NOT need to ask"*), Frequency: every session, Cost low. Take it with OF-57 inside item 41 step 3. |
+
+
+### superseded `Next` ordering block, written after OF-81 and OF-82 and replaced by the block that closed OF-58
+
+Next (updated 2026-08-14, after OF-81 and OF-82 — the whole of the previous pointer's rank 1 is closed):
+
+Closed and not repeated below: **OF-81** (`.kenovis/AI/workflows/roadmap.md` deleted) and **OF-82** (`policies/documentation.md` 3.8, reach-by-exact-title convention). The superseded `Next` ordering block they replaced is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 3's residue, OF-58, then item 41 step 4's gap sequence beginning with §2 (OF-38 + OF-28 + OF-29).** Unchanged from the previous pointer — OF-58 scopes the unqualified "AI is not an autonomous decision maker" sentence against §4 and §17's actual split of ownership; OF-38, OF-28 and OF-29 are one change apiece to the disposition rule's trigger and a pre-setup Installation's missing destinations.
+
+2. **OF-78, OF-79, OF-83, OF-85 and OF-86 are deliberately not ranked above the block above; this is the fifth round to say so about OF-78.** OF-86 joins the unranked group for the same reason the others sit there: its first output — route `gh pr merge` through the same credential-helper detour as `fetch`/`push`, or extend the post-merge relevel check to fire right after any merge a round itself issues, not only at bootstrap — is a decision, not a clause.
+
+Everything below stays scheduled and behind item 41: item 37 round 3, OF-25, item 24, OF-14, item 22, the release. Their ranking argument has not changed.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
+
+**A release is two rounds closer to being argued and is still not ranked.** Both items the previous pointer named ahead of it are now closed; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Ten consecutive rounds have found their own item's stated figure stale, this one included — though this time in the other direction: the previous pointer anchored 186,168 bytes and `wc -c PRODUCT/ROADMAP.md` read **166,625** at the start of this round, smaller rather than larger, because the previous round's own archive pass had just run.
