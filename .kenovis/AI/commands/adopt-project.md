@@ -1,6 +1,6 @@
 # Adopt Project Command
 
-Version: 1.11
+Version: 1.12
 
 ---
 
@@ -389,6 +389,16 @@ If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis a
 
 ---
 
+# Step 14 - Disposition What Adoption Itself Surfaced
+
+By this point every Product-layer destination exists. Between `kenovis add` and this step, none of them did, so anything noticed earlier in this run had nowhere to go until now — see `.kenovis/AI/SYSTEM.md` → "Nothing Stays In The Thread" for that exception.
+
+An audit of a real, pre-existing codebase surfaces things a greenfield init rarely does — technical debt, defects, security gaps, architectural inconsistencies — found while reconstructing context for `ENGINEERING/`, `DOMAIN/` and the rest. Distinct from the audit facts Steps 1-12 already route into the reconstructed Product layer with a confidence level (Step 1's sense of "finding"): this is the other kind, the kind any session finds and must disposition. Anything noticed and not already recorded gets a disposition now: fixed, scheduled in `PRODUCT/ROADMAP.md`, or rejected. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+
+This is the session most likely on this whole board to find real things — it reads an entire existing codebase end to end, once. A session that found nothing writes nothing here and is done.
+
+---
+
 # Rules
 
 Never:
@@ -439,6 +449,8 @@ Adoption is complete when:
 ✓ No unmarked pre-existing file was overwritten without the human confirming.
 
 ✓ Framework files are byte-identical to before.
+
+✓ Anything Step 14 found while running this command has a disposition — fixed, scheduled, or rejected — not just a mention.
 
 ---
 

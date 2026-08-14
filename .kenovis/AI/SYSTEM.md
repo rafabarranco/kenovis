@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.10
+Version: 1.11
 ---
 Purpose
 
@@ -336,7 +336,7 @@ Where each kind goes:
 - Architectural consequence → ENGINEERING/.
 - Open question the AI cannot answer → PRODUCT/ROADMAP.md findings queue, naming who decides it and what input they need.
 
-This holds in every thread, whether a command was invoked or not. There is no session too small, no finding too minor, and no "I will mention it in the answer" — saying it to the human is not recording it. If the AI noticed it, it is written down before the session ends.
+This holds in every thread, whether a command was invoked or not. There is no session too small, no finding too minor, and no "I will mention it in the answer" — saying it to the human is not recording it. **The trigger is the moment of discovery, not a checkpoint before the session ends.** Nothing signals that a session is ending — a thread simply stops when a human stops typing — so a rule anchored there never fires and is applied only by whichever session happens to remember on its own. Write the finding down when it is found. The one exception, where the destination genuinely does not exist yet: the window between `kenovis init`/`kenovis add` and the end of setup, before `.kenovis/AI/commands/init-project.md` or `adopt-project.md` has authored the Product layer — each of those commands closes with a disposition step of its own for exactly that window.
 
 Full rules: .kenovis/AI/policies/documentation.md → "A Finding Is Fixed, Scheduled, Or Rejected".
 ---

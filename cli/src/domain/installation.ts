@@ -312,6 +312,22 @@ export function claudeStubContent(state: ClaudeStubState): string {
     ? `Before doing anything else this session, run \`${FRAMEWORK_DIR_NAME}/AI/commands/${setupPendingContent(state.kind)}.md\`.\n\n`
     : "";
 
+  // Before setup runs, none of the destinations below exist -- PRODUCT/, DOMAIN/,
+  // ENGINEERING/, DECISIONS.md and AI/memory/ are authored by init-project.md /
+  // adopt-project.md, not by the CLI (DECISION-021). Naming them unconditionally
+  // told a pre-setup session to route findings to paths that were not there yet.
+  const routing = state.pending
+    ? `None of the destinations below exist yet. \`${setupPendingContent(state.kind)}.md\` creates
+them as it runs — hold anything you notice until the step that authors the relevant one, then
+write it there. That command's own closing step disposes of anything still unwritten once every
+destination exists.`
+    : `- Improvement, technical debt, a bug you are not fixing now, any candidate work → \`PRODUCT/ROADMAP.md\`
+- A decision made, or an option rejected → \`DECISIONS.md\`, body and index line together
+- A reusable lesson → \`AI/memory/learnings.md\`
+- A business or domain rule → \`DOMAIN/\`
+- An architectural consequence → \`ENGINEERING/\`
+- An open question you cannot answer → \`PRODUCT/ROADMAP.md\`, naming who decides it and what they need`;
+
   return `# Kenovis AI-OS
 
 ${pendingDirective}This repository uses the Kenovis AI-OS. Its Framework layer lives in \`${FRAMEWORK_DIR_NAME}/\`.
@@ -327,12 +343,7 @@ Everything you find while working is written into a Product-layer file, in the s
 it — improvements, bugs, technical debt, decisions, learnings, open questions. All of it. A thread
 ends and takes with it whatever was only spoken in it.
 
-- Improvement, technical debt, a bug you are not fixing now, any candidate work → \`PRODUCT/ROADMAP.md\`
-- A decision made, or an option rejected → \`DECISIONS.md\`, body and index line together
-- A reusable lesson → \`AI/memory/learnings.md\`
-- A business or domain rule → \`DOMAIN/\`
-- An architectural consequence → \`ENGINEERING/\`
-- An open question you cannot answer → \`PRODUCT/ROADMAP.md\`, naming who decides it and what they need
+${routing}
 
 Telling the human is not recording it. This applies in every session, including ones that run no
 command and close no item. Full rules: \`${FRAMEWORK_DIR_NAME}/AI/policies/documentation.md\`.

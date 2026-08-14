@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.11
+Version: 1.12
 
 ---
 
@@ -432,6 +432,16 @@ If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis i
 
 ---
 
+# Step 13 - Disposition What Initialization Itself Surfaced
+
+By this point every Product-layer destination exists — `PRODUCT/ROADMAP.md`, `DECISIONS.md`, `AI/memory/learnings.md`, `DOMAIN/`, `ENGINEERING/` were all authored in Steps 3-8. Between `kenovis init` and this step, none of them did, so anything noticed earlier in this run had nowhere to go until now — see `.kenovis/AI/SYSTEM.md` → "Nothing Stays In The Thread" for that exception.
+
+Anything noticed while running Steps 1-12 that is not already recorded — a limitation of the chosen stack, a business fact mentioned once and never repeated, a question nobody answered — gets a disposition now, the same as any other session: fixed, scheduled in `PRODUCT/ROADMAP.md`, or rejected. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+
+A session that found nothing writes nothing here and is done. A session that found something and skips this step is exactly the failure this AI-OS exists to prevent, on its very first run.
+
+---
+
 # Rules
 
 Never:
@@ -480,6 +490,8 @@ Initialization is complete when:
 ✓ No unmarked pre-existing file was overwritten without the human confirming.
 
 ✓ Framework files are byte-identical to before.
+
+✓ Anything Step 13 found while running this command has a disposition — fixed, scheduled, or rejected — not just a mention.
 
 ---
 

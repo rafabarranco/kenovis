@@ -1,6 +1,6 @@
 # AI Engineering Constitution
 
-Version: 2.6
+Version: 2.7
 
 Part of the Kenovis AI-OS. This file is framework-level and product-agnostic.
 
@@ -45,7 +45,7 @@ Three things that are **not** recording it:
 - Describing it in the narrative of whatever item happened to be open.
 - Deciding it is too minor to write down.
 
-Applies to every thread, including this one, including threads where no command was invoked and no roadmap item was closed. If you noticed it, it is on disk before the session ends.
+Applies to every thread, including this one, including threads where no command was invoked and no roadmap item was closed. **The trigger is the moment you notice it, not a checkpoint before the session ends** — nothing signals a session is ending, so write it down when you find it, not on a plan to write it down later.
 
 Full rules and dispositions: `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 

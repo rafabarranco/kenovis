@@ -4,7 +4,7 @@ ROADMAP-ARCHIVE.md
 
 Completed Roadmap Items
 
-Version: 1.5
+Version: 1.6
 ---
 Purpose
 
@@ -1206,3 +1206,39 @@ Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an e
 **A release is two rounds closer to being argued and is still not ranked.** Both items the previous pointer named ahead of it are now closed; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it. Ten consecutive rounds have found their own item's stated figure stale, this one included — though this time in the other direction: the previous pointer anchored 186,168 bytes and `wc -c PRODUCT/ROADMAP.md` read **166,625** at the start of this round, smaller rather than larger, because the previous round's own archive pass had just run.
+---
+
+Archived 2026-08-14, by the round that closed OF-38, OF-28 and OF-29 (`CLAUDE.md` 2.7, `SYSTEM.md` 1.11, `policies/documentation.md` 3.9, `cli/src/domain/installation.ts`, `init-project.md` 1.12, `adopt-project.md` 1.12). Three queue rows, all Fixed, compacted in the same round; the superseded `Next` ordering block they replaced.
+
+### OF-38
+
+| OF-38 | **The disposition rule fires at an event that does not exist.** "Before the session ends" is the trigger in all three places the rule is written — `CLAUDE.md` line 48, `.kenovis/AI/SYSTEM.md` line 325, `policies/documentation.md` line 431 (*"when a session ends, so must the session"*) — and nothing defines, detects or signals the end of a session. An agent receives no such event; a thread stops when a human stops typing. `grep -rin "one thread\|one conversation\|per thread\|session boundary" .kenovis/AI/` → **0**, so even the operating model's own §5 premise ("one roadmap item = one conversation") is nowhere in the framework. | `/analyze`, 2026-08-13 | **Open.** This is the mechanical reason findings still die in threads after item 39 shipped: item 39 fixed *reach* (the rule is now loaded unconditionally) and left the *trigger* unchanged, and a rule whose trigger never fires is loaded by every session and applied by whichever one happens to remember. The plausible fix is to re-anchor the rule to an event that does occur — write the finding at the moment it is found, not before some terminus — which is a one-clause change to three files and does not need a guard. Priority: Pain high (it is the last structural gap in the rule item 39 was built to make unconditional), Frequency every session, Cost low. Distinct from OF-33: that says nothing observes between sessions; this says the framework has no notion of a session ending inside one. Take it with OF-28/OF-29 — all three are the same rule failing at its edges. |
+
+### OF-28
+
+| OF-28 | The rule shipped in item 39 routes findings to six Product-layer destinations, and in a fresh Installation **none of them exist yet**. `runInit` (`cli/src/application/commands/init.ts:131-138`) writes `.kenovis/`, `.setup-pending`, the `CLAUDE.md` stub and its hash — nothing else, correctly, per DECISION-021 ("the CLI never creates a Product-layer file"). `PRODUCT/ROADMAP.md`, `DECISIONS.md`, `AI/memory/learnings.md`, `DOMAIN/` and `ENGINEERING/` are authored later by `/init-project` or `/adopt-project`. So between `kenovis init` and the end of setup, the autoloaded stub names five paths that are not there. | `/analyze`, 2026-08-13 | **Open.** The window is not an edge case: it is the customer's first session, and for `/adopt-project` it is the session that audits an entire existing codebase. The failure is silent in the worst direction — the session reads a rule it cannot follow and has no instruction for that state, so it does what every session did before item 39 and says it in prose. Priority: Pain high (first impression, and the highest-yield session a customer ever runs), Frequency: every single Installation, Cost low — the plausible fix is one paragraph in the stub telling a pre-setup session where findings go until the destinations exist, and setup is already gated by `.setup-pending` so the state is already detectable. Not fixed here: `/analyze` records, it does not implement. |
+
+### OF-29
+
+| OF-29 | `/init-project` and `/adopt-project` have no disposition step for what setup itself surfaces. `grep -ci "Open Findings\|disposition"` over both → **0** on 2026-08-13. `adopt-project.md` uses "finding" in a different sense (line 118, audit facts with a confidence level) and routes those into the reconstructed Product layer, which is correct and unrelated. What has no route is the other kind: the technical debt, defects and security gaps an audit of a real, pre-existing codebase inevitably turns up while reconstructing context for it. | `/analyze`, 2026-08-13 | **Open.** Item 39 deliberately dropped per-command terminal steps as the primary mechanism, and that reasoning holds — but these two commands are not one of nineteen equivalents. They run once per Installation, they are the only commands that read an entire unfamiliar codebase end to end, and they run in exactly the window OF-28 describes, when the destinations do not exist yet. Priority: Pain high, Frequency once per Installation but it is *the* formative session, Cost low. Take it with OF-28 — they are the same window and probably one change. Distinct from OF-21: this is reach, not detection. |
+
+
+### superseded `Next` ordering block, written after OF-58 and replaced by the block that closed OF-38, OF-28 and OF-29
+
+Next (updated 2026-08-14, after OF-58 — item 41 step 3 is now fully closed):
+
+Closed and not repeated below: **OF-58** (`SYSTEM.md` 1.10, `CLAUDE.md` 2.6, scoping the autonomy sentence to what `PRODUCT/OPERATING_MODEL.md` reserves to the owner). Item 41 step 3 is complete — OF-57 and OF-58 both Fixed. The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 4 begins: §2 — OF-38 with OF-28 and OF-29, one change.** Unchanged from the previous pointer: the disposition rule's trigger becomes an event that actually occurs (write the finding when it is found, not before a terminus — "session end" — that nothing detects), and a pre-setup Installation's `CLAUDE.md` stub gets one paragraph naming where a finding goes before its five destinations exist. Cheapest step in item 41 step 4's own sequence, and it closes ABSOLUTE PRIORITY #1's remaining edges.
+
+2. **Then item 41 step 4 continues, in the order item 41 itself states:** §12 then §1 (OF-31 then OF-32 — role routing, then refinement; nothing can refine a finding until a role owns it), §15 (OF-44, hardest, may not be fully closeable), §1/§16 (OF-33, observation — a design question first, must not become an eleventh guard), §6/§9/§17 (OF-37, one instruction naming when an archive is opened), §4 (OF-41 before item 40 part 3, then OF-42 with OF-35).
+
+3. **OF-78, OF-79, OF-83, OF-85 and OF-86 are deliberately not ranked above the blocks above; this is the sixth round to say so about OF-78.** Unchanged reasoning from the previous pointer.
+
+Everything below stays scheduled and behind item 41: item 37 round 3, OF-25, item 24, OF-14, item 22, the release. Their ranking argument has not changed.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
+
+**A release is three rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Eleven consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 166,625 bytes and `wc -c PRODUCT/ROADMAP.md` read **166,011** at the start of this round.

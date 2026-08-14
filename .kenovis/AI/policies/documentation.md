@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.8
+Version: 3.9
 
 ---
 
@@ -446,7 +446,7 @@ Two rules that follow from this, because both failure modes have already happene
 
 When a round closes, it must be able to name the disposition of every finding it raised.
 
-**And when a session ends, so must the session** — closing an item is one way a session ends, not the only one. A session that wrote nothing to a Product-layer file is asserting it found nothing, which is a claim like any other in this policy and is usually false.
+**The trigger is discovery, not a session boundary.** Nothing detects a session ending — a thread simply stops — so "before the session ends" never fires for a thread that ran no command and closed no item, and closing an item is only one of the ways a session's findings need dispositioning, not the moment to wait for. A session that wrote nothing to a Product-layer file is asserting it found nothing, which is a claim like any other in this policy and is usually false.
 
 ---
 
