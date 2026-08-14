@@ -4,7 +4,7 @@ ARCHITECTURE.md
 
 Software Architecture
 
-Version: 1.6
+Version: 1.7
 ---
 Purpose
 
@@ -107,6 +107,12 @@ That split is correct and is not a gap to close by shipping the scripts. Per DEC
 A guard whose line reads `not yet dispositioned` is outstanding work under PRODUCT/ROADMAP.md item 37, which works them one at a time rather than as a sweep.
 
 Adding a guard without that line is the failure this section exists to stop: it is enforcement that ends at this repository's edge while reading as if it did not.
+---
+The CTO Role Owns This Repository's Own Framework Layer
+
+True only here. `.kenovis/AI/` is a customer Installation's read-only copy of the framework — never its product, never a role's to own — but in this repository it is the opposite: `.kenovis/AI/` is this product's own deliverable (DECISION-026), and most rounds on this board edit it. `.kenovis/AI/agents/cto.md`, the framework-layer file every Installation receives, stays silent about this on purpose: writing "you own `.kenovis/AI/`" there would ship a claim true of one repository and false of every other one it reaches.
+
+So the ownership is recorded here instead, where DECISION-020's self-modification exception already lives: **the CTO role owns findings and work whose destination is `.kenovis/AI/`** — the same role that already owns architecture, engineering direction and technical risk, extended to the product this specific company happens to build. (`PRODUCT/ROADMAP.md` OF-55.)
 ---
 Database
 
