@@ -538,6 +538,36 @@ Disposition: Open — the instance is resolved for this round; the rule (should 
 
 ---
 
+## Learning-040
+
+Date:
+2026-08-14
+
+Category:
+Process
+
+Context:
+Refining `PRODUCT/ROADMAP.md` OF-02 as the first live instance of DECISION-036's new mechanism — every round refines the lowest-id `Open` queue row, per Learning-023's discipline of checking a premise against the tree before writing.
+
+Problem:
+The Learning-023 check was scoped to OF-02's own premise (`/architect` still unrun end to end). It surfaced a second, unrelated stale row instead: `git status --short PRODUCT/OPERATING_MODEL.md` was run in the same pass to confirm an unrelated fact, and came back empty — OF-45 claimed that file was untracked, and it had been committed (`72deb8b`) since OF-45 was written.
+
+What happened:
+OF-45 was not the row being refined. It was found because refining one row means re-reading the tree around it, and the tree does not know which finding a check was run for — a `git status` run to answer OF-02's neighbour question answered OF-45's question for free.
+
+Root cause:
+**A premise check's cost is mostly fixed (open the tree, run the command) and its yield is not limited to the row that motivated it.** Learning-023 was written to stop one item shipping on a stale figure; it does not say the check only counts toward that item. Treating it as scoped to the row being refined would have meant closing OF-45 a second time, later, at full cost, having already paid to discover it was stale.
+
+Learning:
+When a round's own premise-check work turns up a second stale row, disposition it in the same pass rather than filing it to revisit — the discovery cost is already spent, and only the write-up remains.
+
+Future action:
+None — OF-45 is dispositioned in this round's own change (`PRODUCT/ROADMAP.md`, Fixed).
+
+Disposition: Fixed as a rule — `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"'s trigger is already "the moment of discovery, not a session boundary" (OF-38), which already covers this; this entry records the instance rather than a new rule.
+
+---
+
 ---
 Learning Examples
 
