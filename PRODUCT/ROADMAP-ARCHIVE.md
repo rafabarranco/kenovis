@@ -1308,3 +1308,29 @@ Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an e
 **A release is five rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it. Thirteen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 168,073 bytes and `wc -c PRODUCT/ROADMAP.md` read **169,384** at the start of this round.
+
+Archived 2026-08-14, by the round that closed OF-44 (DECISIONS.md DECISION-037). One queue row, compacted in the same round; the superseded `Next` ordering block it replaced.
+
+### OF-44
+
+| OF-44 | **The core invariant is stated as unbreakable and is enforced nowhere.** `PRODUCT/OPERATING_MODEL.md` §15: *"The system must be designed so that violating this invariant is difficult or impossible."* Measured 2026-08-13: every mechanism in the framework is an instruction an agent may follow — policies, commands, workflows, the routing table, the `Findings this item did not fix:` line. The one class of mechanical enforcement, the ten CI guards, reaches **0** Installations (item 37) and is bypassed in this repository by `gh pr merge --rebase --admin`, the standard merge on every round since `0.6.0` (OF-19). So the invariant holds exactly as often as the agent executing the round chooses to honour it, which is the definition §15 rules out. Fourteen founder-raised instances are the observed failure rate. | Item 41 / `/analyze`, 2026-08-13 | **Open.** Carried by item 41 step 4 as §15's gap, and it is the one row in that item where the honest first output may be *"not fully achievable, recorded as such"* rather than a mechanism — a markdown AI-OS that must stay tool-agnostic (DECISION-010) and ship no runtime (DECISION-013) has no place to stand a hard constraint. Distinct from OF-21 (detecting a miss after it happens) and from OF-19 (guards being bypassable, which is one instance): this asks whether *any* enforcement point exists at all. Priority: Pain maximal — it is the invariant the whole product is built to guarantee, Frequency: every session, Cost unknown and the first output is the design question, not code. Do not schedule a guard for it; DECISION-026 and OF-21 both forbid that until item 37 completes, and a guard would be the eleventh instance of the thing item 41 §15 is about. |
+
+### superseded `Next` ordering block, written after OF-32/OF-66 and replaced by the block that closed OF-44
+
+Next (updated 2026-08-14, after OF-32 and OF-66 — item 41 §1 gains its refine mechanism):
+
+Closed and not repeated below: **OF-32, OF-66** (`policies/documentation.md` 3.11, `commands/next.md` 2.11, DECISION-036); **OF-45** found already closed in the same pass (OF-80's Completion Criterion already covers its rule half). The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 4 continues: §15 — OF-44.** Unchanged from the previous pointer's own statement of item 41 step 4's remaining sequence, and flagged there as the hardest of the five: the invariant may not be fully enforceable, in which case that is recorded rather than claimed.
+
+2. **Then §1/§16 (OF-33), §6/§9/§17 (OF-37), §4 (OF-41 before item 40 part 3, then OF-42 with OF-35).** Unchanged.
+
+3. **OF-78, OF-79, OF-83, OF-85 and OF-86 are deliberately not ranked above the blocks above; this is the ninth round to say so about OF-78.** Unchanged reasoning.
+
+Everything below stays scheduled and behind item 41: item 37 round 3, OF-25, item 24, OF-14, item 22, the release. Their ranking argument has not changed.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
+
+**A release is six rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Fourteen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 169,384 bytes and `wc -c PRODUCT/ROADMAP.md` read **170,939** at the start of this round.
