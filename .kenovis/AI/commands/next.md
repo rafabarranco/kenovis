@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.6
+Version: 2.8
 
 ---
 
@@ -422,7 +422,50 @@ Then check the size of every document this round appended to, and run the archiv
 
 ---
 
-# Step 14 - Update AI Memory
+## State Which Section Of The Operating Model This Round Served
+
+```
+PRODUCT/OPERATING_MODEL.md → Conformance
+```
+
+**Name the section of the operating model this round's work served, and update that section's row in the Conformance table.** A round that served none says so, in those words, and that is a real and acceptable outcome — a release, a dependency bump and a typo fix all serve none.
+
+**If the table is still the unfilled form it shipped as, build it before updating a row.** The template ships one placeholder row on purpose — setup is the session least equipped to measure conformance, and both setup commands say so — which means the first closing round finds a table with no row for the section it served, and "update that section's row" resolves to nothing. So the population is this step's job, not setup's: write one row per numbered section of the document above, and put `unmeasured` in the State column of every row this round did not actually verify. `unmeasured` is honest and it is something a later round can move; an absent row is indistinguishable from a section nobody served. This is a one-time step per Installation — a table with a row per section is built, and from then on this step only updates rows.
+
+**Write the declaration, in `PRODUCT/ROADMAP.md`, next to the item this round closed:**
+
+```
+Operating model section served:
+```
+
+naming the section, or the word `none`. A round that served none and says nothing is indistinguishable from a round that forgot, and forgetting is what actually happens — which is why the neighbouring rule (`.kenovis/AI/policies/documentation.md` → "A closed item declares what it left behind") is built as a required line rather than as a habit. Same inversion, same reason: a round that served none now has to write `none` on the record instead of simply staying quiet.
+
+This is the criterion. Everything else a round can be measured against — a guard's exit code, a byte count, a document's structure — is instrumentation, and instrumentation is checkable in a way the objective is not. So without this step, rounds are graded on the machinery, every one of them defensibly, and the product drifts from its purpose with nothing recording the drift. That failure is what `PRODUCT/ROADMAP.md` item 40 diagnoses and what item 41 exists to correct.
+
+Two rules on moving a row, both because the failure they prevent has already happened here:
+
+- **A row does not move to `Present` because a rule was written.** A rule that exists and a rule that holds are different claims. Where the row's subject is agent behaviour rather than file content, the round that changed it is the worst available judge of whether it took — see `PRODUCT/ROADMAP.md` OF-30.
+- **A row's state is read off the tree with the command in the row**, not carried over from the previous pass. Every conformance figure this framework has restated without re-running has been stale within a day.
+
+If the repository has no `PRODUCT/OPERATING_MODEL.md` — possible only in a repository set up before it was required — that is the finding, and it goes to the owner rather than into a row. See `.kenovis/AI/SYSTEM.md` → "Source Of Truth Hierarchy" and DECISIONS.md DECISION-032.
+
+---
+
+## Write The Next Pointer, Or Write That There Is None
+
+```
+PRODUCT/ROADMAP.md → Next
+```
+
+Step 3 starts from this pointer, so a round that ends without writing one silently costs the next round a re-derivation over the whole roadmap — and Step 3's fallback for "no pointer exists yet" makes that read as intended behaviour rather than as an omission.
+
+So the pointer is a line the closing round writes, in those words:
+
+```
+Next:
+```
+
+with the ranked objectives and the reasoning that ranked them, or the single word `none` and why there is nothing to point at. `none` is a real answer — an empty roadmap is one, and a round blocked on a human decision is another. It is not the same answer as silence, and this line is what separates them.
 
 Record important learnings:
 
@@ -449,6 +492,10 @@ Ordering alone has already failed, twice, so it is no longer the only defence. T
 After completion:
 
 Summarize:
+
+## Operating Model Section Served
+
+Which section of `PRODUCT/OPERATING_MODEL.md` this round's work served, and what its Conformance row now says — or "none", in that word. Written in Step 13; restated here so the human reads it without opening the table.
 
 ## Completed
 

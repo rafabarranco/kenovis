@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.13
+Version: 2.14
 
 Last updated: —
 
@@ -43,7 +43,9 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-028** ‡★ — Kenovis Replaces The Conventional Development Team, Not The Human Who Owns The Product. `PRODUCT/OPERATING_MODEL.md` §1 wins over `SYSTEM.md`'s "the objective is not to replace engineering teams", which is deleted; the operating model outranks the constitution wherever they conflict.
 - **DECISION-029** ‡ — A Finding Is Checked Against The Roadmap, And An Open Finding Is Dimensioned. Before a finding is dispositioned it cites the roadmap id that already covers it or takes a new one; an `Open` row carries Pain, Frequency and Cost, writing `unknown` where a term is unknown; promotion to a scheduled item is a separate act.
 - **DECISION-030** ‡ — `/next` Starts From The Pointer, And Stops Rather Than Descends. Step 3 reads three inputs including the `Next` pointer the previous round wrote, and a departure from it is recorded; when the highest-ranked objective needs a human, the round presents the decision with the input already named, records that it stopped and on what, and stops — descending the priority order to find something executable is forbidden.
-- **DECISION-031** ‡★ — One Source Of Truth Hierarchy, In `SYSTEM.md`, With The Operating Model At Rank 1. `CLAUDE.md` cites it and states no ordering of its own; a business rule outranks a recorded decision; `PRODUCT/OPERATING_MODEL.md` is rank 1 and joins the session-initialization path, conditional on the owner having authored one (OF-72).
+- **DECISION-031** ‡★ — One Source Of Truth Hierarchy, In `SYSTEM.md`, With The Operating Model At Rank 1. `CLAUDE.md` cites it and states no ordering of its own; a business rule outranks a recorded decision; `PRODUCT/OPERATING_MODEL.md` is rank 1 and joins the session-initialization path. Rank 1's "conditional on the owner having authored one" clause was removed by DECISION-032.
+- **DECISION-032** ‡★ — Every Installation Authors Its Operating Model At Setup, And The Conformance Table Lives In It. Both setup commands ask the owner four questions and write `PRODUCT/OPERATING_MODEL.md` before `COMPANY_OS.md`, from a template the AI may never answer itself; the conformance table moves there from the roadmap, a closing round states which section its work served, and `COMPANY_OS.md` stops carrying a third Source Of Truth ordering.
+- **DECISION-033** ‡ — The Closing Round Builds The Conformance Table, And Declares The Two Lines Whose Absence Is Otherwise Invisible. The first closing round in an Installation writes one row per operating-model section with `unmeasured` where it did not verify; `Operating model section served:` and `Next:` become required lines that must say `none` rather than be omitted; the population instruction moves out of the setup commands and the template into `commands/next.md` Step 13, the only place a round loads it.
 
 ---
 
@@ -51,11 +53,16 @@ Every decision recorded below has exactly one line here, added in the same chang
 
 A decision log is product-specific. A customer Installation's log starts empty and accumulates that company's own decisions — see DECISION-021 and `.kenovis/AI/templates/product-layer/DECISIONS.md`. The index above is the structural exception: it ships in that template as an empty section, because a log without one cannot be read without being read whole.
 
-This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Twenty-one of them are framework-level in effect and fourteen are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
+This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Which ones is carried by the index above and only by it: **`‡` marks a decision that is framework-level in effect, `★` one that is cited by ID from inside `.kenovis/AI/`.** No count is stated here.
 
-The framework-level list previously said "Eight", named eight, and claimed all eight were cited by ID inside the framework layer — four of them are not, while five decisions that are cited were missing. Corrected in the round that added DECISION-024 (`PRODUCT/ROADMAP.md` Phase 1 item 12), which had to edit this paragraph anyway; the citation counts were read off the tree with `grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI`, per `AI/memory/learnings.md` Learning-016.
+**The counts used to be, and this paragraph is where OF-68 was fixed** (2026-08-14, in the round that added DECISION-032). It read "Eight" and was corrected to "Fifteen"/"ten", then to "Nineteen"/"thirteen", then to "Twenty-one"/"fourteen" — three corrections in eleven decisions, each one made by a round that had to edit the paragraph anyway, each one stale before the next decision landed. The defect was never the arithmetic. A number restating what the marks already carry has to be re-derived on every append and is wrong the moment someone forgets, and `check_decision_index.py` verifies body↔index pairing and has no view of a figure in a neighbouring paragraph. A reader who needs a count produces it in one command:
 
-Corrected again in the round that added DECISION-029: it still read "Fifteen" and "ten" four decisions later. Both figures were re-read off the artifact — `‡` and `★` counted in the index itself, and the citation count with the same `grep` — giving nineteen and thirteen. The paragraph is stale by construction, because it restates in prose two facts the index already carries as marks; that recurrence is a finding rather than a typo, and it is **OF-68**.
+```
+grep -c "‡" DECISIONS.md
+grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI | sort -u | wc -l
+```
+
+The first over-counts by the marks in this paragraph, which is the last reason not to have written the number down as a fact. See `AI/memory/learnings.md` Learning-016 and Learning-023.
 
 Everything else is product-specific and should be recorded as real decisions get made. See .kenovis/AI/commands/init-project.md.
 
@@ -2543,6 +2550,146 @@ One slot was not put to the founder and is flagged rather than buried: **`COMPAN
 **Rank 1 is conditional, and the condition is written into the hierarchy rather than assumed away.** No Installation has `PRODUCT/OPERATING_MODEL.md`: `grep -c "OPERATING_MODEL" .kenovis/AI/commands/init-project.md .kenovis/AI/commands/adopt-project.md` → **0**, and no template exists. A hierarchy whose top entry is absent for every customer would be OF-25 exactly — the shipped framework naming something the reader does not have — so the section states the condition and names **OF-72**, which is the founder's call on whether every Installation authors one.
 
 OF-58 is untouched. "The AI is not an autonomous decision maker" is still unscoped in both documents; this decision ranks documents and does not scope autonomy.
+
+**Rank 1's condition was removed by DECISION-032** (2026-08-14), which is this decision's Review Date firing rather than a supersession: OF-72 settled that every Installation authors an operating model at setup. The body above stays as written, including its "rank 1 is conditional" paragraph, because the trail is the point.
+
+---
+
+# DECISION-032
+
+# Every Installation Authors Its Operating Model At Setup, And The Conformance Table Lives In It
+
+Date:
+
+2026-08-14
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder — answered in session (OF-72), closing `PRODUCT/ROADMAP.md` item 41 step 2 and OF-73.
+
+Review Date:
+
+After the first external Installation runs `/init-project` under this requirement (`PRODUCT/ROADMAP.md` item 33), which is the first evidence of what asking four more questions at setup actually costs an owner.
+
+---
+
+## Context
+
+DECISION-031 put `PRODUCT/OPERATING_MODEL.md` at rank 1 of the only Source Of Truth Hierarchy and shipped that hierarchy to every Installation. No Installation had the document: `grep -c "OPERATING_MODEL" .kenovis/AI/commands/init-project.md .kenovis/AI/commands/adopt-project.md` → **0** on 2026-08-14, and `ls .kenovis/AI/templates/product-layer/PRODUCT/` returned four templates, none of them an operating model. So every customer received a conflict-resolution rule whose top entry described a document their setup never asked them for — OF-25's shape, in the rule that resolves every other conflict.
+
+Three things are settled here as one decision because they are one mechanism, and separating them would ship a third of it:
+
+- **OF-72** — whether an Installation has a rank 1 at all.
+- **`PRODUCT/ROADMAP.md` item 41 step 2** — where the conformance table lives. It can only live in a document that exists.
+- **OF-73** — `COMPANY_OS.md` → "Knowledge Hierarchy", a **third** Source Of Truth ordering that inverted DOMAIN/ and PRODUCT/ against DECISION-031 and omitted `DECISIONS.md`. It survived DECISION-031 because a duplicate is found by comparing the copies you already suspect, and nothing enumerates them ([[Learning-034]]).
+
+The reason the table needs a home other than the roadmap is the failure `PRODUCT/ROADMAP.md` item 40 measures: a round can be checked against a guard's exit code, a byte count or a document's structure, and could be checked against nothing else. Instrumentation wins every ranking because its cost is exactly knowable. The objective was not written anywhere a round could be checked against it.
+
+## Decision
+
+**1. Every Installation authors `PRODUCT/OPERATING_MODEL.md` at setup, before `COMPANY_OS.md`.** `/init-project` Step 1 and `/adopt-project` Step 2 ask four questions — what the product is for, what the AI-OS owns, what the owner owns, what rules are non-negotiable — and Step 2 / Step 3 write the document from the answers, from `.kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md`, a form and not a destination. Where the owner supplies a written statement it is recorded **verbatim**.
+
+**The AI never authors this document on the owner's behalf.** It is the one Product-layer file that is not the AI's to write, because it is the file the AI is measured against, and an operating model the AI wrote is the AI grading its own work.
+
+Rank 1 therefore stops being conditional. `SYSTEM.md` (1.8 → 1.9) states one transition case instead: a repository set up before this requirement may hold no such file, and there the gap is work to raise with the owner, not a permitted state.
+
+**2. The conformance table's home is `PRODUCT/OPERATING_MODEL.md` → "Conformance",** appended below the owner's text and never interleaved with it, and it **moved** from `PRODUCT/ROADMAP.md` item 41 rather than being copied. The roadmap records what will be built and when; it cannot state whether the product does what it is for, because the criterion lives in the specification.
+
+With it, the standing criterion: **a closing round states which section of the operating model its work served and updates that row, or states that it served none.** Carried by `commands/next.md` (2.6 → 2.7) Step 13, which every task loads and `sync` delivers — DECISION-026's test. Restated in Step 15's summary so the human reads it without opening the table.
+
+**3. `COMPANY_OS.md` states what each document defines and no ordering.** The "Knowledge Hierarchy" section becomes "What Each Document Defines", keeps the per-document descriptions, adds `PRODUCT/OPERATING_MODEL.md` and `DECISIONS.md`, and cites `SYSTEM.md` for precedence. The template gets the same change plus an explicit instruction not to add an ordering back.
+
+## Alternatives Considered
+
+**Leave the operating model optional, with the hierarchy accommodating its absence** — the status quo DECISION-031 shipped. Rejected by the founder. It costs nothing today and it means every Installation repeats the diagnosis this repository spent five rounds on: items 40 and 41 exist in their entirety because the document was missing here, and the whole of that cost is what a customer would pay again.
+
+**Offer it at setup and let the owner decline, recording "none authored".** Rejected. It is honest and it makes the absence visible, but it prices a required artifact as optional at the exact moment an owner has the least context to judge whether they need it — and the answer to "do you want to write a statement of purpose" during setup is predictably no.
+
+**Ship the conformance table in the roadmap template instead**, so it reaches Installations without an operating model. Rejected. It puts the report on the specification into a document that ranks below it, and it is the arrangement that produced item 40 in the first place.
+
+**Renumber the setup commands to give the operating model its own Step 1.** Rejected on blast radius, not on merit. `init-project.md` Step 8, Step 11 and Step 12 and `adopt-project.md` Step 13 are cited by id from `AI/memory/learnings.md`, DECISION-018 and DECISION-022, and renumbering breaks every one of those citations silently. The existing step is titled "the top of the hierarchy" and was writing rank 2 while rank 1 did not exist; extending it is what the title already claimed.
+
+**Delete `COMPANY_OS.md`'s section outright** rather than rewriting it. Rejected. The per-document descriptions are genuinely useful and are the half that was never wrong — what was wrong is the arrows between them.
+
+## Consequences
+
+Setup gets longer, and it gets longer at its most fragile moment. Both commands already refuse to invent answers, so four more questions is four more places a setup can stall on a human who does not have an answer ready. That cost is real and is the reason for this decision's Review Date.
+
+**Existing Installations do not migrate.** `sync` mirror-replaces `.kenovis/` and never writes the Product layer (RULE-INST-01), so an Installation created before this change receives the new templates and setup commands and still has no `PRODUCT/OPERATING_MODEL.md`. `SYSTEM.md` names that state and routes it to the owner; nothing detects it. Same shape as item 22's migration problem and recorded here so it is not discovered as a surprise.
+
+**OF-73's fix reaches future Installations only.** The template change lands for anyone setting up from here; an Installation that already authored its `COMPANY_OS.md` holds its own copy of the third ordering, in the Product layer, where no sync will ever reach it. [[Learning-034]]'s second half is exactly this — a rule with one framework home can have as many Product-layer contradictions as there are customers — and this decision does not solve it.
+
+**The conformance table can now go stale in a new way.** It has seventeen rows, each carrying a measurement, and nothing re-runs them. The mitigation is in the rule (a row's state is read off the tree with the command in the row, never carried over) and it is an instruction, not a mechanism.
+
+---
+
+# DECISION-033
+
+# The Closing Round Builds The Conformance Table, And Declares The Two Lines Whose Absence Is Otherwise Invisible
+
+Date:
+
+2026-08-14
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-76, OF-77's declaration half and OF-70, all three created by DECISION-032's own round.
+
+Review Date:
+
+After OF-79 is dispositioned. If the answer there is that the table is re-verified on a cadence rather than per round, the population rule below is the natural place that cadence attaches, and this decision is where to record it.
+
+---
+
+## Context
+
+DECISION-032 shipped a criterion — a closing round states which section of the operating model its work served and updates that row — and shipped it with two holes its own round found and queued.
+
+**The table has no rows.** `grep -c "^| [0-9]" .kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md` → **1** on 2026-08-14: one placeholder. Setup deliberately leaves it unfilled, and both setup commands say why — setup is the session least equipped to measure conformance. So the first closing round in an Installation is told to update the row for the section it served, and there is no row. This repository has seventeen rows only because a round built them by hand before the rule existed.
+
+**Nothing holds a round to either declaration.** The criterion permits "none" as an answer, and a round that served none and stayed silent is indistinguishable from a round that forgot. The `Next` pointer has the identical shape one step earlier: `commands/next.md` 2.7 Step 3 falls back to re-deriving the ordering when no pointer exists, which is correct for a first round and makes a skipped Step 15 read as intended behaviour.
+
+The population instruction did exist, and where it existed is the part worth recording. `init-project.md` line 190 said the table is *"filled the first time a round reads the document end to end against the framework"*, and the template repeated it. Both true, neither executable: a setup command is read once, by the session running setup, and never again by any round it describes. That is [[Learning-036]]'s third failure mode — an instruction whose sink is never read — with the sink being a command a round does not load.
+
+## Decision
+
+**1. The closing round builds the conformance table when it is still the form.** `commands/next.md` (2.7 → 2.8) Step 13: write one row per numbered section of `PRODUCT/OPERATING_MODEL.md`, with `unmeasured` in the State column of every row this round did not verify itself. It is a one-time step per Installation; from then on the step only updates rows.
+
+`unmeasured` is defined in the template (1.0 → 1.1) as the state a row is born in, and it is deliberately **not** a fourth grade alongside `Present` / `Partial` / `Absent`: it carries no claim about the product, and a row that stays `unmeasured` across rounds is itself the finding.
+
+**2. Two required lines, in `PRODUCT/ROADMAP.md`, next to the item the round closed.** `Operating model section served:` naming the section or the word `none`; `Next:` carrying the ranked objectives and the reasoning, or `none` with why there is nothing to point at.
+
+Both are the inversion `.kenovis/AI/policies/documentation.md` → "A closed item declares what it left behind" already uses for findings, applied to the two other rules in the same command that had become load-bearing without it. A round that means `none` writes `none` on the record; a round that forgot leaves an absence, and an absence is exact in a way a judgement about prose is not.
+
+**3. The population instruction moves rather than multiplying.** The template names `next.md` Step 13 as the owner instead of restating the requirement, so the rule has one home and it is the one every round loads.
+
+## Alternatives Considered
+
+**Setup builds the rows, every state written as `unmeasured`.** This was the cheaper of the two shapes OF-76 named, and it is the one this decision rejects. It is honest — `unmeasured` claims nothing — and it puts the work in the session that already has the document open. It was rejected because it re-opens a boundary DECISION-032 had just settled: `PRODUCT/OPERATING_MODEL.md` is the one Product-layer document the AI never authors, both setup commands say in their own words that filling the table during setup records states nobody measured, and a setup that writes seventeen rows is doing something an owner reading the output cannot distinguish from the AI having assessed itself. The round that closes work is the session that has actually read the tree.
+
+**Leave the population to the template's existing sentence.** Rejected on the evidence that produced this finding: the sentence has existed since the template shipped and its executor never loads the file it is in. Repeating a rule in a place nobody reads is how OF-76 happened.
+
+**Make the two declarations a CI guard rather than a required line.** Rejected, and not on merit — a missing line is exactly the kind of absence a guard can detect. DECISION-026 and OF-21 both forbid an eleventh guard before item 37 completes, and a guard in this repository reaches **0** Installations, which is the same reason the rule went into `next.md` and not into `.github/`.
+
+**Fix OF-77 whole, staleness half included.** Rejected as scope, recorded as **OF-79**. Re-verifying seventeen rows costs seventeen commands per round, paid by every Installation forever, for a document read a few times a week — and the shapes that avoid that price (a cadence, a per-row `as of` date, accepting decay and saying so) are a design question, not a clause. Splitting a finding at the point where its cost changes character is preferable to closing half of it silently.
+
+## Consequences
+
+**The criterion becomes reachable in an Installation for the first time.** Between DECISION-032 and this decision it existed and could not be executed anywhere but here.
+
+**A first closing round now does more work than a later one**, and in a fresh Installation that round is also the one with the least context about the product. `unmeasured` is what makes that acceptable — the round is not asked to grade seventeen sections, only to create the rows a later round can move.
+
+**Three required lines is the ceiling for this shape.** The inversion works because an absence is exact and a reader can check it in one look; a closing block with a dozen ceremonial lines stops being read, and the lines stop being written. Anything further of this kind should replace one of the three rather than add a fourth.
+
+**Neither declaration is enforced.** They are instructions in a command, like every other rule in this framework, which is `PRODUCT/OPERATING_MODEL.md` §15 and OF-44 — and this decision does not change that, it only widens the one enforcement shape the framework actually has from one rule to three.
 
 ---
 

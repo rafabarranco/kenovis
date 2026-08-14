@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.8
+Version: 1.9
 ---
 Purpose
 
@@ -229,7 +229,7 @@ The AI must never implement based only on a user sentence.
 
 What is read in full, and what is not:
 
-`PRODUCT/OPERATING_MODEL.md` is read in full, first, where one exists — it is rank 1 of the Source Of Truth Hierarchy, and a session that has not read it is checking its work against the machinery rather than against the objective. An Installation whose owner has authored none skips it; see that section's note and `PRODUCT/ROADMAP.md` OF-72.
+`PRODUCT/OPERATING_MODEL.md` is read in full, first. It is rank 1 of the Source Of Truth Hierarchy, and a session that has not read it is checking its work against the machinery rather than against the objective. Every Installation has one: `/init-project` and `/adopt-project` author it before `COMPANY_OS.md`, from the owner's own answers. A repository set up before that was required may not have one yet — see that section's note.
 
 COMPANY_OS.md is read in full. So is this file.
 
@@ -247,7 +247,7 @@ Source Of Truth Hierarchy
 
 When information conflicts, follow this priority:
 
-1. The product owner's statement of purpose — `PRODUCT/OPERATING_MODEL.md`, where one has been authored.
+1. The product owner's statement of purpose — `PRODUCT/OPERATING_MODEL.md`.
 
 2. Company operating context — `COMPANY_OS.md`.
 
@@ -269,7 +269,9 @@ When information conflicts, follow this priority:
 
 Code is never the source of truth.
 
-**Rank 1 is conditional and says so.** An Installation has this document only if its owner authored one — neither `/init-project` nor `/adopt-project` asks for it today, and no template exists (`grep -c "OPERATING_MODEL" .kenovis/AI/commands/init-project.md .kenovis/AI/commands/adopt-project.md` → **0** on 2026-08-14). Where there is none, rank 2 is the top. Whether every Installation should have one is a product decision, not an omission to quietly fix: `PRODUCT/ROADMAP.md` OF-72.
+**Rank 1 is not conditional, and one transition case exists.** Every Installation authors `PRODUCT/OPERATING_MODEL.md` at setup: `/init-project` Step 2 and `/adopt-project` Step 3 ask the owner for it and write it before `COMPANY_OS.md`, from `.kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md` — a form, not a destination. The AI never authors it on the owner's behalf; it is the document the AI is measured against.
+
+A repository set up before that requirement shipped may hold no such file. Where there is none, rank 2 is the top and the gap is real work, not a permitted state: the owner is asked for the document, using the same four questions the setup step asks. See DECISIONS.md DECISION-032.
 ---
 Execution Principles
 

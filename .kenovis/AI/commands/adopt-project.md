@@ -1,6 +1,6 @@
 # Adopt Project Command
 
-Version: 1.10
+Version: 1.11
 
 ---
 
@@ -141,11 +141,41 @@ Who is the first customer segment?
 What problem is painful enough that they would pay to remove it?
 ```
 
-Do not continue without answers. Never invent a company. Never keep example content because no answer was given.
+Then ask the four that produce rank 1 of the Source Of Truth Hierarchy. The audit cannot answer any of them — code records what was built, never what it was for:
+
+```
+What is this product for? Not what it does — what it exists to make possible.
+
+Which responsibilities are the AI-OS's rather than yours?
+
+Which decisions stay yours?
+
+Which rules must hold no matter what the schedule says?
+```
+
+If the human already has a written statement of any of this, ask for it and keep it **verbatim**. A supplied statement is evidence of intent; summarising it destroys the thing that makes it rank 1.
+
+These four answers go into `PRODUCT/OPERATING_MODEL.md` in Step 3, and the four above them into `COMPANY_OS.md` in the same step. Nothing produced by this step is a file of its own.
+
+Do not continue without answers. Never invent a company. Never keep example content because no answer was given. Never author the operating model on the human's behalf — it is the one Product-layer document the AI does not get to write, because it is the document the AI is measured against.
 
 ---
 
 # Step 3 - Author The Top Of The Hierarchy
+
+Two documents, in this order.
+
+```
+PRODUCT/OPERATING_MODEL.md
+```
+
+Template: `product-layer/PRODUCT/OPERATING_MODEL.md`. Collision guard applies (see above).
+
+Rank 1 of the Source Of Truth Hierarchy (`.kenovis/AI/SYSTEM.md`): the owner's statement of what this product is for. Write it from the Step 2 answers, in the human's own words, verbatim wherever they supplied a written statement.
+
+This is the one document adoption cannot reconstruct from the code, and the reason to write it first is the same reason adoption exists: an audit of an existing codebase produces a great deal of information about how the product is built, and none at all about what it is for. Without rank 1, every finding that audit raises is ranked against the machinery.
+
+Leave the Conformance table at the foot of that template as the form it is. Filling it during adoption would be recording states nobody measured, in the session least equipped to measure them.
 
 ```
 COMPANY_OS.md
@@ -381,6 +411,8 @@ Always:
 # Completion Criteria
 
 Adoption is complete when:
+
+✓ PRODUCT/OPERATING_MODEL.md carries the owner's own statement of what this product is for, from human input rather than from the audit, and its Conformance table is present as an unfilled form.
 
 ✓ COMPANY_OS.md describes the real company, from human input.
 

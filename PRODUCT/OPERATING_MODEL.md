@@ -4,7 +4,7 @@ OPERATING_MODEL.md
 
 Kenovis — Core Operating Model & Non-Negotiable Rules
 
-Version: 1.0
+Version: 1.2
 ---
 Provenance
 
@@ -12,9 +12,9 @@ Authored by the founder. Recorded verbatim on 2026-08-13, in the session where i
 
 Until that moment this document existed nowhere in the repository. `grep -ril "Core Operating Model\|NOTHING DISCOVERED MAY BE LOST\|Non-Negotiable Rules"` over the Product layer returned **0**; `"institutional memory"` returned **0**; `"without requiring a conventional human development team"` returned **1**, a partial quote inside the roadmap item written about its absence. See `AI/memory/learnings.md` Learning-028 and `PRODUCT/ROADMAP.md` OF-36.
 
-Nothing below is summarised, reordered or edited. Reconciling it with `COMPANY_OS.md` and `DOMAIN/BUSINESS_RULES.md` — which state some of the same things differently, and rank them under two Source Of Truth Hierarchies that disagree — is OF-36 and OF-39, and is a founder decision. Recording it is not, which is why it is here.
+Nothing below is summarised, reordered or edited. Reconciling it with `COMPANY_OS.md` and `DOMAIN/BUSINESS_RULES.md` — which state some of the same things differently — is OF-36 and item 41 step 3. The hierarchy half of that reconciliation is settled: OF-39 is closed by DECISION-031, and `COMPANY_OS.md`'s own third ordering is closed by DECISION-032 (OF-73). Recording this document was never the founder's call, which is why it is here.
 
-Where this ranks: above every other Product-layer document until OF-39 settles the hierarchy. This is the statement of what the product is for; the rest describe how it is built.
+Where this ranks: **rank 1 of the Source Of Truth Hierarchy**, in `.kenovis/AI/SYSTEM.md`, per DECISION-031. This is the statement of what the product is for; the rest describe how it is built. This sentence previously deferred to OF-39; it is corrected here rather than left citing a closed finding.
 ---
 
 # Kenovis — Core Operating Model & Non-Negotiable Rules
@@ -686,4 +686,52 @@ What that states, and each line is a requirement on the framework rather than a 
 3. **`/next`, `/analyze` and `/explain` are the three most-used commands.** `/next` executes the roadmap's next step; `/analyze` examines situations, flows, technical questions, anything; `/explain` explains a given situation. Framework effort is weighted accordingly: a defect in one of these three costs more than the same defect anywhere else, because these three are what runs.
 4. **The loop terminates when the roadmap is empty.** Stated as the end condition. §1 and §14 say the roadmap is the complete representation of known future work and that Kenovis observes continuously and feeds it — so an empty roadmap is either the product having nothing left to improve, or observation having stopped. The framework currently defines no behaviour for that state at all (`grep -cin "empty\|nothing left\|no items\|exhausted" .kenovis/AI/commands/next.md` → **0**), which is OF-49.
 
-Where this ranks: with §1-17, under the same rule — above every other Product-layer document until OF-39 settles the hierarchy.
+Where this ranks: with §1-17, under the same rule — rank 1 of the Source Of Truth Hierarchy in `.kenovis/AI/SYSTEM.md`, settled by DECISIONS.md DECISION-031 on 2026-08-14. This line previously read "until OF-39 settles the hierarchy"; OF-39 is closed and the sentence is corrected here rather than left pointing at a finished finding.
+
+---
+
+# Conformance — How This Document Is Checked Against The Framework
+
+**Everything above this line is the founder's, verbatim.** §1-17 and Addendum A are recorded as supplied and are never edited, reordered or summarised. Everything below it is Kenovis's own, appended and never interleaved: the specification and the report on the specification are different documents that happen to share a file, and they share it so that the question "is the AI-OS doing its job" is answered where the job is defined.
+
+Why here and not in `PRODUCT/ROADMAP.md`, where this table was born: the roadmap records what will be built and when. It cannot state whether the product does what it is for, because the criterion lives here. A round that wants to check itself opens one file. See DECISIONS.md DECISION-032, and `PRODUCT/ROADMAP.md` item 41 step 2, which is the item that moved it.
+
+## The Standing Criterion
+
+**Every round that closes states which section of this document its work served, and updates that section's row.** A round that served none says so, in those words. That is the criterion `PRODUCT/ROADMAP.md` item 40 records as not existing — a round could previously only be measured against the machinery it happened to touch, so the machinery is what every round optimised.
+
+The rule is carried by `.kenovis/AI/commands/next.md` Step 13, which is loaded on every task and delivered to every Installation by `kenovis sync`. It is not a check in this repository's CI: a guard here reaches zero Installations (DECISIONS.md DECISION-026).
+
+## Conformance Table
+
+Full pass verified against the tree on **2026-08-14**, every row by the command in its own row or by the finding it cites — not recalled, and not carried over from the previous pass. A row changed after that date carries its own date.
+
+| § | Rule | State | Carried by |
+|---|---|---|---|
+| 1 | Observes continuously; raises to the right role; role refines; becomes planned work | **Partial** — plan and persist work; observe, route and refine do not. `grep -rin "refine" .kenovis/AI/{commands,workflows,policies,agents}` → **2**, both in `designer.md` and both about visual design | OF-33, OF-31, OF-32 |
+| 2 | ABSOLUTE PRIORITY #1 — nothing discovered may be lost | **Partial** — the rule is loaded unconditionally (item 39; present in both `CLAUDE.md` and `SYSTEM.md`); its trigger is an event that never fires, and in a fresh Installation its five destinations do not exist | OF-38, OF-28, OF-29 |
+| 3 | Behaves like a real development team; the founder never has to ask | **Absent** — `grep -c "founder-raised\|founder asking\|raised by a human\|founder-flagged" PRODUCT/ROADMAP.md` → **22**, up from 14 at the previous pass. Every structural miss to date was found by the founder asking | OF-35 |
+| 4 | The founder decides; Kenovis owns engineering awareness | **Partial** — and the founder's own model of this repository's layers differs from the tree, with nothing comparing them | OF-35, OF-42, item 40 |
+| 5 | Thread isolation must not silo knowledge | **Partial** — reach fixed (item 39); the cadence is specified in Addendum A and implemented nowhere. `grep -rin "one thread\|one conversation\|per thread\|session boundary" .kenovis/AI/ CLAUDE.md` → **0** | OF-38, item 42 |
+| 6 | The Product layer is the persistent memory | **Partial** — `wc -c` over the three archives → **320,100 bytes**, up from 272,438; `grep -l "ARCHIVE" .kenovis/AI/commands/*.md .kenovis/AI/workflows/*.md` → **0**. Nothing opens an archive | OF-37, OF-43 |
+| 7 | Injected once; each iteration understands the product better | **Partial** — nothing rereads what earlier iterations wrote away | OF-37, OF-33 |
+| 8 | Two adoption modes, INIT and ADOPT | **Present** — both exist and both have run end to end; their findings window does not | OF-28, OF-29 |
+| 9 | Continuous improvement is mandatory | **Partial** — learnings are written; the sink has no reader | OF-37 |
+| 10 | The AI-OS layer is the AI-OS's; the Product layer is the product's | **Present** — `sync` mirror-replaces and never touches the Product layer; it stays silent about what it removed | OF-01 / item 38 |
+| 11 | Kenovis may modify itself inside its own repository | **Present** — DECISION-020, `ENGINEERING/ARCHITECTURE.md` line 97 (re-verified 2026-08-14); not held by every reader | OF-42 |
+| 12 | The role that owns the responsibility processes the discovery | **Absent** — `grep -rn "Open Findings\|disposition" .kenovis/AI/agents/*.md` → **0** across **12** agent files | OF-31, OF-55 |
+| 13 | No silent debt | **Present as a rule** — and `grep -c "\*\*Open" PRODUCT/ROADMAP.md` → **54** queue rows sitting `Open`, of which six carry no ranking terms | OF-32, OF-66 |
+| 14 | The roadmap is the complete representation of known future work | **Partial** — it is complete and `wc -c PRODUCT/ROADMAP.md` → **164,762 bytes** against a 60 KB threshold, which is a different way of not being readable | OF-32, OF-62 |
+| 15 | Core invariant: violating it must be difficult or impossible | **Absent** — compliance is voluntary at every point; `ls .github/scripts/*.py` → **10** guards reaching **0** Installations, unchanged on re-measurement 2026-08-14, and bypassed by the merge command this repository uses on every round. What moved that day and did not move the row: the one enforcement shape that works here — a required line whose absence is exact — now covers three load-bearing rules instead of one (`Findings this item did not fix:`, `Operating model section served:`, `Next:`; DECISION-033). Three visible omissions are not a difficult violation | OF-44, OF-19, OF-21 |
+| 16 | Observe → Analyze → Detect → Refine → Plan → Implement → Test → Review → Learn → Persist → Update roadmap | **Partial** — Observe and Refine have no implementation; `ls .kenovis/AI/commands/*.md` → **11**, every one keyed to a human intention. The rest run when a human starts a session | OF-33, OF-32 |
+| 17 | Perfect institutional memory; the founder is not the cross-thread memory | **Partial** — memory is written and not re-read; the founder is still the detector | OF-37, OF-43, OF-35 |
+
+Five `Present`, nine `Partial`, three `Absent`. The three absent — §3, §12, §15 — are the ones that make this an organisation rather than a notebook.
+
+**Two figures moved against the direction of work between the two passes**, and they are recorded rather than smoothed: §3 went 14 → 22 and §14 went ~120 KB → 164,762 bytes. Rounds closed real gaps in that window and the two headline symptoms got worse, which is what this table is for. A conformance report that only ever improves is measuring the rounds, not the product.
+
+## What A Row Means
+
+`Present` — the rule holds and a command, policy or measurement shows it. `Partial` — part of the rule holds and the row names which part does not. `Absent` — the rule does not hold, and there is either a finding carrying it or a recorded decision to leave it so. An `Absent` row with neither is the failure this table exists to make visible.
+
+A row is not moved to `Present` on the strength of a rule having been written. `PRODUCT/ROADMAP.md` OF-30 exists because a behavioural claim was closed on its author's own assertion; a state change here is verified by the command in the row, or by a session that did not author the change.
