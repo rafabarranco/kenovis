@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Changed
+
+- **The constitution stops denying the autonomy your own operating model gives Kenovis.** `.kenovis/AI/SYSTEM.md` (1.9 → 1.10), `CLAUDE.md` (2.5 → 2.6). Both files said, unconditionally, *"[The AI/You are] not an autonomous decision maker"* — loaded before every task, in every Installation. Your `PRODUCT/OPERATING_MODEL.md` splits ownership rather than denying autonomy: what stays with you (direction, strategy, business decisions) and what it assigns to the AI-OS (engineering awareness, technical planning, architectural consistency). An unscoped denial covered the half the operating model explicitly gives Kenovis, contradicting the document ranked above the constitution itself. Both files now name `PRODUCT/OPERATING_MODEL.md` as where the split lives, generically — not this repository's own section numbers, which are this founder's content and would be wrong for anyone else's.
+
 ### Removed
 
 - **`.kenovis/AI/workflows/roadmap.md`, a second definition of `/next`.** It claimed the same trigger as `.kenovis/AI/commands/next.md`, had zero inbound references anywhere in the framework, and was four rounds behind — no findings queue, no `Next` pointer, no disposition rule, no operating-model declaration, no empty-roadmap handling. An Installation that somehow reached it instead of the command would run a process this framework no longer guarantees. Deleted rather than converged: bringing it to parity would mean re-deriving `commands/next.md` inside a second file, which this repository's own "Single Source of Truth" rule already forbids.
