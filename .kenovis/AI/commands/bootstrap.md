@@ -1,6 +1,6 @@
 # Bootstrap Command
 
-Version: 2.8
+Version: 2.9
 
 ---
 
@@ -78,7 +78,7 @@ Understand:
 
 # Step 2 - Load Project Context
 
-Read `PRODUCT/OPERATING_MODEL.md` in full first, where one exists — rank 1 of the Source Of Truth Hierarchy (`.kenovis/AI/SYSTEM.md`). Not as one file inside `PRODUCT/`, which is how it was reached before and meant it was loaded by accident or not at all. An Installation whose owner authored none skips this and starts at `COMPANY_OS.md`.
+Read `PRODUCT/OPERATING_MODEL.md` in full first — rank 1 of the Source Of Truth Hierarchy (`.kenovis/AI/SYSTEM.md`). Not as one file inside `PRODUCT/`, which is how it was reached before and meant it was loaded by accident or not at all. Setup authors it in every repository (`/init-project` Step 2, `/adopt-project` Step 3); a repository predating that requirement may not have one, and there the gap is work to raise with the owner, not a state to bootstrap around.
 
 Read `COMPANY_OS.md` in full.
 

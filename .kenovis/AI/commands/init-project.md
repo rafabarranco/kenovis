@@ -1,6 +1,6 @@
 # Init Project Command
 
-Version: 1.10
+Version: 1.11
 
 ---
 
@@ -153,15 +153,43 @@ Who is the first customer segment?
 What problem is painful enough that they would pay to remove it?
 ```
 
+Then ask the four that produce rank 1 of the Source Of Truth Hierarchy, and say why they are being asked — they are not more of the same:
+
+```
+What is this product for? Not what it does — what it exists to make possible.
+
+Which responsibilities are the AI-OS's rather than yours?
+
+Which decisions stay yours?
+
+Which rules must hold no matter what the schedule says?
+```
+
+If the human already has a written statement of any of this, ask for it and keep it **verbatim**. A supplied statement is evidence of intent; summarising it destroys the thing that makes it rank 1.
+
+These four answers go into `PRODUCT/OPERATING_MODEL.md` in Step 2, and the four above them into `COMPANY_OS.md` in the same step. Nothing produced by this step is a file of its own.
+
 Do not continue without answers.
 
-Never invent a company. Never keep the example company because no answer was given.
+Never invent a company. Never keep the example company because no answer was given. Never author the operating model on the human's behalf — it is the one Product-layer document the AI does not get to write, because it is the document the AI is measured against.
 
 ---
 
 # Step 2 - Rewrite The Top Of The Hierarchy
 
-Order matters. Everything below depends on what is written here.
+Order matters. Everything below depends on what is written here. Two documents, in this order.
+
+```
+PRODUCT/OPERATING_MODEL.md
+```
+
+Template: `product-layer/PRODUCT/OPERATING_MODEL.md`. Collision guard applies (see above).
+
+Rank 1 of the Source Of Truth Hierarchy (`.kenovis/AI/SYSTEM.md`): the owner's statement of what this product is for. Write it from the Step 1 answers, in the human's own words wherever they gave them, verbatim wherever they supplied a written statement.
+
+Leave the Conformance table at the foot of that template as the form it is — one row per numbered section, filled the first time a round reads the document end to end against the framework. Do not fill it during setup with states nobody measured.
+
+This document exists because a round can only be checked against a criterion that is written down. Where none is, rounds are measured against the machinery instead, and the product drifts from its purpose with every round defensible and nothing recording the drift.
 
 ```
 COMPANY_OS.md
@@ -424,6 +452,8 @@ Always:
 # Completion Criteria
 
 Initialization is complete when:
+
+✓ PRODUCT/OPERATING_MODEL.md carries the owner's own statement of what this product is for, in the owner's words, and its Conformance table is present as an unfilled form.
 
 ✓ COMPANY_OS.md describes the real company.
 

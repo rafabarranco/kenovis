@@ -4,9 +4,11 @@
 
 Company Operating System
 
-Version: 2.1
+Version: 2.2
 
-Last updated: 2026-08-13 — Company Vision restated against PRODUCT/OPERATING_MODEL.md §1 (DECISIONS.md DECISION-028).
+Last updated: 2026-08-14 — "Knowledge Hierarchy" stopped stating a third Source Of Truth ordering and became "What Each Document Defines" (DECISIONS.md DECISION-032, PRODUCT/ROADMAP.md OF-73).
+
+Previously: 2026-08-13 — Company Vision restated against PRODUCT/OPERATING_MODEL.md §1 (DECISIONS.md DECISION-028).
 
 ---
 
@@ -208,62 +210,27 @@ Examples:
 
 ---
 
-# Knowledge Hierarchy
+# What Each Document Defines
 
-The company knowledge system follows this structure:
+Each document in the company knowledge system answers a different question:
 
-COMPANY_OS.md
+`PRODUCT/OPERATING_MODEL.md` — what this product is for, stated by its owner.
 
-Defines:
+COMPANY_OS.md — why we exist, where we compete, how we think, how we decide.
 
-- Why we exist.
-- Where we compete.
-- How we think.
-- How we decide.
+DECISIONS.md — what was decided, and why.
 
+PRODUCT/ — what we build, for whom, and the product direction.
 
-↓
+DOMAIN/ — business concepts, rules, meaning.
 
-PRODUCT/
+ENGINEERING/ — technical implementation, architecture, infrastructure.
 
-Defines:
+`.kenovis/AI/` — how AI agents operate, how work is executed, how decisions are supported.
 
-- What we build.
-- For whom.
-- Product direction.
+**This list states what each document is for. It states no precedence.** When two of them conflict, the ordering that resolves it is the Source Of Truth Hierarchy in `.kenovis/AI/SYSTEM.md`, which is the only one.
 
-
-↓
-
-DOMAIN/
-
-Defines:
-
-- Business concepts.
-- Rules.
-- Meaning.
-
-
-↓
-
-ENGINEERING/
-
-Defines:
-
-- Technical implementation.
-- Architecture.
-- Infrastructure.
-
-
-↓
-
-.kenovis/AI/
-
-Defines:
-
-- How AI agents operate.
-- How work is executed.
-- How decisions are supported.
+This section used to be a "Knowledge Hierarchy" with an ordering of its own, and that ordering was a third one: it ranked PRODUCT/ above DOMAIN/ — the inverse of what DECISION-031 settled — and omitted DECISIONS.md entirely. It survived the round that reconciled the other two because a duplicate is found by comparing the copies you already suspect, and nothing enumerates them (`AI/memory/learnings.md` Learning-034, `PRODUCT/ROADMAP.md` OF-73). See DECISIONS.md DECISION-032.
 
 ---
 

@@ -1,6 +1,6 @@
 # AI Engineering Constitution
 
-Version: 2.4
+Version: 2.5
 
 Part of the Kenovis AI-OS. This file is framework-level and product-agnostic.
 
@@ -79,7 +79,7 @@ At the beginning of every session:
 
 Read in full:
 
-1. PRODUCT/OPERATING_MODEL.md — where one exists. Rank 1 of the Source Of Truth Hierarchy: the owner's statement of what this product is for. A session that has not read it is measuring its work against the instrumentation instead of the objective, which is the failure PRODUCT/ROADMAP.md item 40 records.
+1. PRODUCT/OPERATING_MODEL.md — rank 1 of the Source Of Truth Hierarchy: the owner's statement of what this product is for, authored at setup by /init-project or /adopt-project. A session that has not read it is measuring its work against the instrumentation instead of the objective, which is the failure PRODUCT/ROADMAP.md item 40 records. Its Conformance section is where a closing round records which part of that statement its work served.
 2. COMPANY_OS.md
 3. .kenovis/AI/SYSTEM.md
 

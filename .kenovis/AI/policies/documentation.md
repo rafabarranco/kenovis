@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.5
+Version: 3.6
 
 ---
 
@@ -484,11 +484,13 @@ Prose in `CHANGELOG.md`, `DECISIONS.md`, `PRODUCT/ROADMAP.md` and the rest of th
 
 # An Instruction Is Reachable, And Its Sink Is Read
 
-Two failure modes that make a correctly written instruction produce nothing.
+Three failure modes that make a correctly written instruction produce nothing.
 
 **A document that instructs an outcome must permit the action that produces it.** A prohibition written for one purpose ("do not implement") silently swallows a different one ("do not record") when it is phrased by mechanism rather than by intent. A rule a command is structurally prevented from following is not a weak rule, it is an absent one, and no amount of care in following it helps. When writing "do X" into a command, re-read that command's own constraints for whatever forbids X. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-024.)
 
 **Knowledge sinks are not interchangeable.** This framework has three: `DECISIONS.md` records *why*, `AI/memory/learnings.md` records the *lesson*, `PRODUCT/ROADMAP.md` records *what and when*. Only the third is read to decide what happens next. Before writing "record it in X", ask what reads X and when. A destination nothing consults at decision time is a place to put something down, not a place for it to be picked up — and a well-documented deferral in the wrong sink reads as closed. (Learning-024.)
+
+**A rule over a population ships whatever creates that population, and says what an empty one means.** A rule phrased as "update the row", "check each entry", "declare what this item left behind" is correct, loaded, and produces nothing where the rows, entries or items do not exist yet. Whoever writes the rule always has the population in front of them — it is the repository they are working in — and that is exactly why they do not see the question. Three instances in this framework, all found after shipping: a routing rule naming five destinations that a repository does not have until setup completes; a conformance table whose rows one repository had built by hand and no other repository has any instruction to build; and a check whose population emptied as the *intended* effect of a second rule, leaving it permanently inert and passing. So two questions before the rule ships: **what creates the population, and what does an empty one mean** — "nothing to do" and "nothing is set up" are different answers and only one of them is a pass. (`AI/memory/learnings.md` Learning-036.)
 
 ---
 

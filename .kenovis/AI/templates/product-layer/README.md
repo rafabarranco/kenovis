@@ -1,6 +1,6 @@
 # Product-Layer Templates
 
-Version: 1.3
+Version: 1.4
 
 ---
 
@@ -27,6 +27,8 @@ product-layer/AI/memory/*.md             →  AI/memory/*.md
 ## How to use them
 
 Only `/init-project` and `/adopt-project` read this directory. Do not copy a template into place by hand — both commands ask the human real questions first, then author the file from the answers. A template copied verbatim is placeholder content pretending to be a decision.
+
+`PRODUCT/OPERATING_MODEL.md` is authored first, before `COMPANY_OS.md`, and it is the one template the AI must not answer on the human's behalf under any circumstances. It is rank 1 of the Source Of Truth Hierarchy — the owner's statement of what the product is for — and it is what every later round is measured against. An operating model the AI wrote is the AI grading its own work. Where the owner supplies a written statement, it is recorded verbatim rather than summarised into the template's shape.
 
 Every template's first line carries the `PROJECT-SPECIFIC` marker, so a file authored from one is recognisable as Product layer from the moment it exists. That is what makes the Collision Guard (DECISION-019) work: a Product-layer path holding a file *without* the marker is someone else's file, and neither command may overwrite it without asking.
 

@@ -204,62 +204,25 @@ Examples:
 
 ---
 
-# Knowledge Hierarchy
+# What Each Document Defines
 
-The company knowledge system follows this structure:
+Each document in the company knowledge system answers a different question. Carry this section over unchanged — it describes the document set every Installation receives, not anything company-specific.
 
-COMPANY_OS.md
+`PRODUCT/OPERATING_MODEL.md` — what this product is for, stated by its owner.
 
-Defines:
+COMPANY_OS.md — why we exist, where we compete, how we think, how we decide.
 
-- Why we exist.
-- Where we compete.
-- How we think.
-- How we decide.
+DECISIONS.md — what was decided, and why.
 
+PRODUCT/ — what we build, for whom, and the product direction.
 
-↓
+DOMAIN/ — business concepts, rules, meaning.
 
-PRODUCT/
+ENGINEERING/ — technical implementation, architecture, infrastructure.
 
-Defines:
+`.kenovis/AI/` — how AI agents operate, how work is executed, how decisions are supported.
 
-- What we build.
-- For whom.
-- Product direction.
-
-
-↓
-
-DOMAIN/
-
-Defines:
-
-- Business concepts.
-- Rules.
-- Meaning.
-
-
-↓
-
-ENGINEERING/
-
-Defines:
-
-- Technical implementation.
-- Architecture.
-- Infrastructure.
-
-
-↓
-
-.kenovis/AI/
-
-Defines:
-
-- How AI agents operate.
-- How work is executed.
-- How decisions are supported.
+**This list states what each document is for. It states no precedence.** When two of them conflict, the ordering that resolves it is the Source Of Truth Hierarchy in `.kenovis/AI/SYSTEM.md`, which is the only one. Do not restate that ordering here, and do not add one: a second copy of the rule that resolves every other conflict is the one duplicate a document set cannot carry — the two copies are edited by different readers, they diverge, and both read as authoritative. This section used to carry such a copy and it disagreed with the hierarchy, which is why the wording above is explicit.
 
 ---
 
