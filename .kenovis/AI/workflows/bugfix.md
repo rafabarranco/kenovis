@@ -1,6 +1,6 @@
 # Bug Fix Workflow
 
-Version: 2.4
+Version: 2.5
 
 ---
 
@@ -290,6 +290,8 @@ AI/memory/learnings.md
 ```
 
 when the bug taught something reusable — a root cause that will recur, a convention that would have prevented it. The regression test added in Phase 8 is the other half of that record, and the more durable one.
+
+**Whatever the investigation surfaced and this fix did not repair is a separate record.** `AI/memory/learnings.md` holds the lesson; nothing reads it to decide what happens next. Adjacent defects, the debt the root cause exposed, the test coverage its absence revealed — each one is scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason, before this bug is closed. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected". A bug investigation reads more of the system than almost any other task, which makes it one of the richest sources of findings and, without this line, one of the leakiest.
 
 The bug-report form is not a file to update: it shaped the conversation, and `kenovis sync` replaces the directory it lives in. See DECISIONS.md DECISION-024.
 

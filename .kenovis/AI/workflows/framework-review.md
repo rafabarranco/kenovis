@@ -1,6 +1,6 @@
 # Framework Review Workflow
 
-Version: 1.1
+Version: 1.2
 
 ---
 
@@ -138,11 +138,21 @@ For each finding: file, exact location, what is wrong, why it matters.
 
 For each finding, propose the minimal fix. Do not apply it as part of this workflow — file edits for framework-layer content still go through `CONTRIBUTING.md` → "Framework Definition of Done" (CHANGELOG entry, DECISIONS entry when applicable) like any other framework PR.
 
+**Proposing a fix is not a disposition, and this is the workflow where that matters most.** Every phase above produces findings; this phase is where they stop moving unless something carries them out of the session. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+
 ---
 
 # Phase 9 - Record Outcome
 
-If fixes are applied as a result of this review, they are framework-layer changes like any other — follow `.kenovis/AI/policies/documentation.md` and `CONTRIBUTING.md` normally. This workflow's own execution is not itself a change worth logging; only the fixes it leads to are.
+Every finding classified in Phase 7 gets one of three dispositions before this workflow ends:
+
+- **Fixed** — applied in this session, with the evidence. Framework-layer changes like any other: follow `.kenovis/AI/policies/documentation.md` and `CONTRIBUTING.md` normally.
+- **Scheduled** — an entry with an id in `PRODUCT/ROADMAP.md`, carrying Pain, Frequency and Cost.
+- **Rejected** — with the reason, recorded so it is not proposed again.
+
+**A run that ends with a report and no dispositions has produced nothing durable.** Phase 8 forbids applying fixes here, correctly — so without this phase every finding this workflow exists to surface reaches the end of the session as a proposal and dies there. That is not a hypothetical: a review that classifies ten findings, proposes ten minimal fixes and schedules none is a fully compliant run of the previous version of this workflow, and leaves the framework exactly as it was. Recorded as fixed in `PRODUCT/ROADMAP.md`, in the OF-52 audit.
+
+The run's own report is delivered in this session and is not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. The dispositions above are what survives it.
 
 ---
 

@@ -737,3 +737,96 @@ When Phase 2's diff-preview work starts, treat it as a UX/ergonomics layer on to
 Disposition: OF-09 (Deferred) — `sync` diff preview belongs to Phase 2 ergonomics. The rule about treating it as a layer over `runSync` is a standing rule; candidate for item 20.
 
 ---
+
+---
+## Learning-038
+
+Date:
+2026-08-14
+
+Category:
+Process
+
+Context:
+Item 42 part 4 — running OF-52's audit, which was scoped from a count: "twelve of nineteen commands and workflows still route a finding nowhere", measured as `grep -ci "Open Findings\|disposition\|Findings this"` per file.
+
+Problem:
+The count was wrong in both directions and the audit's first act was discovering that. `commands/architect.md`, `commands/feature.md` and `workflows/hotfix.md` all scored **0** while all three carry the findings rule correctly, by citing `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" by its exact title. The row also counted six remaining workflows where there are seven. True silent population: **11**, not 12.
+
+What happened:
+The proxy was three keywords drawn from how the rule had been *phrased* in the files that already carried it at the time the finding was written. Files that adopted the rule afterwards adopted the correct form — a citation of the policy section — which shares no keyword with the proxy. So the metric degraded as the thing it measured improved, and it degraded silently, because a grep that returns a number always looks like a measurement.
+
+Root cause:
+**A keyword proxy for "does this file carry rule X" measures a phrasing, not a rule.** This framework enforces itself in prose, so it asks that question constantly, and every round improvises the keyword. `policies/documentation.md` → "A Claim Is Read Back Off The Artifact" already requires the command to be stated — which is why this was catchable at all — but a stated command that answers a *nearby* question is more persuasive than no command, not less. The number was carried into a shipped queue row and into the `Next` pointer's ranking argument before anyone re-ran it.
+
+Learning:
+**Measure a rule's reach by the one string that cannot be paraphrased: the exact title of the section that states it.** `grep -rl "A Finding Is Fixed, Scheduled, Or Rejected"` answers the question the improvised keyword only resembled. This works in the other direction too, and that is the durable half: when writing a cross-reference into a framework file, cite the target section by its full title rather than describing it, and the reach of every rule becomes greppable by construction rather than by whoever next guesses a keyword.
+
+Related but distinct: [[Learning-023]] says verify an item's premise about a file's contents before scoping it. That was followed here — the premise was checked, which is how the miscount surfaced. What Learning-023 does not cover is a premise that was verified *with the wrong command* on the day it was written. A measurement is a claim about what a command asked, not only about what it returned.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-82** carries the class: whether citing a policy section by its exact title becomes a stated convention for framework cross-references. **OF-81** carries the other output of the same audit, `workflows/roadmap.md` selecting work with a model four rounds out of date.
+
+Disposition: Fixed as an instance — OF-52's count is corrected in item 42 parts 4-5's progress block, in the document that published it, per "A published number that turns out wrong is corrected where it was published". **The rule half is deliberately not promoted to a policy section yet**, and that is OF-82's first output rather than this round's: making it a convention obliges every framework cross-reference to carry a full section title, which is a real cost on every file, and one instance is not enough to spend it. This is the same restraint [[Learning-037]] applied to its own corollary.
+
+---
+## Learning-037
+
+Date:
+2026-08-14
+
+Category:
+Process
+
+Context:
+Closing item 41 step 2's residue — OF-76, OF-77's declaration half and OF-70 — in a fresh thread with no conversational inheritance from the round that created all three.
+
+Problem:
+The population instruction OF-76 says is missing was not missing. `init-project.md` line 190 said the conformance table is *"filled the first time a round reads the document end to end against the framework"*, and the template said it again. Two correct statements of the requirement, and zero rounds executing it, because a setup command is read once by the session that runs setup and never again by any round it describes.
+
+What happened:
+The finding was scoped as "write the missing instruction" and the first premise check found the instruction already written, twice. The work changed from authoring a rule to moving one — same words, different file, and the different file is the entire fix.
+
+Root cause:
+**An instruction addressed to a future actor was written in the document the current actor had open.** Setup was writing about what rounds do, so it wrote it where setup lives. Nothing about the sentence is wrong; nothing about its location can work. This is [[Learning-036]]'s third failure mode with a specific and easily repeated sink: *a command that a different command's executor does not load*. Commands feel like a shared namespace because they sit in one directory and cite each other freely, and they are not — each is loaded only when invoked.
+
+Learning:
+When a rule constrains what a **later** session will do, the test is not "is it written down" but **"which file does that session load, and is this in it?"** For a `/next` round the answer is short and worth naming: `CLAUDE.md`, `PRODUCT/OPERATING_MODEL.md`, `COMPANY_OS.md`, `.kenovis/AI/SYSTEM.md`, `DECISIONS.md`'s index, `PRODUCT/ROADMAP.md`, and the command being run. A rule for rounds that lives anywhere else has been recorded, not shipped — and the copy in the wrong place is worse than nothing, because it makes the requirement look handled to anyone who greps for it.
+
+Corollary, from the same round: when the instruction turns out to already exist somewhere unreachable, **move it, do not add a second copy**. Two copies of a rule is DECISION-031's failure at a smaller scale, and the reachable copy is the only one that ever runs.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-79** carries the staleness half this round deliberately did not fix, and **OF-80** carries the round-ends-uncommitted gap found on entry. Both are dimensioned rows in the queue, not future actions parked here.
+
+Disposition: Fixed as an instance — DECISION-033 moves the population requirement into `commands/next.md` 2.8 Step 13 and leaves the template pointing at it. **The rule half is deliberately not promoted to a policy section:** `policies/documentation.md` 3.6 → "An Instruction Is Reachable, And Its Sink Is Read" already states the failure mode in general terms, and what this learning adds is a concrete checklist for one command's load set — which belongs in the learning, not restated as a fourth failure mode (OF-24, "Single Source of Truth"). If a second command's load set has to be written down, that is the point the general rule needs a table and not before.
+
+---
+## Learning-036
+
+Date:
+2026-08-14
+
+Category:
+Process
+
+Context:
+Item 41 step 2 — moving the conformance table into `PRODUCT/OPERATING_MODEL.md` and shipping the standing criterion that keeps it alive: a closing round names the operating-model section its work served and updates that row.
+
+Problem:
+The criterion works in this repository and is inert in every other one. This repository has a seventeen-row conformance table because a round built it by hand, in prose, before any rule existed. An Installation receives the table as a one-row form — deliberately, since filling it during setup would record states nobody measured — and no instruction anywhere builds the remaining rows. "Update the row for the section you served" resolves to nothing when there are no rows.
+
+What happened:
+The gap was not visible while writing the rule. The table was on screen, seventeen rows of it, in the file the rule was being written about. Every test of the instruction passed because the population it operates on was sitting right there.
+
+Root cause:
+**A rule over a population is written by someone who has the population in front of them.** That is the condition under which the rule is being drafted, and it is the one condition in which the question "what creates this population" cannot occur to anyone. The rule reads complete because, where it is written, it is.
+
+Learning:
+Two questions before a rule that operates over rows, entries, items or destinations ships: **what creates the population, and what does an empty one mean?** "Nothing to do" and "nothing is set up" are different answers and only one of them is a pass.
+
+Three instances now, which is what makes this a rule rather than an observation: item 39 shipped a routing rule naming five Product-layer destinations that do not exist until setup completes (OF-28); this round shipped a table whose rows exist in one repository only (OF-76); and `check_item_findings.py` went permanently inert when its population emptied as the intended effect of the archive rule, then was fixed so the inertness passes silently (OF-61). [[Learning-033]]'s producer/consumer rule is the neighbouring case and not the same one — there the consumer was never told the sink existed; here the consumer exists and the thing it consumes does not.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-76** carries the instance created by this round, and **OF-77** the enforcement half of the same criterion. **OF-61** is the third instance and stays open on its own question, which is OF-21's.
+
+Disposition: Fixed as a rule — `.kenovis/AI/policies/documentation.md` 3.5 → 3.6, → "An Instruction Is Reachable, And Its Sink Is Read", now three failure modes rather than two. It went into that section rather than a new one because the section's whole subject is a correctly written instruction that produces nothing, and a fourth section restating it is what OF-24 added "Single Source of Truth" to forbid. This also closes **OF-63**, which had parked the same rule in a `Disposition:` field with no id and named `policies/testing.md` as its plausible home; the home turned out to be documentation, and the reason to write it now rather than defer again is that OF-63's own defect was deferring it.
