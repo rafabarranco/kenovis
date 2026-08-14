@@ -43,6 +43,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-028** ‡★ — Kenovis Replaces The Conventional Development Team, Not The Human Who Owns The Product. `PRODUCT/OPERATING_MODEL.md` §1 wins over `SYSTEM.md`'s "the objective is not to replace engineering teams", which is deleted; the operating model outranks the constitution wherever they conflict.
 - **DECISION-029** ‡ — A Finding Is Checked Against The Roadmap, And An Open Finding Is Dimensioned. Before a finding is dispositioned it cites the roadmap id that already covers it or takes a new one; an `Open` row carries Pain, Frequency and Cost, writing `unknown` where a term is unknown; promotion to a scheduled item is a separate act.
 - **DECISION-030** ‡ — `/next` Starts From The Pointer, And Stops Rather Than Descends. Step 3 reads three inputs including the `Next` pointer the previous round wrote, and a departure from it is recorded; when the highest-ranked objective needs a human, the round presents the decision with the input already named, records that it stopped and on what, and stops — descending the priority order to find something executable is forbidden.
+- **DECISION-031** ‡★ — One Source Of Truth Hierarchy, In `SYSTEM.md`, With The Operating Model At Rank 1. `CLAUDE.md` cites it and states no ordering of its own; a business rule outranks a recorded decision; `PRODUCT/OPERATING_MODEL.md` is rank 1 and joins the session-initialization path, conditional on the owner having authored one (OF-72).
 
 ---
 
@@ -50,7 +51,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 
 A decision log is product-specific. A customer Installation's log starts empty and accumulates that company's own decisions — see DECISION-021 and `.kenovis/AI/templates/product-layer/DECISIONS.md`. The index above is the structural exception: it ships in that template as an empty section, because a log without one cannot be read without being read whole.
 
-This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Twenty of them are framework-level in effect and thirteen are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
+This repository is the other exception, for the same reason DECISION-020 gives: its product *is* the framework, so decisions about how the framework behaves are genuinely this company's own product decisions. Twenty-one of them are framework-level in effect and fourteen are cited by ID from inside `.kenovis/AI/` — marked `‡` and `★` in the index rather than listed again here, so the two lists cannot disagree.
 
 The framework-level list previously said "Eight", named eight, and claimed all eight were cited by ID inside the framework layer — four of them are not, while five decisions that are cited were missing. Corrected in the round that added DECISION-024 (`PRODUCT/ROADMAP.md` Phase 1 item 12), which had to edit this paragraph anyway; the citation counts were read off the tree with `grep -rho "DECISION-0[0-9][0-9]" .kenovis/AI`, per `AI/memory/learnings.md` Learning-016.
 
@@ -2465,6 +2466,83 @@ A board whose top item is a founder call now produces a **stopped round with a w
 The pointer becomes load-bearing. A round that writes a careless one now misdirects the next round rather than being ignored — which is a real cost, and the reason a departure has to be recorded rather than merely permitted.
 
 This does not implement observation (OF-33) or the empty-roadmap terminal behaviour (OF-49). Both stay where they are, in item 42 part 5 and item 41 §16.
+
+---
+
+# DECISION-031
+
+# One Source Of Truth Hierarchy, In `SYSTEM.md`, With The Operating Model At Rank 1
+
+Date:
+
+2026-08-14
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder — answered in session, closing `PRODUCT/ROADMAP.md` item 41 step 1 (OF-39, OF-50).
+
+Review Date:
+
+When OF-72 settles whether every Installation authors an operating model, since that decides whether rank 1 is generally reachable.
+
+---
+
+## Context
+
+Two Source Of Truth Hierarchies, in the two documents every session loads, disagreeing on the pair that collides most often. Read off the tree before this change:
+
+`CLAUDE.md` → COMPANY_OS.md, DECISIONS.md, DOMAIN/, PRODUCT/, ENGINEERING/, code.
+
+`.kenovis/AI/SYSTEM.md` → Business Rules, Domain Model, Architecture Decisions, Product Requirements, Implementation Code, AI Suggestions.
+
+When a recorded decision contradicts a business rule, `CLAUDE.md` gave the decision the win (2 over 3) and `SYSTEM.md` gave the business rule the win (1 over 3). **The rule that resolves every other conflict was itself in conflict**, and neither reader opened the other file because both are loaded as authoritative — OF-24's duplication failure at the one altitude where it cannot be tolerated.
+
+Neither listed `PRODUCT/OPERATING_MODEL.md` at any rank, and `grep -n "OPERATING_MODEL" CLAUDE.md .kenovis/AI/SYSTEM.md .kenovis/AI/commands/bootstrap.md` → **0**: the founder's statement of what the product is for was on no session-initialization path at all, reached only incidentally as one file inside `PRODUCT/` (OF-50). DECISION-028 had already ruled it outranks a framework document *for one conflict*, deliberately leaving the general hierarchy open — this is that opening closed.
+
+The two were taken as one decision because ranking a document and loading it are the same act: a rank nothing reads is not a rank.
+
+## Decision
+
+**One hierarchy, in `.kenovis/AI/SYSTEM.md`.** `CLAUDE.md` cites that section and no longer states an ordering. `SYSTEM.md` is what `sync` delivers to every Installation; the generated `CLAUDE.md` stub carries neither copy (OF-27), so the version that had been living in this repository's `CLAUDE.md` was never reaching a customer in the first place.
+
+The order:
+
+1. `PRODUCT/OPERATING_MODEL.md` — the owner's statement of purpose, where one has been authored.
+2. `COMPANY_OS.md`
+3. `DOMAIN/` — business rules and the domain model.
+4. `DECISIONS.md`
+5. `PRODUCT/`
+6. `ENGINEERING/`
+7. Implementation code.
+8. AI suggestions.
+
+**A business rule outranks a decision** (3 over 4), settling the inversion. A decision is an engineering choice made at a point in time; a business rule is what the product must be true of, so a decision contradicting one is a defect in the decision rather than a licence to bend the rule.
+
+**Rank 1 goes on the session-initialization path** — `CLAUDE.md` → "Session Initialization Protocol", `SYSTEM.md` → "Context Loading Rules", and `commands/bootstrap.md` (2.7 → 2.8) Step 2, which now names it rather than reaching it as one file inside `PRODUCT/`. That closes OF-50's this-repository half.
+
+One slot was not put to the founder and is flagged rather than buried: **`COMPANY_OS.md` at rank 2**. It was rank 1 in `CLAUDE.md`'s list and absent from `SYSTEM.md`'s, so placing it directly under the operating model preserves its previous standing and inserts only what was decided. It is the one position in the list derived rather than answered.
+
+## Alternatives Considered
+
+**Keep the hierarchy in `CLAUDE.md`.** Rejected. `CLAUDE.md` is autoloaded first in *this* repository, which is exactly the reasoning [[Learning-026]] records as false about Installations: the generated stub is a pointer to `SYSTEM.md`, so the conflict-resolution rule would have lived where no customer could read it.
+
+**Author a third hierarchy in its own document, cited by both.** Rejected. It resolves the divergence by adding a third place for it to recur, and this framework has no mechanism that detects a rule restated in a new file — OF-24's detection half is still open.
+
+**Classify business rules, so invariants always win and product rules yield to a later decision.** Rejected. It is more faithful to reality and it requires someone to maintain a classification, in prose, which is the shape this repository has already rejected twice (Learning-015, and the two guards built on classifying prose).
+
+**Wait for item 41 step 2's conformance table.** Rejected. Step 1 exists precisely because nothing below it can be checked against a specification whose rank is undefined.
+
+## Consequences
+
+`SYSTEM.md` changes for every Installation on its next `sync`, and the change is in what its agents obey when documents disagree.
+
+**Rank 1 is conditional, and the condition is written into the hierarchy rather than assumed away.** No Installation has `PRODUCT/OPERATING_MODEL.md`: `grep -c "OPERATING_MODEL" .kenovis/AI/commands/init-project.md .kenovis/AI/commands/adopt-project.md` → **0**, and no template exists. A hierarchy whose top entry is absent for every customer would be OF-25 exactly — the shipped framework naming something the reader does not have — so the section states the condition and names **OF-72**, which is the founder's call on whether every Installation authors one.
+
+OF-58 is untouched. "The AI is not an autonomous decision maker" is still unscoped in both documents; this decision ranks documents and does not scope autonomy.
 
 ---
 

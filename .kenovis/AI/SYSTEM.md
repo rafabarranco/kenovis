@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.7
+Version: 1.8
 ---
 Purpose
 
@@ -229,6 +229,8 @@ The AI must never implement based only on a user sentence.
 
 What is read in full, and what is not:
 
+`PRODUCT/OPERATING_MODEL.md` is read in full, first, where one exists — it is rank 1 of the Source Of Truth Hierarchy, and a session that has not read it is checking its work against the machinery rather than against the objective. An Installation whose owner has authored none skips it; see that section's note and `PRODUCT/ROADMAP.md` OF-72.
+
 COMPANY_OS.md is read in full. So is this file.
 
 DECISIONS.md is read as its Decision Index only — the section at the head of that file, one line per decision. A decision log is append-only by design and grows without bound; loading every body to consult none of them makes the start of a session cost more each week, in every Installation, forever.
@@ -241,23 +243,33 @@ If `.kenovis/.setup-pending` exists, run the command it names (`init-project` or
 ---
 Source Of Truth Hierarchy
 
+**This is the only hierarchy.** `CLAUDE.md` cites this section and does not restate it. Two copies of the rule that resolves every other conflict is the one duplicate a document set cannot carry: they were edited independently, they diverged, and because both are loaded as authoritative neither reader ever opened the other. See DECISIONS.md DECISION-031.
+
 When information conflicts, follow this priority:
 
-1. Business Rules
+1. The product owner's statement of purpose — `PRODUCT/OPERATING_MODEL.md`, where one has been authored.
 
-2. Domain Model
+2. Company operating context — `COMPANY_OS.md`.
 
-3. Architecture Decisions
+3. Business rules and the domain model — `DOMAIN/`.
 
-4. Product Requirements
+4. Recorded decisions, architectural and otherwise — `DECISIONS.md`.
 
-5. Implementation Code
+5. Product requirements — `PRODUCT/`.
 
-6. AI Suggestions
+6. Engineering documentation — `ENGINEERING/`.
 
-The AI must adapt implementation to the business.
+7. Implementation code.
 
-The business must not adapt to implementation convenience.
+8. AI suggestions.
+
+**Rank 1 is what the product is for. Everything below it describes how the product is built.** A framework document never outranks it — DECISION-028 ruled that for one conflict and DECISION-031 generalises it.
+
+**A business rule outranks a decision** (3 over 4). A decision is an engineering choice made at a point in time; a business rule is what the product must be true of. A decision that contradicts a business rule is a defect in the decision, not a licence to bend the rule. The AI adapts implementation to the business; the business does not adapt to implementation convenience.
+
+Code is never the source of truth.
+
+**Rank 1 is conditional and says so.** An Installation has this document only if its owner authored one — neither `/init-project` nor `/adopt-project` asks for it today, and no template exists (`grep -c "OPERATING_MODEL" .kenovis/AI/commands/init-project.md .kenovis/AI/commands/adopt-project.md` → **0** on 2026-08-14). Where there is none, rank 2 is the top. Whether every Installation should have one is a product decision, not an omission to quietly fix: `PRODUCT/ROADMAP.md` OF-72.
 ---
 Execution Principles
 
