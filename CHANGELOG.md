@@ -6,7 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Removed
+
+- **`.kenovis/AI/workflows/roadmap.md`, a second definition of `/next`.** It claimed the same trigger as `.kenovis/AI/commands/next.md`, had zero inbound references anywhere in the framework, and was four rounds behind — no findings queue, no `Next` pointer, no disposition rule, no operating-model declaration, no empty-roadmap handling. An Installation that somehow reached it instead of the command would run a process this framework no longer guarantees. Deleted rather than converged: bringing it to parity would mean re-deriving `commands/next.md` inside a second file, which this repository's own "Single Source of Truth" rule already forbids.
+
 ### Changed
+
+- **A reach-measuring command now cites a rule's exact section title, not an improvised keyword.** `.kenovis/AI/policies/documentation.md` (3.7 → 3.8) → "A Claim Is Read Back Off The Artifact". `grep -ci "Open Findings\|disposition\|Findings this"` — one framework round's proxy for "does this file carry the findings rule" — scored three files zero when all three cited the rule correctly, by its exact title, in a form the keyword didn't anticipate. The wrong count had already set a ranking before the error was found. A citation of the section's exact title can't drift the same way a keyword can: it either names the rule or it doesn't.
 
 - **`/next` Step 11 now validates a document-artifact round the way it actually gets validated.** `.kenovis/AI/commands/next.md` (2.9 → 2.10). The step said *"Run: Tests. Type checks. Linting. Build process."* — four checks that pass vacuously on every round whose artifact is markdown under `.kenovis/AI/`, which is most of them, since that markdown is the product (DECISION-026). It now splits code-artifact validation from document-artifact validation, and names the form that actually validates the second kind: read every claim, count and grep the round makes back off the artifact with the command that produces it, per `.kenovis/AI/policies/documentation.md` → "A Claim Is Read Back Off The Artifact" — already the standard every recent round used, and nowhere in the command that requires validation.
 

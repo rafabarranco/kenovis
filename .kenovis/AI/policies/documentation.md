@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.7
+Version: 3.8
 
 ---
 
@@ -471,6 +471,8 @@ Prose in `CHANGELOG.md`, `DECISIONS.md`, `PRODUCT/ROADMAP.md` and the rest of th
 **Every count is read off the artifact with the command that produces it, in the same round, and the command goes in the entry.** `git show --stat <commit> -- <path>`, `grep -rc <pattern> <dir>`, the test runner's own total. If a number is not worth one command, do not state it — "several templates" is honest and costs nothing. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-016.)
 
 **State the command, not the scope in words.** "Eleven across the three files" is precise about the number and puts the scope in a sentence, so any later verification has to reconstruct which files were meant — and the obvious command silently answers a different question. Per-file transitions are self-checking: "net +11 across A, B, C (5 → 9, 6 → 11, 1 → 3)". When a broad number disagrees with a scoped one, reconcile the difference before treating either as a defect. (Learning-018.)
+
+**When the count measures a rule's reach across files, the command greps the rule's exact section title, not an improvised keyword list.** `grep -ci "Open Findings\|disposition\|Findings this"` and `grep -ci "guard\|check_\|\.github"` are both proxies for "does this file carry rule X", and a proxy drifts from the rule the moment either is edited without the other. A citation of the section's exact title cannot drift the same way: the title names one rule, so a file either cites it or does not. This is what corrected a wrong reach count after it had already set a ranking — three files scored zero on the keyword and cited the rule correctly by title. (`PRODUCT/ROADMAP.md` OF-82.)
 
 **A published number that turns out wrong is corrected where it was published**, and said to have been corrected. The trail is the point.
 
