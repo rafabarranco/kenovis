@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.9
+Version: 2.10
 
 ---
 
@@ -358,12 +358,16 @@ Large uncontrolled rewrites.
 
 # Step 11 - Validate
 
+**When the round's artifact is code:**
+
 Run:
 
 - Tests.
 - Type checks.
 - Linting.
 - Build process.
+
+**When the round's artifact is a document** — most rounds on this board, since the product is `.kenovis/AI/` markdown (DECISION-026) — the four checks above do not touch the changed file, and passing them is not validation. Validate instead with `.kenovis/AI/policies/documentation.md` → "A Claim Is Read Back Off The Artifact": read every claim, count and grep the round makes back off the artifact with the command that produces it, and exercise the failing case for anything the round added a check for. State which form ran.
 
 Verify:
 

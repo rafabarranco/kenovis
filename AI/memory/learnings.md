@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.18
+Version: 1.19
 ---
 Scope
 
@@ -503,6 +503,38 @@ Future action:
 `PRODUCT/ROADMAP.md` → **OF-75** carries the missing rule (nothing in `policies/git.md` covers a stacked PR; `grep -cin "stacked\|dependent branch"` → 0) and **OF-74** carries the other half found by the same merge — `--force-with-lease` is inert when the push target is a URL rather than a tracked remote, which is this repository's only path because of OF-65.
 
 Disposition: Open — no rule promoted yet. The technique belongs in `policies/git.md` beside "Rebasing", and it is queued as OF-75 rather than written here because both git findings should land as one section rather than two, and because this round's mandate was to merge the open PRs, not to change the git policy while doing it.
+
+---
+
+## Learning-039
+
+Date:
+2026-08-14
+
+Category:
+Process
+
+Context:
+Bootstrapping a `/next` round to close OF-53, on a repository where `development` requires one approving review to merge a pull request.
+
+Problem:
+`policies/git.md` requires every round to branch fresh from `development`. `git rev-list --count origin/development..origin/feature/item-42-parts-4-5-findings-cadence` → **1**: the previous round's entire output was sitting in an open, unreviewed PR, one commit ahead of `development`. A branch cut from `development` at that moment would have started from a `Next` pointer one round stale and duplicated work already done.
+
+What happened:
+The gap was created by a fix landing correctly. OF-80 changed `/next`'s completion criterion from the work being merged to the work having "reached a branch" — deliberately, because requiring a merge every round was the wrong bar for a solo maintainer waiting on their own review. That fix removed the pressure to merge before a thread ends, so a PR can now sit open indefinitely, and the very next round to bootstrap is the first place that gap is visible — not as a defect in OF-80's fix, but as a precondition `policies/git.md`'s branch-from-`development` rule was never checked against.
+
+Root cause:
+**Two rules can each be correct about the file they govern and still leave a gap at the seam between them**, discoverable only by a round that has to satisfy both at once. `policies/git.md` was written assuming the previous round's work reaches `development` promptly; `commands/next.md`'s completion criterion stopped guaranteeing that, correctly, for a different reason. Neither document names the other's assumption, so the collision is invisible to a reader of either one. This is [[Learning-031]]'s shape one layer over — there, an archive rule and a findings-population rule jointly emptied a corpus neither author had reasoned about; here, a completion-criterion rule and a branch-source rule jointly stall a bootstrap neither author had reasoned about.
+
+Learning:
+When a rule changes what "a round is over" means, re-check every other rule that assumed the old finish line — not just the one the change was written for. The other rule does not need to be wrong; it needs to be re-verified against the new state the first rule now permits.
+
+Resolved live rather than reasoned about: the previous round's PR (#114) was self-reviewed against its own CI-passing diff and merged with `gh pr merge --rebase --admin --delete-branch` — the same command `PRODUCT/ROADMAP.md` OF-19 already names as this repository's standard practice — with the founder's explicit confirmation sought and given in this session rather than assumed from precedent alone.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-19** carries the standing question this reuses: whether a solo maintainer should keep a review requirement that only `--admin` satisfies, or drop it. No new id — this is a second instance added to OF-19's own row, per DECISION-029.
+
+Disposition: Open — the instance is resolved for this round; the rule (should `/next` check branch currency against an *unmerged* PR, not only a stale local ref, before bootstrapping — extending `commands/bootstrap.md` Step 5 / OF-60's fix) is not written and is part of whatever OF-19 settles.
 
 ---
 
