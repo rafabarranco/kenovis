@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.17
+Version: 1.18
 ---
 Scope
 
@@ -506,66 +506,6 @@ Disposition: Open — no rule promoted yet. The technique belongs in `policies/g
 
 ---
 
-## Learning-036
-
-Date:
-2026-08-14
-
-Category:
-Process
-
-Context:
-Item 41 step 2 — moving the conformance table into `PRODUCT/OPERATING_MODEL.md` and shipping the standing criterion that keeps it alive: a closing round names the operating-model section its work served and updates that row.
-
-Problem:
-The criterion works in this repository and is inert in every other one. This repository has a seventeen-row conformance table because a round built it by hand, in prose, before any rule existed. An Installation receives the table as a one-row form — deliberately, since filling it during setup would record states nobody measured — and no instruction anywhere builds the remaining rows. "Update the row for the section you served" resolves to nothing when there are no rows.
-
-What happened:
-The gap was not visible while writing the rule. The table was on screen, seventeen rows of it, in the file the rule was being written about. Every test of the instruction passed because the population it operates on was sitting right there.
-
-Root cause:
-**A rule over a population is written by someone who has the population in front of them.** That is the condition under which the rule is being drafted, and it is the one condition in which the question "what creates this population" cannot occur to anyone. The rule reads complete because, where it is written, it is.
-
-Learning:
-Two questions before a rule that operates over rows, entries, items or destinations ships: **what creates the population, and what does an empty one mean?** "Nothing to do" and "nothing is set up" are different answers and only one of them is a pass.
-
-Three instances now, which is what makes this a rule rather than an observation: item 39 shipped a routing rule naming five Product-layer destinations that do not exist until setup completes (OF-28); this round shipped a table whose rows exist in one repository only (OF-76); and `check_item_findings.py` went permanently inert when its population emptied as the intended effect of the archive rule, then was fixed so the inertness passes silently (OF-61). [[Learning-033]]'s producer/consumer rule is the neighbouring case and not the same one — there the consumer was never told the sink existed; here the consumer exists and the thing it consumes does not.
-
-Future action:
-`PRODUCT/ROADMAP.md` → **OF-76** carries the instance created by this round, and **OF-77** the enforcement half of the same criterion. **OF-61** is the third instance and stays open on its own question, which is OF-21's.
-
-Disposition: Fixed as a rule — `.kenovis/AI/policies/documentation.md` 3.5 → 3.6, → "An Instruction Is Reachable, And Its Sink Is Read", now three failure modes rather than two. It went into that section rather than a new one because the section's whole subject is a correctly written instruction that produces nothing, and a fourth section restating it is what OF-24 added "Single Source of Truth" to forbid. This also closes **OF-63**, which had parked the same rule in a `Disposition:` field with no id and named `policies/testing.md` as its plausible home; the home turned out to be documentation, and the reason to write it now rather than defer again is that OF-63's own defect was deferring it.
-
-## Learning-037
-
-Date:
-2026-08-14
-
-Category:
-Process
-
-Context:
-Closing item 41 step 2's residue — OF-76, OF-77's declaration half and OF-70 — in a fresh thread with no conversational inheritance from the round that created all three.
-
-Problem:
-The population instruction OF-76 says is missing was not missing. `init-project.md` line 190 said the conformance table is *"filled the first time a round reads the document end to end against the framework"*, and the template said it again. Two correct statements of the requirement, and zero rounds executing it, because a setup command is read once by the session that runs setup and never again by any round it describes.
-
-What happened:
-The finding was scoped as "write the missing instruction" and the first premise check found the instruction already written, twice. The work changed from authoring a rule to moving one — same words, different file, and the different file is the entire fix.
-
-Root cause:
-**An instruction addressed to a future actor was written in the document the current actor had open.** Setup was writing about what rounds do, so it wrote it where setup lives. Nothing about the sentence is wrong; nothing about its location can work. This is [[Learning-036]]'s third failure mode with a specific and easily repeated sink: *a command that a different command's executor does not load*. Commands feel like a shared namespace because they sit in one directory and cite each other freely, and they are not — each is loaded only when invoked.
-
-Learning:
-When a rule constrains what a **later** session will do, the test is not "is it written down" but **"which file does that session load, and is this in it?"** For a `/next` round the answer is short and worth naming: `CLAUDE.md`, `PRODUCT/OPERATING_MODEL.md`, `COMPANY_OS.md`, `.kenovis/AI/SYSTEM.md`, `DECISIONS.md`'s index, `PRODUCT/ROADMAP.md`, and the command being run. A rule for rounds that lives anywhere else has been recorded, not shipped — and the copy in the wrong place is worse than nothing, because it makes the requirement look handled to anyone who greps for it.
-
-Corollary, from the same round: when the instruction turns out to already exist somewhere unreachable, **move it, do not add a second copy**. Two copies of a rule is DECISION-031's failure at a smaller scale, and the reachable copy is the only one that ever runs.
-
-Future action:
-`PRODUCT/ROADMAP.md` → **OF-79** carries the staleness half this round deliberately did not fix, and **OF-80** carries the round-ends-uncommitted gap found on entry. Both are dimensioned rows in the queue, not future actions parked here.
-
-Disposition: Fixed as an instance — DECISION-033 moves the population requirement into `commands/next.md` 2.8 Step 13 and leaves the template pointing at it. **The rule half is deliberately not promoted to a policy section:** `policies/documentation.md` 3.6 → "An Instruction Is Reachable, And Its Sink Is Read" already states the failure mode in general terms, and what this learning adds is a concrete checklist for one command's load set — which belongs in the learning, not restated as a fourth failure mode (OF-24, "Single Source of Truth"). If a second command's load set has to be written down, that is the point the general rule needs a table and not before.
-
 ---
 Learning Examples
 
@@ -643,6 +583,9 @@ A learning is listed as closed only when its rule is findable in the destination
 
 | Learning | What it established | Now carried by |
 |---|---|---|
+| Learning-038 | A keyword proxy for "does this file carry rule X" measures a phrasing, not a rule; measure a rule's reach by the exact title of the section that states it | Instance-fixed — `PRODUCT/ROADMAP.md` item 42 parts 4-5's progress block corrects the count where it was published. Not yet a policy rule — that promotion is OF-82's own first output |
+| Learning-037 | A rule that constrains a later session is tested by "which file does that session load, and is this in it", not by "is it written down" | Instance-fixed — `commands/next.md` 2.8 Step 13 carries the population instruction DECISION-033 moved there. The general failure mode this instance is one of was already promoted by Learning-036; deliberately not restated as a fourth mode |
+| Learning-036 | A rule over a population ships whatever creates that population, and states what an empty one means | `policies/documentation.md` → "An Instruction Is Reachable, And Its Sink Is Read" |
 | Learning-024 | A command that instructs an outcome must permit the action producing it; knowledge sinks are not interchangeable | `policies/documentation.md` → "An Instruction Is Reachable, And Its Sink Is Read" |
 | Learning-023 | An item's premise about a file's contents is a claim; verify it while writing the item | `policies/documentation.md` → "A Claim Is Read Back Off The Artifact" |
 | Learning-022 | Enumerate the population the protected property could be violated in, not the population the known defects sat in; a guard states which of its parts is exact and which is a heuristic | `policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" |

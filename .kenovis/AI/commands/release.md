@@ -1,6 +1,6 @@
 # Release Command
 
-Version: 2.1
+Version: 2.2
 
 ---
 
@@ -355,11 +355,11 @@ Verify:
 - Critical workflows.
 - User impact.
 
-Document:
+Record, naming where each part goes rather than leaving "document" to resolve itself:
 
-- Release outcome.
-- Problems discovered.
-- Follow-up tasks.
+- **Release outcome** → `CHANGELOG.md`, under the version just cut.
+- **Problems discovered** → these are findings. Each one is fixed in this session, scheduled with an id in `PRODUCT/ROADMAP.md`, or rejected with a reason. A problem discovered during a release and written only into the release notes has been announced, not dispositioned. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+- **Follow-up tasks** → `PRODUCT/ROADMAP.md`, with an id. A follow-up that exists only as a sentence in a post-release summary is the deferred-improvement failure that policy names.
 
 ---
 

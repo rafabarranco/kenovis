@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.6
+Version: 3.7
 
 ---
 
@@ -507,6 +507,21 @@ So the destination is part of the instruction, not judgement left to the reader.
 Why both belong at the reference site and not only here: the agent that fails this is reading one instruction, not the policy set. This policy is what makes the sentence required; the sentence at the site is what makes the instruction complete. A rule that is true in a policy and absent from the instruction it governs is a rule with no reader at the moment it applies.
 
 See DECISIONS.md DECISION-024.
+
+---
+
+# A Path In These Documents Is Written Repository-Relative, In Backticks
+
+**The convention across this document set is a backticked path, not a markdown link**, and it is written relative to the repository root from every file: `PRODUCT/OPERATING_MODEL.md`, `.kenovis/AI/policies/documentation.md`, `AI/memory/learnings.md`. That is what every document here already does, and it was written down nowhere until a link went wrong.
+
+Two reasons it is the convention rather than a preference:
+
+- **A markdown link resolves relative to the file it is written in, not to the repository.** A link target written repository-relative inside `PRODUCT/ROADMAP.md` resolves to a path with `PRODUCT/` twice, and points at nothing. A backticked path has no resolution behaviour at all, so it means the same thing read from any file, by a human or an agent — and an agent reading these documents is the primary reader.
+- **A dead link in a Product-layer document is silent.** Whatever checks links in this repository does not travel to an Installation, and `PRODUCT/` is the directory an Installation edits most. The convention has to hold by being written, not by being caught.
+
+Where a markdown link is genuinely wanted — an external URL, or a `README.md` written for humans browsing a forge — write it and make the target correct from the file it lives in.
+
+See `PRODUCT/ROADMAP.md` OF-56.
 
 ---
 

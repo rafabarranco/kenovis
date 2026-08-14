@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.8
+Version: 2.9
 
 ---
 
@@ -113,6 +113,21 @@ When the highest-ranked objective is one of those:
 **Do not descend the priority order looking for something executable.** Skipping leaves no artifact, so a board whose top item needs a human silently becomes a board of whatever the AI could do alone — every round defensible, the ranking quietly inverted, and nothing anywhere showing the top item was passed over. That is the drift `PRODUCT/ROADMAP.md` item 40 describes, and descending is how it happens with a fresh mechanism each time.
 
 If the human answers within the same session, continue from Step 4 with their answer.
+
+---
+
+## When The Roadmap Is Empty
+
+An empty roadmap is the stated end of the loop: threads open, `/next` runs, and it repeats until there is nothing left in the product's roadmap (`PRODUCT/OPERATING_MODEL.md` → Addendum A §4). So this state is reached on purpose, and the command needs a defined behaviour for it rather than an improvised one.
+
+Empty means all three of Step 3's inputs are empty: no scheduled item, no `Open` row in the findings queue, and a `Next` pointer that says `none`. A pointer that is merely absent is not this state — that is Step 3's fallback, and it means rank from the other two.
+
+When it is genuinely empty:
+
+- **Say so plainly, and say what that means.** `PRODUCT/OPERATING_MODEL.md` §1 and §14 hold that the roadmap is the complete representation of known future work and that Kenovis observes the product continuously and feeds it. Under those two together, an empty roadmap is the claim that observation ran and found nothing.
+- **State which of the two it actually is**, because they are not the same and only one is a finished product: the product has nothing worth improving, or nothing observed. Continuous observation is an unimplemented promise today — `PRODUCT/ROADMAP.md` OF-33 — so the honest answer in this repository is currently the second.
+- **Do not invent work to have something to do.** An item manufactured to keep the loop turning is worse than a stopped loop: it consumes a thread, it enters the roadmap with the same authority as real work, and it hides the fact that the board drained.
+- **Stop, and record in `PRODUCT/ROADMAP.md` that a round reached an empty board and on what date** — the same shape as a blocked round above. That record is the evidence that observation, whenever it exists, has a gap to fill.
 
 ---
 
@@ -517,11 +532,11 @@ What should happen next.
 
 # Autonomous Mode
 
-When explicitly enabled:
+**The framework default is one roadmap item per round, and the round ends with the thread.** A thread is a temporary execution context (`PRODUCT/OPERATING_MODEL.md` §5); the durable record is what Steps 13 and 14 wrote. Continuing into a second item spends the rest of a context window that the closing steps of the first item are the last thing to need, and it makes the two items' findings share one disposition pass — which is where the second item's findings get folded into the first item's narrative and lose their ids.
 
-Claude may continue through multiple roadmap items.
+**An Installation may state a different cadence, and that statement outranks this default.** It goes in that Installation's own `PRODUCT/OPERATING_MODEL.md`, which is rank 1 of the Source Of Truth Hierarchy (`.kenovis/AI/SYSTEM.md`, DECISION-031) — the owner's statement of how their product is developed, not a framework law. This section previously read *"Claude may continue through multiple roadmap items"* with no such deference, which put a framework command in direct contradiction with a rank-1 document in the Installation that had written one, at the exact moment a round decides whether to continue. See `PRODUCT/ROADMAP.md` OF-54 and DECISIONS.md DECISION-034.
 
-However, confirmation is required before:
+Where an Installation has enabled multi-item rounds, confirmation is still required before:
 
 - Architecture changes.
 - Security changes.
@@ -564,6 +579,10 @@ The command is complete when:
 ✓ Documentation is updated.
 
 ✓ Memory contains relevant learnings.
+
+✓ **The round's work has reached a branch.** Committed and pushed, per `.kenovis/AI/policies/git.md`, which owns how — this criterion owns only *that*, and *when*: before the thread ends.
+
+Why it is a completion criterion rather than a note. Under a one-thread-per-round cadence the next round is a different session on a possibly different machine, so a round whose output sits only in a working tree is one `git checkout` away from never having happened — and every step above it can pass while that is true. The Product layer is this AI-OS's memory (`PRODUCT/OPERATING_MODEL.md` §5, §6), and the Product layer's durability is git, not the filesystem. Observed once, on entry to a round that found the previous round's entire output — a decision, a template, a document move — uncommitted on `development` with no open PR. See `PRODUCT/ROADMAP.md` OF-80.
 
 ---
 

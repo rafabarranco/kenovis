@@ -46,6 +46,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-031** ‡★ — One Source Of Truth Hierarchy, In `SYSTEM.md`, With The Operating Model At Rank 1. `CLAUDE.md` cites it and states no ordering of its own; a business rule outranks a recorded decision; `PRODUCT/OPERATING_MODEL.md` is rank 1 and joins the session-initialization path. Rank 1's "conditional on the owner having authored one" clause was removed by DECISION-032.
 - **DECISION-032** ‡★ — Every Installation Authors Its Operating Model At Setup, And The Conformance Table Lives In It. Both setup commands ask the owner four questions and write `PRODUCT/OPERATING_MODEL.md` before `COMPANY_OS.md`, from a template the AI may never answer itself; the conformance table moves there from the roadmap, a closing round states which section its work served, and `COMPANY_OS.md` stops carrying a third Source Of Truth ordering.
 - **DECISION-033** ‡ — The Closing Round Builds The Conformance Table, And Declares The Two Lines Whose Absence Is Otherwise Invisible. The first closing round in an Installation writes one row per operating-model section with `unmeasured` where it did not verify; `Operating model section served:` and `Next:` become required lines that must say `none` rather than be omitted; the population instruction moves out of the setup commands and the template into `commands/next.md` Step 13, the only place a round loads it.
+- **DECISION-034** ‡★ — One Item Per Round Is The Framework Default, And An Installation's Operating Model Is Where A Different Cadence Is Stated. `commands/next.md` → "Autonomous Mode" stops asserting that a round may continue through multiple roadmap items and defers to the Installation's own `PRODUCT/OPERATING_MODEL.md`, which is rank 1; the default is one item ending with the thread, on the mechanics of context and of a shared disposition pass rather than on one founder's preference.
 
 ---
 
@@ -2690,6 +2691,68 @@ Both are the inversion `.kenovis/AI/policies/documentation.md` → "A closed ite
 **Three required lines is the ceiling for this shape.** The inversion works because an absence is exact and a reader can check it in one look; a closing block with a dozen ceremonial lines stops being read, and the lines stop being written. Anything further of this kind should replace one of the three rather than add a fourth.
 
 **Neither declaration is enforced.** They are instructions in a command, like every other rule in this framework, which is `PRODUCT/OPERATING_MODEL.md` §15 and OF-44 — and this decision does not change that, it only widens the one enforcement shape the framework actually has from one rule to three.
+
+---
+
+# DECISION-034
+
+# One Item Per Round Is The Framework Default, And An Installation's Operating Model Is Where A Different Cadence Is Stated
+
+Date:
+
+2026-08-14
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-54, inside item 42 part 4.
+
+Review Date:
+
+When a second Installation exists and has stated a cadence of its own. Until then this decision has one data point, and the per-Installation half of it has never been exercised.
+
+---
+
+## Context
+
+`.kenovis/AI/commands/next.md` → "Autonomous Mode" said *"Claude may continue through multiple roadmap items"*. `PRODUCT/OPERATING_MODEL.md` → Addendum A §1 says one thread executes one `/next`.
+
+Both were in force. One is a framework command, the other is rank 1 of the Source Of Truth Hierarchy in the Installation that had written it (DECISION-031). The conflict is not academic and it is not rare: it resolves at the exact moment a round finishes early and decides whether to continue, and the document the round has open at that moment is the command.
+
+OF-54's row named the honest first output — is the cadence a framework default or a per-Installation setting — and noted that it is the same question item 41 step 1 asked about the specification's rank. That question is now answered, which is why this decision was cheap to make and was not available to the round that queued the finding.
+
+## Decision
+
+**The framework default is one roadmap item per round, ending with the thread.**
+
+**An Installation may state a different cadence in its own `PRODUCT/OPERATING_MODEL.md`, and that statement outranks the default.** The command now says so and defers, rather than asserting a cadence of its own.
+
+## Reasoning
+
+**DECISION-031 already decided this, one level up.** Rank 1 is the owner's statement of what the product is for and how it is developed; everything below it describes how the product is built. A framework command asserting a cadence over an Installation that has written one is a rank-7 artifact overruling a rank-1 document. The fix is not to copy this founder's cadence into the framework — that would hardcode one Installation's answer into a product-agnostic layer, which `.kenovis/AI/SYSTEM.md` → "Project Context" forbids in those words.
+
+**The default is one item rather than many, on the mechanics rather than on this founder's preference.** A second item in the same thread spends the context window that the first item's Steps 13-15 are the last thing to need, and it makes two items' findings share one disposition pass — which is precisely where a second item's findings get folded into the first item's narrative and lose their ids. That is the failure `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" exists to prevent, and it arrives through the mechanism that looks like efficiency.
+
+**Deference is written at the site, not only here.** An agent deciding whether to continue is reading `next.md`, not this file. Per `.kenovis/AI/policies/documentation.md` → "An Instruction That Produces An Artifact Names Where It Goes", the sentence that makes the rule complete lives where the rule applies.
+
+## Alternatives Considered
+
+**Delete "Autonomous Mode" outright.** Tempting, and rejected. An Installation may legitimately want multi-item rounds — a small board of trivial items, a maintenance sweep — and deleting the section removes the confirmation gates it carries (architecture, security, migrations, large refactors, external costs) along with the cadence claim. Deleting a section to fix one sentence in it destroys the rest.
+
+**Copy Addendum A's cadence into the framework as law.** Rejected. It is this founder's cadence, arrived at for this product, and the framework layer must never hardcode one product's answer. It would also be unfalsifiable in the direction that matters: an Installation that wanted otherwise would have no place to say so.
+
+**Leave it and rely on rank 1 resolving the conflict at read time.** Rejected on how the conflict is actually encountered. The hierarchy resolves conflicts a session *notices*; a session that has `next.md` open and `OPERATING_MODEL.md` in a summary does not experience this as a conflict at all, it experiences it as an instruction. A contradiction only resolves if someone sees both sides.
+
+## Consequences
+
+**`next.md` now names `PRODUCT/OPERATING_MODEL.md` as a place an Installation writes something the command obeys.** That is a new direction of dependency for a command — previously the operating model was read by the session-initialization protocol and by Step 13's conformance rule, both of which report on it rather than take instruction from it.
+
+**Nothing checks that an Installation's stated cadence is honoured**, and nothing checks the default either. This is `PRODUCT/OPERATING_MODEL.md` §15 and OF-44 again, unchanged by this decision.
+
+**The template does not yet prompt for a cadence.** `.kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md` asks the owner four questions and none of them is "how many roadmap items per session". An Installation therefore gets the default and no invitation to change it, which is the right failure direction and is still a gap — recorded as `PRODUCT/ROADMAP.md` OF-83.
 
 ---
 
