@@ -4,7 +4,7 @@ ROADMAP-ARCHIVE.md
 
 Completed Roadmap Items
 
-Version: 1.6
+Version: 1.7
 ---
 Purpose
 
@@ -1242,3 +1242,35 @@ Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an e
 **A release is three rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it. Eleven consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 166,625 bytes and `wc -c PRODUCT/ROADMAP.md` read **166,011** at the start of this round.
+---
+
+Archived 2026-08-14, by the round that closed OF-31 and OF-55 (`policies/documentation.md` 3.10, `ENGINEERING/ARCHITECTURE.md` 1.7, DECISION-035). Two queue rows, both Fixed, compacted in the same round; the superseded `Next` ordering block they replaced.
+
+### OF-31
+
+| OF-31 | No role processes a finding. The routing table shipped by item 39 and DECISION-027 routes by *destination file* — roadmap, decisions, learnings, `DOMAIN/`, `ENGINEERING/` — never by *responsibility*. `grep -rn "Open Findings\|disposition" .kenovis/AI/agents/*.md` → **0** on 2026-08-13: not one of the twelve agents knows findings exist. A security finding, an architectural finding and a typo receive identical treatment from whichever role happened to be active in the thread. Roster reach, same day: `finance` and `legal` are cited in **0 of 19** commands and workflows, `ceo` in 1, `marketing` in 1. | `/analyze`, 2026-08-13 | **Open.** The stated operating model is that the role owning the responsibility analyses the discovery; what is built is a shared inbox with a file-kind label. Priority: Pain high — this is the difference between a development organisation and a note-taking system, and it is the half of the model that makes refinement possible at all. Frequency: every finding. Cost unknown; the first output is deciding whether routing-by-role is a step inside the disposition rule or a property of the agents themselves, and whether four inert roster entries are a gap or a deletion. Do not fold into OF-32 — that one is about the missing step, this one is about who takes it. |
+
+### OF-55
+
+| OF-55 | **The Agent Roster has no role that owns the framework layer, which is what this product is.** `/next` Steps 4-6 select from product-manager, cto, designer, frontend, backend, database, security, reviewer. Most rounds on this board edit policies, commands, workflows and templates under `.kenovis/AI/` — the deliverable per DECISION-026 — and no listed role owns that. `grep -n "framework\|policy\|markdown" .kenovis/AI/agents/*.md` → **3** hits across twelve agent files. | `/analyze`, 2026-08-13 | **Open.** Distinct from OF-31, which is that no agent knows findings exist; this is that no agent owns the product's own material, so §12's "the role that owns the responsibility processes the discovery" has no owner to name for the most common change this repository makes. It defaults to `cto` by absence, never by selection. Priority: Pain medium-high — it is §12 and §3 failing for the modal case rather than an edge one, Frequency: most rounds, Cost unknown: the first output is whether this is a missing role, a widened `cto`, or evidence that framework work is genuinely this repository's own concern and not an Installation's — which would make it a `/framework-review` question (OF-06, Deferred) rather than a roster gap. Decide it with OF-31, inside item 41 §12; they are one design conversation. |
+
+
+### superseded `Next` ordering block, written after OF-38/OF-28/OF-29 and replaced by the block that closed OF-31 and OF-55
+
+Next (updated 2026-08-14, after OF-38, OF-28 and OF-29 — item 41 step 4's first gap is closed):
+
+Closed and not repeated below: **OF-38, OF-28, OF-29** (`CLAUDE.md` 2.7, `SYSTEM.md` 1.11, `policies/documentation.md` 3.9, `cli/src/domain/installation.ts`, `init-project.md` 1.12, `adopt-project.md` 1.12). The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 4 continues: §12 then §1 — OF-31 then OF-32.** In that order, per item 41's own text: nothing can refine a finding until a role owns it. This is stated as the largest single piece of work in item 41 and the one that changes what Kenovis *is* — it is not a one-clause fix like the three this round closed, and the first real output is a design question (how the Agent Roster routes a finding by responsibility, not only by destination file), not an edit. OF-55 (no role owns the framework layer itself) sits with OF-31 — item 41 said so from the start.
+
+2. **Then §15 (OF-44), §1/§16 (OF-33), §6/§9/§17 (OF-37), §4 (OF-41 before item 40 part 3, then OF-42 with OF-35).** Unchanged from the previous pointer's own statement of item 41 step 4's remaining sequence.
+
+3. **OF-78, OF-79, OF-83, OF-85 and OF-86 are deliberately not ranked above the blocks above; this is the seventh round to say so about OF-78.** Unchanged reasoning.
+
+Everything below stays scheduled and behind item 41: item 37 round 3, OF-25, item 24, OF-14, item 22, the release. Their ranking argument has not changed.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
+
+**A release is four rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Twelve consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 166,011 bytes and `wc -c PRODUCT/ROADMAP.md` read **168,073** at the start of this round.

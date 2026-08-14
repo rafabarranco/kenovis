@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.14
+Version: 2.15
 
 Last updated: —
 
@@ -47,6 +47,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-032** ‡★ — Every Installation Authors Its Operating Model At Setup, And The Conformance Table Lives In It. Both setup commands ask the owner four questions and write `PRODUCT/OPERATING_MODEL.md` before `COMPANY_OS.md`, from a template the AI may never answer itself; the conformance table moves there from the roadmap, a closing round states which section its work served, and `COMPANY_OS.md` stops carrying a third Source Of Truth ordering.
 - **DECISION-033** ‡ — The Closing Round Builds The Conformance Table, And Declares The Two Lines Whose Absence Is Otherwise Invisible. The first closing round in an Installation writes one row per operating-model section with `unmeasured` where it did not verify; `Operating model section served:` and `Next:` become required lines that must say `none` rather than be omitted; the population instruction moves out of the setup commands and the template into `commands/next.md` Step 13, the only place a round loads it.
 - **DECISION-034** ‡★ — One Item Per Round Is The Framework Default, And An Installation's Operating Model Is Where A Different Cadence Is Stated. `commands/next.md` → "Autonomous Mode" stops asserting that a round may continue through multiple roadmap items and defers to the Installation's own `PRODUCT/OPERATING_MODEL.md`, which is rank 1; the default is one item ending with the thread, on the mechanics of context and of a shared disposition pass rather than on one founder's preference.
+- **DECISION-035** ‡★ — Findings Route By Role As Well As By Destination File, And This Repository's Own CTO Owns Its Framework Layer. `policies/documentation.md` requires an `Open` finding to name its owning role from the existing Agent Roster, loaded once rather than copied into twelve agent files; which role owns which kind of finding is a product-specific fact and stays out of the framework layer entirely — this repository's own instance (CTO owns `.kenovis/AI/`) lives in `ENGINEERING/ARCHITECTURE.md`, never in `.kenovis/AI/agents/cto.md`.
 
 ---
 
@@ -2753,6 +2754,70 @@ OF-54's row named the honest first output — is the cadence a framework default
 **Nothing checks that an Installation's stated cadence is honoured**, and nothing checks the default either. This is `PRODUCT/OPERATING_MODEL.md` §15 and OF-44 again, unchanged by this decision.
 
 **The template does not yet prompt for a cadence.** `.kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md` asks the owner four questions and none of them is "how many roadmap items per session". An Installation therefore gets the default and no invitation to change it, which is the right failure direction and is still a gap — recorded as `PRODUCT/ROADMAP.md` OF-83.
+
+---
+
+# DECISION-035
+
+# Findings Route By Role As Well As By Destination File, And This Repository's Own CTO Owns Its Framework Layer
+
+Date:
+
+2026-08-14
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-31 and OF-55, inside item 41 §12.
+
+Review Date:
+
+When the Agent Roster itself changes, or when a role other than `cto` is picked for a framework-layer finding and the fit is wrong often enough to notice.
+
+---
+
+## Context
+
+`PRODUCT/OPERATING_MODEL.md` §12 states the role that owns a responsibility processes the discovery. What item 39 shipped routes a finding by *destination file* — `PRODUCT/ROADMAP.md`, `DECISIONS.md`, `AI/memory/learnings.md`, `DOMAIN/`, `ENGINEERING/` — never by *responsibility*. `grep -rn "Open Findings\|disposition" .kenovis/AI/agents/*.md` returned **0** across twelve agent files on 2026-08-13: not one of them knows findings exist. A security finding, an architectural finding and a typo receive identical treatment from whichever role happened to be active in the thread (OF-31).
+
+Separately: most rounds on this board edit `.kenovis/AI/` — policies, commands, workflows, templates — because that is this repository's own product (DECISION-026). No listed agent role names that as its own; the Agent Roster's twelve files are silent on it, and it defaults to `cto` by absence rather than by selection (OF-55).
+
+## Decision
+
+**An `Open` finding names the role that owns analysing it, from the existing Agent Roster.** The requirement lives in `.kenovis/AI/policies/documentation.md` — one clause, loaded by every session — rather than as a routing instruction copied into twelve agent files. Existing queue rows are not retroactively tagged; the field applies going forward, the same precedent `PRODUCT/ROADMAP.md` OF-66 already set when Pain/Frequency/Cost were introduced.
+
+**Which role owns which kind of finding is not stated in the framework layer at all.** It is a fact about one specific product's own Agent Roster and the areas it actually maintains, and it differs by Installation the moment a customer's roster differs from this one's. Stating it inside `.kenovis/AI/policies/documentation.md` would hardcode this repository's answer into text every Installation receives.
+
+**In this repository specifically, the CTO role owns findings whose destination is `.kenovis/AI/`.** Recorded in `ENGINEERING/ARCHITECTURE.md`, not in `.kenovis/AI/agents/cto.md` — the same split as the rule above, one level down: `cto.md` is the framework-layer file every Installation receives, and "you own `.kenovis/AI/`" is false for every one of them except this one.
+
+**`ceo`, `marketing`, `finance` and `legal` stay in the roster, unmodified.** `COMPANY_OS.md` → "Company Operating Model" already lists Marketing, Finance and Legal analysis as areas AI agents support, and `PRODUCT/ROADMAP.md` → "Product Strategy" places that work in Phase 2 and beyond — this product has not reached the phase that would invoke them. Dormant by product stage is not the same defect as `.kenovis/AI/workflows/roadmap.md` was (OF-81): that file had zero conceptual justification and a superseding replacement four rounds ahead of it; these four roles have a stated future use and nothing yet built to replace.
+
+## Reasoning
+
+**Item 39's own precedent already settled the shape of this fix.** Nineteen commands and workflows once needed the findings-disposition rule restated in each of them; the fix was one rule, loaded unconditionally, not nineteen copies. Twelve agent files needing to recognise a finding's role is the same problem at the same scale, and copying a routing instruction into each would reproduce exactly the drift item 39 was built to end — a rule edited in one file and not the other eleven.
+
+**A framework-layer file that states a product-specific fact is wrong the moment it reaches a second product.** `.kenovis/AI/agents/cto.md` ships to every Installation unedited (`.kenovis/AI/` is never rewritten per product — `CLAUDE.md` → "Repository Layers"). "You own `.kenovis/AI/`" is true here because this repository dogfoods the framework on itself (DECISION-020's self-modification exception) and false everywhere else, where `.kenovis/AI/` is a read-only mirror no role ever touches. `ENGINEERING/ARCHITECTURE.md` already carries this exact class of this-repository-only fact — the CI-guards section three sections above states plainly that the guards it describes reach zero Installations — so the ownership statement joins a section that already knows how to say "true here, not elsewhere."
+
+**Naming a default without justifying it is the failure OF-55 itself describes.** `cto` was already the silent fallback for framework-layer findings before this decision; what changes is that the fallback is now a stated choice with a reason, not an absence nobody selected.
+
+## Alternatives Considered
+
+**Add a "Findings" section to all twelve agent files.** Rejected on the same grounds item 39 already established: a rule copied into every file that might need it is the shape that drifts, and eleven of the twelve files would be stating a rule none of their own content otherwise concerns.
+
+**Invent a thirteenth "Platform" or "Framework" role.** Rejected. `cto` already owns architecture, engineering direction and technical risk; a new role overlapping it by construction is complexity DECISIONS.md's own Decision Framework asks to justify and this case does not — see `COMPANY_OS.md` → "Simplicity Over Complexity".
+
+**Delete `ceo`, `marketing`, `finance` and `legal` as inert.** Rejected. They are unused because the product has not reached the phase that uses them, which `COMPANY_OS.md` and `PRODUCT/ROADMAP.md` both already state; deleting roles the company's own strategy document says it will need is optimising this round's grep count over the roadmap it is supposed to serve.
+
+## Consequences
+
+**`ENGINEERING/ARCHITECTURE.md` now carries a role-ownership fact, which is new for that document.** Precedent exists (the CI-guards section already states a this-repository-only fact in the same style), but this is the first time the document assigns a *role* rather than describing a *system*.
+
+**Nothing enforces that a newly filed `Open` finding actually carries a `Role:` field.** Same shape as OF-44/§15 generally: the rule is loaded, not mechanically checked. A future round auditing queue rows for the field would be doing the same work `policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" already asks of any new rule the first time it is exercised.
+
+**OF-32 — the chain still stops at capture; nothing refines a routed finding — is untouched by this decision and is item 41 §1's own next step.**
 
 ---
 

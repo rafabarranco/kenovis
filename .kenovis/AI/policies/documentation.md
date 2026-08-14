@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.9
+Version: 3.10
 
 ---
 
@@ -430,6 +430,8 @@ So every finding a round does not fix gets exactly one disposition, stated where
 **Recording is not planning.** A finding written to a Product-layer file and absent from the roadmap has been remembered, not scheduled — and remembering is what a thread already does badly. The disposition is not complete until the roadmap shows it.
 
 **An `Open` finding is dimensioned where it is written, or it is prose with an id.** The row carries **Pain, Frequency and Cost** — the terms the roadmap's own priority formula divides — in one line. A term that is unknown is written as unknown; that ranks, and it names the first output of picking the finding up. A term simply left out does not rank, and the finding drops silently out of every selection that follows, which is indistinguishable from never having recorded it.
+
+**An `Open` finding also names the role that owns analysing it, from the existing Agent Roster — not a taxonomy invented per finding.** Routing by destination file (`PRODUCT/ROADMAP.md`, `DECISIONS.md`, `AI/memory/learnings.md`, `DOMAIN/`, `ENGINEERING/`) says where a disposition is recorded; it says nothing about who decides it, and a security finding, an architectural finding and a typo were receiving identical treatment from whichever role happened to be active in the thread. Which roles own which kind of finding is a fact about this specific product's own Agent Roster and the areas it actually maintains — it belongs in `ENGINEERING/ARCHITECTURE.md`, not in this framework-layer rule, the same split DECISION-026 already draws between a rule and the product-specific fact it governs. A role picked because nothing else was considered is not a disposition; it is the failure this clause exists to stop. Existing rows written before this rule do not gain the field retroactively; the cost of picking each one up again is not owed for a field that did not exist when they were written — the same precedent `PRODUCT/ROADMAP.md` OF-66 already set for Pain, Frequency and Cost. (DECISION-035, OF-31, OF-55.)
 
 Promotion is a separate act. A queue row becomes a scheduled item when a round picks it up and dimensions it into work — problem, target, validation. Demanding a full item at the moment of discovery is what pushes a late finding back into prose, which is the failure this whole section exists to prevent.
 
