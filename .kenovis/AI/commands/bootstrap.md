@@ -1,6 +1,6 @@
 # Bootstrap Command
 
-Version: 2.7
+Version: 2.8
 
 ---
 
@@ -77,6 +77,8 @@ Understand:
 ---
 
 # Step 2 - Load Project Context
+
+Read `PRODUCT/OPERATING_MODEL.md` in full first, where one exists — rank 1 of the Source Of Truth Hierarchy (`.kenovis/AI/SYSTEM.md`). Not as one file inside `PRODUCT/`, which is how it was reached before and meant it was loaded by accident or not at all. An Installation whose owner authored none skips this and starts at `COMPANY_OS.md`.
 
 Read `COMPANY_OS.md` in full.
 

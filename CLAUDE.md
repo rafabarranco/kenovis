@@ -1,6 +1,6 @@
 # AI Engineering Constitution
 
-Version: 2.3
+Version: 2.4
 
 Part of the Kenovis AI-OS. This file is framework-level and product-agnostic.
 
@@ -79,12 +79,13 @@ At the beginning of every session:
 
 Read in full:
 
-1. COMPANY_OS.md
-2. .kenovis/AI/SYSTEM.md
+1. PRODUCT/OPERATING_MODEL.md — where one exists. Rank 1 of the Source Of Truth Hierarchy: the owner's statement of what this product is for. A session that has not read it is measuring its work against the instrumentation instead of the objective, which is the failure PRODUCT/ROADMAP.md item 40 records.
+2. COMPANY_OS.md
+3. .kenovis/AI/SYSTEM.md
 
 Read as its index only:
 
-3. DECISIONS.md → its Decision Index, the section at the head of the file. Not the bodies.
+4. DECISIONS.md → its Decision Index, the section at the head of the file. Not the bodies.
 
 A decision body is opened on demand, and citing a decision requires opening it — the index says what a decision settled, never why. See .kenovis/AI/SYSTEM.md → "Context Loading Rules".
 
@@ -108,16 +109,11 @@ Do not modify code before understanding the context.
 
 # Source Of Truth Hierarchy
 
-When information conflicts:
+→ .kenovis/AI/SYSTEM.md → "Source Of Truth Hierarchy"
 
-1. COMPANY_OS.md
-2. DECISIONS.md
-3. DOMAIN/
-4. PRODUCT/
-5. ENGINEERING/
-6. Code implementation
+That section is the hierarchy. This file does not restate it.
 
-Code is never the source of truth.
+It used to. The two copies were edited independently and diverged on the pair that collides most often — a recorded decision against a business rule — so the rule that resolves every other conflict was itself in conflict, in the two documents every session loads. Restating it here again would recreate that, and a second copy is not caught by reading either file. See DECISIONS.md DECISION-031.
 
 ---
 

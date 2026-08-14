@@ -439,6 +439,38 @@ Future action:
 Disposition: Fixed as a rule — `commands/next.md` 2.6, DECISION-030 — with two residues queued as **OF-70** and **OF-71**. One half of the work is deliberately unvalidated and said so rather than claimed: the stop-branch fires on the next round, which reaches a founder call, and no round can validate its own behavioural change ([[Learning-031]], OF-30).
 
 ---
+
+## Learning-034
+
+Date:
+2026-08-14
+
+Category:
+Process
+
+Context:
+Item 41 step 1 — reconciling the two Source Of Truth Hierarchies (OF-39) and putting the specification on the session-initialization path (OF-50), after `/next` stopped on it as a founder call and the founder answered in the same session.
+
+Problem:
+OF-39 was written as "two hierarchies, and they disagree". Closing it required reading `COMPANY_OS.md` in full during bootstrap, and that turned up a **third** ordering — `COMPANY_OS.md` → "Knowledge Hierarchy" — which inverts DOMAIN/ and PRODUCT/ relative to the one just settled and omits `DECISIONS.md` entirely. `grep -c "Knowledge Hierarchy"` over the roadmap and its archive returned **0 and 0**.
+
+What happened:
+The analysis that raised OF-39 grepped the two documents it already suspected — the two loaded as authoritative — and found them. It never asked how many orderings existed, because the question it was answering was "do these two agree". A finding scoped to a suspected pair cannot report a population.
+
+Root cause:
+**A duplicate is found by comparing two things you already have in hand, and a population is found by enumerating.** These are different acts, and the first one feels like the second when it succeeds: OF-39 read as a complete account of the problem for two days, and the fix derived from it corrected two of three copies. Nothing in the framework enumerates rules-restated-elsewhere, which is OF-24's still-open detection half, and this is what that gap costs.
+
+Learning:
+When a finding is "X is duplicated", the finding is incomplete until someone has asked **how many copies exist**, by a method that could have returned a number the author did not expect. Fixing the known copies of an unenumerated duplicate leaves the survivors looking authoritative *and* now inconsistent with a rule that claims to be the only one.
+
+Second half, and it is about where the survivor was: the third copy sits in a **Product-layer** document. The fix that landed touches framework files, which `sync` delivers; a Product-layer contradiction is per-Installation and no sync will ever reach it. **A rule with one framework home can still have as many product-layer contradictions as there are customers**, and the framework has no view of any of them.
+
+Future action:
+`PRODUCT/ROADMAP.md` → **OF-73** carries the third ordering, sequenced into item 41 step 3 which reconciles `COMPANY_OS.md` anyway. **OF-72** carries the other residue of this round — the shipped hierarchy's rank 1 names a document no Installation has. The enumeration half belongs to OF-24's open detection question and is not re-raised here.
+
+Disposition: Fixed as a rule — one hierarchy, `SYSTEM.md` 1.8, DECISION-031 — with **OF-72** and **OF-73** queued. The rule this learning states is not promoted to a policy: it is a heuristic about how to scope a finding, and `policies/documentation.md` already carries the duplication rule it would sit beside ("Single Source of Truth"), so promoting it would restate a sibling section — which is the thing OF-24 added that section to forbid.
+
+---
 Learning Examples
 
 The two entries below are the format examples every Installation receives in its template (see `.kenovis/AI/commands/init-project.md` Step 8). They are not learnings this product recorded.
