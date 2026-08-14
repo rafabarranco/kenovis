@@ -49,6 +49,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-034** ‡★ — One Item Per Round Is The Framework Default, And An Installation's Operating Model Is Where A Different Cadence Is Stated. `commands/next.md` → "Autonomous Mode" stops asserting that a round may continue through multiple roadmap items and defers to the Installation's own `PRODUCT/OPERATING_MODEL.md`, which is rank 1; the default is one item ending with the thread, on the mechanics of context and of a shared disposition pass rather than on one founder's preference.
 - **DECISION-035** ‡★ — Findings Route By Role As Well As By Destination File, And This Repository's Own CTO Owns Its Framework Layer. `policies/documentation.md` requires an `Open` finding to name its owning role from the existing Agent Roster, loaded once rather than copied into twelve agent files; which role owns which kind of finding is a product-specific fact and stays out of the framework layer entirely — this repository's own instance (CTO owns `.kenovis/AI/`) lives in `ENGINEERING/ARCHITECTURE.md`, never in `.kenovis/AI/agents/cto.md`.
 - **DECISION-036** ‡★ — An `Open` Finding Is Refined By Age Order, Not By Whichever Round Reopens It. `commands/next.md` Step 3 and `policies/documentation.md` require every round to refine the lowest-id `Open` row in the findings queue as a second action alongside its own objective; row id order substitutes for a persisted age counter, and no CI guard is added while item 37 stays mid-flight.
+- **DECISION-037** — "Impossible" Is Not Architecturally Achievable For The Core Invariant; "Difficult" Is Partial, And Its Two Gaps Stay Separately Tracked. `PRODUCT/OPERATING_MODEL.md` §15 cannot be satisfied by "impossible" under DECISION-010 (tool-agnostic) and DECISION-013 (no backend/runtime); "difficult" is partially achieved by the required-line pattern (DECISION-033), with two gaps — CI reach (item 37) and admin-merge bypass (OF-19) — that stay open on their own terms rather than being folded into this decision.
 
 ---
 
@@ -2885,6 +2886,71 @@ Ids in this queue are assigned in discovery order (DECISION-025 / `policies/docu
 **The behavioural half is unvalidated by the round that wrote it, per OF-30 and Learning-031.** This round performs the first refinement itself — on OF-02, with OF-66's other five rows backfilled in the same pass — as the one data point available to its own author; independent evidence is the next `/next`, in a fresh thread, doing it unprompted.
 
 **OF-66 closes as a direct consequence, not a separate round:** refining OF-02 demonstrates the mechanism, and backfilling the five other rows OF-66 already named costs nothing extra once the queue is open for that purpose — OF-66's own text invited exactly this ("take it with any round already editing the queue").
+
+---
+
+# DECISION-037
+
+# "Impossible" Is Not Architecturally Achievable For The Core Invariant; "Difficult" Is Partial, And Its Two Gaps Stay Separately Tracked
+
+Date:
+
+2026-08-14
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-44, inside item 41 §15.
+
+Review Date:
+
+If DECISION-010 (tool-agnosticism) or DECISION-013 (no backend, no runtime) is ever revisited — either would change what kind of enforcement this framework could stand at all.
+
+---
+
+## Context
+
+`PRODUCT/OPERATING_MODEL.md` §15: *"The system must be designed so that violating this invariant is difficult or impossible."* Measured against the tree, repeatedly, across item 41 step 4's own progress: every mechanism in this framework — policies, commands, workflows, the routing table, the required-line pattern DECISION-033 shipped — is an instruction an agent may follow. The one class of mechanical enforcement, the ten CI guards, reaches zero Installations (item 37) and is bypassable in this repository by the same merge command used on every round since `0.6.0` (`OF-19`), including the round that wrote this decision. `PRODUCT/ROADMAP.md` OF-44 names this directly and item 41 itself flagged it as the hardest of its five gaps, anticipating the honest output might be "not fully achievable, recorded as such" rather than a mechanism.
+
+## Decision
+
+**"Impossible" is not achievable under this framework's own architecture, and this decision settles that rather than leaving it an open question.** A markdown AI-OS that must stay tool-agnostic (DECISION-010) and ship no backend or runtime (DECISION-013) has no process of its own to refuse an action — there is no interpreter, no server, no hook that runs independent of whichever coding agent a human pointed at the repository. "Impossible" requires exactly that kind of standing process, and building one would mean reversing DECISION-010 or DECISION-013, which this decision does not do and is not scoped to.
+
+**"Difficult" is partially achieved today, and it has exactly two gaps, both already tracked as their own findings rather than restated here.** The mechanism: a required line whose absence is exact (`Findings this item did not fix:`, `Operating model section served:`, `Next:` — DECISION-033) is checkable in a way "did the agent follow the spirit of the rule" is not — an omission is a fact about the text, not a judgement call. That mechanism has two independent limits:
+
+- **Reach.** The ten CI guards that check it run in this repository's own CI and nowhere else — no customer Installation receives them (item 37, still mid-flight, dispositioning them one at a time).
+- **Bypass.** Even here, the standard merge (`gh pr merge --rebase --admin`) skips required status checks, not only the required review — so a guard failing does not block a merge in this repository, it only makes the failure visible to whoever is looking (`OF-19`).
+
+Neither gap is closed by this decision. Both stay `Open`, ranked on their own terms, tracked at their own ids.
+
+**This decision is itself the correct instance of "difficult or impossible" — recorded, not enforced.** A decision log is read by the next session that asks the same question; it is not a runtime check. That is a real, weaker form of durability than a guard, and it is what this framework has for a claim about itself, per DECISION-009.
+
+## Reasoning
+
+**Recording is not settling for less than the invariant asks — it is answering the question the invariant's own wording leaves open.** "Difficult or impossible" is a disjunction, and treating it as requiring the harder disjunct by default is a reading nobody chose, it is what happens when nobody reads it closely. Once "impossible" is ruled out on architectural grounds, "difficult" is the operative bar, and the honest measure of "difficult" is naming exactly what would need to hold for a violation to go unnoticed — which is what the two gaps above already do.
+
+**An `Absent` row is not the same defect with or without this decision.** `PRODUCT/OPERATING_MODEL.md`'s own Conformance Table defines `Absent` as "the rule does not hold, and there is either a finding carrying it or a recorded decision to leave it so. An `Absent` row with neither is the failure this table exists to make visible." §15's row already had findings (`OF-19`, `OF-21`, `item 37`); what it did not have was a decision stating that the gap is a considered position rather than an oversight nobody got to. This decision is that half. The row's grade does not move — `PRODUCT/OPERATING_MODEL.md` § "A row does not move to `Present` because a rule was written" applies here with the same force it applied to DECISION-035 — but the row's own honesty does.
+
+**Deciding this now, rather than waiting for item 37 or OF-19 to close, keeps the two questions separable.** Item 37 is a placement question (does each of ten guards have a Framework-layer home). OF-19 is a repository-settings question only the founder can answer (keep a review requirement that only `--admin` satisfies, or drop it). Neither answer changes whether "impossible" is achievable — that answer comes from DECISION-010 and DECISION-013, both already settled. Waiting on either would tie a static architectural fact to two moving, unrelated pieces of work.
+
+## Alternatives Considered
+
+**Wait for item 37 to finish, then re-measure §15.** Rejected. Item 37 closing every guard's Framework-layer home would still leave the guards local-only in a customer Installation with no CI of its own — item 37 is about *where the rule for a guard lives*, not about a guard reaching every Installation, which DECISION-013's no-backend constraint already forecloses.
+
+**Propose a lightweight runtime (a hook, a bundled script customers run) to give the invariant a real enforcement point.** Rejected outright by DECISION-010 (tool-agnosticism — a hook is one tool's configuration, the exact reasoning that already rejected `OF-20`) and DECISION-013 (no backend, no shipped runtime). Revisiting either is a decision bigger than this one and is not this decision's scope.
+
+**Leave §15 `Open` in the queue until OF-19 resolves, on the theory that the row cannot be honestly assessed before the bypass gap closes.** Rejected. The bypass gap is real and is exactly what this decision names as one of the two tracked limits — closing OF-19 would narrow it, not remove the need for this decision, since "impossible" stays unachievable either way.
+
+## Consequences
+
+**`PRODUCT/OPERATING_MODEL.md` §15's row states a decided position for the first time, with its grade unchanged.** A future round reading the row gets a citation to open (this decision) instead of only a measurement to re-derive.
+
+**OF-19 and item 37 keep their own standing and are not folded into this decision or closed by it.** OF-19 is still a founder call; item 37 is still mid-flight, three guards from done as of this decision.
+
+**A future architectural change to DECISION-010 or DECISION-013 would reopen this decision's premise, not merely its measurement** — which is why the Review Date names those two decisions specifically rather than a re-measurement cadence.
 
 ---
 
