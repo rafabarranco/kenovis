@@ -255,6 +255,16 @@ git rev-list --count HEAD..origin/development   # must be 0
 
 This costs one command. Skipping it costs a whole round of work built on superseded context, which is undetectable from inside that round because everything it reads is internally consistent. See `.kenovis/AI/commands/bootstrap.md` Step 5, which requires the same check at session start.
 
+**Run this immediately after `gh pr merge --delete-branch` too, not only at the next session's own start.** `gh pr merge --delete-branch`'s local housekeeping (checkout base, delete branch, pull) uses the repository's own configured remote, and a remote your session cannot reach (an SSH URL with no key loaded is the common case) fails that housekeeping silently — the merge lands on GitHub, `gh pr view` confirms `MERGED`, and the local checkout is left one commit behind with no git command reporting failure. Anything the round edits next is silently reverted to pre-merge content on disk. Three for three in this repository: `git fetch origin` alone will hit the same unreachable-remote error the merge itself just did, so run the same HTTPS detour used everywhere else in that case:
+
+```
+git -c credential.helper='!gh auth git-credential' -c url."https://github.com/".insteadOf="git@github.com:" fetch origin
+git rev-list --count HEAD..origin/development   # must be 0
+git merge --ff-only origin/development
+```
+
+Do not wait to notice reverted files before running this — run it as the very next command after every `gh pr merge --delete-branch`, whether or not the merge printed an error.
+
 ---
 
 # Protected Branches

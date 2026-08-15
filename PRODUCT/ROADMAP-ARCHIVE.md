@@ -1492,3 +1492,21 @@ Not `/next` work, unchanged: item 32, item 40 part 3, OF-35 (founder input). Ite
 **A release is twelve rounds closer to being argued and is still not ranked.** Item 43 landing ahead of it makes the gap wider, not narrower — recorded rather than smoothed.
 
 Per Learning-023, checked before writing this pointer: this round appended to the document twice rather than closing an item out of it, so `wc -c PRODUCT/ROADMAP.md` is read after all of this round's edits and stated once, in the closing summary, rather than as a number restated here for the next round to re-verify.
+
+### superseded `Next` ordering block, written after item 43 closed DONE and replaced by the block written after OF-86/OF-88's bootstrap-blocking fixes
+
+Next (updated 2026-08-15, after item 43 closed DONE — its full narrative, including a design flaw caught and corrected mid-implementation, lives in `PRODUCT/ROADMAP-ARCHIVE.md` and DECISION-039):
+
+Closed and not repeated below: **item 43** (DECISION-039, `.kenovis/` here is generated/gitignored, source is `framework/`, 112/112 CLI tests unaffected). OF-25 refined earlier this round; OF-42 closed by promotion to item 43, not left `Open` beside its own resolution. The superseded `Next` ordering blocks this closes — three, all written earlier in this same session — are `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Top rank reverts to item 40 part 3, with OF-35 taken alongside it — unchanged and still unanswered.** What fraction of rounds may close on instrumentation before external validation (item 33) runs again. Input unchanged from every prior pointer this session: guards 1,225 lines against a 466,003-byte/64-file bundle (0.26×); re-read the commit-touch figure fresh each round rather than inheriting a number.
+
+2. Everything below stays scheduled and behind item 40 part 3, unchanged: item 37 round 3 (genuinely still open — 5 of 10 guards undispositioned), OF-25 (blocked on item 37's real closure), item 24, OF-14, item 22, the release.
+
+3. **OF-78, OF-79, OF-83, OF-85, OF-86 and OF-87 stay deliberately unranked above the blocks above; this is the sixteenth round to say so about OF-78.** Unchanged reasoning.
+
+Not `/next` work, unchanged: item 32, item 40 part 3, OF-35 (founder input). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched. Item 25 is rejected as originally scoped.
+
+**A release is thirteen rounds closer to being argued and is still not ranked.** Item 43 closing does not move it — the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, checked before writing this pointer: this round closed an item rather than only appending, so the figure below is the genuine post-round state, stated once in the closing summary rather than restated here.
