@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.11
+Version: 3.12
 
 ---
 
@@ -382,7 +382,7 @@ So a document that accumulates closed entries splits:
 
 - Closed entries move to a sibling archive — `PRODUCT/ROADMAP-ARCHIVE.md` for the roadmap, `AI/memory/LEARNINGS-ARCHIVE.md` for the learnings, `CHANGELOG-ARCHIVE.md` for the changelog — **verbatim**. Nothing is summarised away; the archive exists to preserve the trail, not to compress it.
 - The active document keeps one line per closed entry and a pointer to the archive.
-- The archive is read on demand. It is never on the session-initialization path.
+- The archive is read on demand. It is never on the session-initialization path. "On demand" is not a permission, it is a moment: `.kenovis/AI/SYSTEM.md` → "Context Loading Rules" names it — opened when a round cites the closed row, builds on it, or needs the reasoning behind its pointer, the same discipline that document already requires of a `DECISIONS.md` body. A pointer left unopened by the round citing it is a destination nothing consults, which is the exact failure "An Instruction Is Reachable, And Its Sink Is Read" describes below.
 - An entry is archived only when it is genuinely closed. An open finding it raised moves to the findings queue first — see the section below. Archiving a document that still holds the only copy of an unresolved finding is how a visible backlog becomes an invisible one.
 
 Create the archive when the first entry closes, not in advance. An empty archive is noise.

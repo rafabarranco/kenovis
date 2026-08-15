@@ -1360,3 +1360,29 @@ Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an e
 **A release is seven rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it. Fifteen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 170,939 bytes and `wc -c PRODUCT/ROADMAP.md` read **173,479** at the start of this round.
+
+Archived 2026-08-15, by the round that closed OF-37. One queue row, compacted in the same round.
+
+### OF-37
+
+| OF-37 | **The three archives are knowledge sinks nothing reads.** `grep -l "ARCHIVE" .kenovis/AI/commands/*.md .kenovis/AI/workflows/*.md` → **no match** on 2026-08-13: not one command or workflow opens `PRODUCT/ROADMAP-ARCHIVE.md`, `AI/memory/LEARNINGS-ARCHIVE.md` or `CHANGELOG-ARCHIVE.md`. `wc -c` the same day: **272,438 bytes archived** against 155,242 bytes active across the same three pairs. The archives are cited only from policy prose as sources for learning ids. | `/analyze`, 2026-08-13 | **Open.** The framework already wrote the rule this violates — `policies/documentation.md` → "An Instruction Is Reachable, And Its Sink Is Read": *"Before writing 'record it in X', ask what reads X and when. A destination nothing consults at decision time is a place to put something down, not a place for it to be picked up."* "Read on demand" is the archive rule's stated contract and no instruction anywhere issues that demand, so in practice archiving is deferred forgetting — which contradicts the operating model's §6/§9 (the Product layer is the persistent memory; the system must not rediscover what it already knows). Distinct from OF-15 (archive *size*, correctly Deferred) and from item 23 (`kenovis context`, a retrieval command blocked behind item 22): both of those assume a reader exists and ask how it scales. This says there is no reader at all, and the cheap half needs no CLI — one line in `bootstrap.md` or in the archive rule naming when an archive is opened. Priority: Pain high and rising with every archive pass (OF-23 is about to move another ~40 KB out of reach), Frequency every session, Cost low for the instruction, unknown for retrieval. |
+
+### superseded `Next` ordering block, written after OF-44 and replaced by the block that closed OF-37
+
+Next (updated 2026-08-15, after OF-33 — item 41 §1/§16 gets a bounded mechanism):
+
+Closed and not repeated below: **OF-33** (`DECISIONS.md` DECISION-038, `commands/next.md` 2.12 Step 3 → "Observe", `PRODUCT/OPERATING_MODEL.md` conformance rows 1 and 16). Residue queued as **OF-87**. The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 4 continues: §6/§9/§17 — OF-37.** One instruction naming when an archive is opened; retrieval is item 23 and stays behind item 22. Unchanged from every previous pointer's own statement.
+
+2. **Then §4 — OF-41 before item 40 part 3, then OF-42 with OF-35.** Unchanged — the last sub-gap of item 41 step 4's original sequence.
+
+3. **OF-78, OF-79, OF-83, OF-85, OF-86 and OF-87 are deliberately not ranked above the blocks above; this is the eleventh round to say so about OF-78.** OF-87 joins the same deliberately-unranked set on the round that created it — it is item 41 step 4's own residue, not a new class of work needing its own ranking argument.
+
+Everything below stays scheduled and behind item 41: item 37 round 3, OF-25, item 24, OF-14, item 22, the release. Their ranking argument has not changed.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
+
+**A release is eight rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Sixteen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 173,479 bytes and `wc -c PRODUCT/ROADMAP.md` read **176,380** at the start of this round.
