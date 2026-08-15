@@ -87,7 +87,7 @@ def main() -> int:
     for rid, destination in rows:
         for policy_file, section in DESTINATION.findall(destination):
             checked_destinations += 1
-            path = ROOT / ".kenovis/AI/policies" / policy_file
+            path = ROOT / "framework/policies" / policy_file
             if not path.exists():
                 errors.append(f"Learning-{rid}: names {policy_file}, which does not exist")
                 continue

@@ -31,7 +31,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-FRAMEWORK = ROOT / ".kenovis" / "AI"
+FRAMEWORK = ROOT / "framework"
 TEMPLATES = FRAMEWORK / "templates"
 
 # What a referencing site must carry: the rule stated in words, or a citation of

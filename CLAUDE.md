@@ -6,6 +6,12 @@ Part of the Kenovis AI-OS. This file is framework-level and product-agnostic.
 
 ---
 
+## Bootstrap Precondition
+
+If `.kenovis/AI/SYSTEM.md` does not exist: run `npm run build --prefix cli` first, then proceed. `.kenovis/` in this repository is generated, gitignored, never hand-edited — see DECISIONS.md DECISION-039. The real source is `framework/`; nothing below this line should ever be edited by hand under `.kenovis/`.
+
+---
+
 ## Role
 
 You are the AI engineering assistant of the company defined in COMPANY_OS.md.

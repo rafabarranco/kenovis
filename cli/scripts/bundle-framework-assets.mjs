@@ -1,20 +1,27 @@
 #!/usr/bin/env node
 // Build-time only: assembles the CLI's default --source directory at
-// dist/framework-assets/ by copying this repository's own .kenovis/AI/ plus the
+// dist/framework-assets/ by copying this repository's own framework/ plus the
 // hand-authored customer-facing README from assets/framework/README.md.
 //
-// Since DECISION-020 this repository stores its own Framework layer exactly the
-// way every Installation gets it — under .kenovis/AI/ — so there is nothing to
-// exclude here: AI/memory/ is Product layer and stays at the repository root,
-// outside .kenovis/.
+// Since DECISION-039 this repository's Framework-layer source lives at
+// framework/ (agents/, commands/, policies/, templates/, workflows/,
+// SYSTEM.md) — a directory of its own, kept apart from AI/memory/ (Product
+// layer, stays at the repository root) so no directory mixes layers.
+// .kenovis/ in this repository is generated, gitignored, never hand-edited:
+// after bundling, this script also mirrors dist/framework-assets/ into
+// <repoRoot>/.kenovis/ as a local, inspectable copy of what a customer
+// Installation would receive — never committed, never required for a session
+// to bootstrap (root CLAUDE.md reads framework/SYSTEM.md directly).
 //
-// This script reaches outside cli/'s own package boundary (reads ../.kenovis/AI)
-// on purpose, and only at build time in this monorepo checkout. The published npm
-// package ships the frozen dist/framework-assets/ output — it never re-reads
-// ../.kenovis/AI at install time on a customer's machine, and cannot: that path
-// does not exist outside this repository.
+// This script reaches outside cli/'s own package boundary (reads ../framework
+// and writes ../.kenovis/) on purpose, and only at build time in this
+// monorepo checkout. The published npm package ships the frozen
+// dist/framework-assets/ output — it never re-reads ../framework at install
+// time on a customer's machine, and cannot: that path does not exist outside
+// this repository.
 //
-// See PRODUCT/ROADMAP.md Phase 0 item 3 and DECISIONS.md DECISION-017/DECISION-020.
+// See PRODUCT/ROADMAP.md Phase 0 item 3, item 43, and DECISIONS.md
+// DECISION-017/DECISION-020/DECISION-039.
 
 import { cp, mkdir, rm, readdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -23,19 +30,20 @@ import { dirname, join } from "node:path";
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const cliDir = dirname(scriptDir); // cli/
 const repoRoot = dirname(cliDir);
-const sourceAiDir = join(repoRoot, ".kenovis", "AI");
+const sourceFrameworkDir = join(repoRoot, "framework");
 const authoredReadme = join(cliDir, "assets", "framework", "README.md");
 const packageJsonPath = join(cliDir, "package.json");
 const outDir = join(cliDir, "dist", "framework-assets");
+const localMirrorDir = join(repoRoot, ".kenovis");
 const FRAMEWORK_VERSION_FILENAME = ".framework-version";
 
 async function main() {
   await rm(outDir, { recursive: true, force: true });
   await mkdir(join(outDir, "AI"), { recursive: true });
 
-  const entries = await readdir(sourceAiDir, { withFileTypes: true });
+  const entries = await readdir(sourceFrameworkDir, { withFileTypes: true });
   for (const entry of entries) {
-    await cp(join(sourceAiDir, entry.name), join(outDir, "AI", entry.name), {
+    await cp(join(sourceFrameworkDir, entry.name), join(outDir, "AI", entry.name), {
       recursive: true,
     });
   }
@@ -52,6 +60,14 @@ async function main() {
   await writeFile(join(outDir, FRAMEWORK_VERSION_FILENAME), `${version}\n`, "utf8");
 
   console.log(`Bundled Framework layer assets (version ${version}) into ${outDir}`);
+
+  // Local-only mirror: what this repository's own .kenovis/ becomes since
+  // DECISION-039 — generated, gitignored, inspectable, never a second source.
+  await rm(localMirrorDir, { recursive: true, force: true });
+  await mkdir(localMirrorDir, { recursive: true });
+  await cp(outDir, localMirrorDir, { recursive: true });
+
+  console.log(`Mirrored into ${localMirrorDir} (gitignored, local-only)`);
 }
 
 main().catch((error) => {
