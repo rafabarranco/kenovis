@@ -1386,3 +1386,25 @@ Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an e
 **A release is eight rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it. Sixteen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 173,479 bytes and `wc -c PRODUCT/ROADMAP.md` read **176,380** at the start of this round.
+
+### OF-41
+
+| OF-41 | **Item 40's drift measurement excludes the product it is measuring against.** It reads `wc -l .github/scripts/*.py` → **1198** against `find cli/src -name '*.ts' \| xargs wc -l` → **2604** and concludes "repository-only infrastructure is 46% the size of the shipped product". `cli/src` is not the shipped product. `cli/scripts/bundle-framework-assets.mjs` copies `.kenovis/AI/` verbatim into `dist/framework-assets/` — **64 markdown files, 419,098 bytes**, tracked in git (`git ls-files .kenovis \| wc -l` → 64) — and that bundle is what a customer installs; the 2604 lines of TypeScript deliver it. Under the correct denominator the same item's commit breakdown inverts: of its "last 30 commits — `PRODUCT/` 29, `.github/scripts` 22, `.kenovis/AI/policies` 19, `cli` 5", the 19 policy commits are product work by DECISION-026's own definition, and only the 22 are repository-only. Its "18 of 30 queue rows are bookkeeping" classification counts framework-layer rule work the same way. | `/analyze`, 2026-08-13 | **Open.** The drift item 40 names is real and its remedy stands — the ten guards do reach zero Installations, and that is unchanged by this row. What is wrong is the size of it, in the direction that overstates it, and the figures are the stated input for item 40 part 3, a founder decision on what share of rounds may close on instrumentation. Deciding that against a denominator that omits 419 KB of the product sets the constraint wrong. Priority: Pain high (it is input to a standing constraint, not to one round), Frequency once but load-bearing, Cost low — it is a re-count, not new analysis. Take it with item 40 part 3, before that decision is made rather than after. |
+
+### superseded `Next` ordering block, written after OF-37 and replaced by the block that closed OF-41
+
+Next (updated 2026-08-15, after OF-37 — item 41 §6/§9/§17 gets its archive-reading instruction):
+
+Closed and not repeated below: **OF-37** (`SYSTEM.md` DECISION-independent rule extension, `policies/documentation.md` 3.12). The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 4's original sequence is now fully closed: §2 (OF-38/28/29), §12 then §1 (OF-31, OF-32), §15 (OF-44), §1/§16 (OF-33), §6/§9/§17 (OF-37).** What remains of item 41 step 4 is its last named sub-gap: **§4 — OF-41 before item 40 part 3, then OF-42 with OF-35.** Unchanged from every previous pointer's own statement of this sequence.
+
+2. **OF-78, OF-79, OF-83, OF-85, OF-86 and OF-87 are deliberately not ranked above §4; this is the twelfth round to say so about OF-78.** Unchanged reasoning.
+
+Everything below stays scheduled and behind item 41: item 37 round 3, OF-25, item 24, OF-14, item 22, the release. Their ranking argument has not changed.
+
+Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected — do not restart it.
+
+**A release is nine rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Seventeen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 176,380 bytes and `wc -c PRODUCT/ROADMAP.md` read **183,046** at the start of this round.
