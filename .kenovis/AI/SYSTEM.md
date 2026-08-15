@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.11
+Version: 1.12
 ---
 Purpose
 
@@ -236,6 +236,8 @@ COMPANY_OS.md is read in full. So is this file.
 DECISIONS.md is read as its Decision Index only — the section at the head of that file, one line per decision. A decision log is append-only by design and grows without bound; loading every body to consult none of them makes the start of a session cost more each week, in every Installation, forever.
 
 A decision body is opened on demand, at the moment it becomes relevant. Citing a decision requires opening it: the index states what a decision settled, never why, and a citation built on the index alone is a preference wearing a decision's ID.
+
+The same holds for a closed roadmap item, finding, or learning: `PRODUCT/ROADMAP-ARCHIVE.md`, `AI/memory/LEARNINGS-ARCHIVE.md` and `CHANGELOG-ARCHIVE.md` each hold the full reasoning behind a one-line pointer left in the active document. A pointer is a citation, not a summary — opened on demand, at the moment a round cites it, builds on it, or needs the reasoning it points at, and never read in full at session start. Citing a closed row's clause without opening what it points to is the decision-index failure one document over. See `PRODUCT/ROADMAP.md` OF-37.
 
 If the index is missing or an entry is too thin to decide against, read the body and fix the index in the same session.
 
