@@ -50,7 +50,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-FRAMEWORK = ROOT / ".kenovis" / "AI"
+FRAMEWORK = ROOT / "framework"
 SEARCHED = ("commands", "workflows")
 
 BLOCK_HEADING = re.compile(r"^#+ *(?:Step|Phase) +\d+\b.*$", re.MULTILINE)

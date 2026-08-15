@@ -2,10 +2,14 @@
 """Verify framework-layer PRs update CHANGELOG.md.
 
 Per CONTRIBUTING.md -> "Framework Definition of Done": a PR that touches
-.kenovis/AI/, CLAUDE.md, or README.md must also touch CHANGELOG.md, unless the PR
+framework/, CLAUDE.md, or README.md must also touch CHANGELOG.md, unless the PR
 title/description contains "[skip changelog]" (reserved for wording/typo
 edits that don't change behavior). Only runs on pull_request events — a
 push to a protected branch has already been through this check on its PR.
+
+Watches framework/, this repository's real Framework-layer source since
+DECISION-039, not the generated .kenovis/ mirror — a PR never touches the
+latter, since it is gitignored.
 
 Framework-layer home: not yet dispositioned, and expected to end as "no
 Framework-layer form" — the rule is about this repository's own contribution
@@ -22,7 +26,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SKIP_MARKER = "[skip changelog]"
-WATCHED_PREFIXES = (".kenovis/AI/", "CLAUDE.md", "README.md")
+WATCHED_PREFIXES = ("framework/", "CLAUDE.md", "README.md")
 
 
 def touches_watched_path(path: str) -> bool:
@@ -64,7 +68,7 @@ def main() -> int:
 
     watched = [f for f in files if touches_watched_path(f)]
     if not watched:
-        print("No framework-layer files (.kenovis/AI/, CLAUDE.md, README.md) changed. OK.")
+        print("No framework-layer files (framework/, CLAUDE.md, README.md) changed. OK.")
         return 0
 
     if "CHANGELOG.md" in files:
