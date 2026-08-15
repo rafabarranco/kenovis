@@ -1408,3 +1408,23 @@ Not `/next` work: item 32 (founder input, named in the item). Item 33 needs an e
 **A release is nine rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, check the next item's own premise against the file it describes before scoping it. Seventeen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 176,380 bytes and `wc -c PRODUCT/ROADMAP.md` read **183,046** at the start of this round.
+
+### superseded `Next` ordering block, written after OF-41 and replaced by the block written when item 40 part 3 was reached, presented to the founder, and not answered in-session
+
+Next (updated 2026-08-15, after OF-41 — item 40's own drift figures are corrected):
+
+Closed and not repeated below: **OF-41** (item 40's own "Update" block, re-measured off the tree). **OF-23** re-dispositioned Fixed in the same pass. The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **Item 41 step 4's last sub-gap, second half: item 40 part 3 — a founder decision, now on corrected input.** Not `/next` work. What executes it: the founder. What input they need, gathered and corrected this round: item 40's own "Update — OF-41" block — guards are 1225 lines against a 466,003-byte/64-file bundle (0.26×, not the original 46%), and zero of the last 30 commits touched `.github/scripts` at all. The decision itself: what fraction of rounds may close on instrumentation before external validation (item 33) runs again. Present this to the founder in the session that reaches it; if answered in-session, continue from Step 4 on the answer per `commands/next.md` Step 3.
+
+2. **Then OF-42 with OF-35** — both are themselves "decide whether detection is achievable at all" questions, the same shape as item 40 part 3, and are taken with it rather than after it if the founder is already in the loop when part 3 is answered.
+
+3. **OF-78, OF-79, OF-83, OF-85, OF-86 and OF-87 are deliberately not ranked above the blocks above; this is the thirteenth round to say so about OF-78.** Unchanged reasoning.
+
+Everything below stays scheduled and behind item 41: item 37 round 3, OF-25 (now unblocked — item 37 is closed — but still behind item 41), item 24, OF-14, item 22, the release. Their ranking argument has not changed except OF-25's dependency, noted here rather than re-argued.
+
+Not `/next` work: item 32 (founder input, named in the item), item 40 part 3 (founder input, this round's own stop point), OF-42/OF-35 (founder input, taken with part 3). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched; do not start it from `/next`. Item 25 is rejected as originally scoped — do not restart it as written; its unblocking is about item 37's closure only, not a reopening.
+
+**A release is ten rounds closer to being argued and is still not ranked.** Every item the pointer named ahead of it since item 42 closed is now closed too; the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
+
+Per Learning-023, check the next item's own premise against the file it describes before scoping it. Eighteen consecutive rounds have found their own item's stated figure stale, this one included: the previous pointer anchored 183,046 bytes and `wc -c PRODUCT/ROADMAP.md` read **185,026** at the start of this round.
