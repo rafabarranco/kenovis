@@ -407,6 +407,8 @@ Create the archive when the first entry closes, not in advance. An empty archive
 
 **A finding is anything the work surfaced: an improvement, a bug, technical debt, a decision, a lesson, an open question.** Not only what a `/next` round found while closing an item. The kind determines which file it lands in — `CLAUDE.md` → "Nothing Stays In The Thread" holds that routing table — and every kind lands somewhere.
 
+**A finding is something the work discovered. A supplied artifact — a document, a decision, an instruction a human hands over directly, complete — is not a finding about itself, and giving it a disposition is how it leaves with the thread instead of landing on disk.** Write a supplied artifact down immediately, in the destination its own kind already names in the routing table above; do not file a queue row asking that someone create what is already in hand. Collapsing the two also inverts the founder/AI split this framework exists to hold — it returns a human's own material to them as a question to answer, rather than the AI doing the one step available to it: recording what it was given. (`AI/memory/learnings.md` Learning-028; `PRODUCT/ROADMAP.md` OF-40.)
+
 **The population is the session, not the item.** Any session that finds something owes it a disposition: one that closed a roadmap item, one that ran `/feature` or `/architect` or no command at all, one that only answered a question. Binding this rule to closed items was how findings born in conversation, in a decision body, or inside an item still open stayed invisible — three failures already on record, all found by a human asking rather than by the system.
 
 A round finds more than it fixes. That is healthy — a round that only ever found what it had budgeted for would not be looking.
@@ -485,6 +487,14 @@ Prose in `CHANGELOG.md`, `DECISIONS.md`, `PRODUCT/ROADMAP.md` and the rest of th
 **An unverified cost estimate in a deferred item is a decision made by nobody.** Priority formulas divide by implementation cost, so a wrong cost does not merely mislead — it suppresses the item, and the more wrong it is the longer it stays suppressed. Over-estimating is invisible, because the item simply never comes up again. So: verify the cost, or write that it is unverified. When the note names a specific mechanism as the reason something is expensive, check that claim first — it is the load-bearing part. When picking up a deferred item, re-derive its cost before ranking it. (Learning-019.)
 
 **A template's passing condition is "no sentence here is true of only one product",** not "the questions are marked". A check that finds unanswered questions cannot find wrongly answered ones, and the two are not symmetric: an unanswered question is visibly incomplete, while an inherited answer looks decided and gets built on. When a template is derived from a real document by deleting its answers, there is no completion signal — nothing tells you which deletions you skipped. Read back every section that was not rewritten and ask whether it survives a product of the opposite shape. (Learning-017.)
+
+---
+
+# The Framework Layer Never Names A Repository-Local Script As Where A Rule Holds
+
+An Installation's own repository may run checks that live outside `.kenovis/AI/` — a CI workflow, a pre-commit hook, anything `sync` never delivers. Such a script may exist as a local net over that one repository's own practice, and it may never be the framework layer's own answer to *how a rule is enforced* — that answer is a policy, command, workflow or template section, because that is what every task loads and what `sync` delivers to every Installation. A script nobody but the repository that wrote it runs is not enforcement anyone else has.
+
+So the citation runs in both directions. A repository-local check names, in its own source, the framework-layer section that carries the rule it mechanically enforces — or records that no such section exists and why (`PRODUCT/ROADMAP.md` item 37 disciplines this repository's own checks that way). The framework layer never runs the citation the other way: it does not name a repository-local script as the mechanism holding a rule for a customer. A live instance of exactly that — the framework layer telling every Installation a script it does not have was enforcing something — was found and fixed inside this document (`PRODUCT/ROADMAP.md` OF-25).
 
 ---
 
