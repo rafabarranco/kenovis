@@ -690,6 +690,29 @@ Where this ranks: with §1-17, under the same rule — rank 1 of the Source Of T
 
 ---
 
+# Addendum B — The Founder Does Not Search
+
+Supplied by the founder on 2026-08-16, in the session that presented `PRODUCT/ROADMAP.md` item 40 part 3 and OF-35 for a decision. A third statement, not an edit: §1-17 and Addendum A above stay exactly as authored.
+
+Recorded here rather than dispositioned as a finding, per `AI/memory/learnings.md` [[Learning-028]] — a supplied artifact is written down, not routed through the disposition rule built for things the work discovered. This is the founder resolving a standing question the framework had left open since 2026-08-13 (item 40's own text: *"Founder call on 2 and 3"*) and OF-35 (*"is founder-as-detector a permanent property to be designed around... or is detection achievable at all"*).
+
+Verbatim:
+
+> Auto, siempre, YO SOY EL FOUNDER, SOLO DECIDO, NO EJECUTO, NO BUSCO, NO MIRO, TU TE ENCARGAS DE HACER REALIDAD MI SUEÑO... YO SOY EL QUE SABE LO QUE QUIERE Y POR ESO TENGO LA ULTIMA PALABRA EN LA TOMA DE DECISIONES
+
+What that states, and each line is a requirement on the framework rather than a description of it:
+
+1. **Founder-as-detector is rejected, not accepted as a permanent property.** OF-35's own question — "is detection achievable, or is the founder the permanent fallback" — is answered: no. Finding problems, searching the tree, noticing drift is Kenovis's job, unconditionally, in every round. A round that surfaces a structural gap only because the founder happened to ask is the failure this line exists to end, not a tolerable steady state.
+2. **The founder executes nothing and looks for nothing.** "No ejecuto, no busco, no miro" is absolute. Kenovis carries every step between a problem existing and a decision being ready for the founder to make — this is §1, §3 and §4 above, restated with the ambiguity removed: those sections already said the founder should not have to ask; this says the founder categorically will not look, so a mechanism that depends on the founder noticing something is a mechanism that has already failed.
+3. **The founder's only input is the decision itself, and that decision is final.** "Tengo la ultima palabra" is not new — `.kenovis/AI/SYSTEM.md` and `PRODUCT/OPERATING_MODEL.md` §4 already reserve product direction, strategy and business decisions to the founder. What this line adds is emphasis with a consequence: a round that brings the founder a half-formed question, or asks the founder to gather input the round itself should have gathered, is not honouring "solo decido" — the founder decides on input Kenovis already assembled, the same standard item 40 part 3 and OF-42 were each held to when they were presented.
+4. **Item 40 part 3's own question dissolves rather than gets a numeric answer.** The question asked what fraction of rounds may close on instrumentation before external validation re-runs. Under this line, the founder does not set or monitor a fraction — monitoring is looking. The standing requirement instead: Kenovis self-governs the instrumentation-versus-product balance inside its own bounded mechanisms (Observe, Refine, the findings queue's own priority formula) and escalates to the founder only when a genuine decision is needed — an architecture question, a product-direction call, a business trade-off — never a status report asking the founder to weigh in on a ratio.
+
+**What this line does not, and architecturally cannot, change:** DECISION-010 (tool-agnostic, no scheduler) and DECISION-013 (no backend, no shipped runtime) are still what they were — settled the same way DECISION-037 and DECISION-038 already applied them to §15 and §1/§16. Nothing in this framework runs between sessions; a round still begins when a thread is opened, by a human or an external trigger, not by Kenovis on its own clock. What this line requires is what happens **inside** a round once one starts: every detection, every search, every piece of input a decision needs is Kenovis's work, finished before anything reaches the founder — never work the founder does, and never work the founder is asked to notice is missing. "Auto, siempre" governs what Kenovis does with a round it is given, not whether a round starts without one being given.
+
+Where this ranks: with §1-17 and Addendum A, under the same rule — rank 1 of the Source Of Truth Hierarchy in `.kenovis/AI/SYSTEM.md` (DECISION-031). Closes `PRODUCT/ROADMAP.md` item 40 part 3 and OF-35; see DECISIONS.md DECISION-040.
+
+---
+
 # Conformance — How This Document Is Checked Against The Framework
 
 **Everything above this line is the founder's, verbatim.** §1-17 and Addendum A are recorded as supplied and are never edited, reordered or summarised. Everything below it is Kenovis's own, appended and never interleaved: the specification and the report on the specification are different documents that happen to share a file, and they share it so that the question "is the AI-OS doing its job" is answered where the job is defined.
