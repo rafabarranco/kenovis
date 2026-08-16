@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.20
+Version: 1.21
 ---
 Scope
 
@@ -433,6 +433,36 @@ Future action:
 `PRODUCT/ROADMAP.md` → **OF-87** carries the residue: the current `Observe` checklist covers document-weight drift only, and widening it needs evidence of what the next enumerable population actually is, not a bigger unbounded instruction. The rule is promoted in the same round it was found: `.kenovis/AI/policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" gains one clause generalising Learning-021/Learning-022 past mechanical checks.
 
 Disposition: Fixed as a rule — `.kenovis/AI/policies/testing.md` 2.4 → 2.5, citing this entry, with the residue queued as **OF-87**. No unpromoted half.
+
+---
+
+## Learning-042
+
+Date:
+2026-08-16
+
+Category:
+Process
+
+Context:
+Refining the Open Findings queue while closing `PRODUCT/ROADMAP.md` item 37 (round 3). DECISION-036's own mechanism — refine the lowest-id `Open` row — landed on OF-30, unrelated to item 37. Reading past it surfaced OF-34, still `Open — founder call, item 40`, two rounds after item 40 part 3 (the decision it was waiting on) closed via DECISION-040.
+
+Problem:
+DECISION-040 explicitly closed **OF-35** in the same round it settled item 40 part 3 — the two were taken together because, per that round's own words, they were "the same underlying question... asked twice, on two axes, answered once." OF-34 asked the identical question a third time, in its own words ("what share of rounds may close on instrumentation before item 33 runs again"), filed from a different `/analyze` pass on the same day as OF-35. The closing round paired the two rows it had already linked in its own text and did not check whether a third row asked the same thing.
+
+What happened:
+Nothing was wrong with the decision — DECISION-040 answers OF-34's question exactly as well as OF-35's. What failed is reach: a closing round found the rows it was already tracking as the same finding and missed a fourth row filed independently that asked the same question in different words. Grepping for an id closes the rows that cite it; it does not close the rows that never cited it because they were never linked in the first place.
+
+Root cause:
+**A decision closes the findings it was written against, not the findings that ask its question.** Those are different sets whenever a question gets asked more than once independently — which a queue with `Open` rows accumulating from multiple `/analyze` passes on the same topic (item 40, OF-34, OF-35 were all filed the same day, from different runs) makes likely rather than exotic. Nothing in the disposition rule requires re-scanning the queue by topic before declaring a decision's findings closed; it only requires citing the rows already known to be linked.
+
+Learning:
+When a decision or a fix closes a finding, grep the queue for the *topic* the row raises, not only the id already cited alongside it. A stale row survives a correct decision not because the decision was incomplete, but because closing it only walked the citations someone had already written down.
+
+Future action:
+No standalone item — the instance is fixed (OF-34, Fixed via DECISION-040, this round). The general rule is folded into the Refine mechanism this round already ran under: DECISION-036's per-round Refine pass is the existing, cheap point to catch this class, since it already opens the queue and re-reads a row's premise against the tree. No new field, counter or CI guard — a keyword-based staleness check would face the same classifier problem `.kenovis/AI/policies/testing.md` already documents for prose-detection guards (items 6 and 8's rejections).
+
+Disposition: Fixed as an instance (OF-34) — no rule change, no promotion. The general caution is recorded here as a reusable pattern for future refinement passes, not as a policy clause, since the fix is a habit (grep by topic when refining) rather than a checkable mechanism.
 
 ---
 

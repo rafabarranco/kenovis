@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Verify every relative markdown link in the repo resolves to a real file.
 
-Framework-layer home: not yet dispositioned, and expected to end as "no
-Framework-layer form" — a broken relative link is a filesystem fact with no
+Framework-layer home: none. A broken relative link is a filesystem fact with no
 judgement in it, and "do not write links that do not resolve" is not a rule an
-agent needs told. PRODUCT/ROADMAP.md item 37 orders this guard last for that
-reason and records the outcome either way.
+agent needs told — it fails the DECISION-026 test the opposite way a written
+rule would: there is no instruction to place, only a fact to check. Confirmed
+2026-08-16 (PRODUCT/ROADMAP.md item 37, last of the ten, as ordered).
 
 Since DECISION-039, this repository's own `.kenovis/` is generated and
 gitignored — absent on a fresh checkout and in this CI job, which is

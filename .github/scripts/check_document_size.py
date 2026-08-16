@@ -26,10 +26,11 @@ Learning-022:
     actually being used, or whether the named item is progressing. An exemption
     that nobody ever closes passes forever -- which is why each one prints.
 
-Framework-layer home: not yet dispositioned. PRODUCT/ROADMAP.md item 37 works
-the guards one at a time and this one is outstanding. Until it names a home or
-records that its rule has no Framework-layer form, this check protects this
-repository only.
+Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "Document
+Lifecycle: A Size Threshold, An Archive, And An Exit" states the rule this
+check verifies structurally: the 60 KB threshold, the three acceptable splits,
+and the exemption-must-name-its-fix clause. Verified 2026-08-16
+(PRODUCT/ROADMAP.md item 37).
 
 Scope: this repository's CI only. The bundle ships `.kenovis/AI/`, not
 `.github/`, so an Installation carries the rule as an instruction with no guard

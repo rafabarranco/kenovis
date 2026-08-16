@@ -4,7 +4,7 @@ ROADMAP-ARCHIVE.md
 
 Completed Roadmap Items
 
-Version: 1.7
+Version: 1.8
 ---
 Purpose
 
@@ -1528,3 +1528,103 @@ Not `/next` work, unchanged: item 32, item 40 part 3, OF-35 (founder input). Ite
 **A release is fourteen rounds closer to being argued and is still not ranked.** Two bootstrap-blocking bugs closing does not move it — the case grows every round it stays unranked, and the next pointer that leaves it there should argue it rather than inherit this sentence.
 
 Per Learning-023, checked before writing this pointer: this round closed two findings without touching the ranked queue, so the figure below is read after this round's own edits rather than inherited from the previous pointer.
+
+---
+
+### item 37 — every CI guard names its Framework-layer home, or records it has none
+
+37. SCHEDULED (founder-flagged maximum priority, 2026-08-12) — every rule this repository enforces mechanically gets its Framework-layer home, or is recorded as having none.
+
+Problem, stated as the founder stated it: work has been landing in this repository's infrastructure instead of in the product, and in this repository those are not the same place. `ls .github/scripts/check_*.py | wc -l` → **9**. Guards a customer Installation runs: **0**. `.github/` is not in the bundle (verified in item 17), so every guard added since item 15 improved this repository and no customer. Four consecutive rounds recorded that gap as a caveat while widening it — including the round that quoted item 25's own "the margin grows every round" line and then added the ninth guard.
+
+DECISION-026 settles where a rule goes: `.kenovis/AI/` — the policies, commands, workflows, agents and templates the AI loads to do the work, delivered by `sync`, in force on the next task with nothing to invoke. `kenovis check` is rejected; the CLI's job stays delivery.
+
+Target: for each of the nine guards, its rule has a stated Framework-layer home, or an explicit record that it has none and why. Not a mechanical port — most of what these scripts guard is framework content a customer never edits, and that is a finding per guard, not an assumption to carry.
+
+The nine, to be worked one at a time rather than in a sweep: `check_links`, `check_markers`, `check_changelog`, `check_template_refs`, `check_artifact_destinations`, `check_decision_index`, `check_future_actions`, `check_document_size`, `check_learning_promotions`, `check_item_findings` — read off the tree on 2026-08-12, which is **ten**, because `check_item_findings.py` landed in item 36 the same day this item was written. The count in the previous sentence is left wrong on purpose and corrected here: it is the same drift Learning-023 records, produced inside the round that was complaining about it.
+
+Ordering constraint: the guards whose rule already has a Framework-layer half go first, because they are cheapest and they establish the pattern — `check_item_findings` (rule already in `policies/documentation.md` 3.0, `commands/next.md` 2.4 and the roadmap template 1.5) and `check_future_actions` (rule already in the learnings template). The two with no obvious home, `check_links` and `check_changelog`, go last and may well end as "no Framework-layer form", which is a valid outcome to record.
+
+The test each one has to pass, from DECISION-026: **does this change reach a customer's next task without anyone doing anything?** A CI script fails it. A CLI subcommand fails it. A rule in a policy the agents already load passes it.
+
+Validated when: each of the ten has a recorded disposition — Framework-layer home named, or no-form recorded with the reason — and no round can add a guard again without stating its Framework-layer half.
+
+Progress — round 1 (2026-08-13, via /next): the mechanism, plus the two guards the ordering constraint puts first.
+
+Where a disposition lives, decided here rather than assumed: **the guard's own module docstring**, on a `Framework-layer home:` line. A separate register — a table in `ENGINEERING/`, or in this item — would be a second copy of a fact that changes whenever a guard changes, and it would drift from the scripts, which is Learning-023's shape. `ENGINEERING/ARCHITECTURE.md` (1.5 → 1.6) → "CI Guards Are A Local Net, And Each One Names Its Framework-Layer Home" states the convention and points at the scripts; it deliberately does not restate the ten dispositions.
+
+The rule itself went to the Framework layer, which is the item's whole point: `.kenovis/AI/policies/testing.md` (2.2 → 2.3) → "A Guard Belongs Where The Work Is Loaded". Agents load it per task and `sync` delivers it, so it passes DECISION-026's own test — a table in `.github/` would not, in the round that shipped that test.
+
+Dispositioned, each verified against the files it names rather than off this item's text:
+
+- `check_item_findings` → `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"; `commands/next.md` Step 15; `templates/product-layer/PRODUCT/ROADMAP.md` → "Open Findings".
+- `check_future_actions` → the `Future action:` clause of that same policy section; `templates/product-layer/AI/memory/learnings.md` → "Learning Format".
+
+Both needed no rule written — their Framework-layer halves already existed and the work was recording them. That is exactly what the ordering constraint selected for, and it means the remaining eight are larger than these two rather than the same size. Do not read this round's cost as the per-guard cost.
+
+The other eight now carry `Framework-layer home: not yet dispositioned` in their own docstrings instead of nothing, so the population is visible where a guard is edited and none can be silently missing the field. Two state an expected outcome — `check_links` and `check_changelog`, both expected to end as "no Framework-layer form" — which is a prediction recorded so it can be checked, not a disposition.
+
+No eleventh guard was added to enforce the `Framework-layer home:` field. It would fail DECISION-026's test in the round that shipped that test, and OF-21 forbids it explicitly until this item runs.
+
+Also corrected, because it was found while reading the docstrings: four guards (`check_document_size`, `check_future_actions`, `check_item_findings`, `check_learning_promotions`) cited item 25 — rejected on 2026-08-12 — as the work that would eventually reach a customer. Each read as scheduled and was not. The instances are fixed; the class is **OF-22**.
+
+Progress — round 2 (2026-08-13, via /next): `check_markers`, `check_artifact_destinations`, `check_template_refs` — the first three whose rule was *not* already written, which is where this item's real cost lives.
+
+- `check_markers` → `policies/architecture.md` (1.2 → 1.3) → "Distribution Is Part Of The Architecture". The setup path was already covered five ways (`SYSTEM.md`, both setup commands, the product-layer README template, line 1 of all 18 templates). What was missing is the ongoing case: an agent creating a new Product-layer document *after* setup had nothing telling it to write the marker. Round 1 nearly produced that exact defect while considering a new `ENGINEERING/` file. The rule also fixes the boundary in the layer that reads it — the layer marker is on line 1 of the document, not in a path list the tool holds, because a list has to be edited every time a document is added and that edit is the step that gets skipped.
+- `check_artifact_destinations` and `check_template_refs` → `policies/documentation.md` (3.0 → 3.1) → "An Instruction That Produces An Artifact Names Where It Goes, And A Template Is Never Where", the two halves of DECISION-024. Both had the same shape: the sentence was present at ~20 reference sites and the rule requiring it was written nowhere an agent loads. That is the artifact, not the rule — an agent adding the twenty-first site had nothing to follow.
+
+One no-form outcome recorded rather than forced: `check_markers` still has a residue the framework half cannot reach — the marker being *deleted* from a file that already has one. That is an editing accident with no instruction to attach a rule to, so it stays a genuine local net. Recorded in the guard, not as a gap.
+
+Also fixed here, found while placing the rules: **`policies/documentation.md` told every Installation that `.github/scripts/check_document_size.py` and `.github/scripts/check_item_findings.py` enforce two of its rules.** No Installation has those files. That is item 37's problem running in reverse — not "the guard does not reach the customer" but "the shipped policy claims it did". Both sites now state what actually holds an Installation to the rule, which is that the policy is loaded on every task.
+
+And a defect in round 1's own work, corrected: the section it added to `policies/testing.md` restated `policies/architecture.md` → "An Improvement Lands Where The Work Is Loaded" almost line for line, including the test verbatim — the rule was already there and round 1 did not check. Trimmed to what is genuinely check-specific (the declaration goes inside the check; a cited plan can be rejected; a permanent satisfier turns a recurring trigger into a one-time gate) and now points at the architecture policy for the rule itself. `testing.md` 2.3 → 2.4.
+
+Validation, run rather than reasoned about: a seeded workflow with an artifact-producing step naming no destination and a template reference missing its sentence made both guards exit `1`; removing the seed returned both to `0`; `check_markers` was unaffected throughout as a control.
+
+Remaining: `check_decision_index`, `check_document_size`, `check_learning_promotions`, then `check_links` and `check_changelog` last.
+
+Findings this item did not fix (round 2): **OF-22**, **OF-23**, **OF-24** and **OF-25**. The guard-count drift above is corrected in place rather than queued, and the underlying misdirection is DECISION-026, not a finding.
+
+Progress — round 3 (2026-08-16, via /next): the last five — `check_decision_index`, `check_document_size`, `check_learning_promotions`, `check_links`, `check_changelog` — dispositioned. All ten now carry a real `Framework-layer home:` line instead of a placeholder.
+
+Premise checked before scoping, per Learning-023: `grep -l "Framework-layer home: not yet dispositioned" .github/scripts/*.py` → **5** (`check_decision_index`, `check_document_size`, `check_learning_promotions`, `check_links`, `check_changelog`), confirming the pointer's own count and this item's own "Remaining" line above.
+
+Three of the five already stated their own rule's location in their first paragraph, unlike round 2's three — the disposition was recording a citation already written, not finding one: `check_decision_index` → `.kenovis/AI/policies/documentation.md` → "A Decision Is Not Recorded Until Its Index Line Exists" (a decision body and its index line are one change, never two); `check_document_size` → the same file's "Document Lifecycle: A Size Threshold, An Archive, And An Exit" (the 60 KB threshold, the three acceptable splits, the exemption-must-name-its-fix clause); `check_learning_promotions` → the same file's "Closed Work Is Archived, Not Kept Inline" → "A learning closes when its rule has been promoted" (the rule lives in the policy's own voice and the policy cites the learning id). All three sections were confirmed to exist and to state the check's own rule before the docstring was edited, not assumed from the check's own prior citation.
+
+The other two close as item 37's own text predicted, both confirmed rather than assumed: `check_links` — a broken relative link is a filesystem fact with no judgement in it, "do not write links that do not resolve" is not an instruction an agent needs told, and there is nothing to place in a loaded layer, only a fact to check. `check_changelog` — the rule it enforces already has a home, in `CONTRIBUTING.md` → "Framework Definition of Done", and that home is correct as it stands: a pull request is a hosting-platform concept, and no Installation runs this AI-OS against one. Both now record `Framework-layer home: none` rather than "not yet dispositioned."
+
+Validation, run rather than reasoned about: `grep -l "Framework-layer home: not yet dispositioned" .github/scripts/*.py` → **0**. All ten guards executed directly (`python3 .github/scripts/check_*.py`), not only read: all ten exit `0` on the current tree.
+
+Also fixed here, found refining the queue in the same round (DECISION-036's own mechanism, applied to the lowest-id untouched `Open` row, which was outside this item's own population): **OF-30**, restated compactly with a corrected stale test count and a Role field. Separately, **OF-34** was caught and fixed — its "what share of rounds may close on instrumentation" question is item 40 part 3 verbatim, already answered by DECISION-040 when item 40/OF-35 closed two rounds ago. The closing round missed updating it; this round's own queue pass caught it rather than leaving it for a later round to find stale (OF-04's own pattern). Neither is part of item 37's own scope — each carries its own disposition in its own row, not folded in here.
+
+**Ten for ten.** Every rule this repository enforces mechanically now names its Framework-layer home, or records that it has none and why. **Item 37: DONE.**
+
+**Operating model section served: none.** Finishing a dispositioning pass on this repository's own CI tooling is the same class of audit-and-correct work item 40's OF-41 round and item 42 part 4's OF-81/OF-82 round both used "none" for — it advances no single numbered behaviour in `PRODUCT/OPERATING_MODEL.md` on its own.
+
+Findings this item did not fix (round 3): none. OF-30 refined and OF-34 fixed in the same round, neither part of this item's own population — see their own rows.
+
+---
+
+### OF-34
+
+| OF-34 | Instrumentation outweighs the product, measured rather than felt: **1198** lines across ten CI guards reaching zero Installations, against **2604** lines of shipped CLI; 18 of 30 queue rows and 11 of 17 `Open` rows about the AI-OS's own bookkeeping; 22 of the last 30 commits touching `.github/scripts`. Eleven releases since the last external validation (`0.3.0`, 2026-08-06). | `/analyze`, 2026-08-13 | **Fixed** (2026-08-16) — this row's own question, "what share of rounds may close on instrumentation before item 33 runs again", is item 40 part 3 verbatim. **DECISION-040** answered it directly: no ratio is set or monitored, because the founder does not monitor a ratio — Kenovis self-governs the instrumentation-versus-product balance inside its own bounded mechanisms and escalates only genuine decisions. Missed when item 40/OF-35 closed on this same decision two rounds ago; caught refining the queue this round rather than left for a later round to find stale (OF-04's own pattern). This row's own measurements are themselves superseded — see OF-41. |
+
+---
+
+### superseded `Next` ordering block, written after item 40 part 3 and OF-35 closed via DECISION-040 and replaced by the block written after item 37 round 3, OF-30 and OF-34 closed
+
+Next (updated 2026-08-16, after item 40 part 3 and OF-35 closed via DECISION-040 — the standing blocker this pointer carried for three rounds is gone):
+
+Closed and not repeated below: **item 40** (DONE, parts 2-3 via DECISION-040). **OF-35** (Fixed, same decision). Both absorbed the founder's Addendum B directly; neither is `/next` work anymore, and neither is repeated in this ranking. The superseded `Next` ordering blocks this closes — four, all written earlier in this same session — are `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **New top rank: item 37 round 3 — finish dispositioning the remaining five CI guards' Framework-layer home.** `check_decision_index.py`, `check_document_size.py`, `check_learning_promotions.py`, `check_links.py`, `check_changelog.py` — the last five of ten, ordered last in item 37's own text because `check_links.py` and `check_changelog.py` are expected to end as "no Framework-layer form." Executable directly from `/next`: no founder input needed, no `/architect` prerequisite, cheapest remaining work with a written procedure (item 37's own two completed rounds).
+
+2. **The release, argued rather than deferred an eighteenth time.** Per DECISION-040 §4, this is exactly the kind of self-governed call Kenovis now makes without bringing the founder a status question first. Checked against what actually changed since `kenovis@0.14.0`: item 43 (origin-repo architecture only, bundle byte-identical, 112/112 CLI tests unmodified), OF-86/OF-88 (CI-only), item 40/OF-35 (governance, no code). **Nothing customer-facing has changed.** A version bump with zero behavioural difference is not what a release is for — held, not because it is unranked out of habit, but because there is nothing in it yet. Item 37 round 3 (next, above) is framework-layer-only too; the next thing that would actually justify a release is item 33 (real external validation) or a customer-facing fix, neither of which exists right now.
+
+3. Everything else stays scheduled, unchanged: OF-25 (blocked on item 37's real closure — this round moves that closer), item 24, OF-14, item 22 (`/architect` + ADR required).
+
+4. **OF-78, OF-79, OF-83, OF-85 and OF-87 stay deliberately unranked above the blocks above; this is the eighteenth round to say so about OF-78.** Unchanged reasoning.
+
+Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched. Item 25 is rejected as originally scoped.
+
+Per Learning-023, checked before writing this pointer: this round closed two long-standing items rather than only appending, so the figure below is read after this round's own edits.

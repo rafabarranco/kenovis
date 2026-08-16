@@ -11,11 +11,11 @@ Watches framework/, this repository's real Framework-layer source since
 DECISION-039, not the generated .kenovis/ mirror — a PR never touches the
 latter, since it is gitignored.
 
-Framework-layer home: not yet dispositioned, and expected to end as "no
-Framework-layer form" — the rule is about this repository's own contribution
-process, and pull requests are a hosting platform's concept rather than
-anything an AI-OS operates on. PRODUCT/ROADMAP.md item 37 orders this guard
-last for that reason and records the outcome either way.
+Framework-layer home: none. The rule it enforces (CONTRIBUTING.md -> "Framework
+Definition of Done") already has its home — in this repository's own
+contribution guide, not in `.kenovis/AI/`, because a pull request is a hosting
+platform's concept and no Installation runs this AI-OS against one. Confirmed
+2026-08-16 (PRODUCT/ROADMAP.md item 37, last of the ten, as ordered).
 """
 
 import json
