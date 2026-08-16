@@ -29,10 +29,10 @@ leaving the distinction implicit:
     there is nothing useful to review in it; what is reviewable is the rule in
     `.kenovis/AI/policies/documentation.md`.
 
-Framework-layer home: not yet dispositioned. PRODUCT/ROADMAP.md item 37 works
-the guards one at a time and this one is outstanding. Until it names a home or
-records that its rule has no Framework-layer form, this check protects this
-repository only.
+Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "A Decision Is
+Not Recorded Until Its Index Line Exists" states the rule this check verifies
+mechanically: writing a decision body and its index line is one change, never
+two. Verified 2026-08-16 (PRODUCT/ROADMAP.md item 37).
 
 Scope, stated so it is not mistaken for wider coverage than it has: this runs in
 this repository's CI only. The bundler ships `.kenovis/AI/` and the customer
