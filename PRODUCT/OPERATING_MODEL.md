@@ -713,6 +713,27 @@ Where this ranks: with §1-17 and Addendum A, under the same rule — rank 1 of 
 
 ---
 
+# Addendum C — Solo Execution Until The Roadmap Is Done
+
+Supplied by the founder on 2026-08-16, in the same session that closed `PRODUCT/ROADMAP.md` OF-25 and OF-40. A fourth statement, not an edit: §1-17, Addendum A and Addendum B above stay exactly as authored.
+
+Recorded here rather than dispositioned as a finding, per `AI/memory/learnings.md` [[Learning-028]] — a supplied artifact is written down, not routed through the disposition rule built for things the work discovered.
+
+Verbatim:
+
+> equipo, cuando este el producto totalmente terminado, entonces lo usara la gente, mientras tanto, seguimos con el roadmap hasta acabarlo, entendido?
+
+What that states:
+
+1. **External usage follows completion, not the other way round.** "La gente" — customers — start using the product once it is "totalmente terminado", not incrementally and not as a validation step along the way. Addendum A §4 already states the loop's end condition as an empty roadmap; this line names what happens at that boundary rather than before it.
+2. **Between now and then, execution stays solo — Kenovis working the roadmap, not the founder recruiting users.** "Seguimos con el roadmap hasta acabarlo" restates §1's own model (Kenovis executes iteratively) with the sequencing made explicit: the roadmap is worked to completion first.
+
+**A real tension with the tree as it stands, stated rather than resolved.** `PRODUCT/ROADMAP.md` item 33 — "re-validate with a real external team, against the published package" — is `SCHEDULED`, and its own text argues for running it *soon*, not after completion: "five findings in the queue are `Deferred` on unvalidated Pain... It is the cheapest thing that unblocks several at once." Read literally, this addendum defers item 33 — and the release it gates — until the roadmap empties; item 33's own text argues the opposite ordering. Not settled here: this addendum is recorded verbatim, under the same rule governing Addendum A and B, and the tension is queued rather than picked one way silently — see `PRODUCT/ROADMAP.md` OF-89.
+
+Where this ranks: with §1-17, Addendum A and Addendum B, under the same rule — rank 1 of the Source Of Truth Hierarchy in `.kenovis/AI/SYSTEM.md` (DECISION-031).
+
+---
+
 # Conformance — How This Document Is Checked Against The Framework
 
 **Everything above this line is the founder's, verbatim.** §1-17 and Addendum A are recorded as supplied and are never edited, reordered or summarised. Everything below it is Kenovis's own, appended and never interleaved: the specification and the report on the specification are different documents that happen to share a file, and they share it so that the question "is the AI-OS doing its job" is answered where the job is defined.
