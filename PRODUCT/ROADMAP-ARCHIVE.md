@@ -1664,3 +1664,29 @@ Closed and not repeated below: **item 37** (DONE across three rounds — every g
 Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched. Item 25 (the numbered roadmap item, distinct from finding OF-25 above) is rejected as originally scoped.
 
 Per Learning-023, checked before writing this pointer: this round closed one item and one finding and refined a second, so the figure below is read after this round's own edits.
+
+---
+
+### OF-43
+
+| OF-43 | **No document answers "is the AI-OS doing its job", so the answer is re-derived at full cost every time it is asked.** Asked three times on 2026-08-13. Each run bootstrapped, re-measured and re-assembled the same picture out of `PRODUCT/ROADMAP.md` — **104,143 bytes** at the second ask, **115,235** at the third — with the answer spread across item 40 and ten queue rows. `grep -c "founder-raised\|founder asking\|raised by a human\|founder-flagged" PRODUCT/ROADMAP.md` → **14**. | `/analyze`, 2026-08-13 | **Open.** Distinct from the three neighbours it looks like: OF-23 is the file being over threshold (it would still hold at 40 KB), OF-37 is archives having no reader (this is the *active* document), and item 40 part 1 writes the objective in checkable form — a criterion, not a place where the answers to it accumulate. What is missing is one short standing document a closing round updates and the founder reads instead of asking. Priority: Pain high (three full analyses in one day on one question, and the third produced OF-41 — meaning the re-derivation is not even converging), Frequency: every ask, 14 recorded, Cost low. Sequence with item 40 part 1: the criterion and the place that records answers to it are one piece of work, and building the second without the first records nothing. |
+
+**Fixed** (2026-08-16, via /next, caught refining the queue) — `PRODUCT/OPERATING_MODEL.md` → "Conformance" (item 41 step 2, DECISION-032, 2026-08-14) is exactly this: one short standing document a closing round updates and the founder reads instead of asking. That round's own narrative already named it "OF-43's home in one artifact rather than two" but never closed this row — another OF-04 instance, caught one session later than it could have been. Behavioral half (does the founder actually read it instead of asking) stays tracked separately at conformance row §3, `Absent`.
+
+---
+
+### superseded `Next` ordering block, written after OF-25 and OF-40 closed and replaced by the block written after item 24 closed and OF-43/OF-89 resolved
+
+Next (updated 2026-08-16, after item 37 closed DONE — all ten CI guards now dispositioned, three rounds after it was founder-flagged maximum priority):
+
+Closed and not repeated below: **OF-25** (Fixed — eleventh guard, framework-layer home written). **OF-40** (Fixed, with it Learning-028). Neither is `/next` work anymore. The superseded `Next` ordering block this closes is `PRODUCT/ROADMAP-ARCHIVE.md`'s.
+
+1. **The release, still argued rather than deferred — a twentieth round, same conclusion.** This round's own closures are framework-layer/CI-only, the same shape as item 37, OF-86/OF-88 and item 40/OF-35 before it. Nothing customer-facing has shipped since `kenovis@0.14.0`. Hold until item 33 (real external validation) or an actual customer-facing fix exists to carry.
+
+2. Everything else stays scheduled, unchanged: item 24 (RA1 — validate an agent opens a decision body rather than paraphrasing the index; needs a seeded fixture Installation), OF-14 (exercise `check_document_size.py`'s failing case with a fixture), item 22 (`/architect` + ADR required).
+
+3. **OF-78, OF-79, OF-83, OF-85 and OF-87 stay deliberately unranked above the block above; this is the twentieth round to say so about OF-78.** Unchanged reasoning.
+
+Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched. Item 25 (the numbered roadmap item, distinct from finding OF-25 above) is rejected as originally scoped.
+
+Per Learning-023, checked before writing this pointer: this round closed two findings and one learning, so the figure below is read after this round's own edits.
