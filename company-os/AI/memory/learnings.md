@@ -680,6 +680,36 @@ Disposition: Recorded as a technique; no work implied.
 
 ---
 
+## Learning-050
+
+Date:
+2026-08-18
+
+Category:
+Architecture
+
+Context:
+Item 32 asked the founder to set a per-session context budget as a first-class constraint, offering items 18/19/21's own measurements as input (374.3 KB → 133.9 KB on the bootstrap path; the 60 KB document-lifecycle threshold). The founder's answer was not a number: *"no hay un contexto máximo por sesión."* DECISION-044 records the decision; this entry records why it holds rather than just that it was said.
+
+Problem:
+"Documentation as memory" (DECISION-009, DECISION-011) is only true of a document set that stays readable at the size it grows to. An append-only log with no counterpart is not memory, it is accumulation — every session pays the full weight of everything ever written, and the cost grows without bound while the value per byte falls, since most of what accumulates is superseded or resolved.
+
+What happened:
+Nothing needed to happen for this decision — the counterpart already exists, built across items 18-22, DECISION-042 and item 23: the Decision Index bounds `DECISIONS.md` to a session-start cost independent of its total size; document-lifecycle splitting/archiving does the same for `ROADMAP.md`/`learnings.md`/`CHANGELOG.md`; a decision body or archive entry is opened by a targeted read, on demand, never as part of mandatory reading; `kenovis context` gives a customer Installation without this repository's own `graphify` a way to find the right citation instead of reading everything. A context budget would have been a second, cruder mechanism solving a problem the first one already solves — capping what gets read, instead of shrinking what needs reading.
+
+Root cause:
+"Memory" and "accumulation" are the same shape from the outside — both grow, both are append-only, both are read by future sessions — and only diverge on whether retrieval and lifecycle exist alongside the writing. A rule that says "record everything, forever" (`PRODUCT/OPERATING_MODEL.md` §2, ABSOLUTE PRIORITY #1) is only safe to hold unconditionally because two other rules hold alongside it: what accumulates is bounded per-session-read (targeted access) and shed over time (archiving). Either one alone, without the other two, degrades into the failure item 27/28/29 were written to prevent — findings piling up with no id, or ids piling up with nobody reading them.
+
+Learning:
+"Nothing may be lost" and "nothing artificially caps what is read" are both sound *only* because retrieval-on-demand and lifecycle-management are load-bearing, not optional, alongside them. A product considering the same "capture everything" rule without also shipping the other two is not choosing the cheaper option — it is choosing unbounded accumulation and calling it memory.
+
+Future action:
+None queued — the three-part shape (capture, bounded retrieval, lifecycle) is already built and this decision confirms it rather than changing it.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 

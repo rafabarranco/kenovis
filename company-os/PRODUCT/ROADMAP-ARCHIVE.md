@@ -1782,3 +1782,45 @@ Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external 
 Per Learning-023, checked before writing this pointer: this round closed one item (23) and refined one row (OF-67), so the figure below is read after this round's own edits.
 
 ---
+
+### superseded `Next` ordering block, written after OF-93 fixed and OF-69 closed, replaced by the block written after item 32/OF-10/OF-11 closed and the full Open-findings audit
+
+Next (updated 2026-08-18, after OF-93 fixed and OF-69 closed via `/next`):
+
+**Departure from the previous pointer:** none, completed as named. Read the three findings the previous round had not yet re-read closely enough to rank (OF-79, OF-84, OF-87), then ran the priority formula over the full ten-item cluster rather than deferring it again.
+
+**The ranking, run once rather than restated:**
+
+| Id | Pain | Frequency | Cost | Verdict |
+|---|---|---|---|---|
+| OF-93 | High | High (every setup run) | Low | **Taken this round — fixed.** |
+| OF-69 | High | High (every merge on this remote shape) | Low | Not part of the named cluster, but the round's own Refine action (lowest-id untouched `Open` row) landed on it — **taken and closed**, subsumed by OF-86's existing fix, confirmed live by this round's own two fresh instances. |
+| OF-83 | Low, rising | Once per Installation, at setup | Low | Next-cheapest real fix. Template gains a fifth question; one line in each setup command. |
+| OF-95 | Medium | Low | Low | Cheap, concrete, and this session is the direct motivating instance twice over. |
+| OF-84 | Low | Low, grows by one per uncited promotion | Low | Trivial — three citation lines. Lowest expected value of the cheap tier, still worth a few minutes. |
+| OF-94 | Medium | Real, not rare for the stated target segment | **Medium** | Valuable but a real CLI behavior change (preserve-and-append `CLAUDE.md` merge), not a one-line fix — deserves its own round. |
+| OF-85 | Low | Every archive-pass round | Low, additive | Ongoing editorial debt, not a discrete fix — best folded into whichever round next opens the archive-pass step, not taken alone. |
+| OF-78 | High | Every Installation predating a Product-layer change | **Unknown — design decision first** | Two candidate shapes named in the row itself (`sync` reports drift, or a reconciliation step); neither is implementable until one is chosen. |
+| OF-90 | Medium | Most of the queue | **Unknown — design decision first** | Whether `/next` Step 6 should route toward a finding's tagged role, or whether role-driven processing needs a structural slot this framework does not have — a design question, not a clause. |
+| OF-79 | Medium | Every round | **Unknown — design decision first** | Full pass on a cadence, a per-row `as of` date, or accepting sampled staleness — three shapes, no clause fix. |
+| OF-87 | Medium | Unknown | Unknown, load-bearing | **Not ready — self-flagged.** Its own text: widening the Observe checklist without evidence repeats what DECISION-038 already rejected. Needs several more rounds of the existing bounded checklist to show what it misses, not a decision now. |
+
+Closed and not repeated below: OF-93 (`Fixed`), OF-69 (`Fixed`).
+
+1. **OF-83 — top candidate for the next round.** Cheapest real fix left in the cluster: the `OPERATING_MODEL.md` template gains a fifth question (working cadence, already the shape Addendum A models for this repository), and each setup command gets one line reading it. No design decision blocking it, unlike OF-78/90/79.
+2. **OF-95, then OF-84 — cheap follow-ons**, either could be folded into the same round as OF-83 if it runs short, or taken standalone. Both are single-clause fixes with no open design question.
+3. **OF-94 — real value, real cost, deserves its own round** rather than being squeezed into a cheap-fixes pass. Not ranked above OF-83/95/84 because Cost is materially higher, not because Pain is lower.
+4. **OF-78, OF-90, OF-79 — bundle candidates for a single design-decision round** (possibly `/architect` or `/analyze` rather than a build round): each needs a shape chosen before any clause can be written, and choosing three shapes in one focused pass is cheaper than three separate rounds that each start by re-deriving the same "what shape should this take" question.
+5. **OF-87 stays unranked, deliberately, per its own text.** Not a candidate until the existing Observe checklist has run long enough to show what it misses.
+6. **OF-85 folds into the next archive-pass round**, not taken alone (now carrying two known instances from this session's own rounds — OF-69 and item 41 — on top of the original eight).
+7. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged. The release question inherits this: hold until item 33 finally runs or the roadmap empties, whichever Addendum C reaches first.
+
+Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external party and ranks last by founder instruction. Item 25 (the numbered roadmap item) is rejected as originally scoped.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-93), closed one more via its Refine action (OF-69), and added none, so the figure below is read after this round's own edits.
+
+**Operating model section served: none.** OF-93's fix corrects an internal self-contradiction in `init-project.md`/`adopt-project.md`'s own verify step (a mechanical bug in how setup checks itself), and OF-69's closure confirms an already-shipped git-recovery fix still holds — neither advances any of the seventeen numbered behaviours in `PRODUCT/OPERATING_MODEL.md`, the same "none" class item 40's OF-41 round and OF-14's guard-exercise round both used for comparable audit-and-correct work.
+
+Findings this round did not fix: none.
+
+---
