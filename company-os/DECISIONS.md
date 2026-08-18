@@ -56,6 +56,8 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-041** — External-Facing Roadmap Work Moves To Last; 1.0.0 Ships Only After The Rest Of The Roadmap Is Done. Closes `PRODUCT/ROADMAP.md` OF-89: any scheduled item or queued finding whose work requires a real external customer or team — item 33 is the current instance — ranks last in `/next` Step 3's priority ordering, below all internal work, regardless of what the priority formula alone would say; 1.0.0 is the release that follows this external-facing work, not tied to an installations count (OF-11 stays open on that number).
 - **DECISION-042** ‡★ — `DECISIONS.md` Stays One File; "Index-Bounded" Becomes A Third First-Class Answer To The Size Threshold, Alongside Split And Archive. Rejects `PRODUCT/ROADMAP.md` item 22 (splitting into `DECISIONS/DECISION-NNN-*.md`) as scoped: the retrieval cost it targeted is already solved by the Decision Index plus a targeted read, and the split's own migration risk to existing Installations was real and unsolved. `check_document_size.py` gains the `"index"` category the policy already named but never implemented; `DECISIONS.md` moves off a "pending item 22" exemption onto it.
 - **DECISION-043** ‡ — The Product Layer Namespaces Under One Visible Root Directory, `company-os/`. Reopens the placement half of DECISION-017 (its `.kenovis/` half is untouched): the seven Product-layer elements relocate from seven generic root names into `company-os/` in every Installation, so a brownfield customer's own files are never overwrite candidates and the Collision Guard's surface drops from seven names to one. Fixed neutral name — a customer-chosen name and per-collision renames were both rejected. Migration lands before 1.0.0 (`PRODUCT/ROADMAP.md` item 44); origin OF-92.
+- **DECISION-044** — No Per-Session Context Budget Is Imposed By Design. Closes `PRODUCT/ROADMAP.md` OF-10 / item 32: the founder declined to set a per-session reading cap ("no hay un contexto máximo por sesión") — the existing bounding work (Decision Index, targeted reads, document lifecycle, `kenovis context`) is confirmed sufficient on its own, not a partial answer awaiting a hard ceiling on top.
+- **DECISION-045** — No MVP Usage Target Is Set — Adoption Count Does Not Gate 1.0.0. Closes `PRODUCT/ROADMAP.md` OF-11 / item 32: the founder declined to set an installations target ("no nos preocupamos por el número de personas que nos usan"), completing what DECISION-041 left open — `1.0.0`'s only remaining gate is the roadmap reaching empty, with item 33 last.
 
 ---
 
@@ -3449,6 +3451,82 @@ Positive: "we never touch and never ask about your files" becomes a guarantee th
 Negative, accepted: ~556 citation lines across `framework/` and the setup commands, the template bundle, 11 CI guards and this repository's own tree all migrate (mechanical, with `check_links.py` and the guard suite as the net); `COMPANY_OS.md` loses root-level prominence, mitigated by the `CLAUDE.md` stub pointing into `company-os/`; a breaking layout change for the one known pre-1.0 Installation, handled by a written migration note.
 
 Implementation: `PRODUCT/ROADMAP.md` item 44. Origin: OF-92.
+
+---
+
+# DECISION-044
+
+# No Per-Session Context Budget Is Imposed By Design
+
+Date:
+
+2026-08-18
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-18
+
+---
+
+## Context
+
+Closes `PRODUCT/ROADMAP.md` OF-10 / item 32. Item 32 framed this as the founder setting a per-session context budget as a first-class constraint, offering the measurements items 18/19/21 produced as input: 374.3 KB → 133.9 KB on the bootstrap path once session-initialization reads the Decision Index rather than every body, the 60 KB document-lifecycle threshold, the four documents it governs. Founder's answer, in-session, verbatim: *"no hay un contexto máximo por sesión."*
+
+## Decision
+
+No artificial ceiling is imposed on what a session reads. The efficiency work already shipped — the Decision Index plus targeted read (item 18, `SYSTEM.md` → "Context Loading Rules"), document-lifecycle splitting and archiving (items 19/21, DECISION-042's index category), graphify orientation in this repository, and `kenovis context` (item 23) for a customer Installation without it — exists to make what a session *needs* to read small. It is not a partial answer waiting for a hard cap on top of it. A session reads what the task requires; the discipline is keeping that requirement small by construction, not refusing to read past a number.
+
+## Consequences
+
+Positive: no new mechanism to build, explain or enforce; the existing bounding work is confirmed sufficient on its own terms rather than left looking like half of an answer. Negative, accepted: no session-level backstop exists if a document set grows large despite the lifecycle rules — the actual backstop is the document-level one already shipped (`check_document_size.py`'s threshold), not a session-level cap, and this decision is what makes that division intentional rather than incidental.
+
+Implementation: none — no code or framework change. `PRODUCT/ROADMAP.md` OF-10 struck from the queue; `AI/memory/learnings.md` carries the accumulation-vs-memory reasoning behind it. Origin: item 32.
+
+---
+
+# DECISION-045
+
+# No MVP Usage Target Is Set — Adoption Count Does Not Gate 1.0.0
+
+Date:
+
+2026-08-18
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-18
+
+---
+
+## Context
+
+Closes `PRODUCT/ROADMAP.md` OF-11 / item 32. `PRODUCT/ROADMAP.md` → MVP Success Metrics named Usage as *"N installations (target not yet set)"*, and every release round from `0.9.0` through this session partly cited that unset number when rejecting `1.0.0` — six times, measured. DECISION-041 already settled *when* `1.0.0` ships (after the rest of the roadmap, with external-facing work such as item 33 ranked last) without setting this number, explicitly leaving OF-11 open on the number itself. Founder's answer, in-session, verbatim: *"no nos preocupamos por el número de personas que nos usan."*
+
+## Decision
+
+No installations target is set, now or ever, as a `1.0.0` gate. `PRODUCT/ROADMAP.md` → MVP Success Metrics' Usage line is corrected to state this directly instead of continuing to read as an unset number waiting to be filled in. Consistent with DECISION-013 (no telemetry, no backend — the number was never going to be mechanically measured in the first place) and completes what DECISION-041 left open: `1.0.0`'s only remaining gate is the roadmap itself reaching empty, with item 33 last.
+
+## Consequences
+
+Positive: removes the one criterion every release round since `0.9.0` re-argued without resolving; `1.0.0` now has a single, unambiguous, purely roadmap-completion gate. Negative, accepted: no adoption signal informs prioritisation before `1.0.0` ships — consistent with COMPANY_OS.md's own Distribution Strategy (no paid acquisition, no sales team, customer satisfaction as the channel) and `PRODUCT/OPERATING_MODEL.md` Addendum C (external usage follows completion, not the other way round).
+
+Implementation: `PRODUCT/ROADMAP.md` → MVP Success Metrics, Usage line. `PRODUCT/ROADMAP.md` OF-11 struck from the queue. Origin: item 32.
 
 ---
 
