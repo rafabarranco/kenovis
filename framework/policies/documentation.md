@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.12
+Version: 3.13
 
 ---
 
@@ -431,7 +431,7 @@ So every finding a round does not fix gets exactly one disposition, stated where
 
 **A finding is checked against `company-os/PRODUCT/ROADMAP.md` before it is dispositioned, and that check has two outcomes, never zero.** Either something already covers it — a scheduled item or a queue row — and the finding cites that id and adds what this session learned to it; or nothing does, and it enters the queue with a new id. Writing without looking is how one defect acquires three ids. Looking without writing is how a session concludes "that is already known" about something that is on no document at all. Both fail the same way: the roadmap stops being the complete representation of known future work, which is the one property that makes it worth reading.
 
-**Recording is not planning.** A finding written to a Product-layer file and absent from the roadmap has been remembered, not scheduled — and remembering is what a thread already does badly. The disposition is not complete until the roadmap shows it.
+**Recording is not planning.** A finding written to a Product-layer file and absent from the roadmap has been remembered, not scheduled — and remembering is what a thread already does badly. The disposition is not complete until the roadmap shows it. (DECISION-029; `company-os/AI/memory/LEARNINGS-ARCHIVE.md` Learning-032.)
 
 **An `Open` finding is dimensioned where it is written, or it is prose with an id.** The row carries **Pain, Frequency and Cost** — the terms the roadmap's own priority formula divides — in one line. A term that is unknown is written as unknown; that ranks, and it names the first output of picking the finding up. A term simply left out does not rank, and the finding drops silently out of every selection that follows, which is indistinguishable from never having recorded it.
 

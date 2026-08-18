@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.12
+Version: 2.13
 
 ---
 
@@ -94,7 +94,7 @@ Read three inputs, not one.
 
 **The `Next` pointer the previous round wrote in Step 15.** Start from it. It carries the ordering rationale — dependencies, what unblocks what, why an expensive item is ranked above a cheap one — and that reasoning is written every round and is the first thing a new thread does not have. Re-deriving the order from the priority formula over the whole roadmap is not thoroughness; it is discarding the previous round's work and paying to reach a worse-informed version of the same answer.
 
-A round may depart from the pointer. When it does, it **says why, in `company-os/PRODUCT/ROADMAP.md`, in the same round** — new information, a dependency that turned out false, a founder instruction that outranks it. A departure that is not written down is indistinguishable from never having read the pointer.
+A round may depart from the pointer. When it does, it **says why, in `company-os/PRODUCT/ROADMAP.md`, in the same round** — new information, a dependency that turned out false, a founder instruction that outranks it. A departure that is not written down is indistinguishable from never having read the pointer. (DECISION-030; `company-os/AI/memory/LEARNINGS-ARCHIVE.md` Learning-033.)
 
 If no pointer exists yet — a first round, or one whose predecessor left none — rank from the two inputs above and write one in Step 15.
 

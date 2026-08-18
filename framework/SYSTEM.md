@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.13
+Version: 1.14
 ---
 Purpose
 
@@ -247,7 +247,7 @@ If `.kenovis/.setup-pending` exists, run the command it names (`init-project` or
 ---
 Source Of Truth Hierarchy
 
-**This is the only hierarchy.** `CLAUDE.md` cites this section and does not restate it. Two copies of the rule that resolves every other conflict is the one duplicate a document set cannot carry: they were edited independently, they diverged, and because both are loaded as authoritative neither reader ever opened the other. See company-os/DECISIONS.md DECISION-031.
+**This is the only hierarchy.** `CLAUDE.md` cites this section and does not restate it. Two copies of the rule that resolves every other conflict is the one duplicate a document set cannot carry: they were edited independently, they diverged, and because both are loaded as authoritative neither reader ever opened the other. See company-os/DECISIONS.md DECISION-031 (`company-os/AI/memory/LEARNINGS-ARCHIVE.md` Learning-034).
 
 When information conflicts, follow this priority:
 
