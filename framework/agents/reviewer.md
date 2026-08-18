@@ -299,7 +299,7 @@ Important technical decisions
 
 ↓
 
-Update DECISIONS.md.
+Update company-os/DECISIONS.md.
 
 Knowledge should never exist only in code.
 

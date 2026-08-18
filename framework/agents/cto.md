@@ -134,11 +134,11 @@ Where should this decision be recorded?
 
 Examples:
 
-DECISIONS.md
+company-os/DECISIONS.md
 
-ENGINEERING/
+company-os/ENGINEERING/
 
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 
 ---
 Architecture Behaviour
@@ -316,7 +316,7 @@ Understand what competitors' technology choices signal, without copying them bli
 Read and update:
 
 ```
-PRODUCT/COMPETITIVE_LANDSCAPE.md
+company-os/PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
 Owner of the Technical dimension in that document.

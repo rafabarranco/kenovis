@@ -31,7 +31,7 @@ Initial Market
 
 Primary Market
 
-[ANSWER: The first segment this product serves. Must match COMPANY_OS.md → Initial Market Strategy — if the two disagree, COMPANY_OS.md wins and this file is wrong.]
+[ANSWER: The first segment this product serves. Must match company-os/COMPANY_OS.md → Initial Market Strategy — if the two disagree, company-os/COMPANY_OS.md wins and this file is wrong.]
 ---
 Why Start Here
 

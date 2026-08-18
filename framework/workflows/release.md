@@ -76,9 +76,9 @@ Load:
 Review:
 
 ```
-PRODUCT/ROADMAP.md
+company-os/PRODUCT/ROADMAP.md
 
-PRODUCT/FEATURES.md
+company-os/PRODUCT/FEATURES.md
 ```
 
 Identify:
@@ -126,11 +126,11 @@ CTO evaluates:
 Review:
 
 ```
-ENGINEERING/ARCHITECTURE.md
+company-os/ENGINEERING/ARCHITECTURE.md
 
-ENGINEERING/DATABASE.md
+company-os/ENGINEERING/DATABASE.md
 
-ENGINEERING/SECURITY.md
+company-os/ENGINEERING/SECURITY.md
 ```
 
 ---
@@ -155,7 +155,7 @@ Validate:
 
 # Phase 6 - Release Preparation
 
-Prepare release notes and publish them wherever this product publishes them — `AUTOMATIONS/release-process.md` records where that is.
+Prepare release notes and publish them wherever this product publishes them — `company-os/AUTOMATIONS/release-process.md` records where that is.
 
 Shaped by:
 
@@ -163,7 +163,7 @@ Shaped by:
 .kenovis/AI/templates/release-notes.md
 ```
 
-That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See company-os/DECISIONS.md DECISION-024.
 
 Include:
 
@@ -235,11 +235,11 @@ Validate:
 Update:
 
 ```
-PRODUCT/
+company-os/PRODUCT/
 
-ENGINEERING/
+company-os/ENGINEERING/
 
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 ```
 
 Document:
@@ -256,7 +256,7 @@ Document:
 Update:
 
 ```
-PRODUCT/ROADMAP.md
+company-os/PRODUCT/ROADMAP.md
 ```
 
 Change:

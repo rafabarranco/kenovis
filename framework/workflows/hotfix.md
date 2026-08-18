@@ -224,7 +224,7 @@ If required:
 Record the decision in:
 
 ```
-DECISIONS.md
+company-os/DECISIONS.md
 ```
 
 Shaped by:
@@ -233,7 +233,7 @@ Shaped by:
 .kenovis/AI/templates/decision.md
 ```
 
-`DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See DECISIONS.md DECISION-024.
+`company-os/DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See company-os/DECISIONS.md DECISION-024.
 
 Document:
 
@@ -248,11 +248,11 @@ Document:
 Update:
 
 ```
-PRODUCT/
+company-os/PRODUCT/
 
-ENGINEERING/
+company-os/ENGINEERING/
 
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 ```
 
 Document:
@@ -287,4 +287,4 @@ Never:
 
 A hotfix restores stability today.
 
-The follow-up improvements prevent the same problem tomorrow — which requires that they exist somewhere other than this conversation. Every follow-up this hotfix names is scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason before the incident is closed. A hotfix is the case where this is most likely to be skipped and least affordable to skip: the pressure is over, the system is up, and the follow-up is the only thing standing between today's fix and tomorrow's repeat. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+The follow-up improvements prevent the same problem tomorrow — which requires that they exist somewhere other than this conversation. Every follow-up this hotfix names is scheduled with an id in `company-os/PRODUCT/ROADMAP.md` or rejected with a reason before the incident is closed. A hotfix is the case where this is most likely to be skipped and least affordable to skip: the pressure is over, the system is up, and the follow-up is the only thing standing between today's fix and tomorrow's repeat. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".

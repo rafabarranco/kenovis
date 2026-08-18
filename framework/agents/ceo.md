@@ -308,7 +308,7 @@ Own the strategic read of the competitive landscape: positioning and defensibili
 Read and update:
 
 ```
-PRODUCT/COMPETITIVE_LANDSCAPE.md
+company-os/PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
 Owner of Strategic Differentiation in that document.

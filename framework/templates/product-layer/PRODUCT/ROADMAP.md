@@ -19,7 +19,7 @@ It establishes:
 
 The roadmap exists to protect product focus.
 
-Closed items move to `PRODUCT/ROADMAP-ARCHIVE.md` verbatim once this document passes the size threshold in `.kenovis/AI/policies/documentation.md`; one line stays here per closed item, with a pointer. Finished work otherwise costs the same to load as scheduled work, on every session, forever. Create the archive when the first item closes, not before — an empty archive file is noise.
+Closed items move to `company-os/PRODUCT/ROADMAP-ARCHIVE.md` verbatim once this document passes the size threshold in `.kenovis/AI/policies/documentation.md`; one line stays here per closed item, with a pointer. Finished work otherwise costs the same to load as scheduled work, on every session, forever. Create the archive when the first item closes, not before — an empty archive file is noise.
 ---
 Product Vision
 
@@ -113,11 +113,11 @@ Objective
 
 Target users
 
-[ANSWER: Which segment, matching COMPANY_OS.md → Initial Market Strategy.]
+[ANSWER: Which segment, matching company-os/COMPANY_OS.md → Initial Market Strategy.]
 ---
 MVP Core Modules
 
-[ANSWER: The minimum set of capabilities that make the workflow complete end to end. See PRODUCT/FEATURES.md for each one's detailed spec once written.]
+[ANSWER: The minimum set of capabilities that make the workflow complete end to end. See company-os/PRODUCT/FEATURES.md for each one's detailed spec once written.]
 ---
 MVP Non Goals
 

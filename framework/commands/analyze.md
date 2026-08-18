@@ -273,9 +273,9 @@ Find:
 
 # Step 7 - Generate Recommendations
 
-Recommendations feed the report in Step 9, which says where an analysis leaves a durable residue. They are not written to a file of their own, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024.
+Recommendations feed the report in Step 9, which says where an analysis leaves a durable residue. They are not written to a file of their own, and never anywhere under `.kenovis/` — see company-os/DECISIONS.md DECISION-024.
 
-Note the Cost field below: an unverified cost estimate suppresses an item in every later prioritisation and nothing marks it as a guess. Verify it, or say it is unverified — see `AI/memory/learnings.md`.
+Note the Cost field below: an unverified cost estimate suppresses an item in every later prioritisation and nothing marks it as a guess. Verify it, or say it is unverified — see `company-os/AI/memory/learnings.md`.
 
 For each recommendation include:
 
@@ -339,9 +339,9 @@ Low value or excessive complexity.
 
 # Step 9 - Create Report
 
-The report is delivered to the human in this session; it is not a file to create, and `Analysis Report` below is its shape, not a filename. Never write it, or any produced artifact, anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024.
+The report is delivered to the human in this session; it is not a file to create, and `Analysis Report` below is its shape, not a filename. Never write it, or any produced artifact, anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see company-os/DECISIONS.md DECISION-024.
 
-An analysis that changes what the product does next has a durable residue, and it belongs where that kind of fact already lives: a scheduled item in `PRODUCT/ROADMAP.md`, a chosen approach in `DECISIONS.md`, a reusable lesson in `AI/memory/learnings.md`. An analysis whose recommendations are recorded nowhere has to be run again.
+An analysis that changes what the product does next has a durable residue, and it belongs where that kind of fact already lives: a scheduled item in `company-os/PRODUCT/ROADMAP.md`, a chosen approach in `company-os/DECISIONS.md`, a reusable lesson in `company-os/AI/memory/learnings.md`. An analysis whose recommendations are recorded nowhere has to be run again.
 
 Structure:
 
@@ -417,7 +417,7 @@ AI must not:
 AI must record, and this is not an exception to the line above — it is the difference between analysis and implementation:
 
 - Every finding this analysis does not fix gets a disposition, per `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
-- The destinations are the ones Step 9 already names: the findings queue in `PRODUCT/ROADMAP.md`, a chosen approach in `DECISIONS.md`, a reusable lesson in `AI/memory/learnings.md`.
+- The destinations are the ones Step 9 already names: the findings queue in `company-os/PRODUCT/ROADMAP.md`, a chosen approach in `company-os/DECISIONS.md`, a reusable lesson in `company-os/AI/memory/learnings.md`.
 - Do it in the same session. An analysis whose findings are recorded nowhere has to be run again, and in practice is not — it stays in the transcript and dies there.
 
 This command detects and records. It never fixes.

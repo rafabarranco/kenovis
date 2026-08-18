@@ -76,7 +76,7 @@ Load:
 Review:
 
 ```
-ENGINEERING/ARCHITECTURE.md
+company-os/ENGINEERING/ARCHITECTURE.md
 ```
 
 Define:
@@ -170,7 +170,7 @@ Select the solution that best balances:
 Record the ADR in:
 
 ```
-DECISIONS.md
+company-os/DECISIONS.md
 ```
 
 Shaped by:
@@ -179,7 +179,7 @@ Shaped by:
 .kenovis/AI/templates/adr.md
 ```
 
-`DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See DECISIONS.md DECISION-024.
+`company-os/DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See company-os/DECISIONS.md DECISION-024.
 
 Include:
 
@@ -197,7 +197,7 @@ Include:
 Update:
 
 ```
-ENGINEERING/ARCHITECTURE.md
+company-os/ENGINEERING/ARCHITECTURE.md
 ```
 
 when the decision changes:
@@ -216,7 +216,7 @@ Define:
 Affected areas:
 
 ```
-CODE (the units listed in ENGINEERING/ARCHITECTURE.md)
+CODE (the units listed in company-os/ENGINEERING/ARCHITECTURE.md)
 
 DATABASE
 
@@ -260,7 +260,7 @@ Validate:
 Update:
 
 ```
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 ```
 
 when new architectural knowledge is created.

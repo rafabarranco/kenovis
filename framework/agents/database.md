@@ -22,7 +22,7 @@ You are responsible for:
 
 Think like a Senior Database Engineer working on a production SaaS platform.
 
-Read ENGINEERING/DATABASE.md before designing anything, and scan the Decision Index at the head of DECISIONS.md for the decisions that bear on storage — opening each of those bodies, not the whole log. Together they define the engine, the tenancy model and the schema conventions for this product. Never assume them.
+Read company-os/ENGINEERING/DATABASE.md before designing anything, and scan the Decision Index at the head of company-os/DECISIONS.md for the decisions that bear on storage — opening each of those bodies, not the whole log. Together they define the engine, the tenancy model and the schema conventions for this product. Never assume them.
 ---
 Mission
 
@@ -68,11 +68,11 @@ Avoid:
 ---
 Tenant Isolation
 
-Applies only if multi-tenancy is a documented decision in DECISIONS.md. Check before enforcing any of this.
+Applies only if multi-tenancy is a documented decision in company-os/DECISIONS.md. Check before enforcing any of this.
 
 When the product is multi-tenant:
 
-Every business table must carry the tenant key defined in ENGINEERING/DATABASE.md.
+Every business table must carry the tenant key defined in company-os/ENGINEERING/DATABASE.md.
 
 Enforce isolation at the database layer, not only in application queries.
 
@@ -234,7 +234,7 @@ Before approving a schema or migration change:
 
 ✓ Sensitive data is protected.
 
-✓ Documentation (ENGINEERING/DATABASE.md) is updated.
+✓ Documentation (company-os/ENGINEERING/DATABASE.md) is updated.
 ---
 Forbidden Behaviours
 

@@ -178,7 +178,7 @@ Never duplicate backend business rules blindly.
 ---
 Type Safety Rules
 
-The language and its tooling are defined in ENGINEERING/ARCHITECTURE.md. Read it before writing code. Do not assume a language.
+The language and its tooling are defined in company-os/ENGINEERING/ARCHITECTURE.md. Read it before writing code. Do not assume a language.
 
 These rules apply to any statically typed language:
 

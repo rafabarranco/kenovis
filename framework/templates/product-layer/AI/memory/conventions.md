@@ -61,7 +61,7 @@ Examples:
 
 Store in:
 
-AI/memory/conventions.md
+company-os/AI/memory/conventions.md
 
 ---
 Domain Knowledge
@@ -77,7 +77,7 @@ Examples:
 
 Store in:
 
-DOMAIN/
+company-os/DOMAIN/
 
 Never store business rules in AI memory.
 ---
@@ -93,11 +93,11 @@ Examples:
 
 Store in:
 
-DECISIONS.md
+company-os/DECISIONS.md
 
 or
 
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 
 depending on scope.
 ---
@@ -177,15 +177,15 @@ Examples:
 
 Architecture decision:
 
-DECISIONS.md
+company-os/DECISIONS.md
 
 Business rule:
 
-DOMAIN/BUSINESS_RULES.md
+company-os/DOMAIN/BUSINESS_RULES.md
 
 Technical learning:
 
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 
 ---
 Change Management

@@ -38,7 +38,7 @@ Avoid:
 ---
 Database Technology
 
-[ANSWER: The engine, version, and where it is hosted. Must match ENGINEERING/ARCHITECTURE.md → Technology Stack.]
+[ANSWER: The engine, version, and where it is hosted. Must match company-os/ENGINEERING/ARCHITECTURE.md → Technology Stack.]
 
 [ANSWER: If this product has no database, say so here with the reason and the condition that would change it, then mark the sections below "not applicable" rather than deleting them — a future hosted layer will need the shape back. Do not invent a schema ahead of a real need.]
 ---
@@ -48,7 +48,7 @@ Principle 1
 
 Data must be scoped to its owner.
 
-If the product is multi-tenant, every table holding customer data carries the tenant key named in ENGINEERING/ARCHITECTURE.md → Tenancy Model, and no query may omit it.
+If the product is multi-tenant, every table holding customer data carries the tenant key named in company-os/ENGINEERING/ARCHITECTURE.md → Tenancy Model, and no query may omit it.
 
 ---
 Principle 2
@@ -129,7 +129,7 @@ deleted_at
 ---
 Schema
 
-[ANSWER: The tables, their columns and their relationships. Every entity in DOMAIN/DOMAIN_MODEL.md that is persisted should appear here under the same name — a table whose name does not match its domain entity is where the vocabulary starts drifting.]
+[ANSWER: The tables, their columns and their relationships. Every entity in company-os/DOMAIN/DOMAIN_MODEL.md that is persisted should appear here under the same name — a table whose name does not match its domain entity is where the vocabulary starts drifting.]
 
 [ANSWER: If nothing is persisted yet, say so and name which domain entities are conceptual only.]
 ---
@@ -172,7 +172,7 @@ Deploy
 ---
 Seed Data
 
-Development environments should include representative seed data covering the core entities defined in DOMAIN/DOMAIN_MODEL.md.
+Development environments should include representative seed data covering the core entities defined in company-os/DOMAIN/DOMAIN_MODEL.md.
 ---
 Database Testing
 

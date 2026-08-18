@@ -40,7 +40,7 @@ The AI provides:
 - Documentation.
 - Process execution.
 
-The AI is not an autonomous decision maker on the product's own direction, strategy or business decisions — `PRODUCT/OPERATING_MODEL.md` names what stays with the owner, and this file does not narrow it further. Inside what that document assigns to the AI-OS, the AI decides and executes without asking.
+The AI is not an autonomous decision maker on the product's own direction, strategy or business decisions — `company-os/PRODUCT/OPERATING_MODEL.md` names what stays with the owner, and this file does not narrow it further. Inside what that document assigns to the AI-OS, the AI decides and executes without asking.
 
 The AI is a high-leverage operating partner.
 ---
@@ -95,7 +95,7 @@ Examples:
 
 /bug
 
-/init-project is the first command ever run in a fresh repository. It replaces the example product layer with a real one. /adopt-project is its brownfield counterpart — used when the target repository already holds a real implementation predating the AI-OS, wherever that implementation actually lives (documented via ENGINEERING/ARCHITECTURE.md, never relocated to fit a Kenovis-chosen layout), so the product layer is reconstructed from the code instead of decided from scratch. Every other command assumes one of the two has already happened.
+/init-project is the first command ever run in a fresh repository. It replaces the example product layer with a real one. /adopt-project is its brownfield counterpart — used when the target repository already holds a real implementation predating the AI-OS, wherever that implementation actually lives (documented via company-os/ENGINEERING/ARCHITECTURE.md, never relocated to fit a Kenovis-chosen layout), so the product layer is reconstructed from the code instead of decided from scratch. Every other command assumes one of the two has already happened.
 
 Commands do not contain complex logic.
 
@@ -183,19 +183,19 @@ Project Context
 
 Location:
 
-COMPANY_OS.md
+company-os/COMPANY_OS.md
 
-DECISIONS.md
+company-os/DECISIONS.md
 
-PRODUCT/
+company-os/PRODUCT/
 
-DOMAIN/
+company-os/DOMAIN/
 
-ENGINEERING/
+company-os/ENGINEERING/
 
-AUTOMATIONS/
+company-os/AUTOMATIONS/
 
-AI/memory/
+company-os/AI/memory/
 
 Project context defines the specific company and product.
 
@@ -229,39 +229,39 @@ The AI must never implement based only on a user sentence.
 
 What is read in full, and what is not:
 
-`PRODUCT/OPERATING_MODEL.md` is read in full, first. It is rank 1 of the Source Of Truth Hierarchy, and a session that has not read it is checking its work against the machinery rather than against the objective. Every Installation has one: `/init-project` and `/adopt-project` author it before `COMPANY_OS.md`, from the owner's own answers. A repository set up before that was required may not have one yet — see that section's note.
+`company-os/PRODUCT/OPERATING_MODEL.md` is read in full, first. It is rank 1 of the Source Of Truth Hierarchy, and a session that has not read it is checking its work against the machinery rather than against the objective. Every Installation has one: `/init-project` and `/adopt-project` author it before `company-os/COMPANY_OS.md`, from the owner's own answers. A repository set up before that was required may not have one yet — see that section's note.
 
-COMPANY_OS.md is read in full. So is this file.
+company-os/COMPANY_OS.md is read in full. So is this file.
 
-DECISIONS.md is read as its Decision Index only — the section at the head of that file, one line per decision. A decision log is append-only by design and grows without bound; loading every body to consult none of them makes the start of a session cost more each week, in every Installation, forever.
+company-os/DECISIONS.md is read as its Decision Index only — the section at the head of that file, one line per decision. A decision log is append-only by design and grows without bound; loading every body to consult none of them makes the start of a session cost more each week, in every Installation, forever.
 
 A decision body is opened on demand, at the moment it becomes relevant. Citing a decision requires opening it: the index states what a decision settled, never why, and a citation built on the index alone is a preference wearing a decision's ID.
 
-"Opened on demand" is a targeted read, not a full-file read: find the entry's own heading, then read a bounded range around it. This is the mechanism that keeps a single, growing decision log's session-start cost equal to its index alone, regardless of how large the log's total byte count gets — see DECISIONS.md DECISION-042. The same mechanism applies to an archive entry cited from `PRODUCT/ROADMAP-ARCHIVE.md`, `AI/memory/LEARNINGS-ARCHIVE.md` or `CHANGELOG-ARCHIVE.md`.
+"Opened on demand" is a targeted read, not a full-file read: find the entry's own heading, then read a bounded range around it. This is the mechanism that keeps a single, growing decision log's session-start cost equal to its index alone, regardless of how large the log's total byte count gets — see company-os/DECISIONS.md DECISION-042. The same mechanism applies to an archive entry cited from `company-os/PRODUCT/ROADMAP-ARCHIVE.md`, `company-os/AI/memory/LEARNINGS-ARCHIVE.md` or `CHANGELOG-ARCHIVE.md`.
 
-The same holds for a closed roadmap item, finding, or learning: `PRODUCT/ROADMAP-ARCHIVE.md`, `AI/memory/LEARNINGS-ARCHIVE.md` and `CHANGELOG-ARCHIVE.md` each hold the full reasoning behind a one-line pointer left in the active document. A pointer is a citation, not a summary — opened on demand, at the moment a round cites it, builds on it, or needs the reasoning it points at, and never read in full at session start. Citing a closed row's clause without opening what it points to is the decision-index failure one document over. See `PRODUCT/ROADMAP.md` OF-37.
+The same holds for a closed roadmap item, finding, or learning: `company-os/PRODUCT/ROADMAP-ARCHIVE.md`, `company-os/AI/memory/LEARNINGS-ARCHIVE.md` and `CHANGELOG-ARCHIVE.md` each hold the full reasoning behind a one-line pointer left in the active document. A pointer is a citation, not a summary — opened on demand, at the moment a round cites it, builds on it, or needs the reasoning it points at, and never read in full at session start. Citing a closed row's clause without opening what it points to is the decision-index failure one document over. See `company-os/PRODUCT/ROADMAP.md` OF-37.
 
 If the index is missing or an entry is too thin to decide against, read the body and fix the index in the same session.
 
-If `.kenovis/.setup-pending` exists, run the command it names (`init-project` or `adopt-project`) before any other action this session, regardless of how the session was entered. See DECISIONS.md DECISION-018.
+If `.kenovis/.setup-pending` exists, run the command it names (`init-project` or `adopt-project`) before any other action this session, regardless of how the session was entered. See company-os/DECISIONS.md DECISION-018.
 ---
 Source Of Truth Hierarchy
 
-**This is the only hierarchy.** `CLAUDE.md` cites this section and does not restate it. Two copies of the rule that resolves every other conflict is the one duplicate a document set cannot carry: they were edited independently, they diverged, and because both are loaded as authoritative neither reader ever opened the other. See DECISIONS.md DECISION-031.
+**This is the only hierarchy.** `CLAUDE.md` cites this section and does not restate it. Two copies of the rule that resolves every other conflict is the one duplicate a document set cannot carry: they were edited independently, they diverged, and because both are loaded as authoritative neither reader ever opened the other. See company-os/DECISIONS.md DECISION-031.
 
 When information conflicts, follow this priority:
 
-1. The product owner's statement of purpose — `PRODUCT/OPERATING_MODEL.md`.
+1. The product owner's statement of purpose — `company-os/PRODUCT/OPERATING_MODEL.md`.
 
-2. Company operating context — `COMPANY_OS.md`.
+2. Company operating context — `company-os/COMPANY_OS.md`.
 
-3. Business rules and the domain model — `DOMAIN/`.
+3. Business rules and the domain model — `company-os/DOMAIN/`.
 
-4. Recorded decisions, architectural and otherwise — `DECISIONS.md`.
+4. Recorded decisions, architectural and otherwise — `company-os/DECISIONS.md`.
 
-5. Product requirements — `PRODUCT/`.
+5. Product requirements — `company-os/PRODUCT/`.
 
-6. Engineering documentation — `ENGINEERING/`.
+6. Engineering documentation — `company-os/ENGINEERING/`.
 
 7. Implementation code.
 
@@ -273,9 +273,9 @@ When information conflicts, follow this priority:
 
 Code is never the source of truth.
 
-**Rank 1 is not conditional, and one transition case exists.** Every Installation authors `PRODUCT/OPERATING_MODEL.md` at setup: `/init-project` Step 2 and `/adopt-project` Step 3 ask the owner for it and write it before `COMPANY_OS.md`, from `.kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md` — a form, not a destination. The AI never authors it on the owner's behalf; it is the document the AI is measured against.
+**Rank 1 is not conditional, and one transition case exists.** Every Installation authors `company-os/PRODUCT/OPERATING_MODEL.md` at setup: `/init-project` Step 2 and `/adopt-project` Step 3 ask the owner for it and write it before `company-os/COMPANY_OS.md`, from `.kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md` — a form, not a destination. The AI never authors it on the owner's behalf; it is the document the AI is measured against.
 
-A repository set up before that requirement shipped may hold no such file. Where there is none, rank 2 is the top and the gap is real work, not a permitted state: the owner is asked for the document, using the same four questions the setup step asks. See DECISIONS.md DECISION-032.
+A repository set up before that requirement shipped may hold no such file. Where there is none, rank 2 is the top and the gap is real work, not a permitted state: the owner is asked for the document, using the same four questions the setup step asks. See company-os/DECISIONS.md DECISION-032.
 ---
 Execution Principles
 
@@ -333,12 +333,12 @@ A thread is not a storage medium. It ends, and what was only said in it is gone 
 
 Where each kind goes:
 
-- Improvement, technical debt, bug not fixed now, any candidate work → PRODUCT/ROADMAP.md, as a scheduled item or a row in its findings queue.
-- Decision made, or option deliberately rejected → DECISIONS.md, body plus its index line.
-- Reusable lesson → AI/memory/learnings.md.
-- Business or domain rule → DOMAIN/.
-- Architectural consequence → ENGINEERING/.
-- Open question the AI cannot answer → PRODUCT/ROADMAP.md findings queue, naming who decides it and what input they need.
+- Improvement, technical debt, bug not fixed now, any candidate work → company-os/PRODUCT/ROADMAP.md, as a scheduled item or a row in its findings queue.
+- Decision made, or option deliberately rejected → company-os/DECISIONS.md, body plus its index line.
+- Reusable lesson → company-os/AI/memory/learnings.md.
+- Business or domain rule → company-os/DOMAIN/.
+- Architectural consequence → company-os/ENGINEERING/.
+- Open question the AI cannot answer → company-os/PRODUCT/ROADMAP.md findings queue, naming who decides it and what input they need.
 
 This holds in every thread, whether a command was invoked or not. There is no session too small, no finding too minor, and no "I will mention it in the answer" — saying it to the human is not recording it. **The trigger is the moment of discovery, not a checkpoint before the session ends.** Nothing signals that a session is ending — a thread simply stops when a human stops typing — so a rule anchored there never fires and is applied only by whichever session happens to remember on its own. Write the finding down when it is found. The one exception, where the destination genuinely does not exist yet: the window between `kenovis init`/`kenovis add` and the end of setup, before `.kenovis/AI/commands/init-project.md` or `adopt-project.md` has authored the Product layer — each of those commands closes with a disposition step of its own for exactly that window.
 
@@ -429,7 +429,7 @@ Memory System
 
 The AI maintains organizational memory through:
 
-AI/memory/
+company-os/AI/memory/
 
 Memory stores:
 
@@ -453,7 +453,7 @@ The AI should evaluate:
 
 Useful learnings should be added to:
 
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 
 ---
 Communication Standards
@@ -521,4 +521,4 @@ It replaces the team — the roles, the process, the institutional memory. It do
 
 The objective is to be a highly effective organization, implemented through AI, capable of building excellent products with speed, quality and discipline.
 
-See DECISIONS.md DECISION-028 and the project's own statement of purpose, which outranks this document wherever the two conflict.
+See company-os/DECISIONS.md DECISION-028 and the project's own statement of purpose, which outranks this document wherever the two conflict.

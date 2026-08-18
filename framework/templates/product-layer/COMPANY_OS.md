@@ -208,17 +208,17 @@ Examples:
 
 Each document in the company knowledge system answers a different question. Carry this section over unchanged — it describes the document set every Installation receives, not anything company-specific.
 
-`PRODUCT/OPERATING_MODEL.md` — what this product is for, stated by its owner.
+`company-os/PRODUCT/OPERATING_MODEL.md` — what this product is for, stated by its owner.
 
-COMPANY_OS.md — why we exist, where we compete, how we think, how we decide.
+company-os/COMPANY_OS.md — why we exist, where we compete, how we think, how we decide.
 
-DECISIONS.md — what was decided, and why.
+company-os/DECISIONS.md — what was decided, and why.
 
-PRODUCT/ — what we build, for whom, and the product direction.
+company-os/PRODUCT/ — what we build, for whom, and the product direction.
 
-DOMAIN/ — business concepts, rules, meaning.
+company-os/DOMAIN/ — business concepts, rules, meaning.
 
-ENGINEERING/ — technical implementation, architecture, infrastructure.
+company-os/ENGINEERING/ — technical implementation, architecture, infrastructure.
 
 `.kenovis/AI/` — how AI agents operate, how work is executed, how decisions are supported.
 

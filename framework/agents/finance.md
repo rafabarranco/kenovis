@@ -194,7 +194,7 @@ Pricing decisions require knowing what alternatives customers are comparing agai
 Read and update:
 
 ```
-PRODUCT/COMPETITIVE_LANDSCAPE.md
+company-os/PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
 Owner, with CEO, of the Business Model dimension in that document.

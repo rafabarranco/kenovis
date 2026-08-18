@@ -2,7 +2,7 @@
 
 Version: 1.1
 
-This file is a form, not a destination. Fill it in where the workflow that sent you here says to record the artifact — never write into this file, and never write a produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
+This file is a form, not a destination. Fill it in where the workflow that sent you here says to record the artifact — never write into this file, and never write a produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See company-os/DECISIONS.md DECISION-024.
 
 ---
 
@@ -155,7 +155,7 @@ Alternative considered:
 
 - [ ] Uses existing design system components/patterns where possible.
 - [ ] New patterns justified (no existing pattern fits).
-- [ ] Terminology matches DOMAIN/ glossary.
+- [ ] Terminology matches company-os/DOMAIN/ glossary.
 
 ---
 
@@ -172,9 +172,9 @@ List unresolved items that block implementation:
 References:
 
 ```
-PRODUCT/
+company-os/PRODUCT/
 
-DOMAIN/
+company-os/DOMAIN/
 ```
 
 and the feature plan produced for this feature, shaped by `.kenovis/AI/templates/feature-plan.md`.

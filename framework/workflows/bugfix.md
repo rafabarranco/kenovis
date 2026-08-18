@@ -81,7 +81,7 @@ Review the reported bug — from the human, an issue tracker, or a failing test.
 .kenovis/AI/templates/bug-report.md
 ```
 
-That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See company-os/DECISIONS.md DECISION-024.
 
 Identify:
 
@@ -184,7 +184,7 @@ Execute:
 Record the ADR in:
 
 ```
-DECISIONS.md
+company-os/DECISIONS.md
 ```
 
 Shaped by:
@@ -193,7 +193,7 @@ Shaped by:
 .kenovis/AI/templates/adr.md
 ```
 
-`DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See DECISIONS.md DECISION-024.
+`company-os/DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See company-os/DECISIONS.md DECISION-024.
 
 when required.
 
@@ -256,13 +256,13 @@ Validate:
 Update when required:
 
 ```
-PRODUCT/
+company-os/PRODUCT/
 
-DOMAIN/
+company-os/DOMAIN/
 
-ENGINEERING/
+company-os/ENGINEERING/
 
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 ```
 
 Document:
@@ -286,14 +286,14 @@ Confirm:
 Record the resolution where it will still be readable after this session:
 
 ```
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 ```
 
 when the bug taught something reusable — a root cause that will recur, a convention that would have prevented it. The regression test added in Phase 8 is the other half of that record, and the more durable one.
 
-**Whatever the investigation surfaced and this fix did not repair is a separate record.** `AI/memory/learnings.md` holds the lesson; nothing reads it to decide what happens next. Adjacent defects, the debt the root cause exposed, the test coverage its absence revealed — each one is scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason, before this bug is closed. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected". A bug investigation reads more of the system than almost any other task, which makes it one of the richest sources of findings and, without this line, one of the leakiest.
+**Whatever the investigation surfaced and this fix did not repair is a separate record.** `company-os/AI/memory/learnings.md` holds the lesson; nothing reads it to decide what happens next. Adjacent defects, the debt the root cause exposed, the test coverage its absence revealed — each one is scheduled with an id in `company-os/PRODUCT/ROADMAP.md` or rejected with a reason, before this bug is closed. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected". A bug investigation reads more of the system than almost any other task, which makes it one of the richest sources of findings and, without this line, one of the leakiest.
 
-The bug-report form is not a file to update: it shaped the conversation, and `kenovis sync` replaces the directory it lives in. See DECISIONS.md DECISION-024.
+The bug-report form is not a file to update: it shaped the conversation, and `kenovis sync` replaces the directory it lives in. See company-os/DECISIONS.md DECISION-024.
 
 ---
 

@@ -80,7 +80,7 @@ Load:
 Review:
 
 ```
-PRODUCT/FEATURES.md
+company-os/PRODUCT/FEATURES.md
 ```
 
 Identify:
@@ -92,7 +92,7 @@ Identify:
 - Acceptance criteria.
 - Dependencies.
 
-If no `FEATURE-NNN` spec exists for this feature, writing it is this phase's output, not a missing input. Author it into `PRODUCT/FEATURES.md` using that document's own "Feature Specification Template" section, and confirm it with the human before Phase 4. Nothing else in the framework produces a spec ahead of implementation — `/init-project` and `/adopt-project` seed that file with what already ships, and Phase 13 below only updates the entry against what was actually built. See DECISIONS.md DECISION-024.
+If no `FEATURE-NNN` spec exists for this feature, writing it is this phase's output, not a missing input. Author it into `company-os/PRODUCT/FEATURES.md` using that document's own "Feature Specification Template" section, and confirm it with the human before Phase 4. Nothing else in the framework produces a spec ahead of implementation — `/init-project` and `/adopt-project` seed that file with what already ships, and Phase 13 below only updates the entry against what was actually built. See company-os/DECISIONS.md DECISION-024.
 
 Do not start implementation without a clear understanding of the feature.
 
@@ -172,7 +172,7 @@ Produce a design spec for this feature, shaped by:
 .kenovis/AI/templates/design-spec.md
 ```
 
-That path is a form, not a destination — never write into it. The spec is a working artifact of this session; what must outlive the session is the user-facing behaviour it settles, which belongs in the `FEATURE-NNN` spec's Capabilities and Acceptance Criteria in `PRODUCT/FEATURES.md`. A product that wants to keep design specs as files decides where and records it in `AI/memory/conventions.md`. See DECISIONS.md DECISION-024.
+That path is a form, not a destination — never write into it. The spec is a working artifact of this session; what must outlive the session is the user-facing behaviour it settles, which belongs in the `FEATURE-NNN` spec's Capabilities and Acceptance Criteria in `company-os/PRODUCT/FEATURES.md`. A product that wants to keep design specs as files decides where and records it in `company-os/AI/memory/conventions.md`. See company-os/DECISIONS.md DECISION-024.
 
 Do not proceed to implementation preparation with an unresolved user flow.
 
@@ -191,9 +191,9 @@ CTO evaluates:
 Review (query the graph first if fresh, e.g. `graphify query "<topic>"`, `graphify explain "<concept>"`; fall back to reading in full otherwise):
 
 ```
-ENGINEERING/ARCHITECTURE.md
-ENGINEERING/DATABASE.md
-ENGINEERING/SECURITY.md
+company-os/ENGINEERING/ARCHITECTURE.md
+company-os/ENGINEERING/DATABASE.md
+company-os/ENGINEERING/SECURITY.md
 ```
 
 ---
@@ -206,7 +206,7 @@ Produce a feature plan, shaped by:
 .kenovis/AI/templates/feature-plan.md
 ```
 
-That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. The plan is a working artifact of this session: present it to the human here, and let its durable parts land where they belong — scope and acceptance criteria in the `FEATURE-NNN` spec (Phase 2), technical decisions in `DECISIONS.md` (Phase 8), what shipped in `PRODUCT/FEATURES.md` (Phase 13). A product that wants to keep plans as files decides where and records it in `AI/memory/conventions.md`. See DECISIONS.md DECISION-024.
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. The plan is a working artifact of this session: present it to the human here, and let its durable parts land where they belong — scope and acceptance criteria in the `FEATURE-NNN` spec (Phase 2), technical decisions in `company-os/DECISIONS.md` (Phase 8), what shipped in `company-os/PRODUCT/FEATURES.md` (Phase 13). A product that wants to keep plans as files decides where and records it in `company-os/AI/memory/conventions.md`. See company-os/DECISIONS.md DECISION-024.
 
 Include:
 
@@ -235,7 +235,7 @@ Execute:
 Record the ADR in:
 
 ```
-DECISIONS.md
+company-os/DECISIONS.md
 ```
 
 Shaped by:
@@ -244,7 +244,7 @@ Shaped by:
 .kenovis/AI/templates/adr.md
 ```
 
-`DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See DECISIONS.md DECISION-024.
+`company-os/DECISIONS.md` is the destination; the path above is the form that shapes what goes there. See company-os/DECISIONS.md DECISION-024.
 
 Document:
 
@@ -264,7 +264,7 @@ Define:
 Affected areas:
 
 ```
-CODE (the units listed in ENGINEERING/ARCHITECTURE.md)
+CODE (the units listed in company-os/ENGINEERING/ARCHITECTURE.md)
 
 DATABASE
 
@@ -347,13 +347,13 @@ Validate:
 Update:
 
 ```
-PRODUCT/
+company-os/PRODUCT/
 
-DOMAIN/
+company-os/DOMAIN/
 
-ENGINEERING/
+company-os/ENGINEERING/
 
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 ```
 
 when knowledge changes.
@@ -380,7 +380,7 @@ Confirm:
 Update:
 
 ```
-PRODUCT/FEATURES.md
+company-os/PRODUCT/FEATURES.md
 ```
 
 ---

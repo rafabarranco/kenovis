@@ -50,9 +50,9 @@ Framework updates never touch Product-layer files without explicit customer acti
 
 Entities affected: Installation, Framework Release.
 
-Rule: Syncing a new Framework Release must only modify files under the Framework layer (.kenovis/AI/agents/, .kenovis/AI/workflows/, .kenovis/AI/policies/, .kenovis/AI/commands/, .kenovis/AI/templates/, .kenovis/AI/SYSTEM.md, CLAUDE.md, README.md). It must never write to COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, or any of the customer's own existing code — wherever in the repository it lives — without the customer explicitly initiating that step.
+Rule: Syncing a new Framework Release must only modify files under the Framework layer (.kenovis/AI/agents/, .kenovis/AI/workflows/, .kenovis/AI/policies/, .kenovis/AI/commands/, .kenovis/AI/templates/, .kenovis/AI/SYSTEM.md, CLAUDE.md, README.md). It must never write to company-os/COMPANY_OS.md, company-os/DECISIONS.md, company-os/PRODUCT/, company-os/DOMAIN/, company-os/ENGINEERING/, company-os/AUTOMATIONS/, company-os/AI/memory/, or any of the customer's own existing code — wherever in the repository it lives — without the customer explicitly initiating that step.
 
-Example (valid): CLI sync updates .kenovis/AI/agents/backend.md to a newer version. Example (invalid): CLI sync silently rewrites the customer's COMPANY_OS.md.
+Example (valid): CLI sync updates .kenovis/AI/agents/backend.md to a newer version. Example (invalid): CLI sync silently rewrites the customer's company-os/COMPANY_OS.md.
 
 ---
 
@@ -76,7 +76,7 @@ Rule: RULE-INST-01 states one direction — a sync never writes the customer's P
 
 That is deliberate, and it is what makes the AI-OS the same team in every repository it is injected into. A per-product edit to the AI-OS layer would fork the team quietly, and the fork would disappear on the next sync anyway — the worst of both.
 
-A product's own knowledge has a place, and it is the Product layer: `COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/`. That is where the AI-OS records what it learns about the product it was injected into, and RULE-INST-01 protects it.
+A product's own knowledge has a place, and it is the Product layer, under `company-os/`: `COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/`. That is where the AI-OS records what it learns about the product it was injected into, and RULE-INST-01 protects it.
 
 Because the removal is correct but not obvious, a sync states what it removed from `.kenovis/`. Deleting is the rule working; deleting silently is the rule being unreadable.
 

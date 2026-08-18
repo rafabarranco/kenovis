@@ -44,8 +44,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ACTIVE = ROOT / "AI/memory/learnings.md"
-ARCHIVE = ROOT / "AI/memory/LEARNINGS-ARCHIVE.md"
+ACTIVE = ROOT / "company-os/AI/memory/learnings.md"
+ARCHIVE = ROOT / "company-os/AI/memory/LEARNINGS-ARCHIVE.md"
 INDEX_HEADING = "Promoted And Archived"
 
 # A destination cell names zero or more policy sections, in this exact form:

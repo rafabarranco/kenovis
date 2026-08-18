@@ -97,7 +97,7 @@ Business logic must never depend directly on:
 - Backend-as-a-service SDKs (Supabase, Firebase, Amplify)
 - Any library that would have to be replaced to change vendor
 
-The examples name a category, not a stack. Recognise the category in whatever stack ENGINEERING/ARCHITECTURE.md defines.
+The examples name a category, not a stack. Recognise the category in whatever stack company-os/ENGINEERING/ARCHITECTURE.md defines.
 
 The business should survive replacing any of them.
 
@@ -222,7 +222,7 @@ Avoid copy-paste development.
 
 Use business language.
 
-Names in code come from DOMAIN/DOMAIN_MODEL.md and AI/memory/glossary.md.
+Names in code come from company-os/DOMAIN/DOMAIN_MODEL.md and company-os/AI/memory/glossary.md.
 
 If a name does not exist in the domain vocabulary, either the name is wrong or the vocabulary is incomplete. Resolve that before writing the code.
 
@@ -232,7 +232,7 @@ Avoid technical names leaking into business concepts.
 
 # Multi-Tenant Architecture
 
-Applies only if multi-tenancy is a documented decision in DECISIONS.md.
+Applies only if multi-tenancy is a documented decision in company-os/DECISIONS.md.
 
 When the product is multi-tenant:
 
@@ -399,7 +399,7 @@ So when a round learns a rule, finds a defect worth preventing, or takes a decis
 
 A repository's own build tooling is still allowed — it is a local net over that repository's own dogfooding. It is never the answer to "how is this enforced." A round that adds one states what the loaded-layer half is, or records that the rule has no loaded-layer form and why. "No form" is a legitimate outcome; a caveat that reads as a plan is not.
 
-This matters most where a project's product *is* a framework, because there "improve the product" and "improve our tooling" stop being distinguishable by intent and are only distinguishable by destination. See DECISIONS.md DECISION-026, which was written after nine mechanical guards accumulated in one repository and zero reached an Installation, each round recording the gap while widening it.
+This matters most where a project's product *is* a framework, because there "improve the product" and "improve our tooling" stop being distinguishable by intent and are only distinguishable by destination. See company-os/DECISIONS.md DECISION-026, which was written after nine mechanical guards accumulated in one repository and zero reached an Installation, each round recording the gap while widening it.
 
 ---
 
@@ -407,7 +407,7 @@ This matters most where a project's product *is* a framework, because there "imp
 
 Applies to any product that is *installed* somewhere else — a CLI, a template, a library, a framework — rather than only run by its authors.
 
-**A product that is installed has two execution environments, and its own repository is the one where its instructions are least likely to fail.** Inside the origin repository, a path is source; inside an Installation, the same path may be a synced copy that the next update replaces. Every instruction that produces a file is a claim about where files may be written in someone else's repository, and that claim cannot be verified by reading — only by following it somewhere the replace is real. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-014, Learning-020.)
+**A product that is installed has two execution environments, and its own repository is the one where its instructions are least likely to fail.** Inside the origin repository, a path is source; inside an Installation, the same path may be a synced copy that the next update replaces. Every instruction that produces a file is a claim about where files may be written in someone else's repository, and that claim cannot be verified by reading — only by following it somewhere the replace is real. (`company-os/AI/memory/LEARNINGS-ARCHIVE.md` Learning-014, Learning-020.)
 
 **When a change replaces how an artifact reaches its consumer, that artifact's own instructions are inside the blast radius** — even when they never mention the distribution mechanism. The question is not "does this document contradict itself" but "does it still describe the situation its reader will actually be in". A document written against a superseded mechanism reads perfectly and is wrong. After changing the set of paths an installer writes, re-read every instruction that assumes one of them. (Learning-014.)
 
@@ -415,9 +415,9 @@ Applies to any product that is *installed* somewhere else — a CLI, a template,
 
 **Default paths and escape hatches carry different trust, documented explicitly.** An unvalidated "use exactly what I point you at" flag will faithfully reproduce whatever layer-mixing mistake the caller makes. Which trust level applies must be stated, not implied by which flag was used. (Learning-004.)
 
-**When a business rule names its own mechanism, build against that mechanism.** If `DOMAIN/BUSINESS_RULES.md` says reversibility comes from the consumer's version control, the tool does not need to reimplement a diff engine to satisfy it. Check `PRODUCT/ROADMAP.md` for whether a richer version of the same capability is already deliberately deferred — that is strong evidence the leaner reading is the intended one. (Learning-003.)
+**When a business rule names its own mechanism, build against that mechanism.** If `company-os/DOMAIN/BUSINESS_RULES.md` says reversibility comes from the consumer's version control, the tool does not need to reimplement a diff engine to satisfy it. Check `company-os/PRODUCT/ROADMAP.md` for whether a richer version of the same capability is already deliberately deferred — that is strong evidence the leaner reading is the intended one. (Learning-003.)
 
-**A file's layer is declared in the file, and the declaration is what the updater reads.** Where an update mirror-replaces one layer and must never touch another, the boundary cannot live in a list held by the tool — a list is a registry of paths that has to be edited every time a document is added, and the edit is the step that gets skipped. It lives on line 1 of the document, as a marker the tool and the next agent both read. Two consequences follow, and the second is the one that is missed: **every new document in the protected layer carries the marker when it is created**, not when someone notices later; and the marker states *which layer the file belongs to* and nothing about whether it has been filled in, so it is equally true of an untouched template and of a document the company has owned for years. A marker that also means "unfinished" cannot survive the file being finished, and whatever reads it then reads it wrong. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-013; DECISIONS.md DECISION-019 and DECISION-023.)
+**A file's layer is declared in the file, and the declaration is what the updater reads.** Where an update mirror-replaces one layer and must never touch another, the boundary cannot live in a list held by the tool — a list is a registry of paths that has to be edited every time a document is added, and the edit is the step that gets skipped. It lives on line 1 of the document, as a marker the tool and the next agent both read. Two consequences follow, and the second is the one that is missed: **every new document in the protected layer carries the marker when it is created**, not when someone notices later; and the marker states *which layer the file belongs to* and nothing about whether it has been filled in, so it is equally true of an untouched template and of a document the company has owned for years. A marker that also means "unfinished" cannot survive the file being finished, and whatever reads it then reads it wrong. (`company-os/AI/memory/LEARNINGS-ARCHIVE.md` Learning-013; company-os/DECISIONS.md DECISION-019 and DECISION-023.)
 
 ---
 
@@ -427,11 +427,11 @@ Every significant architectural decision must be documented.
 
 Use:
 
-ENGINEERING/
+company-os/ENGINEERING/
 
 or
 
-DECISIONS.md
+company-os/DECISIONS.md
 
 Never keep architecture only in conversations.
 

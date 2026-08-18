@@ -97,7 +97,7 @@ git history
 and:
 
 ```
-PRODUCT/ROADMAP.md
+company-os/PRODUCT/ROADMAP.md
 ```
 
 ---
@@ -216,13 +216,13 @@ Verify:
 Updated:
 
 ```
-PRODUCT/
+company-os/PRODUCT/
 
-DOMAIN/
+company-os/DOMAIN/
 
-ENGINEERING/
+company-os/ENGINEERING/
 
-DECISIONS.md
+company-os/DECISIONS.md
 ```
 
 Required:
@@ -235,7 +235,7 @@ Required:
 
 # Step 8 - Generate Release Notes
 
-Prepare release notes and publish them wherever this product publishes them — `AUTOMATIONS/release-process.md` records where that is.
+Prepare release notes and publish them wherever this product publishes them — `company-os/AUTOMATIONS/release-process.md` records where that is.
 
 Shaped by:
 
@@ -243,7 +243,7 @@ Shaped by:
 .kenovis/AI/templates/release-notes.md
 ```
 
-That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See company-os/DECISIONS.md DECISION-024.
 
 Include:
 
@@ -358,8 +358,8 @@ Verify:
 Record, naming where each part goes rather than leaving "document" to resolve itself:
 
 - **Release outcome** → `CHANGELOG.md`, under the version just cut.
-- **Problems discovered** → these are findings. Each one is fixed in this session, scheduled with an id in `PRODUCT/ROADMAP.md`, or rejected with a reason. A problem discovered during a release and written only into the release notes has been announced, not dispositioned. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
-- **Follow-up tasks** → `PRODUCT/ROADMAP.md`, with an id. A follow-up that exists only as a sentence in a post-release summary is the deferred-improvement failure that policy names.
+- **Problems discovered** → these are findings. Each one is fixed in this session, scheduled with an id in `company-os/PRODUCT/ROADMAP.md`, or rejected with a reason. A problem discovered during a release and written only into the release notes has been announced, not dispositioned. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+- **Follow-up tasks** → `company-os/PRODUCT/ROADMAP.md`, with an id. A follow-up that exists only as a sentence in a post-release summary is the deferred-improvement failure that policy names.
 
 ---
 

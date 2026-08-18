@@ -63,7 +63,7 @@ Domain Terms
 
 PROJECT-SPECIFIC. Everything until the "Framework Terms" heading describes the current product.
 
-Write one entry per core business concept, drawn from `DOMAIN/DOMAIN_MODEL.md`. Every entity defined there should appear here; a term that exists in the domain model but not in the glossary is a term the agents will name inconsistently.
+Write one entry per core business concept, drawn from `company-os/DOMAIN/DOMAIN_MODEL.md`. Every entity defined there should appear here; a term that exists in the domain model but not in the glossary is a term the agents will name inconsistently.
 
 Use this shape for each entry:
 
@@ -80,7 +80,7 @@ Examples:
 
 Rules:
 
-[ANSWER: Any business rule attached to the concept, with the RULE-ID from `DOMAIN/BUSINESS_RULES.md`. Omit the heading if none.]
+[ANSWER: Any business rule attached to the concept, with the RULE-ID from `company-os/DOMAIN/BUSINESS_RULES.md`. Omit the heading if none.]
 ---
 
 Do not invent terms to fill the section. A glossary with four real terms is more useful than one with twenty guessed ones.

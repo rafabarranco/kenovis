@@ -46,7 +46,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-DECISIONS = ROOT / "DECISIONS.md"
+DECISIONS = ROOT / "company-os/DECISIONS.md"
 
 INDEX_HEADING = re.compile(r"^# Decision Index\s*$", re.MULTILINE)
 NEXT_HEADING = re.compile(r"^# ", re.MULTILINE)

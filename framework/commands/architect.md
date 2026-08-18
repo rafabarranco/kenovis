@@ -156,7 +156,7 @@ How will we know the architecture works?
 Review:
 
 ```
-ENGINEERING/
+company-os/ENGINEERING/
 ```
 
 and:
@@ -176,9 +176,9 @@ Do not design in isolation.
 
 # Step 5 - Generate Options
 
-The options are presented to the human in this session; they are not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. What survives is the chosen option and the reasoning behind the rejected ones, recorded as the ADR in Step 8.
+The options are presented to the human in this session; they are not a file to create, and never anywhere under `.kenovis/` — see company-os/DECISIONS.md DECISION-024. What survives is the chosen option and the reasoning behind the rejected ones, recorded as the ADR in Step 8.
 
-A rejected option is disposed of by the ADR itself. Work the analysis surfaced that the chosen option does not cover is not — that gets scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason, before Step 8 closes. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+A rejected option is disposed of by the ADR itself. Work the analysis surfaced that the chosen option does not cover is not — that gets scheduled with an id in `company-os/PRODUCT/ROADMAP.md` or rejected with a reason, before Step 8 closes. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 
 Create multiple possible solutions.
 
@@ -274,7 +274,7 @@ If the decision affects architecture:
 Create:
 
 ```
-DECISIONS.md
+company-os/DECISIONS.md
 ```
 
 Using:
@@ -283,7 +283,7 @@ Using:
 .kenovis/AI/templates/adr.md
 ```
 
-`DECISIONS.md` is the destination every Installation already has. A product that prefers separate ADR files decides where they live and records that in `AI/memory/conventions.md` — the framework does not create a directory for them. See DECISIONS.md DECISION-024.
+`company-os/DECISIONS.md` is the destination every Installation already has. A product that prefers separate ADR files decides where they live and records that in `company-os/AI/memory/conventions.md` — the framework does not create a directory for them. See company-os/DECISIONS.md DECISION-024.
 
 Include:
 
