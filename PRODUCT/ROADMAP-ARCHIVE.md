@@ -1706,3 +1706,26 @@ Highest risk in the block, and the reason it is last: it changes a path that exi
 Requires `/architect` and an ADR before any file is touched. Do not start this item from `/next` without that.
 
 Validated when: the migration is exercised against a real published Installation on the upgrade sequence a customer actually runs — install the previous version, sync forward, confirm the Product layer migrated and nothing outside `.kenovis/` was touched.
+
+---
+
+### OF-14
+
+| OF-14 | `check_document_size.py`'s failing case has never been exercised for `AI/memory/learnings.md`. Item 20 stated this rather than claiming it: at 12.1 KB the file is under threshold, so removing its split cannot make the guard fail, and the first attempt at that test passed for the wrong reason. | Item 20, 2026-08-12 | **Open.** Promoted out of item 20's narrative by item 34's RA2 gate before that narrative was archived. Cost is one fixture — a governed document temporarily grown past 60 KB — not a code change. Pain: low (the guard's other error paths are both exercised). Frequency: low (a one-time verification, not recurring work). Cost: low (one fixture, no code change). Role: cto. **Refined 2026-08-14 (DECISION-036)** — backfilled per OF-66; this is the exact shape `policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" exists to forbid. |
+
+**Fixed** (2026-08-16, via `/next`). The guard's failure branch (`errors.append(...)`, exit 1) had never returned true for any of the seven governed documents — every one is either under threshold, has a satisfied `split`/`index`, or is a by-design over-threshold archive. `AI/memory/learnings.md` was the cheapest vehicle: its own `"split"` registration is what stopped growing it past 60 KB from failing, the same short-circuit that made item 20's original attempt pass for the wrong reason (the file was under threshold, so the `split` branch was never even reached).
+
+Run, read back off the artifact rather than reasoned about: `AI/memory/learnings.md` grown from 53,738 to 62,366 bytes with clearly-marked, uncommitted padding; the guard run with the file's `"split"` entry removed **in memory only** (`del GOVERNED['AI/memory/learnings.md']['split']` on a freshly loaded module — no edit to `check_document_size.py` itself) returned:
+
+```
+AI/memory/learnings.md: 60.9 KB, over the 60 KB threshold with no archive, index, or exemption naming the item that fixes it
+EXIT CODE: 1
+```
+
+Reverted with `git checkout -- AI/memory/learnings.md`: byte-identical to the original (53,738 bytes), `git status` clean, the unmodified guard back to exit 0. All 11 CI guards run individually before and after: zero failures throughout.
+
+**Operating model section served: none.** A testing-infrastructure verification exercise, the same "none" class item 40's OF-41 round and item 42 part 4's OF-81/OF-82 round both used for comparable audit-and-correct work — no single numbered `PRODUCT/OPERATING_MODEL.md` behaviour is advanced by proving a guard's own failure path works.
+
+Findings this round did not fix: none. OF-51 refined in the active document (still `Open`, not closed — its own reasoning stays inline there per "Closed Work Is Archived, Not Kept Inline," which governs closed entries, not refinements of live ones).
+
+---

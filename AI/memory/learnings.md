@@ -466,6 +466,36 @@ Disposition: Fixed as an instance (OF-34) — no rule change, no promotion. The 
 
 ---
 
+## Learning-043
+
+Date:
+2026-08-16
+
+Category:
+Testing
+
+Context:
+Closing `PRODUCT/ROADMAP.md` OF-14 — `check_document_size.py`'s failure branch (`errors.append(...)`, exit 1) had never returned true for any of the seven governed documents in this repository's history, despite the guard running on every CI pass since item 21.
+
+Problem:
+Item 20's original attempt to exercise this branch grew `AI/memory/learnings.md` and expected the guard to fail, but the file was still under the 60 KB threshold at the time, so the `if size <= THRESHOLD_BYTES: continue` branch fired first and the guard passed for a reason unrelated to the fix being tested — the exact failure `.kenovis/AI/policies/testing.md` → "A Check Is Not Verified Until It Has Been Run" already names for a fix that removes the condition it is meant to catch.
+
+What happened:
+Growing the file past threshold alone was still not sufficient this round either: `AI/memory/learnings.md` carries a registered `"split"` entry (`AI/memory/LEARNINGS-ARCHIVE.md`), and the guard's own logic checks `if split and (ROOT / split).exists(): continue` before ever reaching the failure branch — a registered, satisfied split passes the guard at any size, structurally, the same permanent-satisfier shape `testing.md` already names for `PRODUCT/ROADMAP.md` (OF-23's own citation). So the fixture needed two conditions at once: the file over threshold, and its split escape hatch defeated for the duration of the test.
+
+Root cause:
+A threshold guard with a permanent structural satisfier (a registered split, index, or exemption) has two independent gates, not one: size, and satisfier-presence. A fixture that varies only size exercises at most one of the guard's passing branches (under-threshold, or satisfied-over-threshold) and can never reach the failure branch (unsatisfied-over-threshold) no matter how large the file grows.
+
+Learning:
+To exercise a guard's failure branch when the guard accepts a structural escape hatch, defeat the escape hatch too — in memory, against a freshly loaded copy of the guard's own module, never by editing the guard script or the real archive/index file on disk. `del module.GOVERNED[doc]['split']` on that in-memory copy is sufficient and leaves zero trace on the actual guard or its satisfiers.
+
+Future action:
+No standalone item — OF-14 is Fixed with this as its method. Worth applying at the point any future threshold/permanent-satisfier guard is authored: exercise its failure branch the same two-gate way when it is introduced, rather than leaving "has this branch ever returned true" for a later audit to discover it never did.
+
+Disposition: Fixed as an instance (OF-14). Not promoted to a policy clause — `testing.md` → "A Check Is Not Verified Until It Has Been Run" already carries the adjacent, more general rule ("Exercise the registered branch in a fixture that still meets the triggering condition") that this instance is evidence for, not a gap in.
+
+---
+
 ---
 Learning Examples
 
