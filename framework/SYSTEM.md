@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.12
+Version: 1.13
 ---
 Purpose
 
@@ -275,7 +275,7 @@ Code is never the source of truth.
 
 **Rank 1 is not conditional, and one transition case exists.** Every Installation authors `company-os/PRODUCT/OPERATING_MODEL.md` at setup: `/init-project` Step 2 and `/adopt-project` Step 3 ask the owner for it and write it before `company-os/COMPANY_OS.md`, from `.kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md` — a form, not a destination. The AI never authors it on the owner's behalf; it is the document the AI is measured against.
 
-A repository set up before that requirement shipped may hold no such file. Where there is none, rank 2 is the top and the gap is real work, not a permitted state: the owner is asked for the document, using the same four questions the setup step asks. See company-os/DECISIONS.md DECISION-032.
+A repository set up before that requirement shipped may hold no such file. Where there is none, rank 2 is the top and the gap is real work, not a permitted state: the owner is asked for the document, using the same five questions the setup step asks. See company-os/DECISIONS.md DECISION-032.
 ---
 Execution Principles
 
