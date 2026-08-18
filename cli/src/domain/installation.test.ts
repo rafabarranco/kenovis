@@ -15,11 +15,16 @@ import {
   invalidFrameworkSourceEntries,
   isClaudeMdSafeToOverwrite,
   isKenovisManagedClaudeStub,
+  isKenovisManagedCommandWrapper,
   CLAUDE_MD_HASH_FILENAME,
   FRAMEWORK_VERSION_FILENAME,
   parseFrameworkVersion,
+  parseToolsMarker,
   SETUP_PENDING_FILENAME,
   setupPendingContent,
+  toolsMarkerContent,
+  TOOLS_MARKER_FILENAME,
+  DEFAULT_TOOLS,
 } from "./installation.js";
 
 test("claudeStubContent points at .kenovis/AI/SYSTEM.md", () => {
@@ -109,7 +114,34 @@ test("installationKindFromSetupPending returns null for a marker this CLI never 
 
 test("INSTALL_TIME_OWNED_ENTRIES covers every file the CLI writes inside .kenovis/", () => {
   const covered = [...INSTALL_TIME_OWNED_ENTRIES.preserved, ...INSTALL_TIME_OWNED_ENTRIES.rewritten];
-  assert.deepEqual(covered.sort(), [SETUP_PENDING_FILENAME, CLAUDE_MD_HASH_FILENAME].sort());
+  assert.deepEqual(
+    covered.sort(),
+    [SETUP_PENDING_FILENAME, CLAUDE_MD_HASH_FILENAME, TOOLS_MARKER_FILENAME].sort(),
+  );
+});
+
+test("toolsMarkerContent/parseToolsMarker round-trip a tool id list", () => {
+  const content = toolsMarkerContent(["claude", "cursor"]);
+  assert.deepEqual(parseToolsMarker(content), ["claude", "cursor"]);
+});
+
+test("parseToolsMarker returns null for blank content, so the caller falls back to DEFAULT_TOOLS", () => {
+  assert.equal(parseToolsMarker(""), null);
+  assert.equal(parseToolsMarker("\n\n"), null);
+});
+
+test("DEFAULT_TOOLS is claude alone, matching DECISION-010's named primary tool", () => {
+  assert.deepEqual([...DEFAULT_TOOLS], ["claude"]);
+});
+
+test("isKenovisManagedCommandWrapper recognizes a generated wrapper and rejects a customer's own file", () => {
+  assert.ok(
+    isKenovisManagedCommandWrapper(
+      "<!-- kenovis:managed-command-wrapper -->\n---\ndescription: x\n---\n",
+    ),
+  );
+  assert.equal(isKenovisManagedCommandWrapper("# My own custom command\n\nDo something else.\n"), false);
+  assert.equal(isKenovisManagedCommandWrapper(""), false);
 });
 
 test("BrownfieldDetectedError cites the evidence and points at kenovis add", () => {
@@ -217,6 +249,11 @@ test("invalidFrameworkSourceEntries accepts an empty directory", () => {
 
 test("invalidFrameworkSourceEntries ignores dotfiles/dot-directories", () => {
   const unexpected = invalidFrameworkSourceEntries(["AI", "README.md", ".git", ".DS_Store"]);
+  assert.deepEqual(unexpected, []);
+});
+
+test("invalidFrameworkSourceEntries accepts tool-adapters/ alongside AI/ and README.md (DECISION-046)", () => {
+  const unexpected = invalidFrameworkSourceEntries(["AI", "README.md", "tool-adapters"]);
   assert.deepEqual(unexpected, []);
 });
 

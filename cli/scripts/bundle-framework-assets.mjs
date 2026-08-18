@@ -20,6 +20,15 @@
 // time on a customer's machine, and cannot: that path does not exist outside
 // this repository.
 //
+// Also renders each `framework/tool-adapters/<id>/` entry that declares a
+// `commandsDir` in its `adapter.json` into `dist/framework-assets/tool-adapters/<id>/commands/`
+// — one file per `framework/commands/*.md`, rendered from that adapter's own
+// `command-wrapper.md.tmpl`. Generic across adapters and across commands: a
+// new adapter is a new directory (this script never names "claude" or any
+// other tool id), and a new command is picked up by listing `framework/commands/`
+// rather than a maintained name list. See company-os/DECISIONS.md DECISION-046,
+// company-os/PRODUCT/ROADMAP.md item 45.
+//
 // See company-os/PRODUCT/ROADMAP.md Phase 0 item 3, item 43, and company-os/DECISIONS.md
 // DECISION-017/DECISION-020/DECISION-039.
 
@@ -31,11 +40,69 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 const cliDir = dirname(scriptDir); // cli/
 const repoRoot = dirname(cliDir);
 const sourceFrameworkDir = join(repoRoot, "framework");
+const sourceCommandsDir = join(sourceFrameworkDir, "commands");
+const sourceToolAdaptersDir = join(sourceFrameworkDir, "tool-adapters");
 const authoredReadme = join(cliDir, "assets", "framework", "README.md");
 const packageJsonPath = join(cliDir, "package.json");
 const outDir = join(cliDir, "dist", "framework-assets");
 const localMirrorDir = join(repoRoot, ".kenovis");
 const FRAMEWORK_VERSION_FILENAME = ".framework-version";
+
+/** First non-blank line under a command file's own "# Purpose" heading. */
+function extractPurpose(commandFileContents) {
+  const lines = commandFileContents.split("\n");
+  const headingIndex = lines.findIndex((line) => line.trim() === "# Purpose");
+  if (headingIndex === -1) return "";
+  for (let i = headingIndex + 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.length > 0) return line;
+  }
+  return "";
+}
+
+function renderTemplate(template, values) {
+  return template.replace(/\{\{(\w+)\}\}/g, (_match, key) => values[key] ?? "");
+}
+
+/**
+ * Renders every `framework/tool-adapters/<id>/` whose `adapter.json` declares
+ * a `commandsDir` into `outDir/tool-adapters/<id>/commands/<name>.md`, one
+ * file per `framework/commands/*.md`. Never branches on a tool's identity —
+ * `commandsDir`/`command-wrapper.md.tmpl` are the adapter's own data.
+ */
+async function renderToolAdapters() {
+  let adapterIds;
+  try {
+    adapterIds = await readdir(sourceToolAdaptersDir);
+  } catch {
+    return; // No adapters authored yet.
+  }
+
+  const commandFiles = (await readdir(sourceCommandsDir)).filter((name) => name.endsWith(".md"));
+
+  for (const id of adapterIds) {
+    const adapterDir = join(sourceToolAdaptersDir, id);
+    const manifest = JSON.parse(await readFile(join(adapterDir, "adapter.json"), "utf8"));
+    if (!manifest.commandsDir) continue;
+
+    const template = await readFile(join(adapterDir, "command-wrapper.md.tmpl"), "utf8");
+    const destCommandsDir = join(outDir, "tool-adapters", id, "commands");
+    await mkdir(destCommandsDir, { recursive: true });
+
+    for (const fileName of commandFiles) {
+      const name = fileName.replace(/\.md$/, "");
+      const description = extractPurpose(await readFile(join(sourceCommandsDir, fileName), "utf8"));
+      const rendered = renderTemplate(template, { name, description });
+      await writeFile(join(destCommandsDir, `${name}.md`), rendered, "utf8");
+    }
+
+    // The manifest itself ships too — a customer install reads `commandsDir`
+    // from it rather than the CLI hardcoding a per-adapter destination.
+    await cp(join(adapterDir, "adapter.json"), join(outDir, "tool-adapters", id, "adapter.json"));
+
+    console.log(`Rendered ${commandFiles.length} command wrapper(s) for tool adapter "${id}"`);
+  }
+}
 
 async function main() {
   await rm(outDir, { recursive: true, force: true });
@@ -43,10 +110,13 @@ async function main() {
 
   const entries = await readdir(sourceFrameworkDir, { withFileTypes: true });
   for (const entry of entries) {
+    if (entry.name === "tool-adapters") continue; // Handled by renderToolAdapters, not mirrored verbatim.
     await cp(join(sourceFrameworkDir, entry.name), join(outDir, "AI", entry.name), {
       recursive: true,
     });
   }
+
+  await renderToolAdapters();
 
   await cp(authoredReadme, join(outDir, "README.md"));
 

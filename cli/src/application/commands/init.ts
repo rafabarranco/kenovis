@@ -5,6 +5,7 @@ import {
   claudeStubContent,
   CLAUDE_MD_HASH_FILENAME,
   CLAUDE_STUB_FILENAME,
+  DEFAULT_TOOLS,
   detectInstallationKind,
   ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
@@ -16,9 +17,12 @@ import {
   SETUP_PENDING_FILENAME,
   setupPendingContent,
   TARGET_README_FILENAME,
+  toolsMarkerContent,
+  TOOLS_MARKER_FILENAME,
   type InstallationKind,
 } from "../../domain/installation.js";
 import { readFrameworkVersion } from "../frameworkVersion.js";
+import { installSelectedToolAdapters } from "../toolAdapters.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
 
 export interface InitOptions {
@@ -35,6 +39,13 @@ export interface InitOptions {
    * refusal is bypassed by `force`. See DECISION-018.
    */
   invokedAs: "init" | "add";
+  /**
+   * AI tool ids to generate native scaffolding for (DECISION-046), e.g.
+   * `["claude"]`. Defaults to `DEFAULT_TOOLS` — unchanged behavior for an
+   * existing customer. Persisted to `.kenovis/.tools` so `sync` can re-apply
+   * the same selection without the flag being passed again.
+   */
+  tools?: string[];
 }
 
 export interface InitResult {
@@ -53,6 +64,16 @@ export interface InitResult {
    * readFrameworkVersion.
    */
   frameworkVersion: string | null;
+  /** Tool ids whose adapter was found in the bundle and applied. */
+  toolsInstalled: string[];
+  /** Requested tool ids this Framework Release's bundle ships no adapter for. */
+  unknownTools: string[];
+  /**
+   * Command-wrapper paths left untouched because a file already existed there
+   * and didn't look Kenovis-managed — most likely the customer's own
+   * same-named file. See `installSelectedToolAdapters`.
+   */
+  skippedToolFiles: string[];
 }
 
 /**
@@ -137,6 +158,16 @@ export async function runInit(
   await fs.writeFile(claudeStubPath, claudeMdContent);
   await fs.writeFile(hashPath, hashClaudeMdContent(claudeMdContent));
 
+  const tools = options.tools ?? [...DEFAULT_TOOLS];
+  const toolsMarkerPath = join(frameworkDir, TOOLS_MARKER_FILENAME);
+  await fs.writeFile(toolsMarkerPath, toolsMarkerContent(tools));
+
+  const { installed, unknown, skipped } = await installSelectedToolAdapters(fs, {
+    frameworkSourceDir: options.frameworkSourceDir,
+    targetDir: options.targetDir,
+    tools,
+  });
+
   const targetReadmePath = join(options.targetDir, TARGET_README_FILENAME);
   const targetReadmeUntouched = await fs.exists(targetReadmePath);
 
@@ -148,5 +179,8 @@ export async function runInit(
     detectedKind: detection.kind,
     detectionEvidence: detection.evidence,
     frameworkVersion: await readFrameworkVersion(fs, options.frameworkSourceDir),
+    toolsInstalled: installed,
+    unknownTools: unknown,
+    skippedToolFiles: skipped,
   };
 }

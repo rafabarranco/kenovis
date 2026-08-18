@@ -351,3 +351,38 @@ test("runSync reads the previous Framework Release before the mirror-replace des
   assert.deepEqual(fs.removedTrees, [frameworkDir]);
   assert.equal(result.previousFrameworkVersion, "0.3.0");
 });
+
+test("runSync falls back to DEFAULT_TOOLS and writes .tools when an Installation predates the marker (DECISION-046)", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install, no .tools marker>");
+  fs.seed(
+    join("/source/framework", "tool-adapters", "claude", "adapter.json"),
+    JSON.stringify({ id: "claude", commandsDir: ".claude/commands" }),
+  );
+  fs.seed(
+    join("/source/framework", "tool-adapters", "claude", "commands", "next.md"),
+    "<!-- kenovis:managed-command-wrapper -->\n...\n",
+  );
+
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.deepEqual(result.toolsInstalled, ["claude"]);
+  assert.equal(fs.files.get(join("/repo", ".kenovis", ".tools")), "claude\n");
+  assert.ok(fs.files.has(join("/repo", ".claude", "commands", "next.md")));
+});
+
+test("runSync re-applies whichever tools were persisted at install time, without --tools being passed again", async () => {
+  const fs = new InMemoryFileSystem();
+  const frameworkDir = join("/repo", ".kenovis");
+  fs.seed(frameworkDir, "<old install>");
+  fs.seed(join(frameworkDir, ".tools"), "cursor\n");
+  fs.seed(
+    join("/source/framework", "tool-adapters", "cursor", "adapter.json"),
+    JSON.stringify({ id: "cursor" }),
+  );
+
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.deepEqual(result.toolsInstalled, ["cursor"]);
+  assert.equal(fs.files.get(join(frameworkDir, ".tools")), "cursor\n");
+});
