@@ -29,6 +29,11 @@ leaving the distinction implicit:
     there is nothing useful to review in it; what is reviewable is the rule in
     `.kenovis/AI/policies/documentation.md`.
 
+Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "A Decision Is
+Not Recorded Until Its Index Line Exists" states the rule this check verifies
+mechanically: writing a decision body and its index line is one change, never
+two. Verified 2026-08-16 (PRODUCT/ROADMAP.md item 37).
+
 Scope, stated so it is not mistaken for wider coverage than it has: this runs in
 this repository's CI only. The bundler ships `.kenovis/AI/` and the customer
 README, not `.github/` (PRODUCT/ROADMAP.md Phase 1 item 17), so a customer
@@ -41,7 +46,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-DECISIONS = ROOT / "DECISIONS.md"
+DECISIONS = ROOT / "company-os/DECISIONS.md"
 
 INDEX_HEADING = re.compile(r"^# Decision Index\s*$", re.MULTILINE)
 NEXT_HEADING = re.compile(r"^# ", re.MULTILINE)

@@ -1,7 +1,7 @@
 /**
  * Installation domain concepts.
  *
- * See DECISIONS.md DECISION-016 (no framework-mandated directory name for the
+ * See company-os/DECISIONS.md DECISION-016 (no framework-mandated directory name for the
  * customer's own code) and DECISION-017 (Framework layer packaging: `.kenovis/`
  * hidden directory) — this module encodes the rules those decisions established,
  * so they are enforced in code, not just described in docs.
@@ -32,6 +32,7 @@ const NON_EVIDENCE_ENTRIES = new Set([
   FRAMEWORK_DIR_NAME,
   CLAUDE_STUB_FILENAME,
   ".claude",
+  "company-os",
 ]);
 
 export type InstallationKind = "greenfield" | "brownfield";
@@ -46,7 +47,7 @@ export interface DetectionResult {
  * Distinguishes an empty/near-empty target repository (greenfield — no real
  * implementation to adopt) from one that already holds real code (brownfield).
  * Filesystem-only: never inspects file contents or executes anything found in
- * the target repository (ENGINEERING/ARCHITECTURE.md Hard Rules).
+ * the target repository (company-os/ENGINEERING/ARCHITECTURE.md Hard Rules).
  */
 export function detectInstallationKind(targetDirEntries: string[]): DetectionResult {
   const evidence = targetDirEntries
@@ -114,7 +115,7 @@ export class GreenfieldDetectedError extends Error {
  * (pending or steady-state — see `claudeStubContent`). Used to tell "a
  * Kenovis-managed stub, safe to overwrite" apart from a customer's own
  * pre-existing CLAUDE.md, which install must never silently discard: the
- * target segment (COMPANY_OS.md — developers "already fluent in agentic
+ * target segment (company-os/COMPANY_OS.md — developers "already fluent in agentic
  * tooling") is likely to already have one before adopting Kenovis.
  */
 const CLAUDE_STUB_MARKER = "# Kenovis AI-OS";
@@ -130,7 +131,7 @@ export function isKenovisManagedClaudeStub(existingClaudeMdContent: string): boo
  * file byte-for-byte what we last wrote" — a stricter question than
  * `isKenovisManagedClaudeStub`'s "does it start with our marker line", which
  * cannot see content appended below an otherwise-untouched stub. See
- * AI/memory/learnings.md Learning-007.
+ * company-os/AI/memory/learnings.md Learning-007.
  */
 export function hashClaudeMdContent(content: string): string {
   return createHash("sha256").update(content, "utf8").digest("hex");
@@ -210,7 +211,7 @@ export function installationKindFromSetupPending(
  * unless it is explicitly handled — and silently, since nothing fails.
  *
  * Each entry therefore needs one of two rules, stated here rather than left
- * as an accident of statement order in runSync (see AI/memory/learnings.md
+ * as an accident of statement order in runSync (see company-os/AI/memory/learnings.md
  * Learning-010, where `.setup-pending` had neither and `.claude-md.sha256`
  * survived only because sync happened to rewrite it afterwards):
  *
@@ -233,14 +234,14 @@ export const INSTALL_TIME_OWNED_ENTRIES = {
 
 /**
  * The Framework Release an Installation currently tracks
- * (DOMAIN/DOMAIN_MODEL.md → Installation, "framework version installed").
+ * (company-os/DOMAIN/DOMAIN_MODEL.md → Installation, "framework version installed").
  *
  * The value is whatever `${FRAMEWORK_VERSION_FILENAME}` holds, trimmed. It is
  * never derived from the running CLI's own version: an Installation's
  * `.kenovis/` was written by whichever Framework bundle it was last synced
  * from, which is not necessarily the one running now — the same distinction
  * `isClaudeMdSafeToOverwrite` already draws between "what we'd write today"
- * and "what was actually left there" (see AI/memory/learnings.md Learning-008).
+ * and "what was actually left there" (see company-os/AI/memory/learnings.md Learning-008).
  *
  * Returns null for a missing or blank stamp — a bundle predating this
  * mechanism, or a hand-assembled `--source` directory. Unknown is reported as
@@ -312,13 +313,42 @@ export function claudeStubContent(state: ClaudeStubState): string {
     ? `Before doing anything else this session, run \`${FRAMEWORK_DIR_NAME}/AI/commands/${setupPendingContent(state.kind)}.md\`.\n\n`
     : "";
 
+  // Before setup runs, none of the destinations below exist -- company-os/PRODUCT/,
+  // company-os/DOMAIN/, company-os/ENGINEERING/, company-os/DECISIONS.md and
+  // company-os/AI/memory/ are authored by init-project.md / adopt-project.md, not
+  // by the CLI (DECISION-021). Naming them unconditionally told a pre-setup
+  // session to route findings to paths that were not there yet.
+  const routing = state.pending
+    ? `None of the destinations below exist yet. \`${setupPendingContent(state.kind)}.md\` creates
+them as it runs — hold anything you notice until the step that authors the relevant one, then
+write it there. That command's own closing step disposes of anything still unwritten once every
+destination exists.`
+    : `- Improvement, technical debt, a bug you are not fixing now, any candidate work → \`company-os/PRODUCT/ROADMAP.md\`
+- A decision made, or an option rejected → \`company-os/DECISIONS.md\`, body and index line together
+- A reusable lesson → \`company-os/AI/memory/learnings.md\`
+- A business or domain rule → \`company-os/DOMAIN/\`
+- An architectural consequence → \`company-os/ENGINEERING/\`
+- An open question you cannot answer → \`company-os/PRODUCT/ROADMAP.md\`, naming who decides it and what they need`;
+
   return `# Kenovis AI-OS
 
 ${pendingDirective}This repository uses the Kenovis AI-OS. Its Framework layer lives in \`${FRAMEWORK_DIR_NAME}/\`.
 
 Read \`${FRAMEWORK_DIR_NAME}/AI/SYSTEM.md\` first — it is the entry point for how AI agents should
 operate in this repository. Everything under \`${FRAMEWORK_DIR_NAME}/\` is reusable framework;
-this repository's own product context lives at the repository root (COMPANY_OS.md, DECISIONS.md,
-PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, and this repository's own code).
+this repository's own product context lives under \`company-os/\` (COMPANY_OS.md, DECISIONS.md,
+PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/, all inside that directory, plus this
+repository's own code).
+
+## Nothing stays in the thread
+
+Everything you find while working is written into a Product-layer file, in the session you found
+it — improvements, bugs, technical debt, decisions, learnings, open questions. All of it. A thread
+ends and takes with it whatever was only spoken in it.
+
+${routing}
+
+Telling the human is not recording it. This applies in every session, including ones that run no
+command and close no item. Full rules: \`${FRAMEWORK_DIR_NAME}/AI/policies/documentation.md\`.
 `;
 }

@@ -26,9 +26,24 @@ Learning-022:
     actually being used, or whether the named item is progressing. An exemption
     that nobody ever closes passes forever -- which is why each one prints.
 
+Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "Document
+Lifecycle: A Size Threshold, An Archive, And An Exit" states the rule this
+check verifies structurally: the 60 KB threshold, the three acceptable splits,
+and the exemption-must-name-its-fix clause. Verified 2026-08-16
+(PRODUCT/ROADMAP.md item 37).
+
+The three acceptable answers this docstring already named -- an archive
+sibling, an index that bounds what is read, or a directory split -- were
+implemented as two ("split", "archive_of") until DECISIONS.md DECISION-042,
+which added "index" as a real category rather than letting DECISIONS.md fall
+through to a bare exemption citing closed-out work (PRODUCT/ROADMAP.md item
+22, rejected by that decision).
+
 Scope: this repository's CI only. The bundle ships `.kenovis/AI/`, not
-`.github/`, so an Installation carries the rule as an instruction until
-`kenovis check` ships (PRODUCT/ROADMAP.md item 25).
+`.github/`, so an Installation carries the rule as an instruction with no guard
+behind it. An earlier version of this paragraph said that lasted "until
+`kenovis check` ships (PRODUCT/ROADMAP.md item 25)"; item 25 is rejected and
+`kenovis check` will not ship (DECISIONS.md DECISION-026).
 """
 
 import sys
@@ -49,24 +64,24 @@ THRESHOLD_BYTES = 60 * 1024
 # still prints its size, because an archive nobody watches is how the next 120 KB
 # arrives unnoticed.
 GOVERNED = {
-    "PRODUCT/ROADMAP.md": {"split": "PRODUCT/ROADMAP-ARCHIVE.md"},
-    "PRODUCT/ROADMAP-ARCHIVE.md": {"archive_of": "PRODUCT/ROADMAP.md"},
-    "DECISIONS.md": {
-        "split": None,
-        "exempt": "item 22 — DECISIONS.md becomes a directory, one file per decision, "
-        "with the current file as its index. The Decision Index from item 18 already "
-        "bounds what a session reads",
+    "company-os/PRODUCT/ROADMAP.md": {"split": "company-os/PRODUCT/ROADMAP-ARCHIVE.md"},
+    "company-os/PRODUCT/ROADMAP-ARCHIVE.md": {"archive_of": "company-os/PRODUCT/ROADMAP.md"},
+    "company-os/DECISIONS.md": {
+        "index": "its own Decision Index bounds what a session reads at start "
+        "(check_decision_index.py verifies it stays complete); a decision body "
+        "is opened by a targeted read, never the whole file (DECISION-042)",
     },
-    "AI/memory/learnings.md": {"split": "AI/memory/LEARNINGS-ARCHIVE.md"},
-    "AI/memory/LEARNINGS-ARCHIVE.md": {"archive_of": "AI/memory/learnings.md"},
-    "CHANGELOG.md": {"exempt": "OF-13 — no archive rule exists for released changelog sections yet"},
+    "company-os/AI/memory/learnings.md": {"split": "company-os/AI/memory/LEARNINGS-ARCHIVE.md"},
+    "company-os/AI/memory/LEARNINGS-ARCHIVE.md": {"archive_of": "company-os/AI/memory/learnings.md"},
+    "CHANGELOG.md": {"split": "CHANGELOG-ARCHIVE.md"},
+    "CHANGELOG-ARCHIVE.md": {"archive_of": "CHANGELOG.md"},
 }
 
 
 def main() -> int:
-    over = []
     exempted = []
     archives = []
+    indexed = []
     errors = []
 
     for rel, rule in sorted(GOVERNED.items()):
@@ -87,10 +102,14 @@ def main() -> int:
 
         if size <= THRESHOLD_BYTES:
             continue
-        over.append(rel)
 
         split = rule.get("split")
         if split and (ROOT / split).exists():
+            continue
+
+        index = rule.get("index")
+        if index:
+            indexed.append(f"{rel} — index-bounded: {index}")
             continue
 
         exemption = rule.get("exempt")
@@ -106,6 +125,11 @@ def main() -> int:
     if archives:
         print("\nOver threshold, by design:")
         for line in archives:
+            print(f"  {line}")
+
+    if indexed:
+        print("\nOver threshold, index-bounded:")
+        for line in indexed:
             print(f"  {line}")
 
     if exempted:
@@ -127,8 +151,8 @@ def main() -> int:
     print(
         f"\nDocument lifecycle holds: {len(GOVERNED)} governed documents, "
         f"{len(archives)} archives over threshold by design, "
-        f"{len(over)} others over the {THRESHOLD_BYTES / 1024:.0f} KB threshold, "
-        f"each with a split or an exemption naming its item."
+        f"{len(indexed)} index-bounded, "
+        f"{len(exempted)} exempted, each naming the item that fixes it."
     )
     return 0
 

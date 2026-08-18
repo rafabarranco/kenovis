@@ -23,7 +23,7 @@ Install the Framework layer into your own repository with the CLI ([`kenovis` on
 npx kenovis init
 ```
 
-This writes the Framework layer into `.kenovis/` and a `CLAUDE.md` stub — never touches your existing `README.md` or code (DECISIONS.md → DECISION-016, DECISION-017). It inspects your repository first and tells you whether to follow "Starting a new product" (below) or "Adopting an existing product", based on what it actually finds — no flags required.
+This writes the Framework layer into `.kenovis/` and a `CLAUDE.md` stub — never touches your existing `README.md` or code (company-os/DECISIONS.md → DECISION-016, DECISION-017). It inspects your repository first and tells you whether to follow "Starting a new product" (below) or "Adopting an existing product", based on what it actually finds — no flags required.
 
 To pull a newer Framework Release into an Installation later:
 
@@ -31,7 +31,15 @@ To pull a newer Framework Release into an Installation later:
 npx kenovis sync
 ```
 
-`sync` mirror-replaces `.kenovis/` only. Product-layer files and your own code are never touched. Reversible via your repository's own `git diff` / `git checkout`. See [cli/README.md](cli/README.md) for the full command reference.
+`sync` mirror-replaces `.kenovis/` only. Product-layer files and your own code are never touched. Reversible via your repository's own `git diff` / `git checkout`.
+
+To search your own accumulated Product-layer context instead of grepping or guessing which file to open:
+
+```
+npx kenovis context "rate limiting"
+```
+
+Filesystem-only — no network, no backend, nothing indexed or cached between runs — prints ranked `path:startLine-endLine` citations to open with a real read, never file contents itself. See [cli/README.md](cli/README.md) for the full command reference.
 
 ## Starting a new product
 
@@ -45,7 +53,7 @@ Product-layer files carry this marker on their first line:
 
 The marker states which layer a file belongs to, and nothing about whether it has been filled in. It is equally true of a template nobody has answered and of a document that has been this company's own for a year — both are Product layer, and `kenovis sync` leaves both alone. A file without the marker is framework, and works unchanged.
 
-Whether a file still holds unanswered questions is a separate fact, carried by a separate marker: `[ANSWER: ...]`. See [DECISIONS.md](DECISIONS.md) DECISION-022 and DECISION-023.
+Whether a file still holds unanswered questions is a separate fact, carried by a separate marker: `[ANSWER: ...]`. See [company-os/DECISIONS.md](company-os/DECISIONS.md) DECISION-022 and DECISION-023.
 
 ## Adopting an existing product
 
@@ -57,11 +65,11 @@ Read [.kenovis/AI/commands/adopt-project.md](.kenovis/AI/commands/adopt-project.
 
 Read in this order, per the Session Initialization Protocol in [.kenovis/AI/SYSTEM.md](.kenovis/AI/SYSTEM.md):
 
-1. [COMPANY_OS.md](COMPANY_OS.md) — vision, thesis, principles.
-2. [DECISIONS.md](DECISIONS.md) — decisions made and why.
+1. [company-os/COMPANY_OS.md](company-os/COMPANY_OS.md) — vision, thesis, principles.
+2. [company-os/DECISIONS.md](company-os/DECISIONS.md) — decisions made and why.
 3. [.kenovis/AI/SYSTEM.md](.kenovis/AI/SYSTEM.md) — how AI agents operate here.
 
-Then load context relevant to your task: [PRODUCT/](PRODUCT/), [DOMAIN/](DOMAIN/), [ENGINEERING/](ENGINEERING/), [AUTOMATIONS/](AUTOMATIONS/).
+Then load context relevant to your task: [company-os/PRODUCT/](company-os/PRODUCT/), [company-os/DOMAIN/](company-os/DOMAIN/), [company-os/ENGINEERING/](company-os/ENGINEERING/), [company-os/AUTOMATIONS/](company-os/AUTOMATIONS/).
 
 Then run [.kenovis/AI/commands/bootstrap.md](.kenovis/AI/commands/bootstrap.md) before touching anything.
 
@@ -85,21 +93,21 @@ Product layer — rewritten per product:
 
 | Path | Contains |
 |---|---|
-| [COMPANY_OS.md](COMPANY_OS.md) | Company vision, thesis, principles — highest-level context |
-| [DECISIONS.md](DECISIONS.md) | Log of important company/product/engineering decisions |
-| [PRODUCT/](PRODUCT/) | Features, roadmap, user research |
-| [DOMAIN/](DOMAIN/) | Business entities and rules |
-| [ENGINEERING/](ENGINEERING/) | Architecture, database and security design |
-| [AUTOMATIONS/](AUTOMATIONS/) | Onboarding, release and feedback processes |
-| [AI/memory/](AI/memory/) | Glossary, conventions and learnings accumulated by this product |
-| [cli/](cli/) | Actual product implementation. This product chose a top-level `cli/` directory for it — see [ENGINEERING/ARCHITECTURE.md](ENGINEERING/ARCHITECTURE.md) → "Suggested Project Structure". Not a framework requirement: a different product may organize its code anywhere. |
+| [company-os/COMPANY_OS.md](company-os/COMPANY_OS.md) | Company vision, thesis, principles — highest-level context |
+| [company-os/DECISIONS.md](company-os/DECISIONS.md) | Log of important company/product/engineering decisions |
+| [company-os/PRODUCT/](company-os/PRODUCT/) | Features, roadmap, user research |
+| [company-os/DOMAIN/](company-os/DOMAIN/) | Business entities and rules |
+| [company-os/ENGINEERING/](company-os/ENGINEERING/) | Architecture, database and security design |
+| [company-os/AUTOMATIONS/](company-os/AUTOMATIONS/) | Onboarding, release and feedback processes |
+| [company-os/AI/memory/](company-os/AI/memory/) | Glossary, conventions and learnings accumulated by this product |
+| [cli/](cli/) | Actual product implementation. This product chose a top-level `cli/` directory for it — see [company-os/ENGINEERING/ARCHITECTURE.md](company-os/ENGINEERING/ARCHITECTURE.md) → "Suggested Project Structure". Not a framework requirement: a different product may organize its code anywhere. |
 
 ## Source of truth
 
 When information conflicts:
 
 ```
-COMPANY_OS.md → DECISIONS.md → DOMAIN/ → PRODUCT/ → ENGINEERING/ → code
+company-os/COMPANY_OS.md → company-os/DECISIONS.md → company-os/DOMAIN/ → company-os/PRODUCT/ → company-os/ENGINEERING/ → code
 ```
 
 Code is never the source of truth.
@@ -108,4 +116,4 @@ Code is never the source of truth.
 
 Primary development interface: **Claude Code** (VS Code extension), which auto-loads the root [CLAUDE.md](CLAUDE.md).
 
-The AI-OS under [.kenovis/AI/](.kenovis/AI/) is intentionally tool-agnostic plain markdown so it can also be followed by other AI tooling. A tool other than Claude Code should load [.kenovis/AI/SYSTEM.md](.kenovis/AI/SYSTEM.md) as its entry point. See [DECISION-010](DECISIONS.md).
+The AI-OS under [.kenovis/AI/](.kenovis/AI/) is intentionally tool-agnostic plain markdown so it can also be followed by other AI tooling. A tool other than Claude Code should load [.kenovis/AI/SYSTEM.md](.kenovis/AI/SYSTEM.md) as its entry point. See [DECISION-010](company-os/DECISIONS.md).
