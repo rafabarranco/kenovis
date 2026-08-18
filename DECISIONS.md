@@ -55,6 +55,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-040** ★ — Founder-As-Detector Is Rejected; Item 40 Part 3 Dissolves Rather Than Gets A Ratio. `PRODUCT/OPERATING_MODEL.md` Addendum B (founder-supplied, verbatim): the founder executes, searches and looks for nothing — Kenovis owns detection unconditionally, in every round, closing OF-35. Item 40 part 3's "what fraction of rounds may close on instrumentation" dissolves under the same line: no ratio is set or monitored, because monitoring is looking; Kenovis self-governs the instrumentation-versus-product balance inside its own bounded mechanisms and escalates only genuine decisions. Architecturally unchanged: DECISION-010/DECISION-013 still mean nothing runs between sessions — this decision governs what happens inside a round, not whether one starts unprompted.
 - **DECISION-041** — External-Facing Roadmap Work Moves To Last; 1.0.0 Ships Only After The Rest Of The Roadmap Is Done. Closes `PRODUCT/ROADMAP.md` OF-89: any scheduled item or queued finding whose work requires a real external customer or team — item 33 is the current instance — ranks last in `/next` Step 3's priority ordering, below all internal work, regardless of what the priority formula alone would say; 1.0.0 is the release that follows this external-facing work, not tied to an installations count (OF-11 stays open on that number).
 - **DECISION-042** ‡★ — `DECISIONS.md` Stays One File; "Index-Bounded" Becomes A Third First-Class Answer To The Size Threshold, Alongside Split And Archive. Rejects `PRODUCT/ROADMAP.md` item 22 (splitting into `DECISIONS/DECISION-NNN-*.md`) as scoped: the retrieval cost it targeted is already solved by the Decision Index plus a targeted read, and the split's own migration risk to existing Installations was real and unsolved. `check_document_size.py` gains the `"index"` category the policy already named but never implemented; `DECISIONS.md` moves off a "pending item 22" exemption onto it.
+- **DECISION-043** ‡ — The Product Layer Namespaces Under One Visible Root Directory, `company-os/`. Reopens the placement half of DECISION-017 (its `.kenovis/` half is untouched): the seven Product-layer elements relocate from seven generic root names into `company-os/` in every Installation, so a brownfield customer's own files are never overwrite candidates and the Collision Guard's surface drops from seven names to one. Fixed neutral name — a customer-chosen name and per-collision renames were both rejected. Migration lands before 1.0.0 (`PRODUCT/ROADMAP.md` item 44); origin OF-92.
 
 ---
 
@@ -3370,6 +3371,84 @@ The exemption stops citing closed-out work and gets a real, permanent, correctly
 Negative:
 
 `DECISIONS.md` will keep growing, unbounded in raw bytes, forever — this decision accepts that explicitly rather than deferring it. At solo-maintainer scale and append-only editing (never resequenced, never resolved into a merge conflict on the same section by more than one author) this is not yet a real cost; if it becomes one — very large diffs, editor slowness, git operations that notice — that is a new finding to raise then, not a schedule to pre-empt now. The "index-bounded" category is new and has exactly one member (`DECISIONS.md`); whether it generalizes to a second governed document is unknown and not assumed here.
+
+---
+
+# DECISION-043
+
+# Product-Layer Packaging: One Visible Root Directory, `company-os/`
+
+Date:
+
+2026-08-18
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-18
+
+---
+
+## Context
+
+Founder-raised in-session, queued as `PRODUCT/ROADMAP.md` OF-92 and run through `/architect` in the same session at the founder's instruction. The Product layer claims seven generic root names in every Installation (`COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/`). A brownfield target already owning any of them forces the Collision Guard (DECISION-019) to ask the human whether their own pre-existing file gets overwritten or moved aside. The founder's position, verbatim in intent: a customer's files should never be touched and never be the subject of that question at all.
+
+DECISION-017 settled Framework-layer packaging (`.kenovis/`) and kept the Product layer at repo root on the founder's own framing — "la infra product-specific debe estar visible al usuario" — but its options table only ever weighed hidden-vs-root; a visible dedicated parent directory was never on it. DECISION-039's no-mixing rule is satisfied, not violated, by a parent holding only Product-layer content.
+
+Evidence measured before deciding, not estimated: 58 of 64 `framework/` files cite root Product-layer paths, 460 citation lines total; the two setup commands carry ~96 more; 11 of this repository's CI guards cite those paths; the product-layer template bundle mirrors the seven names. Existing external Installations: exactly one, on `kenovis@0.3.0`. After 1.0.0 this becomes a breaking layout change for live Installations; today it is cheap.
+
+---
+
+## Options Considered
+
+### Option A — Status quo
+
+Seven root names plus the Collision Guard. Zero cost. Rejected: the overwrite-or-move-aside question keeps existing for exactly the brownfield segment COMPANY_OS.md names as the initial market, and the founder has now explicitly rejected that question's existence.
+
+### Option B — One visible root directory, fixed neutral name
+
+All seven Product-layer elements re-root under a single visible directory. Collision surface drops from seven generic names to one rare one; a customer's own `PRODUCT/ROADMAP.md` becomes audit input for `/adopt-project` instead of a collision. Side effect: root `AI/` disappears from Installations, removing the standing `AI/` vs `.kenovis/AI/` ambiguity — the same ambiguity class DECISION-039 removed from this repository. Cost: the measured migration above, plus this repository's own dogfooded tree.
+
+### Option B2 — Same, but customer-chosen directory name
+
+Rejected. Framework files cite fixed paths in ~460 places; a variable name means a pointer indirection everywhere, which is the exact mechanism DECISION-016 exists to have removed.
+
+### Option C — Root placement kept; only colliding files get renamed at adopt time
+
+Rejected. Produces a per-Installation layout dependent on what happened to collide. The framework cites one fixed shape; two Installations with different shapes breaks every citation for one of them.
+
+### Option D — Hidden directory (`.kenovis-product/` or inside `.kenovis/`)
+
+Rejected without a full workup, twice over: hiding the Product layer violates the founder's recorded visibility framing (DECISION-017), and anything inside `.kenovis/` is destroyed by sync's mirror-replace (RULE-INST-03 territory, `INSTALL_TIME_OWNED_ENTRIES`' recurring-defect class per Learning-010/011).
+
+---
+
+## Decision
+
+Adopt Option B. The directory is **`company-os/`** — neutral (it is the customer's company operating system, not a vendor artifact, so not `kenovis/`), descriptive, and with near-zero collision probability in real repositories. Chosen by the founder in-session over `kenovis/` and `product-os/`.
+
+- The seven elements re-root unchanged: `company-os/COMPANY_OS.md`, `company-os/DECISIONS.md`, `company-os/PRODUCT/`, `company-os/DOMAIN/`, `company-os/ENGINEERING/`, `company-os/AUTOMATIONS/`, `company-os/AI/memory/`. Re-root only, no internal renames — the smallest diff that delivers the guarantee. Any rename inside (e.g. `AI/memory/` → `memory/`) is separate future work needing its own justification.
+- `/init-project` and `/adopt-project` author into `company-os/`. The Collision Guard survives — a file the framework is allowed to own is still not a file it may discard sight unseen — but its practical surface is one directory name.
+- The CLI is nearly untouched: it never writes Product-layer files (DECISION-021). `company-os` joins `NON_EVIDENCE_ENTRIES` in `cli/src/domain/installation.ts` so a re-run never mistakes an authored Product layer for customer implementation evidence. `DOMAIN/BUSINESS_RULES.md` RULE-INST-01's path list updates to the new shape.
+- This repository migrates its own tree (dogfooding, DECISION-013) in the same item.
+- Lands before 1.0.0. The one existing external Installation gets a documented manual migration note — `sync` never touches the Product layer (RULE-INST-01), so no automated migration ships.
+
+---
+
+## Consequences
+
+Positive: "we never touch and never ask about your files" becomes a guarantee the install can state; collision surface 7 → 1; the double-`AI/` ambiguity disappears from every Installation; one mount point makes "what does Kenovis manage here" answerable by `ls`.
+
+Negative, accepted: ~556 citation lines across `framework/` and the setup commands, the template bundle, 11 CI guards and this repository's own tree all migrate (mechanical, with `check_links.py` and the guard suite as the net); `COMPANY_OS.md` loses root-level prominence, mitigated by the `CLAUDE.md` stub pointing into `company-os/`; a breaking layout change for the one known pre-1.0 Installation, handled by a written migration note.
+
+Implementation: `PRODUCT/ROADMAP.md` item 44. Origin: OF-92.
 
 ---
 
