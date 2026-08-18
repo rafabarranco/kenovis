@@ -258,10 +258,17 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
       `Framework Release: ${result.previousFrameworkVersion ?? UNKNOWN_VERSION} -> ` +
         `${result.frameworkVersion ?? UNKNOWN_VERSION}` +
         (result.previousFrameworkVersion !== null &&
-        result.previousFrameworkVersion === result.frameworkVersion
+        result.previousFrameworkVersion === result.frameworkVersion &&
+        result.removedPaths.length === 0
           ? " (already up to date)"
           : ""),
     );
+    if (result.removedPaths.length > 0) {
+      console.log(`Removed from .kenovis/ (no longer part of this Framework Release):`);
+      for (const removedPath of result.removedPaths) {
+        console.log(`  - ${removedPath}`);
+      }
+    }
     console.log(`CLAUDE.md stub rewritten at ${result.claudeStubWrittenTo}`);
     if (result.setupStillPending) {
       console.log(
