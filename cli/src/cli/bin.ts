@@ -202,6 +202,11 @@ function printInstallResult(result: InitResult): void {
   console.log(`Framework layer installed to ${result.frameworkInstalledTo}`);
   console.log(`Framework Release: ${result.frameworkVersion ?? UNKNOWN_VERSION}`);
   console.log(`CLAUDE.md stub written to ${result.claudeStubWrittenTo}`);
+  if (result.claudeMdAction === "coexisted") {
+    console.log(
+      "Existing CLAUDE.md content preserved — the Kenovis block was appended below it in the same file.",
+    );
+  }
   console.log(
     result.targetReadmeUntouched
       ? "Existing README.md left untouched."
@@ -373,6 +378,11 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
       }
     }
     console.log(`CLAUDE.md stub rewritten at ${result.claudeStubWrittenTo}`);
+    if (result.claudeMdAction === "coexisted") {
+      console.log(
+        "Existing CLAUDE.md content preserved — the Kenovis block was appended below it in the same file.",
+      );
+    }
     printToolAdapterResult(result);
     if (result.setupStillPending) {
       console.log(

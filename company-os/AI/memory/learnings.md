@@ -800,6 +800,36 @@ Disposition: Recorded as a technique; no work implied.
 
 ---
 
+## Learning-054
+
+Date:
+2026-08-19
+
+Category:
+Process
+
+Context:
+Bootstrapping this round, the primary working directory's own `PRODUCT/ROADMAP.md` read as top-of-`Next:` naming OF-83. Recent round narratives (the OF-83/OF-95 round, and the OF-97/OF-74 round before this one) each describe recovering from exactly this staleness the same way: clone fresh into an isolated directory, `git fetch` immediately before the first edit, and re-derive the actual current top candidate rather than trusting the primary directory's snapshot. Multiple of those narratives cite the discipline by name — `kenovis_shared_working_directory_concurrency` — which is not a path inside this repository. It is this session's own Claude Code user-level memory file, external to `company-os/`, external to git, and invisible to any other tool or any other machine.
+
+Problem:
+`.kenovis/AI/SYSTEM.md`/`framework/SYSTEM.md` and DECISION-010 require the Framework layer to stay tool-agnostic — a rule this repository holds itself to, not only customer Installations. A load-bearing operating discipline (this exact race has cost at least three rounds real, if bounded, wasted research before a fresh fetch caught it) currently survives only inside one AI tool's own private, per-user memory cache for this one machine. A different tool, a different machine, or a cleared cache loses it entirely, silently — the same failure `PRODUCT/OPERATING_MODEL.md` §5/§6 names for a thread's own memory, one layer further out: the discipline itself has become a hidden dependency of a "thread," where the thread is now an entire class of session rather than one conversation.
+
+What happened:
+No incident this round — the discipline held, because it happened to be loaded from that external file again. That is exactly the risk: it held by continuity of tooling, not because this repository's own Product layer states it.
+
+Root cause:
+The lesson was learned correctly, and recorded correctly — just in the one place that felt closest at hand (a coding assistant's own persistent-memory feature) rather than in `company-os/AI/memory/learnings.md`, the destination this repository's own constitution names for exactly this kind of reusable lesson. Convenient recall from inside one tool was mistaken for durability across every tool.
+
+Learning:
+A concurrent, multi-session shared working directory (`ListAgents` routinely shows 3-10 other `kenovis-*`/sibling-product sessions active) means: before any `git checkout -b` or branch-level work, clone into an isolated directory and re-fetch `origin/<base>` immediately before the first edit — re-deriving the actual current `Next:` pointer rather than trusting the primary working directory's own possibly-stale read, which can be an hour or more behind by the time bootstrap finishes reading it. This holds regardless of which AI tool or session is doing the work, so it belongs here, not only in one tool's own memory.
+
+Future action:
+None queued as new mechanism — this entry *is* the fix: the discipline now has a durable, tool-agnostic home. `.kenovis/AI/commands/next.md` Step 3 is a candidate for a short pointer to this entry in a future round, if the pattern recurs after this recording.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 

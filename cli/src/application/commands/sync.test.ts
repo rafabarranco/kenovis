@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { runSync } from "./sync.js";
 import { InMemoryFileSystem } from "../../infrastructure/filesystem/InMemoryFileSystem.js";
 import {
+  buildCoexistingClaudeMdContent,
   CLAUDE_MD_HASH_FILENAME,
   claudeStubContent,
   ExistingClaudeMdError,
@@ -94,19 +95,19 @@ test("runSync reports the .kenovis/ path it synced", async () => {
   assert.equal(result.frameworkSyncedTo, join("/repo", ".kenovis"));
 });
 
-test("runSync refuses to overwrite a CLAUDE.md that isn't Kenovis-managed, leaving .kenovis/ untouched", async () => {
+test("runSync preserves a CLAUDE.md that isn't Kenovis-managed, appending the Kenovis block below it (OF-94)", async () => {
   const fs = new InMemoryFileSystem();
   fs.seed(join("/repo", ".kenovis"), "<old install>");
   const claudeMdPath = join("/repo", "CLAUDE.md");
   fs.seed(claudeMdPath, "# My own project instructions\n\nDo not touch this.");
 
-  await assert.rejects(
-    () => runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" }),
-    ExistingClaudeMdError,
-  );
-  assert.equal(fs.files.get(claudeMdPath), "# My own project instructions\n\nDo not touch this.");
-  assert.equal(fs.removedTrees.length, 0);
-  assert.equal(fs.copiedTrees.length, 0);
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(result.claudeMdAction, "coexisted");
+  const written = fs.files.get(claudeMdPath) ?? "";
+  assert.match(written, /My own project instructions\n\nDo not touch this\./);
+  assert.match(written, /# Kenovis AI-OS/);
+  assert.equal(fs.copiedTrees.length, 1);
 });
 
 test("runSync --force overwrites a CLAUDE.md that isn't Kenovis-managed", async () => {
@@ -156,7 +157,7 @@ test("runSync succeeds again on a CLAUDE.md left unchanged since the last sync",
   assert.equal(result.claudeStubWrittenTo, join("/repo", "CLAUDE.md"));
 });
 
-test("runSync refuses content appended below an otherwise-untouched stub, even though the marker line is intact (Learning-007)", async () => {
+test("runSync coexists with content appended below an otherwise-untouched stub, even though the marker line is intact (Learning-007) — the whole file becomes the preserved half, since this CLI has no coexistence boundary for it yet", async () => {
   const fs = new InMemoryFileSystem();
   fs.seed(join("/repo", ".kenovis"), "<old install>");
   const claudeMdPath = join("/repo", "CLAUDE.md");
@@ -167,11 +168,39 @@ test("runSync refuses content appended below an otherwise-untouched stub, even t
   const withAppendedNotes = `${fs.files.get(claudeMdPath)}\nMy own notes below the stub.\n`;
   fs.seed(claudeMdPath, withAppendedNotes);
 
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(result.claudeMdAction, "coexisted");
+  // No coexistence boundary existed yet, so the entire prior file — the old
+  // stub this CLI wrote plus the customer's own appended notes — becomes
+  // the preserved half, and a fresh Kenovis block is appended below it.
+  // Nothing is lost; the old stub now appears twice (once inside the
+  // preserved text, once as the new canonical block), which is the
+  // documented trade-off for never having seen this file before.
+  assert.equal(
+    fs.files.get(claudeMdPath),
+    buildCoexistingClaudeMdContent(withAppendedNotes, claudeStubContent({ pending: false })),
+  );
+});
+
+test("runSync refuses when a coexistence file's own Kenovis-managed block was hand-edited since it was last written", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(join("/repo", ".kenovis"), "<old install>");
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+
+  // First sync coexists with a foreign file, establishing the boundary and the recorded hash.
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+  fs.seed(claudeMdPath, "# My own project instructions\n\nDo not touch this.");
+  await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  // Now hand-edit inside the Kenovis-managed half, past the boundary.
+  const coexisting = fs.files.get(claudeMdPath) ?? "";
+  fs.seed(claudeMdPath, coexisting.replace("Read `.kenovis", "EDITED BY HAND `.kenovis"));
+
   await assert.rejects(
     () => runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" }),
     ExistingClaudeMdError,
   );
-  assert.equal(fs.files.get(claudeMdPath), withAppendedNotes);
 });
 
 test("runSync --force overwrites content appended below an otherwise-untouched stub", async () => {

@@ -59,6 +59,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-044** — No Per-Session Context Budget Is Imposed By Design. Closes `PRODUCT/ROADMAP.md` OF-10 / item 32: the founder declined to set a per-session reading cap ("no hay un contexto máximo por sesión") — the existing bounding work (Decision Index, targeted reads, document lifecycle, `kenovis context`) is confirmed sufficient on its own, not a partial answer awaiting a hard ceiling on top.
 - **DECISION-045** — No MVP Usage Target Is Set — Adoption Count Does Not Gate 1.0.0. Closes `PRODUCT/ROADMAP.md` OF-11 / item 32: the founder declined to set an installations target ("no nos preocupamos por el número de personas que nos usan"), completing what DECISION-041 left open — `1.0.0`'s only remaining gate is the roadmap reaching empty, with item 33 last.
 - **DECISION-046** ‡ — Multi-Tool AI Scaffolding: A Data-Driven Adapter Registry, Not A Hardcoded Tool List. Closes `PRODUCT/ROADMAP.md` OF-96: `kenovis init`/`add` generates per-AI-tool entrypoints (native `.claude/commands/` for Claude Code, an entrypoint file for others) from a `framework/tool-adapters/<id>/` registry selected by an explicit, non-interactive `--tools` flag (default `claude`) — never from tool-identity branching inside the CLI. A new tool is a new adapter file, shipped to every existing Installation via `kenovis sync` (DECISION-026), not a CLI code change tied to a release.
+- **DECISION-047** — CLAUDE.md Coexistence Replaces Refuse-Or-`--force` As The Default. Closes `PRODUCT/ROADMAP.md` OF-94: a pre-existing, non-Kenovis root `CLAUDE.md` no longer aborts the entire `init`/`add`/`sync` run. It is preserved verbatim and the Kenovis block is appended below it (`resolveClaudeMdWrite`, `cli/src/domain/installation.ts`), with the hash sidecar now scoped to the Kenovis block alone so a customer's preserved content is never part of the safety check. `ExistingClaudeMdError` (bypassable with `--force`, which still means "discard and overwrite entirely") now fires only when the Kenovis-managed block itself was hand-edited since it was last written.
 
 ---
 
@@ -3607,6 +3608,62 @@ Positive: closes OF-96's Pain-high finding for Claude Code with a mechanical, lo
 Negative, accepted: a customer must pass `--tools` to get anything beyond the `claude` default and the generic baseline — no zero-config multi-tool experience exists yet, which Option B would have offered unreliably at higher engineering cost; each future adapter still needs someone to write and validate its content, so "add Grok support" is cheap per the mechanism but not free in absolute terms; `framework/tool-adapters/` is a new maintenance surface (however small per entry) that did not exist before.
 
 Implementation: `PRODUCT/ROADMAP.md` item 45. Origin: OF-96.
+
+---
+
+# DECISION-047
+
+# CLAUDE.md Coexistence Replaces Refuse-Or-`--force` As The Default
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-94. Technical implementation choice inside what `PRODUCT/OPERATING_MODEL.md` §2/§4 and Addendum B already assign to the AI-OS (engineering awareness, technical planning), not a product-direction, strategic or business call reserved to the founder.
+
+Review Date:
+
+2027-02-19
+
+---
+
+## Context
+
+`PRODUCT/ROADMAP.md` OF-94, ranked top of the `Next` pointer's cheap-fix cluster once OF-83/OF-95/OF-84/OF-97 closed. Verified against the code before scoping: `kenovis init`/`add`/`sync` (`cli/src/application/commands/init.ts`, `sync.ts`) had exactly two outcomes for a target's existing root `CLAUDE.md` that isn't already a Kenovis-managed stub — throw `ExistingClaudeMdError` and abort the *entire* run before writing anything, or `--force`, which discards the file's content outright. There was no middle path. Refusal was not a partial install with CLAUDE.md skipped; it aborted before `.kenovis/` itself was ever written (`init.ts`'s guard runs before `fs.removeTree`/`fs.copyTree`) — a brownfield customer with any pre-existing `CLAUDE.md` could not install Kenovis at all without first moving the file aside by hand. `COMPANY_OS.md`'s own Ideal Customer Profile names developers "already fluent in agentic tooling" — exactly the segment likely to already have one, so this was not an edge case.
+
+## Options Considered
+
+### Option A — Preserve-and-append coexistence, replacing refusal as the default
+
+Customer's existing content is kept verbatim; the Kenovis stub is appended below it, joined by a fixed delimiter (`splitCoexistingClaudeMd`/`buildCoexistingClaudeMdContent`, `cli/src/domain/installation.ts`). The hash sidecar records the Kenovis block's hash alone (not the whole file), so a future sync can tell "did our own block change" independent of the customer's untouched portion. `--force` keeps its existing meaning (discard everything, write a fresh plain stub) for anyone who wants it. `ExistingClaudeMdError` survives, narrowed to the one case still worth a human's attention: a coexistence file's own Kenovis-managed block was hand-edited since this CLI last wrote it — the customer edited content inside a region they had no reason to think was theirs to keep, and only a human can say which version should win.
+
+Advantages: removes a complete-install blocker for exactly the stated Ideal Customer Profile; nothing is ever silently discarded — strictly gentler than the `--force` escape hatch this CLI already ships; the non-interactive CLI still reports what happened (`ClaudeMdAction`, printed by `bin.ts`), so "explicit confirmation" is satisfied after the fact the same way every other install-time decision this CLI makes already is (`targetReadmeUntouched`, `skippedToolFiles`).
+
+Disadvantages: a customer who syncs before ever seeing this Framework Release's CHANGELOG gets their file modified without having asked for coexistence specifically — mitigated by the file being reported, never destroyed, and by `git diff` being the existing review mechanism `sync`'s own docstring already points customers at (RULE-INST-02). A file this CLI has never established a coexistence boundary for (an old plain stub with notes appended below it, predating this fix) gets wrapped whole on first encounter, so the old stub content appears twice — once inside the newly-preserved text, once as the fresh canonical block. Accepted: still non-destructive, and a one-time cosmetic artifact of the upgrade path rather than a recurring cost.
+
+### Option B — Coexistence gated behind a new explicit flag (e.g. `--merge-claude-md`)
+
+Keep today's refuse-or-`--force` as the unflagged default; add opt-in merging only when asked. Rejected: the customer already expressed intent by running `init`/`add`/`sync` in the first place, and every existing safety mechanism (`--force` itself) works the same way — a flag distinct from `--force` would need to exist and be discovered before this fix helps anyone, and OF-94's own Pain (blocks the entire install) argues for fixing the default, not adding a lever few would find.
+
+### Option C — Prepend Kenovis's block, customer content below
+
+Same append mechanism, reversed order. Rejected as scoped: OF-94's own text explicitly names "append Kenovis's stub... below" the customer's content — this CLI is a guest appending to a file it did not create, not the reverse — and prepending would also break the existing `CLAUDE_STUB_MARKER` prefix-detection convention (`isKenovisManagedClaudeStub`) for the plain-stub case, requiring a second detection path instead of reusing the one already in place.
+
+## Decision
+
+Adopt Option A. `resolveClaudeMdWrite` becomes the single decision point both `init.ts` and `sync.ts` call once an existing, non-force-overwritable `CLAUDE.md` is found: overwrite (already a plain Kenovis stub), coexist (foreign file, or a coexistence file whose block is unchanged), or refuse (a coexistence file's own block was hand-edited).
+
+## Consequences
+
+Positive: closes OF-94's Pain-medium, install-blocking gap for the exact customer segment this product targets; the CLI's non-interactive nature stays fully respected — no prompt is added, the CLI still only ever acts and reports. Negative, accepted: default behavior changes for any existing brownfield customer who has a `CLAUDE.md` — previously a hard stop requiring a manual decision, now an automatic, reported append; the first-encounter case can produce a cosmetically redundant file (old stub content preserved twice) rather than a clean single copy.
+
+Implementation: `cli/src/domain/installation.ts` (`resolveClaudeMdWrite`, `splitCoexistingClaudeMd`, `buildCoexistingClaudeMdContent`, `ClaudeMdAction`), `init.ts`, `sync.ts`, `cli/src/cli/bin.ts`. Tests: `installation.test.ts` (resolver unit tests), `init.test.ts`/`sync.test.ts`/`add.test.ts` (`InMemoryFileSystem`), `NodeFileSystem.integration.test.ts` (real filesystem). Origin: OF-94.
 
 ---
 

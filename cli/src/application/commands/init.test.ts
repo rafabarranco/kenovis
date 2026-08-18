@@ -6,8 +6,12 @@ import { InMemoryFileSystem } from "../../infrastructure/filesystem/InMemoryFile
 import {
   AlreadyInstalledError,
   BrownfieldDetectedError,
+  buildCoexistingClaudeMdContent,
+  CLAUDE_MD_HASH_FILENAME,
   claudeStubContent,
   ExistingClaudeMdError,
+  FRAMEWORK_DIR_NAME,
+  hashClaudeMdContent,
   InvalidFrameworkSourceError,
   FRAMEWORK_VERSION_FILENAME,
 } from "../../domain/installation.js";
@@ -238,20 +242,40 @@ test("runInit does not count an existing target README.md as brownfield evidence
   assert.equal(result.detectedKind, "greenfield");
 });
 
-test("runInit refuses to overwrite a customer's own pre-existing CLAUDE.md, copying nothing", async () => {
+test("runInit preserves a customer's own pre-existing CLAUDE.md, appending the Kenovis block below it (OF-94)", async () => {
   const fs = new InMemoryFileSystem();
   const claudeMdPath = join("/repo", "CLAUDE.md");
-  fs.seed(claudeMdPath, "# My Project\n\nCustom instructions the customer wrote themselves.\n");
+  const customerContent = "# My Project\n\nCustom instructions the customer wrote themselves.\n";
+  fs.seed(claudeMdPath, customerContent);
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+    invokedAs: "init",
+  });
+
+  assert.equal(result.claudeMdAction, "coexisted");
+  const written = fs.files.get(claudeMdPath) ?? "";
+  assert.match(written, /Custom instructions the customer wrote themselves\./);
+  assert.match(written, /# Kenovis AI-OS/);
+  // The customer's content still comes first — this CLI is the guest here.
+  assert.ok(written.indexOf("Custom instructions") < written.indexOf("# Kenovis AI-OS"));
+  assert.equal(fs.copiedTrees.length, 1);
+});
+
+test("runInit refuses when a coexistence file's own Kenovis-managed block was hand-edited since it was written", async () => {
+  const fs = new InMemoryFileSystem();
+  const claudeMdPath = join("/repo", "CLAUDE.md");
+  const stub = claudeStubContent({ pending: false });
+  const coexisting = buildCoexistingClaudeMdContent("# My Project\n\nMy own notes.\n", stub);
+  fs.seed(claudeMdPath, coexisting.replace("Read `.kenovis", "EDITED BY HAND `.kenovis"));
+  fs.seed(join("/repo", FRAMEWORK_DIR_NAME, CLAUDE_MD_HASH_FILENAME), hashClaudeMdContent(stub));
 
   await assert.rejects(
     () => runInit(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo", invokedAs: "init" }),
     ExistingClaudeMdError,
   );
   assert.equal(fs.copiedTrees.length, 0);
-  assert.equal(
-    fs.files.get(claudeMdPath),
-    "# My Project\n\nCustom instructions the customer wrote themselves.\n",
-  );
 });
 
 test("runInit overwrites a customer's own pre-existing CLAUDE.md when --force is passed", async () => {
