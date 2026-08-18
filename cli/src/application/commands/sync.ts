@@ -44,6 +44,13 @@ export interface SyncResult {
   previousFrameworkVersion: string | null;
   /** The Framework Release it tracks now. Null when the bundle carries no stamp. */
   frameworkVersion: string | null;
+  /**
+   * Paths under `.kenovis/` (relative to it) that existed before this sync
+   * and do not after — closes OF-01: the mirror-replace deleted these either
+   * way, silently; this names them instead. Sorted, empty when nothing was
+   * removed.
+   */
+  removedPaths: string[];
 }
 
 /**
@@ -91,6 +98,14 @@ export interface SyncResult {
  * from the existing `.kenovis/` and the incoming bundle before the mirror
  * runs. This is reporting only — the stamp itself ships inside the bundle, so
  * the mirror updates it without any preserve/rewrite rule of its own.
+ *
+ * Also reports every path under `.kenovis/` that existed before this sync and
+ * does not after (`removedPaths`) — closes `PRODUCT/ROADMAP.md` OF-01 / item
+ * 38. RULE-INST-03 already settled that removal itself is correct (the AI-OS
+ * layer belongs to the AI-OS); what was missing was saying so. Compared
+ * before `removeTree` and after every install-time-owned file
+ * (`.setup-pending`, the CLAUDE.md hash sidecar) is written back, so neither
+ * shows up as falsely "removed" on an ordinary sync.
  */
 export async function runSync(
   fs: FileSystemPort,
@@ -130,6 +145,8 @@ export async function runSync(
   const previousFrameworkVersion = await readFrameworkVersion(fs, frameworkDir);
   const frameworkVersion = await readFrameworkVersion(fs, options.frameworkSourceDir);
 
+  const pathsBefore = await fs.walkFiles(frameworkDir);
+
   await fs.removeTree(frameworkDir);
   await fs.copyTree(options.frameworkSourceDir, frameworkDir);
 
@@ -151,11 +168,18 @@ export async function runSync(
   await fs.writeFile(claudeStubPath, newClaudeMdContent);
   await fs.writeFile(hashPath, hashClaudeMdContent(newClaudeMdContent));
 
+  // Diffed after every install-time-owned file above is written back, so
+  // .setup-pending and the hash sidecar never show up as falsely "removed"
+  // on an ordinary sync that only touches the mirrored bundle content.
+  const pathsAfter = new Set(await fs.walkFiles(frameworkDir));
+  const removedPaths = pathsBefore.filter((p) => !pathsAfter.has(p)).sort();
+
   return {
     frameworkSyncedTo: frameworkDir,
     claudeStubWrittenTo: claudeStubPath,
     setupStillPending: pendingMarker !== null,
     previousFrameworkVersion,
     frameworkVersion,
+    removedPaths,
   };
 }
