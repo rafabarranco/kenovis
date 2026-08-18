@@ -560,6 +560,36 @@ Disposition: Recorded as a reusable technique; no work implied. Not promoted to 
 
 ---
 
+## Learning-046
+
+Date:
+2026-08-18
+
+Category:
+Process
+
+Context:
+Item 41's `Next` pointer names its top candidate as needing "a fresh round, not this one" to avoid self-report bias. This session ran item 44's round, then a `/next` round immediately after, both inside the same continuous thread — the pointer's own condition ("a session that did not author the fixes") was checked against the actual session, not assumed satisfied by the fact that a new `/next` invocation had started.
+
+Problem:
+`PRODUCT/OPERATING_MODEL.md` Addendum A's own model is one thread per `/next` invocation — under that model, "a fresh round" and "a new thread" are the same event, so a pointer written for the *next* thread has no way to anticipate being read again inside the *same* thread. This session's user re-invoked `/next` without opening a new thread, which the framework's documents do not forbid and evidently happens in practice. A round that only checks "is this a new `/next` call" rather than "did I, this session, author the thing I'm about to grade" would have declared item 41 closed on its own prior work — the exact OF-30/Learning-031 failure, arrived at by trusting the thread/round boundary instead of checking authorship directly.
+
+What happened:
+Bootstrap re-read the `Next` pointer fresh from disk rather than from conversational memory, which surfaced the "a session that did not author the fixes" condition as text to actually evaluate rather than as context already internalized. Checking it honestly (this session's own conversation includes writing the item 41 §3/§12 fixes) produced the correct answer: skip to the pointer's own named fallback (item 38), and say why in the roadmap rather than silently taking the top item.
+
+Root cause:
+The framework's bias-avoidance language ("a fresh round," "in a fresh thread, not this one") is phrased in terms of the thread/round abstraction, which is usually but not always the same thing as "a session with no authorship stake." Multiple `/next` invocations in one continuous conversation is the case where they diverge, and nothing currently detects that divergence — a round has to notice it by actually checking what it, itself, wrote earlier in the same context.
+
+Learning:
+When a pointer or a Conformance row conditions on "a fresh round" or "independent validation," check authorship directly — does *this specific session's own context* include writing the thing being graded — rather than inferring it from whether a new command was invoked. A new `/next` call is not proof of independence; a continuous conversation carries its own authorship across as many `/next` invocations as the user makes inside it.
+
+Future action:
+None queued — this is a disposition habit for reading pointers, not a mechanism gap with an obvious code or guard fix (the framework has no way to observe conversation boundaries from inside a document). If it recurs enough to be worth a mechanism, that is a fresh finding then, not assumed here.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 
