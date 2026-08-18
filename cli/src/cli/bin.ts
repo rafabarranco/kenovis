@@ -371,6 +371,20 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
           ? " (already up to date)"
           : ""),
     );
+    if (
+      result.previousFrameworkVersion !== null &&
+      result.previousFrameworkVersion !== result.frameworkVersion
+    ) {
+      // Informational only (DECISION-048, OF-78): sync never reads or writes
+      // company-os/ (RULE-INST-01), so this cannot say which document
+      // changed or how much — only that this release may have moved the
+      // templates your own Product layer was authored from.
+      console.log(
+        "This release may have changed Product-layer templates — review " +
+          "framework/templates/product-layer/ against your own company-os/ if you want to " +
+          "pick up any improvements. sync never does this for you.",
+      );
+    }
     if (result.removedPaths.length > 0) {
       console.log(`Removed from .kenovis/ (no longer part of this Framework Release):`);
       for (const removedPath of result.removedPaths) {

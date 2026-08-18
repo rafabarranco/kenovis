@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.13
+Version: 2.14
 
 ---
 
@@ -150,6 +150,7 @@ Evaluate:
 - Technical dependencies.
 - Risk.
 - Effort.
+- Role match (DECISION-050): an `Open` row whose `Role` matches an agent role this round is already activating for its own objective (Step 6) ranks above an equally-aged row with no such match. This is not a scheduling guarantee — no round is required to pick a role-matched row, and DECISION-036's own Refine action still runs on age order regardless of role. It is one more input to the same ranking this step already does, the only reachable form of role-driven routing given no scheduler and no backend exist to run one on their own (DECISION-010, DECISION-013).
 
 ---
 
@@ -475,6 +476,8 @@ company-os/PRODUCT/OPERATING_MODEL.md → Conformance
 **Name the section of the operating model this round's work served, and update that section's row in the Conformance table.** A round that served none says so, in those words, and that is a real and acceptable outcome — a release, a dependency bump and a typo fix all serve none.
 
 **If the table is still the unfilled form it shipped as, build it before updating a row.** The template ships one placeholder row on purpose — setup is the session least equipped to measure conformance, and both setup commands say so — which means the first closing round finds a table with no row for the section it served, and "update that section's row" resolves to nothing. So the population is this step's job, not setup's: write one row per numbered section of the document above, and put `unmeasured` in the State column of every row this round did not actually verify. `unmeasured` is honest and it is something a later round can move; an absent row is indistinguishable from a section nobody served. This is a one-time step per Installation — a table with a row per section is built, and from then on this step only updates rows.
+
+**Updating a row means updating its `As of` date too (DECISION-049).** Write today's date in the `As of` column whenever this round actually checked that row — whether the State changed or not, since a re-confirmed `Partial` is still a check, not a no-op. Every other row keeps its existing date: this step does not require re-verifying all seventeen rows every round, only being honest about which ones this round actually looked at. A table with sixteen stale dates and one fresh one is telling the truth; a table that only ever restates dates it did not check is the failure DECISION-049 exists to prevent.
 
 **Write the declaration, in `company-os/PRODUCT/ROADMAP.md`, next to the item this round closed:**
 

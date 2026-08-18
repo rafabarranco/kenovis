@@ -4,7 +4,7 @@ OPERATING_MODEL.md
 
 Operating Model & Non-Negotiable Rules
 
-Version: 1.1
+Version: 1.2
 ---
 Purpose
 
@@ -58,9 +58,11 @@ One row per numbered section above. The single row below is the form, not the ta
 
 **The first closing round builds the rest**, as a step of `.kenovis/AI/commands/next.md` Step 13, writing `unmeasured` in the State column of every row it did not verify itself. That is where the instruction lives and it is not repeated here, because a table that is never populated cannot have a row updated, and an instruction that only exists in the document being measured is not a step anybody executes.
 
-| § | Rule | State | Carried by |
-|---|---|---|---|
-| 1 | (the section's rule, in one clause) | unmeasured | (the roadmap item or finding id that carries the gap, or "—") |
+**Every State besides `unmeasured` carries the date it was actually last checked**, in the `As of` column — the table does not require every row to be re-checked every round (DECISION-049); it requires staleness to be visible rather than silent. A row a round did not touch keeps its existing date. An `unmeasured` row carries no date, since its own state already says nobody has checked it.
+
+| § | Rule | State | As of | Carried by |
+|---|---|---|---|---|
+| 1 | (the section's rule, in one clause) | unmeasured | — | (the roadmap item or finding id that carries the gap, or "—") |
 
 ## What A Row Means
 
@@ -68,6 +70,6 @@ One row per numbered section above. The single row below is the form, not the ta
 
 `unmeasured` — nobody has checked this row yet. It is the state a row is born in when the table is first built, and it is the only one that carries no claim about the product. It is deliberately not a fourth grade: a row that stays `unmeasured` for many rounds is itself the finding, because the section it names is one nobody's work has served or examined.
 
-A row is not moved to `Present` because a rule was written. A rule that exists and a rule that holds are different claims, and the round that writes one is the worst possible judge of the other. A state change is verified by the command in the row, or by a session that did not author the change.
+A row is not moved to `Present` because a rule was written. A rule that exists and a rule that holds are different claims, and the round that writes one is the worst possible judge of the other. A state change is verified by the command in the row, or by a session that did not author the change. Whichever grade is written, the `As of` date moves with it — a state that did not change but was re-confirmed still gets today's date, since re-confirmation is itself a check.
 
 Do not delete a row to make the table read better. A conformance report that only ever improves is measuring the rounds, not the product.
