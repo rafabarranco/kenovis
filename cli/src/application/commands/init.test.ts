@@ -340,3 +340,59 @@ test("runInit reports an unstamped bundle as unknown instead of inferring a vers
 
   assert.equal(result.frameworkVersion, null);
 });
+
+test("runInit defaults to the claude tool adapter and persists the selection to .kenovis/.tools (DECISION-046)", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(
+    join("/source/framework", "tool-adapters", "claude", "adapter.json"),
+    JSON.stringify({ id: "claude", commandsDir: ".claude/commands" }),
+  );
+  fs.seed(
+    join("/source/framework", "tool-adapters", "claude", "commands", "next.md"),
+    "<!-- kenovis:managed-command-wrapper -->\n...\n",
+  );
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+    invokedAs: "init",
+  });
+
+  assert.deepEqual(result.toolsInstalled, ["claude"]);
+  assert.deepEqual(result.unknownTools, []);
+  assert.equal(fs.files.get(join("/repo", ".kenovis", ".tools")), "claude\n");
+  assert.ok(fs.files.has(join("/repo", ".claude", "commands", "next.md")));
+});
+
+test("runInit honors an explicit --tools selection instead of the default", async () => {
+  const fs = new InMemoryFileSystem();
+  fs.seed(
+    join("/source/framework", "tool-adapters", "cursor", "adapter.json"),
+    JSON.stringify({ id: "cursor" }),
+  );
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+    invokedAs: "init",
+    tools: ["cursor"],
+  });
+
+  assert.deepEqual(result.toolsInstalled, ["cursor"]);
+  assert.equal(fs.files.get(join("/repo", ".kenovis", ".tools")), "cursor\n");
+  assert.equal(fs.files.has(join("/repo", ".claude", "commands")), false);
+});
+
+test("runInit reports a requested tool id this Framework Release ships no adapter for", async () => {
+  const fs = new InMemoryFileSystem();
+
+  const result = await runInit(fs, {
+    frameworkSourceDir: "/source/framework",
+    targetDir: "/repo",
+    invokedAs: "init",
+    tools: ["grok"],
+  });
+
+  assert.deepEqual(result.toolsInstalled, []);
+  assert.deepEqual(result.unknownTools, ["grok"]);
+});

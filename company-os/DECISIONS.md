@@ -58,6 +58,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-043** ‡ — The Product Layer Namespaces Under One Visible Root Directory, `company-os/`. Reopens the placement half of DECISION-017 (its `.kenovis/` half is untouched): the seven Product-layer elements relocate from seven generic root names into `company-os/` in every Installation, so a brownfield customer's own files are never overwrite candidates and the Collision Guard's surface drops from seven names to one. Fixed neutral name — a customer-chosen name and per-collision renames were both rejected. Migration lands before 1.0.0 (`PRODUCT/ROADMAP.md` item 44); origin OF-92.
 - **DECISION-044** — No Per-Session Context Budget Is Imposed By Design. Closes `PRODUCT/ROADMAP.md` OF-10 / item 32: the founder declined to set a per-session reading cap ("no hay un contexto máximo por sesión") — the existing bounding work (Decision Index, targeted reads, document lifecycle, `kenovis context`) is confirmed sufficient on its own, not a partial answer awaiting a hard ceiling on top.
 - **DECISION-045** — No MVP Usage Target Is Set — Adoption Count Does Not Gate 1.0.0. Closes `PRODUCT/ROADMAP.md` OF-11 / item 32: the founder declined to set an installations target ("no nos preocupamos por el número de personas que nos usan"), completing what DECISION-041 left open — `1.0.0`'s only remaining gate is the roadmap reaching empty, with item 33 last.
+- **DECISION-046** ‡ — Multi-Tool AI Scaffolding: A Data-Driven Adapter Registry, Not A Hardcoded Tool List. Closes `PRODUCT/ROADMAP.md` OF-96: `kenovis init`/`add` generates per-AI-tool entrypoints (native `.claude/commands/` for Claude Code, an entrypoint file for others) from a `framework/tool-adapters/<id>/` registry selected by an explicit, non-interactive `--tools` flag (default `claude`) — never from tool-identity branching inside the CLI. A new tool is a new adapter file, shipped to every existing Installation via `kenovis sync` (DECISION-026), not a CLI code change tied to a release.
 
 ---
 
@@ -3527,6 +3528,83 @@ No installations target is set, now or ever, as a `1.0.0` gate. `PRODUCT/ROADMAP
 Positive: removes the one criterion every release round since `0.9.0` re-argued without resolving; `1.0.0` now has a single, unambiguous, purely roadmap-completion gate. Negative, accepted: no adoption signal informs prioritisation before `1.0.0` ships — consistent with COMPANY_OS.md's own Distribution Strategy (no paid acquisition, no sales team, customer satisfaction as the channel) and `PRODUCT/OPERATING_MODEL.md` Addendum C (external usage follows completion, not the other way round).
 
 Implementation: `PRODUCT/ROADMAP.md` → MVP Success Metrics, Usage line. `PRODUCT/ROADMAP.md` OF-11 struck from the queue. Origin: item 32.
+
+---
+
+# DECISION-046
+
+# Multi-Tool AI Scaffolding: A Data-Driven Adapter Registry, Not A Hardcoded Tool List
+
+Date:
+
+2026-08-18
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-18
+
+---
+
+## Context
+
+Founder-raised in-session, queued as `PRODUCT/ROADMAP.md` OF-96, run through `/architect` in the same session at the founder's instruction.
+
+Verified against the code, not inferred: `runInit` (`cli/src/application/commands/init.ts`) writes exactly four things into a target repository — `.kenovis/` (the copied Framework tree), `.kenovis/.setup-pending`, root `CLAUDE.md`, `.kenovis/.claude-md.sha256`. No `.claude/` directory is ever written. `cli/scripts/bundle-framework-assets.mjs` bundles only `framework/` into the npm package — no per-tool scaffolding at all. This directly contradicts `company-os/ENGINEERING/ARCHITECTURE.md` → Hard Rules, which already states as settled fact that "`.claude/`... stay[s] at repo root because Claude Code requires it" — a Hard Rule the code has never implemented, not a new capability being proposed from nothing. This repository's own `.claude/commands/*.md` (12 files, one per `framework/commands/*.md`) proves the native-slash-command shape works — `.claude/commands/next.md` is five lines: a `description:` frontmatter field and "Read `.kenovis/AI/commands/next.md` in full and execute every step in order... Arguments (optional focus/constraint): $ARGUMENTS" — but it is dogfooding-only and never packaged for distribution.
+
+DECISION-010 names Claude Code primary and requires everything under `AI/` to stay tool-agnostic plain markdown; its stated answer for every other tool is "manually load `AI/SYSTEM.md`" as its equivalent entry point — a policy sentence with no CLI behavior behind it, for any tool including Claude Code itself.
+
+Founder's explicit constraint, binding on the option set: no hardcoded, enumerable list of AI tools/models (Claude, Gemini, Grok, GPT, Ollama, DeepSeek, ...) that a human must keep updating every time a new one ships. That would violate DECISION-010's tool-agnosticism at the exact place it is supposed to hold, and does not scale against a market that ships new models faster than this product ships releases.
+
+---
+
+## Options Considered
+
+### Option A — Data-driven adapter registry, selected by an explicit `--tools` flag
+
+Each supported tool is a small declarative spec under `framework/tool-adapters/<id>/` (entrypoint filename, whether it supports native per-command files, the stub template) — data, not a code branch. `kenovis init`/`add` reads `--tools=<id>,<id>,...` (non-interactive, explicit, scriptable — consistent with how `--force` already works), defaulting to `claude` alone when omitted, matching DECISION-010's named primary and today's actual behavior. The CLI's own logic never encodes a tool's identity: it iterates whichever adapters were selected and applies one generic write-these-files-from-this-template routine to each. Within the `claude` adapter, the command-wrapper list itself is derived by listing `framework/commands/*.md` at bundle time — not a hardcoded name list either, so a 13th framework command gets a wrapper automatically. A new tool is a new adapter directory, shipped to every already-installed customer via `kenovis sync` (DECISION-026) the next time they sync, not a CLI code change gated behind a new npm major version.
+
+Advantages: CLI code has zero tool-specific branches, ever — satisfies the founder's constraint at both the tool layer and the command layer. Extending support is a content change, using the exact distribution channel every other framework improvement already uses. Default behavior for existing Claude Code customers is unchanged (still `claude`), just now complete (native commands, closing the gap Hard Rules already claimed was closed).
+
+Disadvantages: a customer on a non-default tool who never reads about `--tools` gets nothing extra out of the box — mitigated by documenting the flag prominently in the CLI's own `--help` and `README.md`, and by the phased rollout below not promising more tools than are actually built.
+
+### Option B — Best-effort detection
+
+Scan the target repository for existing markers (`.cursor/`, `.github/copilot-instructions.md`, `.windsurfrules`, etc.) and auto-select adapters with no flag needed. Rejected: `PRODUCT/OPERATING_MODEL.md` §8 names INIT — a new product, "development has not meaningfully started" — as one of exactly two entry points, and a fresh repository has no marker to detect by construction; the case with a real signal to read (ADD/brownfield) is the minority path. A wrong detection also actively writes files the customer did not ask for, which is worse than writing nothing and pointing at a flag — this CLI already refuses silent, unrequested writes elsewhere (`ExistingClaudeMdError`, the Collision Guard, DECISION-019).
+
+### Option C — Universal-only entrypoint, no native per-tool scaffolding
+
+Emit a single generic file (e.g. `AGENTS.md`) for every install, and never generate a tool's own native command mechanism. Rejected as the sole answer: it does not close OF-96's actual, measured Pain — Claude Code, DECISION-010's own named primary tool and the tool `COMPANY_OS.md`'s Ideal Customer Profile most expects a customer to run, would permanently keep the manual-instruction path instead of the one-keystroke `/next`, `/feature`, `/bug` ergonomics this repository already runs on itself. Folded into Option A instead, as a cheap always-on baseline (see Decision).
+
+---
+
+## Decision
+
+Adopt Option A.
+
+- `framework/tool-adapters/<id>/` becomes a new directory in the Framework layer, one subdirectory per supported tool, each holding only data (entrypoint filename and location, whether native per-command files are supported, the stub/template content) — never CLI logic keyed on the tool's name.
+- `kenovis init`/`add` gain a `--tools=<id>[,<id>...]` flag, non-interactive and explicit per `company-os/ENGINEERING/ARCHITECTURE.md` → Hard Rules' existing non-interactive constraint. Default when omitted: `claude` — unchanged from today's actual primary-tool behavior, now completed rather than redefined.
+- The `claude` adapter's command-wrapper generation lists `framework/commands/*.md` at bundle time and writes one `.claude/commands/<name>.md` per file found, mirroring this repository's own dogfooded `.claude/commands/` mechanically rather than by a maintained list of command names.
+- A cheap, always-on baseline from Option C rides along regardless of `--tools`: every install also gets a generic, tool-agnostic entrypoint pointing at `.kenovis/AI/SYSTEM.md`, so a customer on a tool with no adapter yet is never left with literally nothing, only the same manual-load fallback DECISION-010 already names — now actually written to disk instead of merely documented.
+- `company-os/ENGINEERING/ARCHITECTURE.md` → Hard Rules' existing line ("`.claude/`... stay at repo root because Claude Code requires it") stops being an unimplemented claim once Phase 1 ships; it is not being newly written by this decision, only finally made true.
+- Phased rollout, not everything at once (see `PRODUCT/ROADMAP.md` item 45): Phase 1 ships the registry mechanism and exactly the `claude` adapter, which is the only one with a measured, high-Pain gap today. Later phases add further adapters (Cursor, GitHub Copilot, Gemini CLI, etc.) as separate, individually-scoped content additions — each one is new data under `framework/tool-adapters/`, never a reason to touch `runInit`/`runAdd` again.
+
+---
+
+## Consequences
+
+Positive: closes OF-96's Pain-high finding for Claude Code with a mechanical, low-cost change; makes "support a new AI tool" a content PR instead of a CLI release, reaching every existing Installation through the channel DECISION-026 already built for exactly this; the CLI itself never grows a tool-identity branch, so the founder's scaling concern is structurally satisfied rather than promised.
+
+Negative, accepted: a customer must pass `--tools` to get anything beyond the `claude` default and the generic baseline — no zero-config multi-tool experience exists yet, which Option B would have offered unreliably at higher engineering cost; each future adapter still needs someone to write and validate its content, so "add Grok support" is cheap per the mechanism but not free in absolute terms; `framework/tool-adapters/` is a new maintenance surface (however small per entry) that did not exist before.
+
+Implementation: `PRODUCT/ROADMAP.md` item 45. Origin: OF-96.
 
 ---
 

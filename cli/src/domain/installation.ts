@@ -15,6 +15,20 @@ export const TARGET_README_FILENAME = "README.md";
 export const SETUP_PENDING_FILENAME = ".setup-pending";
 export const CLAUDE_MD_HASH_FILENAME = ".claude-md.sha256";
 export const FRAMEWORK_VERSION_FILENAME = ".framework-version";
+export const TOOL_ADAPTERS_DIRNAME = "tool-adapters";
+export const TOOL_ADAPTER_MANIFEST_FILENAME = "adapter.json";
+export const TOOL_ADAPTER_COMMANDS_DIRNAME = "commands";
+export const TOOLS_MARKER_FILENAME = ".tools";
+
+/**
+ * Selected when `init`/`add` receive no `--tools` flag. Matches DECISION-010
+ * (Claude Code named primary) and today's actual behavior — every prior
+ * Installation already got the CLAUDE.md stub unconditionally, so this
+ * changes nothing for an existing customer while completing what
+ * `company-os/ENGINEERING/ARCHITECTURE.md` Hard Rules already claimed shipped.
+ * See DECISION-046, `PRODUCT/ROADMAP.md` item 45.
+ */
+export const DEFAULT_TOOLS: readonly string[] = ["claude"];
 
 /**
  * Entries that do not count as evidence of a real, pre-existing implementation:
@@ -125,6 +139,22 @@ export function isKenovisManagedClaudeStub(existingClaudeMdContent: string): boo
 }
 
 /**
+ * The exact first line of every tool-adapter command wrapper this CLI has
+ * ever written (`command-wrapper.md.tmpl`, rendered at bundle time — see
+ * `scripts/bundle-framework-assets.mjs`). Same purpose as `CLAUDE_STUB_MARKER`,
+ * scoped to a single generated file rather than the whole install: a customer
+ * may already have their own file at the same path inside a shared directory
+ * like `.claude/commands/` (unlike `.kenovis/`, not a namespace Kenovis owns
+ * outright), so each file is checked and skipped individually rather than the
+ * directory being mirror-replaced wholesale. See DECISION-046.
+ */
+const COMMAND_WRAPPER_MARKER = "<!-- kenovis:managed-command-wrapper -->";
+
+export function isKenovisManagedCommandWrapper(existingContent: string): boolean {
+  return existingContent.startsWith(COMMAND_WRAPPER_MARKER);
+}
+
+/**
  * Hex-encoded SHA-256 of a CLAUDE.md stub's exact content, recorded to
  * `${FRAMEWORK_DIR_NAME}/${CLAUDE_MD_HASH_FILENAME}` every time this CLI
  * writes the stub. Comparing against it on the next run answers "is this
@@ -228,9 +258,32 @@ export function installationKindFromSetupPending(
  * writing state another silently invalidates.
  */
 export const INSTALL_TIME_OWNED_ENTRIES = {
-  preserved: [SETUP_PENDING_FILENAME],
+  preserved: [SETUP_PENDING_FILENAME, TOOLS_MARKER_FILENAME],
   rewritten: [CLAUDE_MD_HASH_FILENAME],
 } as const;
+
+/**
+ * The tool ids selected at install time (DECISION-046), one per line. Written
+ * to `${FRAMEWORK_DIR_NAME}/${TOOLS_MARKER_FILENAME}` so `sync` can re-apply
+ * the same selection without requiring `--tools` again on every run — the
+ * same reason `.setup-pending` exists (see `INSTALL_TIME_OWNED_ENTRIES`).
+ */
+export function toolsMarkerContent(tools: readonly string[]): string {
+  return `${tools.join("\n")}\n`;
+}
+
+/**
+ * Inverse of `toolsMarkerContent`. Returns `null` for a blank/missing marker
+ * (an Installation that predates this mechanism) so the caller falls back to
+ * `DEFAULT_TOOLS` rather than installing nothing.
+ */
+export function parseToolsMarker(markerContent: string): string[] | null {
+  const tools = markerContent
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+  return tools.length > 0 ? tools : null;
+}
 
 /**
  * The Framework Release an Installation currently tracks
@@ -264,7 +317,11 @@ export function parseFrameworkVersion(stampContent: string | null): string | nul
  * may legitimately contain files or directories with any name at all
  * (DECISION-016), so no name-based rule may ever be applied to the target.
  */
-const FRAMEWORK_SOURCE_ALLOWED_ENTRIES = new Set(["AI", TARGET_README_FILENAME]);
+const FRAMEWORK_SOURCE_ALLOWED_ENTRIES = new Set([
+  "AI",
+  TARGET_README_FILENAME,
+  TOOL_ADAPTERS_DIRNAME,
+]);
 
 export class InvalidFrameworkSourceError extends Error {
   constructor(
@@ -274,7 +331,7 @@ export class InvalidFrameworkSourceError extends Error {
     super(
       `${sourceDir} does not look like a Framework-layer bundle: found ` +
         `${unexpectedEntries.join(", ")} at its top level. A Framework source ` +
-        `directory must contain only AI/ and README.md (see ` +
+        `directory must contain only AI/, README.md and tool-adapters/ (see ` +
         `scripts/bundle-framework-assets.mjs). Pointing --source at something wider ` +
         `— e.g. a full product repository — would copy its Product-layer content ` +
         `into the target's ${FRAMEWORK_DIR_NAME}/.`,

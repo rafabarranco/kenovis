@@ -12,12 +12,19 @@ test("parseArgs reads command, positional targetDir, --source, and --force", () 
     targetDir: "/repo",
     sourceDir: "/assets",
     force: true,
+    tools: undefined,
   });
 });
 
 test("parseArgs defaults targetDir to '.' and force to false when omitted", () => {
   const args = parseArgs(["init"]);
-  assert.deepEqual(args, { command: "init", targetDir: ".", sourceDir: undefined, force: false });
+  assert.deepEqual(args, {
+    command: "init",
+    targetDir: ".",
+    sourceDir: undefined,
+    force: false,
+    tools: undefined,
+  });
 });
 
 test("parseArgs leaves sourceDir undefined when --source is not passed", () => {
@@ -32,22 +39,51 @@ test("parseArgs reads the sync command with its own targetDir and --source", () 
     targetDir: "/repo",
     sourceDir: "/assets",
     force: false,
+    tools: undefined,
   });
 });
 
 test("parseArgs reads the add command with its own targetDir and --force", () => {
   const args = parseArgs(["add", "/repo", "--force"]);
-  assert.deepEqual(args, { command: "add", targetDir: "/repo", sourceDir: undefined, force: true });
+  assert.deepEqual(args, {
+    command: "add",
+    targetDir: "/repo",
+    sourceDir: undefined,
+    force: true,
+    tools: undefined,
+  });
 });
 
 test("parseArgs treats a bare targetDir (no recognized subcommand) as the autodetect dispatch", () => {
   const args = parseArgs(["/repo", "--source", "/assets"]);
-  assert.deepEqual(args, { command: "", targetDir: "/repo", sourceDir: "/assets", force: false });
+  assert.deepEqual(args, {
+    command: "",
+    targetDir: "/repo",
+    sourceDir: "/assets",
+    force: false,
+    tools: undefined,
+  });
 });
 
 test("parseArgs with no arguments at all is the autodetect dispatch against '.'", () => {
   const args = parseArgs([]);
-  assert.deepEqual(args, { command: "", targetDir: ".", sourceDir: undefined, force: false });
+  assert.deepEqual(args, {
+    command: "",
+    targetDir: ".",
+    sourceDir: undefined,
+    force: false,
+    tools: undefined,
+  });
+});
+
+test("parseArgs reads --tools as a comma-separated list", () => {
+  const args = parseArgs(["init", "/repo", "--tools", "claude,cursor"]);
+  assert.deepEqual(args.tools, ["claude", "cursor"]);
+});
+
+test("parseArgs trims whitespace and drops empty entries in --tools", () => {
+  const args = parseArgs(["init", "/repo", "--tools", " claude, , cursor "]);
+  assert.deepEqual(args.tools, ["claude", "cursor"]);
 });
 
 test("parseContextArgs reads the query, an optional targetDir, --limit and --include-framework", () => {

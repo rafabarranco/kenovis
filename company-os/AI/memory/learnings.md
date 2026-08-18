@@ -710,6 +710,36 @@ Disposition: Recorded as a technique; no work implied.
 
 ---
 
+## Learning-051
+
+Date:
+2026-08-18
+
+Category:
+Architecture
+
+Context:
+Founder raised that `.claude/` never reaches a customer install, only a root `CLAUDE.md` stub — OF-96, `/architect`, DECISION-046, item 45. While tracing the gap, `company-os/ENGINEERING/ARCHITECTURE.md` → Hard Rules turned out to already state, as settled fact, that `.claude/` "stay[s] at repo root because Claude Code requires it" — a sentence describing behavior the code had never implemented. Nobody had reconciled the two; the doc had simply been trusted.
+
+Problem:
+A Hard Rule is written in prose, cited by later decisions and rounds as a settled constraint, and nothing ever re-checks it against the code it describes. It is indistinguishable, by reading alone, from a Hard Rule that *is* enforced.
+
+What happened:
+The mismatch was found only because this item's own scope required opening `installation.ts`/`init.ts` line by line to design the fix — not by any check that runs regularly. Had the fix been designed from the doc alone (a reasonable thing to do — Hard Rules exist so a round does not have to re-derive them from code every time), it would have "confirmed" a Hard Rule that was never true, and the gap OF-96 exists to close would have looked already closed.
+
+Root cause:
+`ENGINEERING/ARCHITECTURE.md`'s Hard Rules are hand-authored prose with no mechanical link to the code they assert. Nothing plays the role `check_decision_index.py` plays for `DECISIONS.md` (body↔index pairing) or `check_template_refs.py` plays for template citations — there is no guard that a Hard Rule sentence and the CLI behavior it describes have not drifted apart. A decision or a roadmap item gets revisited when its own citation is opened on demand (DECISION-042's mechanism); a Hard Rule gets read and trusted, never re-verified against the artifact.
+
+Learning:
+A Hard Rule (or any prose statement of "the code always does X") is a claim, not a fact, until it is checked against the code in the same session that relies on it — the same discipline this document already applies to decisions ("a decision body is opened on demand") extends to architecture prose that asserts behavior. Citing a Hard Rule as precedent for a new decision without grepping the code it describes repeats exactly the failure DECISION-046's own Context section had to spend an extra step catching.
+
+Future action:
+None queued as new work — `ENGINEERING/ARCHITECTURE.md` line 95 was corrected in the same round that found it (item 45), and no general mechanical guard is proposed here: a guard that verifies arbitrary prose against arbitrary code is the kind of thing this framework's own `.kenovis/AI/policies/testing.md` → "A Guard Belongs Where The Work Is Loaded" has repeatedly rejected building speculatively (see item 6/8's own rejected CI-guard proposals). Recorded as a checking habit for future architecture work, not as a missing mechanism.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 

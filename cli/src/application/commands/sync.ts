@@ -3,6 +3,7 @@ import {
   CLAUDE_MD_HASH_FILENAME,
   CLAUDE_STUB_FILENAME,
   claudeStubContent,
+  DEFAULT_TOOLS,
   detectInstallationKind,
   ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
@@ -12,10 +13,14 @@ import {
   invalidFrameworkSourceEntries,
   isClaudeMdSafeToOverwrite,
   NotInstalledError,
+  parseToolsMarker,
   SETUP_PENDING_FILENAME,
   setupPendingContent,
+  toolsMarkerContent,
+  TOOLS_MARKER_FILENAME,
 } from "../../domain/installation.js";
 import { readFrameworkVersion } from "../frameworkVersion.js";
+import { installSelectedToolAdapters } from "../toolAdapters.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
 
 export interface SyncOptions {
@@ -51,6 +56,12 @@ export interface SyncResult {
    * removed.
    */
   removedPaths: string[];
+  /** Tool ids re-applied this sync (DECISION-046) — from `.kenovis/.tools`, or DEFAULT_TOOLS for an Installation that predates it. */
+  toolsInstalled: string[];
+  /** Requested tool ids the newly-synced Framework Release ships no adapter for. */
+  unknownTools: string[];
+  /** Command-wrapper paths left untouched — see `installSelectedToolAdapters`. */
+  skippedToolFiles: string[];
 }
 
 /**
@@ -104,8 +115,17 @@ export interface SyncResult {
  * 38. RULE-INST-03 already settled that removal itself is correct (the AI-OS
  * layer belongs to the AI-OS); what was missing was saying so. Compared
  * before `removeTree` and after every install-time-owned file
- * (`.setup-pending`, the CLAUDE.md hash sidecar) is written back, so neither
- * shows up as falsely "removed" on an ordinary sync.
+ * (`.setup-pending`, the CLAUDE.md hash sidecar, the `.tools` marker) is
+ * written back, so none of them show up as falsely "removed" on an ordinary
+ * sync.
+ *
+ * Also re-applies whichever AI tool adapters (DECISION-046) this Installation
+ * was set up with — read from `.kenovis/.tools`, the same install-time-owned
+ * marker shape as `.setup-pending` — so a customer's `.claude/commands/`
+ * (or another selected tool's own scaffolding) picks up whatever the newly
+ * synced Framework Release changed, without `--tools` needing to be passed
+ * again on every sync. An Installation predating this marker falls back to
+ * `DEFAULT_TOOLS`, the same default a fresh `init` would choose.
  */
 export async function runSync(
   fs: FileSystemPort,
@@ -139,6 +159,17 @@ export async function runSync(
     ? await fs.readFile(setupPendingPath)
     : null;
 
+  const toolsMarkerPath = join(frameworkDir, TOOLS_MARKER_FILENAME);
+  const existingToolsMarker = (await fs.exists(toolsMarkerPath))
+    ? await fs.readFile(toolsMarkerPath)
+    : null;
+  // Missing marker means an Installation from before DECISION-046 — falls
+  // back to the same default a fresh `init` would choose, rather than
+  // installing nothing on its first sync past this Framework Release.
+  const tools = (existingToolsMarker !== null ? parseToolsMarker(existingToolsMarker) : null) ?? [
+    ...DEFAULT_TOOLS,
+  ];
+
   // Read for reporting only, also before the mirror. Unlike the entries in
   // INSTALL_TIME_OWNED_ENTRIES, the stamp needs no preserve/rewrite rule — the
   // incoming bundle carries its own, so the mirror replaces it correctly.
@@ -167,10 +198,18 @@ export async function runSync(
 
   await fs.writeFile(claudeStubPath, newClaudeMdContent);
   await fs.writeFile(hashPath, hashClaudeMdContent(newClaudeMdContent));
+  await fs.writeFile(toolsMarkerPath, toolsMarkerContent(tools));
+
+  const { installed, unknown, skipped } = await installSelectedToolAdapters(fs, {
+    frameworkSourceDir: options.frameworkSourceDir,
+    targetDir: options.targetDir,
+    tools,
+  });
 
   // Diffed after every install-time-owned file above is written back, so
-  // .setup-pending and the hash sidecar never show up as falsely "removed"
-  // on an ordinary sync that only touches the mirrored bundle content.
+  // .setup-pending, the hash sidecar and the tools marker never show up as
+  // falsely "removed" on an ordinary sync that only touches the mirrored
+  // bundle content.
   const pathsAfter = new Set(await fs.walkFiles(frameworkDir));
   const removedPaths = pathsBefore.filter((p) => !pathsAfter.has(p)).sort();
 
@@ -181,5 +220,8 @@ export async function runSync(
     previousFrameworkVersion,
     frameworkVersion,
     removedPaths,
+    toolsInstalled: installed,
+    unknownTools: unknown,
+    skippedToolFiles: skipped,
   };
 }
