@@ -740,6 +740,36 @@ Disposition: Recorded as a technique; no work implied.
 
 ---
 
+## Learning-052
+
+Date:
+2026-08-18
+
+Category:
+Process
+
+Context:
+After merging PR #150 (OF-96/item 45/DECISION-046), this round tried to advance the shared working directory's own `development` to match and was blocked by Claude Code's Auto Mode permission classifier (now OF-97). The round's own reply to the founder named this as "One thing left undone" — and stopped there. The founder's next message was `Esta planificado?`.
+
+Problem:
+`PRODUCT/OPERATING_MODEL.md` §2 and `.kenovis/AI/SYSTEM.md` → "Nothing Stays In The Thread" both state, in those words, that telling the human is not recording it. This round told the human and did not record it — not from disagreeing with the rule, but from treating a one-line status mention at the end of a reply as if it already satisfied the rule, which is exactly the shape the rule exists to catch.
+
+What happened:
+The founder caught it by asking a direct question rather than by the round noticing on its own. No harm resulted — OF-97 exists now, one exchange later — but ABSOLUTE PRIORITY #1's own text is "the trigger is the moment of discovery, not a checkpoint before the session ends," and this round had already reached the moment (it wrote the sentence describing the gap) without treating that sentence as the trigger.
+
+Root cause:
+Writing "one thing left undone" reads, from the inside, like documentation — it is specific, it is honest, it names the mechanism that failed. But it lives only in the reply, which item 40/§5's own reasoning already establishes is a temporary execution context, not the product-layer's persistent memory. A sentence can be completely accurate and still not be a recording, if the only place it exists is the thread.
+
+Learning:
+Any sentence in a reply that describes a gap, a leftover, or something not done is itself the discovery event `PRODUCT/OPERATING_MODEL.md` §2 requires acting on — write it to `PRODUCT/ROADMAP.md` (or the relevant destination) in the same turn the sentence is written, not as a follow-up once asked. A well-written status update is not a substitute for the write; if anything its precision makes it a more convincing (and more dangerous) illusion of having already recorded something.
+
+Future action:
+None queued as new work — the rule already exists in exactly the words needed (`CLAUDE.md` → "Nothing Stays In The Thread", `SYSTEM.md` §2). This entry exists so a future round recognizes its own "one thing left undone" sentence as the trigger, not as a summary.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 
