@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-08-18
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.14.0]. Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2. The first release since [0.2.0] to carry a CLI code change — `kenovis context` below — alongside the framework-only changes recent releases shipped alone.
+
+`1.0.0` remains out of scope for this release. OF-11 (`PRODUCT/ROADMAP.md`) is still open — no installations target is set — and DECISION-041 already settles that `1.0.0` ships only after the roadmap's external-facing validation work (item 33) runs, ranked last, independent of that number.
+
+**One breaking change for an existing Installation.** DECISION-043 re-roots the Product layer under `company-os/` — see "Changed" below for the exact migration commands. `sync` never touches a Product-layer file you already authored (RULE-INST-01), so this does not happen automatically; run the migration before your next sync.
+
 ### Fixed
 
 - **A fully compliant `/init-project`/`/adopt-project` run could still fail its own Step 11/12 verify check.** `framework/templates/product-layer/PRODUCT/OPERATING_MODEL.md`, `PRODUCT/ROADMAP.md` OF-93. The Conformance table's row example used the `[ANSWER:]` marker reserved for founder questions on all three of its cells, but setup's own Step 2/3 explicitly tell the session to leave that one row unfilled — so the row's brackets always survived Step 11's "zero `[ANSWER:]` matches" check, on every Installation, unconditionally. Confirmed twice by independent fresh-subagent behavioral runs before the fix, and by simulation against the artifact after it: a Step-2-compliant setup now leaves zero `[ANSWER:]` matches, not three. The row was never a question for anyone — it is populated later, by the first closing `/next` round's own Step 13 — so the fix drops the marker rather than adding an exception to the check: the State cell reads the literal `unmeasured`, the other two use plain parenthetical example text.
