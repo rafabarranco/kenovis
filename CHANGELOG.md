@@ -6,6 +6,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking (repository layout) — the Product layer re-roots under `company-os/`.** `DECISIONS.md` DECISION-043, `PRODUCT/ROADMAP.md` item 44. The seven Product-layer elements — `COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/` — move from generic repository-root names into one directory, `company-os/`, so a brownfield customer's own file of the same name is never an overwrite-or-move-aside candidate for the Collision Guard (DECISION-019). Re-root only, no internal renames. `/init-project` and `/adopt-project` now author into `company-os/`; the CLI's `NON_EVIDENCE_ENTRIES` gains `company-os` so a re-run never mistakes an authored Product layer for customer implementation evidence.
+
+  **If you have an existing Installation** (the one known instance is `kenovis@0.3.0`): `sync` never touches your Product layer (RULE-INST-01), so this does not migrate automatically. Before your next sync, from your repository root:
+  ```
+  mkdir company-os
+  git mv COMPANY_OS.md DECISIONS.md company-os/
+  git mv PRODUCT DOMAIN ENGINEERING AUTOMATIONS company-os/
+  mkdir -p company-os/AI
+  git mv AI/memory company-os/AI/memory
+  ```
+  Then sync to the Framework Release that carries this change — it authors `CLAUDE.md` and `.kenovis/AI/` referencing the new `company-os/` paths.
+
 ### Added
 
 - **Citing a closed roadmap item, finding or learning now requires opening the archive it points to, the same discipline this framework already applied to a decision body.** `.kenovis/AI/SYSTEM.md` (1.11 → 1.12) → "Context Loading Rules", `.kenovis/AI/policies/documentation.md` (3.11 → 3.12). Your three archives held 450 KB combined against 285 KB active, and nothing anywhere instructed a round to open one — `grep -l "ARCHIVE"` across every command and workflow returned zero matches. A one-line pointer to a closed row was a citation nobody followed, in a framework whose stated purpose is not rediscovering what it already knows. No new command, no retrieval tooling — the fix reuses the exact "opened on demand, before it is cited" rule already governing `DECISIONS.md`, extended to cover the other three.
