@@ -650,6 +650,36 @@ Disposition: Recorded as a technique; no work implied.
 
 ---
 
+## Learning-049
+
+Date:
+2026-08-18
+
+Category:
+Process
+
+Context:
+Ran all eleven `.github/scripts/check_*.py` guards locally after fixing OF-93, all reported exit 0, pushed the PR — CI's `check_changelog.py` failed immediately: `framework/templates/product-layer/PRODUCT/OPERATING_MODEL.md` had changed with no `CHANGELOG.md` entry.
+
+Problem:
+`check_changelog.py` only compares files against a pull request's base/head SHAs, read from `GITHUB_EVENT_PATH`. With no such event (any local run), it does not silently pass — it prints `"Not a pull_request event — skipping changelog check."` and exits 0. That message is real and honest. It never reached me: the loop this round used to sweep all eleven guards only printed a script's own output on a non-zero exit (`if [ $code -eq 0 ]; then echo "OK"; else ... cat the output; fi`), so the one line that would have said "this didn't actually check anything" was exactly the line suppressed by an exit code the loop treated as good news.
+
+What happened:
+The gap was invisible until CI ran for real, on GitHub, with an actual PR event. The fix there was trivial (a CHANGELOG bullet, pushed as a second commit) — the interesting failure is not the missing changelog entry, it is that a battery of "all green" locally produced false confidence about a check that had not run at all.
+
+Root cause:
+`exit 0` is overloaded to mean both "checked, and it holds" and "could not check, deferring to somewhere it can." A verification loop that only surfaces output on failure treats both alike, and a guard whose skip condition is common locally (no PR context) will skip on nearly every local run without anyone noticing, since the loop only ever shows the one branch of the message that says something is wrong.
+
+Learning:
+When running a battery of check scripts to self-verify before pushing, print every script's own stdout, not only the output attached to a non-zero exit — a script can exit 0 while telling you, in its own first line, that it didn't check what you think it checked. This applies beyond `check_changelog.py`: any check gated on runtime context (CI environment variables, network reachability, a PR event) can only be trusted locally by reading what it actually printed, not by reading its exit code alone.
+
+Future action:
+None queued — the script itself already behaves correctly (explicit skip message, no silent pass); the gap was in this round's own diagnostic habit, not in something to fix on disk.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 
