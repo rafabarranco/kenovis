@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Fixed
+
+- **Setup never asked the one question DECISION-034 depends on: how many roadmap items should a session complete before stopping.** `framework/commands/init-project.md` (1.12 → 1.13), `framework/commands/adopt-project.md` (1.12 → 1.13), `PRODUCT/ROADMAP.md` OF-83. `PRODUCT/OPERATING_MODEL.md`'s template already carried a "5. Working cadence" section asking exactly this, but Step 1/Step 2 of the two setup commands only ever asked the template's first four sections — so a compliant setup left section 5 as an unanswered `[ANSWER: ...]`, and an Installation that wanted a cadence other than the framework's one-item-per-round default had nowhere to say so. Both setup commands now ask a fifth question, worded from the template's own section 5 text.
+
 ## [0.15.0] - 2026-08-18
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.14.0]. Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2. The first release since [0.2.0] to carry a CLI code change — `kenovis context` below — alongside the framework-only changes recent releases shipped alone.

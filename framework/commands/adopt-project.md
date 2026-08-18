@@ -1,6 +1,6 @@
 # Adopt Project Command
 
-Version: 1.12
+Version: 1.13
 
 ---
 
@@ -141,7 +141,7 @@ Who is the first customer segment?
 What problem is painful enough that they would pay to remove it?
 ```
 
-Then ask the four that produce rank 1 of the Source Of Truth Hierarchy. The audit cannot answer any of them — code records what was built, never what it was for:
+Then ask the five that produce rank 1 of the Source Of Truth Hierarchy. The audit cannot answer any of them — code records what was built, never what it was for:
 
 ```
 What is this product for? Not what it does — what it exists to make possible.
@@ -151,11 +151,13 @@ Which responsibilities are the AI-OS's rather than yours?
 Which decisions stay yours?
 
 Which rules must hold no matter what the schedule says?
+
+How many roadmap items should one session or thread complete before stopping? The framework's default is one; say so explicitly if that default is right, or state the cadence that replaces it.
 ```
 
 If the human already has a written statement of any of this, ask for it and keep it **verbatim**. A supplied statement is evidence of intent; summarising it destroys the thing that makes it rank 1.
 
-These four answers go into `company-os/PRODUCT/OPERATING_MODEL.md` in Step 3, and the four above them into `company-os/COMPANY_OS.md` in the same step. Nothing produced by this step is a file of its own.
+These five answers go into `company-os/PRODUCT/OPERATING_MODEL.md` in Step 3, and the four above them into `company-os/COMPANY_OS.md` in the same step. Nothing produced by this step is a file of its own.
 
 Do not continue without answers. Never invent a company. Never keep example content because no answer was given. Never author the operating model on the human's behalf — it is the one Product-layer document the AI does not get to write, because it is the document the AI is measured against.
 
