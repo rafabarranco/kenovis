@@ -496,6 +496,36 @@ Disposition: Fixed as an instance (OF-14). Not promoted to a policy clause — `
 
 ---
 
+## Learning-044
+
+Date:
+2026-08-18
+
+Category:
+Process
+
+Context:
+Re-verifying `PRODUCT/OPERATING_MODEL.md` → Conformance §3 and §12, per item 41's own flagged staleness ("the next round's first move on this item should be exactly that re-verification"). Both rows cited findings (OF-35 for §3; OF-31, OF-55, OF-32 for §12) that had all closed `Fixed` since the rows were last written.
+
+Problem:
+A finding closing `Fixed` and a Conformance row that stops needing its citation are different claims, and nothing had ever distinguished them. §12's three citations had each closed on a narrower target than the row itself makes — OF-31/OF-55 fixed *naming* a role, OF-32 fixed *round-driven* refinement — and the row's own literal text ("the role... processes the discovery") was never any of the three's actual target. Nothing flagged that the citations had quietly stopped meaning what the row's prose still asserted.
+
+What happened:
+Re-running each row's own cited command against the current tree showed both measurements essentially unchanged — the rows are still correctly `Absent`. What had gone stale was only the citation, not the row's truth-value: DECISION-036's Refine mechanism re-checks a queue row's own premise against the tree, but nothing walks the *other* direction — from a Conformance row's citation back to whether the finding it names is still open. A finding can close correctly and still leave a Conformance row pointing at a ghost.
+
+Root cause:
+The table's own "What A Row Means" rule requires an `Absent` row to carry "a finding carrying it or a recorded decision to leave it so" — but nothing re-checks, when a cited finding closes, whether the row that cites it still needs a live pointer. Refine audits the queue; nothing audits the table's outbound citations into the queue.
+
+Learning:
+When a finding closes, grep the Conformance table for its id as a citation, not only its own row in the queue. If the citing row's rule still does not hold, the citation needs a replacement — either a fresh `Open` finding for whatever residual the closed finding didn't actually cover, or the decision that closed it, if that decision is itself the "recorded decision to leave it so" the table asks for. A citation left pointing at a closed id is indistinguishable, on a skim, from a live open question — worse than a stale number, because it reads as tracked when it is not.
+
+Future action:
+No standalone item. Folded into whichever round next widens `commands/next.md` Step 3's `Observe` step (OF-87 already tracks that widening) as a natural addition; until then, a habit for whichever round next touches a Conformance row: grep the table for a finding's id before considering its closure complete. Instance fixed this round: §3 re-pointed to DECISION-040, §12 re-pointed to a new finding, OF-90; item 41's own `Validated when` line also corrected in place, since it named only "a decision" where the table's own rule already allowed a finding too.
+
+Disposition: Fixed as an instance (this round, item 41). Not promoted to a policy clause or guard — a grep-by-id habit at closure time, the same shape Learning-040 and Learning-042 already established for adjacent staleness classes, not a new mechanism.
+
+---
+
 ---
 Learning Examples
 
