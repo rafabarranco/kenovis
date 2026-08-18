@@ -1,4 +1,4 @@
-import { relative, sep } from "node:path";
+import { join, relative, sep } from "node:path";
 import type { FileSystemPort } from "./FileSystemPort.js";
 
 /**
@@ -33,6 +33,17 @@ export class InMemoryFileSystem implements FileSystemPort {
 
   async copyTree(sourceDir: string, targetDir: string): Promise<void> {
     this.copiedTrees.push({ sourceDir, targetDir });
+    // Copy any real nested files a fixture seeded under sourceDir, keyed by
+    // their relative path, so walkFiles(targetDir) reflects them afterwards.
+    for (const [filePath, contents] of [...this.files.entries()]) {
+      const rel = relative(sourceDir, filePath);
+      if (rel.startsWith("..") || rel === "") continue;
+      this.files.set(join(targetDir, rel), contents);
+    }
+    // Directory-existence marker: fixtures that seed only the directory path
+    // itself (no real files inside it) still need exists(targetDir) to hold
+    // afterwards, and walkFiles excludes this exact-path key from its
+    // results the same way it excludes the equivalent seed on sourceDir.
     this.files.set(targetDir, `<copied from ${sourceDir}>`);
   }
 
@@ -53,5 +64,15 @@ export class InMemoryFileSystem implements FileSystemPort {
       entries.add(rel.split(sep)[0]);
     }
     return [...entries];
+  }
+
+  async walkFiles(dirPath: string): Promise<string[]> {
+    const results: string[] = [];
+    for (const filePath of this.files.keys()) {
+      const rel = relative(dirPath, filePath);
+      if (rel.startsWith("..") || rel === "") continue;
+      results.push(rel.split(sep).join("/"));
+    }
+    return results;
   }
 }

@@ -57,7 +57,7 @@ test("runSync against a real filesystem replaces stale files from an older relea
     await writeFile(join(sourceDir, "AI", "SYSTEM.md"), "# System v2\n");
     await writeFile(join(sourceDir, "AI", "new-agent.md"), "# Added in v2\n");
 
-    await runSync(fs, { frameworkSourceDir: sourceDir, targetDir });
+    const result = await runSync(fs, { frameworkSourceDir: sourceDir, targetDir });
 
     const systemMd = await readFile(join(targetDir, ".kenovis", "AI", "SYSTEM.md"), "utf8");
     assert.equal(systemMd, "# System v2\n");
@@ -66,6 +66,7 @@ test("runSync against a real filesystem replaces stale files from an older relea
     assert.equal(newAgent, "# Added in v2\n");
 
     await assert.rejects(() => access(join(targetDir, ".kenovis", "AI", "old-agent.md")));
+    assert.deepEqual(result.removedPaths, ["AI/old-agent.md"]);
   });
 });
 

@@ -51,6 +51,12 @@ jobs:
       - name: Check every promoted learning is findable in its policy
         run: python3 .github/scripts/check_learning_promotions.py
 
+      - name: Check every closed item declares what it left behind
+        run: python3 .github/scripts/check_item_findings.py
+
+      - name: Check the framework layer cites no repository-local script as an enforcement mechanism
+        run: python3 .github/scripts/check_github_citations.py
+
   cli-tests:
     name: cli/ build, typecheck and tests
     runs-on: ubuntu-latest

@@ -4,13 +4,15 @@
 
 ## What is this?
 
-This is where Kenovis's own implementation lives: the CLI that installs and syncs the Kenovis AI-OS (this repository's Framework layer) into a customer's repository. See [DECISIONS.md](../DECISIONS.md) DECISION-013 and [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md) for why this product has no backend or database.
+This is where Kenovis's own implementation lives: the CLI that installs and syncs the Kenovis AI-OS (this repository's Framework layer) into a customer's repository. See [DECISIONS.md](../company-os/DECISIONS.md) DECISION-013 and [ENGINEERING/ARCHITECTURE.md](../company-os/ENGINEERING/ARCHITECTURE.md) for why this product has no backend or database.
 
-[PRODUCT/ROADMAP.md](../PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is done. Shipped: the `init` command's install engine, bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags — greenfield/brownfield auto-detection, and the `sync` command (updates an existing `.kenovis/` in place to a newer Framework Release — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub, never touches Product-layer files or the customer's own code; reversible via the customer's own `git diff`/`git checkout`, per RULE-INST-02). Per [DECISIONS.md](../DECISIONS.md) DECISION-016 and DECISION-017.
+[PRODUCT/ROADMAP.md](../company-os/PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is done. Shipped: the `init` command's install engine, bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags — greenfield/brownfield auto-detection, and the `sync` command (updates an existing `.kenovis/` in place to a newer Framework Release — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub, never touches Product-layer files or the customer's own code; reversible via the customer's own `git diff`/`git checkout`, per RULE-INST-02). Per [DECISIONS.md](../company-os/DECISIONS.md) DECISION-016 and DECISION-017.
 
-Phase 0 item 4 (auto-trigger `init-project`/`adopt-project`, per [DECISIONS.md](../DECISIONS.md) DECISION-018) is also done: `init` now *refuses* on a detected-brownfield target (points at the new `kenovis add` instead, bypassable with `--force`), and `add` refuses symmetrically on a detected-greenfield target. Either command writes a `.kenovis/.setup-pending` marker naming the right AI command and a `CLAUDE.md` stub carrying a first-session directive to run it — so the very next AI session runs `init-project`/`adopt-project` automatically, no manual slash command required. `init-project.md`/`adopt-project.md` delete the marker and revert the stub to its passive form on their own completion. A bare `kenovis <targetDir>` (no subcommand) detects the target itself and dispatches to `init` or `add` internally — it never refuses.
+Phase 0 item 4 (auto-trigger `init-project`/`adopt-project`, per [DECISIONS.md](../company-os/DECISIONS.md) DECISION-018) is also done: `init` now *refuses* on a detected-brownfield target (points at the new `kenovis add` instead, bypassable with `--force`), and `add` refuses symmetrically on a detected-greenfield target. Either command writes a `.kenovis/.setup-pending` marker naming the right AI command and a `CLAUDE.md` stub carrying a first-session directive to run it — so the very next AI session runs `init-project`/`adopt-project` automatically, no manual slash command required. `init-project.md`/`adopt-project.md` delete the marker and revert the stub to its passive form on their own completion. A bare `kenovis <targetDir>` (no subcommand) detects the target itself and dispatches to `init` or `add` internally — it never refuses.
 
-npm publishing is wired up (`.github/workflows/publish.yml`): pushing a GitHub Release triggers CI to build, test, typecheck and `npm publish --provenance --access public` the package — never from a developer's local machine, per [ENGINEERING/SECURITY.md](../ENGINEERING/SECURITY.md) → Supply-Chain Security. Latest publish: [`kenovis@0.2.0`](https://www.npmjs.com/package/kenovis) shipped from the `v0.2.0` GitHub Release, with provenance — closes the `--source` footgun found during Learning-004 smoke testing (`init`/`sync` now validate `--source` before touching anything). `npx kenovis init` now works against any external repository with no local setup.
+[PRODUCT/ROADMAP.md](../company-os/PRODUCT/ROADMAP.md) item 23 (a native retrieval command) is also done: `kenovis context "<query>"` searches an Installation's own `company-os/` (opt-in `--include-framework` also covers `.kenovis/AI/`) and prints ranked `path:startLine-endLine` citations with a short excerpt — filesystem-only, no network, no backend, nothing indexed or cached between runs, per [ENGINEERING/ARCHITECTURE.md](../company-os/ENGINEERING/ARCHITECTURE.md) Hard Rules and DECISION-013. It points at what to open with a real read (the same targeted-read discipline [SYSTEM.md](../.kenovis/AI/SYSTEM.md) → "Context Loading Rules" already requires of a decision body or an archive entry); it never prints file contents itself. v1 is deliberately plain keyword/term-frequency scoring, no embeddings — items 18-22 already bound what a session reads once it knows which citation to open, and this closes the other half: finding which citation to open in the first place.
+
+npm publishing is wired up (`.github/workflows/publish.yml`): pushing a GitHub Release triggers CI to build, test, typecheck and `npm publish --provenance --access public` the package — never from a developer's local machine, per [ENGINEERING/SECURITY.md](../company-os/ENGINEERING/SECURITY.md) → Supply-Chain Security. Latest publish: [`kenovis@0.2.0`](https://www.npmjs.com/package/kenovis) shipped from the `v0.2.0` GitHub Release, with provenance — closes the `--source` footgun found during Learning-004 smoke testing (`init`/`sync` now validate `--source` before touching anything). `npx kenovis init` now works against any external repository with no local setup.
 
 ## Upgrading
 
@@ -34,6 +36,7 @@ If your root `CLAUDE.md` was never written by this CLI at all (predates adopting
 2. Push a git tag matching the version, e.g. `git tag v0.2.0 && git push origin v0.2.0`.
 3. Publish a GitHub Release from that tag (Release notes, `gh release create v0.2.0 --generate-notes` or the GitHub UI).
 4. CI's `publish` workflow runs automatically, verifies `cli/package.json`'s version matches the release tag, then publishes.
+5. Trim `CHANGELOG.md`: any released section below the two most recent moves verbatim to `CHANGELOG-ARCHIVE.md`, leaving one row in "Earlier releases". See `.kenovis/AI/policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline".
 
 ## Structure
 
@@ -51,11 +54,11 @@ cli/
 └── tsconfig.json
 ```
 
-Business rules, product direction and architecture reasoning belong in the root-level [DOMAIN/](../DOMAIN/), [PRODUCT/](../PRODUCT/) and [ENGINEERING/](../ENGINEERING/) folders instead — see [.kenovis/AI/policies/documentation.md](../.kenovis/AI/policies/documentation.md).
+Business rules, product direction and architecture reasoning belong in the root-level [DOMAIN/](../company-os/DOMAIN/), [PRODUCT/](../company-os/PRODUCT/) and [ENGINEERING/](../company-os/ENGINEERING/) folders instead — see [.kenovis/AI/policies/documentation.md](../.kenovis/AI/policies/documentation.md).
 
 ## Layering
 
-Code follows the layering defined in [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md) → Suggested Project Structure, adapted for a CLI with no database or UI:
+Code follows the layering defined in [ENGINEERING/ARCHITECTURE.md](../company-os/ENGINEERING/ARCHITECTURE.md) → Suggested Project Structure, adapted for a CLI with no database or UI:
 
 ```
 src/
@@ -63,7 +66,8 @@ src/
 ├── application/commands/
 │   ├── init.ts                                   install use case: orchestrates the domain rules against a FileSystemPort, refuses on a detected-brownfield target unless invoked as "add" or given --force
 │   ├── add.ts                                     thin wrapper reusing init.ts's runInit with invokedAs: "add" — refuses symmetrically on a detected-greenfield target
-│   └── sync.ts                                   update use case: mirror-replaces .kenovis/ and the CLAUDE.md stub, nothing else
+│   ├── sync.ts                                   update use case: mirror-replaces .kenovis/ and the CLAUDE.md stub, nothing else
+│   └── context.ts                                read-only retrieval use case: chunks company-os/ (and, opt-in, .kenovis/AI/) markdown into paragraphs/table-rows, ranks by keyword overlap, returns citable path:line ranges — writes nothing
 ├── infrastructure/filesystem/
 │   ├── FileSystemPort.ts                         port every layer above depends on, never node:fs directly
 │   ├── NodeFileSystem.ts                          real implementation
@@ -71,7 +75,7 @@ src/
 └── cli/bin.ts                                     argv parsing, default --source resolution, calls the init/add/sync use cases, bare-invocation autodetect dispatch
 ```
 
-The dependency direction holds: `domain/` imports nothing from the layers around it; `application/` depends on the `FileSystemPort` interface, never on `NodeFileSystem` directly. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never touch a customer's own README.md, never write outside version control's reach. The same protection extends to a customer's own pre-existing root `CLAUDE.md`: `init`/`add`/`sync` all refuse to overwrite one that isn't safe to overwrite unless `--force` is passed (`ExistingClaudeMdError`) — a real risk given the target segment already uses agentic tooling (COMPANY_OS.md), so a pre-Kenovis or hand-edited `CLAUDE.md` is a realistic case, not an edge case. `isClaudeMdSafeToOverwrite` compares against a recorded content hash (`.kenovis/.claude-md.sha256`, written by the prior install/sync) when one exists, so content appended below an otherwise-intact stub is caught too, not just a file that was never Kenovis's — falls back to the older `isKenovisManagedClaudeStub` marker-prefix check for an Installation with no recorded hash yet. `sync`'s guard was added later than `init`/`add`'s — see `AI/memory/learnings.md` Learning-006/007/008 for the gaps found and closed. `src/application/commands/init.test.ts`/`sync.test.ts` assert this directly against `InMemoryFileSystem`; `src/infrastructure/filesystem/NodeFileSystem.integration.test.ts` asserts it against a real filesystem in a temp directory.
+The dependency direction holds: `domain/` imports nothing from the layers around it; `application/` depends on the `FileSystemPort` interface, never on `NodeFileSystem` directly. Anything under `infrastructure/filesystem/` that writes to a target repository must respect [DOMAIN/BUSINESS_RULES.md](../company-os/DOMAIN/BUSINESS_RULES.md) RULE-INST-01 and RULE-INST-02 — never touch a customer's own README.md, never write outside version control's reach. The same protection extends to a customer's own pre-existing root `CLAUDE.md`: `init`/`add`/`sync` all refuse to overwrite one that isn't safe to overwrite unless `--force` is passed (`ExistingClaudeMdError`) — a real risk given the target segment already uses agentic tooling (COMPANY_OS.md), so a pre-Kenovis or hand-edited `CLAUDE.md` is a realistic case, not an edge case. `isClaudeMdSafeToOverwrite` compares against a recorded content hash (`.kenovis/.claude-md.sha256`, written by the prior install/sync) when one exists, so content appended below an otherwise-intact stub is caught too, not just a file that was never Kenovis's — falls back to the older `isKenovisManagedClaudeStub` marker-prefix check for an Installation with no recorded hash yet. `sync`'s guard was added later than `init`/`add`'s — see `AI/memory/learnings.md` Learning-006/007/008 for the gaps found and closed. `src/application/commands/init.test.ts`/`sync.test.ts` assert this directly against `InMemoryFileSystem`; `src/infrastructure/filesystem/NodeFileSystem.integration.test.ts` asserts it against a real filesystem in a temp directory.
 
 A `--force` re-install always mirror-replaces `.kenovis/` (`removeTree` then `copyTree`), the same semantics `sync` already used — never a merge that could leave a file retired from an older Framework Release behind.
 
@@ -87,8 +91,9 @@ npm run typecheck
 node bin/kenovis.js init <targetDir>                                    # uses the bundled Framework layer
 node bin/kenovis.js init <targetDir> --source <customFrameworkDir>      # or install something else instead
 node bin/kenovis.js sync <targetDir>                                    # update an existing .kenovis/ in place
+node bin/kenovis.js context "<query>" <targetDir>                      # search that Installation's own company-os/
 ```
 
 ## Before adding anything here
 
-Read [.kenovis/AI/commands/bootstrap.md](../.kenovis/AI/commands/bootstrap.md) first. Do not scaffold anything without understanding [COMPANY_OS.md](../COMPANY_OS.md), [DECISIONS.md](../DECISIONS.md) and [ENGINEERING/ARCHITECTURE.md](../ENGINEERING/ARCHITECTURE.md).
+Read [.kenovis/AI/commands/bootstrap.md](../.kenovis/AI/commands/bootstrap.md) first. Do not scaffold anything without understanding [COMPANY_OS.md](../company-os/COMPANY_OS.md), [DECISIONS.md](../company-os/DECISIONS.md) and [ENGINEERING/ARCHITECTURE.md](../company-os/ENGINEERING/ARCHITECTURE.md).

@@ -26,9 +26,17 @@ Learning-021 and Learning-022:
     section actually contains that learning's rule, or whether the rule is any
     good. A row rewritten to point at a real-but-wrong section passes.
 
+Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "Closed Work
+Is Archived, Not Kept Inline" -> "A learning closes when its rule has been
+promoted" already states the rule this check verifies structurally: the rule
+lives in the policy in that policy's own voice, and the policy cites the
+learning id. Verified 2026-08-16 (PRODUCT/ROADMAP.md item 37).
+
 Scope: this repository's CI only. The bundle ships `.kenovis/AI/`, not
-`.github/`, so an Installation carries the rule as an instruction until
-`kenovis check` ships (PRODUCT/ROADMAP.md item 25).
+`.github/`, so an Installation carries the rule as an instruction with no guard
+behind it. An earlier version of this paragraph said that lasted "until
+`kenovis check` ships (PRODUCT/ROADMAP.md item 25)"; item 25 is rejected and
+`kenovis check` will not ship (DECISIONS.md DECISION-026).
 """
 
 import re
@@ -36,8 +44,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ACTIVE = ROOT / "AI/memory/learnings.md"
-ARCHIVE = ROOT / "AI/memory/LEARNINGS-ARCHIVE.md"
+ACTIVE = ROOT / "company-os/AI/memory/learnings.md"
+ARCHIVE = ROOT / "company-os/AI/memory/LEARNINGS-ARCHIVE.md"
 INDEX_HEADING = "Promoted And Archived"
 
 # A destination cell names zero or more policy sections, in this exact form:
@@ -80,7 +88,7 @@ def main() -> int:
     for rid, destination in rows:
         for policy_file, section in DESTINATION.findall(destination):
             checked_destinations += 1
-            path = ROOT / ".kenovis/AI/policies" / policy_file
+            path = ROOT / "framework/policies" / policy_file
             if not path.exists():
                 errors.append(f"Learning-{rid}: names {policy_file}, which does not exist")
                 continue
