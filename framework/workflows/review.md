@@ -168,7 +168,7 @@ Evaluate:
 Review:
 
 ```
-ENGINEERING/ARCHITECTURE.md
+company-os/ENGINEERING/ARCHITECTURE.md
 ```
 
 If problems are detected:
@@ -186,7 +186,7 @@ Execute:
 Review:
 
 ```
-ENGINEERING/SECURITY.md
+company-os/ENGINEERING/SECURITY.md
 ```
 
 Validate:
@@ -221,13 +221,13 @@ Check:
 Verify:
 
 ```
-PRODUCT/
+company-os/PRODUCT/
 
-DOMAIN/
+company-os/DOMAIN/
 
-ENGINEERING/
+company-os/ENGINEERING/
 
-AI/memory/
+company-os/AI/memory/
 ```
 
 are updated when required.
@@ -242,7 +242,7 @@ Check:
 
 # Phase 10 - Final Review Result
 
-The result is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024. Phase 9 names what survives: `PRODUCT/`, `DOMAIN/`, `ENGINEERING/` and `AI/memory/`. A required improvement that is deferred rather than made is a decision, and belongs in `DECISIONS.md` — and its *work* still needs a disposition, scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+The result is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see company-os/DECISIONS.md DECISION-024. Phase 9 names what survives: `company-os/PRODUCT/`, `company-os/DOMAIN/`, `company-os/ENGINEERING/` and `company-os/AI/memory/`. A required improvement that is deferred rather than made is a decision, and belongs in `company-os/DECISIONS.md` — and its *work* still needs a disposition, scheduled with an id in `company-os/PRODUCT/ROADMAP.md` or rejected with a reason. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 
 Generate result:
 

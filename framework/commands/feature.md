@@ -115,7 +115,7 @@ How do we know this works?
 Review:
 
 ```
-DOMAIN/
+company-os/DOMAIN/
 ```
 
 Identify:
@@ -256,7 +256,7 @@ Before coding, produce a feature plan shaped by:
 .kenovis/AI/templates/feature-plan.md
 ```
 
-That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See company-os/DECISIONS.md DECISION-024.
 
 The plan must include:
 
@@ -384,34 +384,34 @@ Update when necessary:
 Product:
 
 ```
-PRODUCT/
+company-os/PRODUCT/
 ```
 
 Domain:
 
 ```
-DOMAIN/
+company-os/DOMAIN/
 ```
 
 Engineering:
 
 ```
-ENGINEERING/
+company-os/ENGINEERING/
 ```
 
 Decisions:
 
 ```
-DECISIONS.md
+company-os/DECISIONS.md
 ```
 
 ---
 
 # Step 13 - Completion Report
 
-The summary is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. What survives was written in Step 12: `PRODUCT/FEATURES.md`, `DOMAIN/`, `ENGINEERING/` and `DECISIONS.md`.
+The summary is delivered to the human in this session; it is not a file to create, and never anywhere under `.kenovis/` — see company-os/DECISIONS.md DECISION-024. What survives was written in Step 12: `company-os/PRODUCT/FEATURES.md`, `company-os/DOMAIN/`, `company-os/ENGINEERING/` and `company-os/DECISIONS.md`.
 
-Anything this feature surfaced and deliberately left out of scope is scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason, before this report is written — "Out Of Scope" states what was excluded, not what happens to it. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+Anything this feature surfaced and deliberately left out of scope is scheduled with an id in `company-os/PRODUCT/ROADMAP.md` or rejected with a reason, before this report is written — "Out Of Scope" states what was excluded, not what happens to it. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 
 Generate summary:
 

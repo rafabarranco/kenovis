@@ -58,8 +58,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 LEARNINGS = [
-    ROOT / "AI" / "memory" / "learnings.md",
-    ROOT / "AI" / "memory" / "LEARNINGS-ARCHIVE.md",
+    ROOT / "company-os" / "AI" / "memory" / "learnings.md",
+    ROOT / "company-os" / "AI" / "memory" / "LEARNINGS-ARCHIVE.md",
 ]
 
 LEARNING_HEADING = re.compile(r"^## (Learning-\d{3})\s*$", re.MULTILINE)

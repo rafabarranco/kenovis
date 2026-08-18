@@ -40,7 +40,7 @@ Definition: [ANSWER: one sentence, in business language.]
 
 Attributes (conceptually): [ANSWER: the facts that define it. Conceptual, not a database schema — there may be no database.]
 
-Business rules: [ANSWER: any rule attached to this entity, referencing its RULE-ID in `DOMAIN/BUSINESS_RULES.md`. Omit if none.]
+Business rules: [ANSWER: any rule attached to this entity, referencing its RULE-ID in `company-os/DOMAIN/BUSINESS_RULES.md`. Omit if none.]
 
 Relationships: [ANSWER: how it connects to the other entities.]
 
@@ -53,7 +53,7 @@ Domain Invariants
 
 These rules must always be true.
 
-[ANSWER: List the statements that can never be violated, whatever the feature. An invariant is not a preference — if it can be broken by a reasonable product decision, it belongs in `DOMAIN/BUSINESS_RULES.md` instead.]
+[ANSWER: List the statements that can never be violated, whatever the feature. An invariant is not a preference — if it can be broken by a reasonable product decision, it belongs in `company-os/DOMAIN/BUSINESS_RULES.md` instead.]
 ---
 Generic Terminology
 
@@ -61,7 +61,7 @@ Avoid vertical-specific naming in the domain model.
 
 Prefer generic operational concepts that could apply to more than one vertical, unless the product is intentionally single-vertical and that trade-off has been made explicitly.
 
-[ANSWER: State which one this product is, and if single-vertical, where the expansion is scoped in `PRODUCT/ROADMAP.md`.]
+[ANSWER: State which one this product is, and if single-vertical, where the expansion is scoped in `company-os/PRODUCT/ROADMAP.md`.]
 ---
 Domain Evolution Rules
 

@@ -161,7 +161,7 @@ How is it solved today?
 ---
 Strategic Alignment
 
-Does it support the company direction, per COMPANY_OS.md?
+Does it support the company direction, per company-os/COMPANY_OS.md?
 ---
 Step 4
 
@@ -313,7 +313,7 @@ Human judgment is required.
 ---
 Tools Integration
 
-[ANSWER: Which tools actually carry feedback today — collection, triage, communication — and which categories deliberately have no tooling. Must agree with AUTOMATIONS/customer-onboarding.md → Automation Tools.]
+[ANSWER: Which tools actually carry feedback today — collection, triage, communication — and which categories deliberately have no tooling. Must agree with company-os/AUTOMATIONS/customer-onboarding.md → Automation Tools.]
 ---
 First 100 Customers Strategy
 

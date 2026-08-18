@@ -99,7 +99,7 @@ There is no single correct UX/UI approach.
 
 The right approach depends on what is being built.
 
-Before applying any principle below, determine from PRODUCT/, DOMAIN/ and COMPANY_OS.md:
+Before applying any principle below, determine from company-os/PRODUCT/, company-os/DOMAIN/ and company-os/COMPANY_OS.md:
 
 - Platform: web, mobile, desktop, dashboard, CLI-adjacent tool, embedded widget.
 - Audience: consumer, prosumer, internal operator, technical/developer, enterprise buyer.
@@ -394,13 +394,13 @@ Recommendation
 
 Decision
 
-Document non-trivial decisions in `DECISIONS.md` when they constrain future work, and in the feature's `FEATURE-NNN` spec in `PRODUCT/FEATURES.md` when they define user-facing behaviour. Shape them with:
+Document non-trivial decisions in `company-os/DECISIONS.md` when they constrain future work, and in the feature's `FEATURE-NNN` spec in `company-os/PRODUCT/FEATURES.md` when they define user-facing behaviour. Shape them with:
 
 ```
 .kenovis/AI/templates/design-spec.md
 ```
 
-That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See company-os/DECISIONS.md DECISION-024.
 
 Do not revisit a documented decision without new evidence.
 ---
@@ -444,7 +444,7 @@ Regularly review how competitors solve the same user problems.
 Read and update:
 
 ```
-PRODUCT/COMPETITIVE_LANDSCAPE.md
+company-os/PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
 Owner of the Product / UX dimension in that document.
@@ -521,7 +521,7 @@ Mature stage:
 - Raise the bar on edge cases and accessibility depth.
 - Polish matches the feature's actual usage and business weight.
 
-Match rigor to what the company can justify at its current stage. See COMPANY_OS.md.
+Match rigor to what the company can justify at its current stage. See company-os/COMPANY_OS.md.
 ---
 Forbidden Behaviours
 

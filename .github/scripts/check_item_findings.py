@@ -88,7 +88,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-ROADMAP = ROOT / "PRODUCT" / "ROADMAP.md"
+ROADMAP = ROOT / "company-os" / "PRODUCT" / "ROADMAP.md"
 
 ITEM_HEADING = re.compile(r"^(\d+)\. (DONE|SCHEDULED)\b.*$", re.MULTILINE)
 ARCHIVE_POINTER = re.compile(r"→ `PRODUCT/ROADMAP-ARCHIVE\.md`\s*$")

@@ -74,7 +74,7 @@ Technology Stack
 - Frontend (web / mobile): [ANSWER: the choice, or "none".]
 - CLI/tooling layer: [ANSWER: the choice, or "none".]
 - Backend / API layer: [ANSWER: the choice, or "none".]
-- Database engine: [ANSWER: the engine, or "none" — also expanded in ENGINEERING/DATABASE.md.]
+- Database engine: [ANSWER: the engine, or "none" — also expanded in company-os/ENGINEERING/DATABASE.md.]
 - Authentication approach: [ANSWER: the approach, or "none".]
 - Deployment target: [ANSWER: the target, or "none".]
 
@@ -88,13 +88,13 @@ Static Analysis
 ---
 Hard Rules (No Exceptions)
 
-[ANSWER: The rules this product's implementation may never break, whatever the feature. These are not style preferences — each one should be a rule whose violation would be a real defect, and each should trace to a business rule in DOMAIN/BUSINESS_RULES.md or a decision in DECISIONS.md.]
+[ANSWER: The rules this product's implementation may never break, whatever the feature. These are not style preferences — each one should be a rule whose violation would be a real defect, and each should trace to a business rule in company-os/DOMAIN/BUSINESS_RULES.md or a decision in company-os/DECISIONS.md.]
 
 [ANSWER: Examples of the shape, not the content: what the system must never write to; what it must never require network access to; what it must never execute. Write this product's own.]
 ---
 Database
 
-[ANSWER: The engine, or "none" with the reason and the condition under which that changes. Expanded in ENGINEERING/DATABASE.md.]
+[ANSWER: The engine, or "none" with the reason and the condition under which that changes. Expanded in company-os/ENGINEERING/DATABASE.md.]
 ---
 Authentication
 
@@ -196,7 +196,7 @@ src/
 ---
 Feature-Based Organization
 
-As the application grows, prefer feature boundaries over huge shared folders, mirroring the core entities in DOMAIN/DOMAIN_MODEL.md.
+As the application grows, prefer feature boundaries over huge shared folders, mirroring the core entities in company-os/DOMAIN/DOMAIN_MODEL.md.
 ---
 Database Architecture
 
@@ -390,7 +390,7 @@ Any significant technical decision requires:
 
 Document in:
 
-DECISIONS.md
+company-os/DECISIONS.md
 
 ---
 Final Architecture Principle

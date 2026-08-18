@@ -24,7 +24,7 @@ Two situations reach this command, and it must work in both:
 
 Fresh Installation
 
-The Framework layer was installed by `kenovis init` (DECISIONS.md DECISION-017). There is no Product layer yet — not placeholder files, nothing. The product layer gets authored from the templates in `.kenovis/AI/templates/product-layer/`.
+The Framework layer was installed by `kenovis init` (company-os/DECISIONS.md DECISION-017). There is no Product layer yet — not placeholder files, nothing. The product layer gets authored from the templates in `.kenovis/AI/templates/product-layer/`.
 
 Repurposed repository
 
@@ -90,7 +90,7 @@ Zero matches is the normal, expected result in a fresh Installation. It means th
 .kenovis/AI/templates/product-layer/
 ```
 
-One template per product-layer document, at the path it maps to — `product-layer/COMPANY_OS.md` → `COMPANY_OS.md`, `product-layer/DOMAIN/DOMAIN_MODEL.md` → `DOMAIN/DOMAIN_MODEL.md`, and so on. See that directory's own `README.md`.
+One template per product-layer document, at the path it maps to — `product-layer/COMPANY_OS.md` → `company-os/COMPANY_OS.md`, `product-layer/DOMAIN/DOMAIN_MODEL.md` → `company-os/DOMAIN/DOMAIN_MODEL.md`, and so on. See that directory's own `README.md`.
 
 Each template keeps verbatim the parts of its document that are identical for every product, and replaces everything company-specific with an instruction stating what must be answered.
 
@@ -106,7 +106,7 @@ A question for the human. It must not survive into the written document. Every o
 [anything else in brackets]
 ```
 
-Content that legitimately survives: a format specification (`DOMAIN/BUSINESS_RULES.md` → "Rule Format", `PRODUCT/FEATURES.md`'s FEATURE-NNN shape), an illustrative example, a placeholder inside a code or tree sample, or a deliberate "nothing recorded yet" statement in a section the product has genuinely not filled. These are answers, not questions. Leave them.
+Content that legitimately survives: a format specification (`company-os/DOMAIN/BUSINESS_RULES.md` → "Rule Format", `company-os/PRODUCT/FEATURES.md`'s FEATURE-NNN shape), an illustrative example, a placeholder inside a code or tree sample, or a deliberate "nothing recorded yet" statement in a section the product has genuinely not filled. These are answers, not questions. Leave them.
 
 For every Step below:
 
@@ -131,7 +131,7 @@ head -1 <file>
 
 If the marker is missing, the file predates this command and may not be Kenovis's to overwrite — this repository's own product layer is not necessarily the only content that could sit at that path. Stop. Ask the human: overwrite it, or move it aside first. Do not write that file until answered.
 
-Same escape-hatch shape as `ExistingClaudeMdError` in `cli/src/domain/installation.ts` — a file this command is allowed to own is not the same guarantee as a file it may discard sight unseen (AI/memory/learnings.md Learning-006).
+Same escape-hatch shape as `ExistingClaudeMdError` in `cli/src/domain/installation.ts` — a file this command is allowed to own is not the same guarantee as a file it may discard sight unseen (company-os/AI/memory/learnings.md Learning-006).
 
 Files that already carry the marker need no confirmation — that is the expected case in a repurposed repository.
 
@@ -167,7 +167,7 @@ Which rules must hold no matter what the schedule says?
 
 If the human already has a written statement of any of this, ask for it and keep it **verbatim**. A supplied statement is evidence of intent; summarising it destroys the thing that makes it rank 1.
 
-These four answers go into `PRODUCT/OPERATING_MODEL.md` in Step 2, and the four above them into `COMPANY_OS.md` in the same step. Nothing produced by this step is a file of its own.
+These four answers go into `company-os/PRODUCT/OPERATING_MODEL.md` in Step 2, and the four above them into `company-os/COMPANY_OS.md` in the same step. Nothing produced by this step is a file of its own.
 
 Do not continue without answers.
 
@@ -180,7 +180,7 @@ Never invent a company. Never keep the example company because no answer was giv
 Order matters. Everything below depends on what is written here. Two documents, in this order.
 
 ```
-PRODUCT/OPERATING_MODEL.md
+company-os/PRODUCT/OPERATING_MODEL.md
 ```
 
 Template: `product-layer/PRODUCT/OPERATING_MODEL.md`. Collision guard applies (see above).
@@ -192,7 +192,7 @@ Leave the Conformance table at the foot of that template as the form it is — o
 This document exists because a round can only be checked against a criterion that is written down. Where none is, rounds are measured against the machinery instead, and the product drifts from its purpose with every round defensible and nothing recording the drift.
 
 ```
-COMPANY_OS.md
+company-os/COMPANY_OS.md
 ```
 
 Template: `product-layer/COMPANY_OS.md`. Collision guard applies (see above).
@@ -218,7 +218,7 @@ Keep the section structure the template defines. Every `[ANSWER: ...]` instructi
 # Step 3 - Reset The Decision Log
 
 ```
-DECISIONS.md
+company-os/DECISIONS.md
 ```
 
 Template: `product-layer/DECISIONS.md`. Collision guard applies (see above).
@@ -236,8 +236,8 @@ New decisions are numbered from DECISION-001 upwards as they are actually made, 
 # Step 4 - Rewrite The Domain
 
 ```
-DOMAIN/DOMAIN_MODEL.md
-DOMAIN/BUSINESS_RULES.md
+company-os/DOMAIN/DOMAIN_MODEL.md
+company-os/DOMAIN/BUSINESS_RULES.md
 ```
 
 Templates: `product-layer/DOMAIN/DOMAIN_MODEL.md`, `product-layer/DOMAIN/BUSINESS_RULES.md`. Collision guard applies (see above).
@@ -253,10 +253,10 @@ In a repurposed repository: if the new product needs an entity the previous one 
 # Step 5 - Rewrite The Product Layer
 
 ```
-PRODUCT/ROADMAP.md
-PRODUCT/FEATURES.md
-PRODUCT/USER_RESEARCH.md
-PRODUCT/COMPETITIVE_LANDSCAPE.md
+company-os/PRODUCT/ROADMAP.md
+company-os/PRODUCT/FEATURES.md
+company-os/PRODUCT/USER_RESEARCH.md
+company-os/PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
 Templates: the four files under `product-layer/PRODUCT/`. Collision guard applies (see above).
@@ -270,14 +270,14 @@ Leave both as structured empty documents until real research and real competitor
 # Step 6 - Rewrite The Engineering Layer
 
 ```
-ENGINEERING/ARCHITECTURE.md
-ENGINEERING/DATABASE.md
-ENGINEERING/SECURITY.md
+company-os/ENGINEERING/ARCHITECTURE.md
+company-os/ENGINEERING/DATABASE.md
+company-os/ENGINEERING/SECURITY.md
 ```
 
 Templates: the three files under `product-layer/ENGINEERING/`. Collision guard applies (see above).
 
-Decide explicitly and record in DECISIONS.md:
+Decide explicitly and record in company-os/DECISIONS.md:
 
 - Stack.
 - Database engine.
@@ -289,21 +289,21 @@ The framework policies read these documents. .kenovis/AI/policies/database.md an
 
 "None" is a valid answer for a stack line, a database engine or an authentication approach — but it must be written down. A missing line reads as unknown, and unknown is what makes an agent guess.
 
-ARCHITECTURE.md → "Suggested Project Structure" is the single answer to "where does this product's code live". Decide it here explicitly. There is no framework-mandated directory name (DECISIONS.md DECISION-016).
+ARCHITECTURE.md → "Suggested Project Structure" is the single answer to "where does this product's code live". Decide it here explicitly. There is no framework-mandated directory name (company-os/DECISIONS.md DECISION-016).
 
 ---
 
 # Step 7 - Rewrite The Automations
 
 ```
-AUTOMATIONS/customer-onboarding.md
-AUTOMATIONS/release-process.md
-AUTOMATIONS/user-feedback.md
+company-os/AUTOMATIONS/customer-onboarding.md
+company-os/AUTOMATIONS/release-process.md
+company-os/AUTOMATIONS/user-feedback.md
 ```
 
 Templates: the three files under `product-layer/AUTOMATIONS/`. Collision guard applies (see above).
 
-Onboarding depends on what "activated customer" means for this product, and that definition must be checkable — PRODUCT/ROADMAP.md's success metrics read it. Do not carry over another product's definition.
+Onboarding depends on what "activated customer" means for this product, and that definition must be checkable — company-os/PRODUCT/ROADMAP.md's success metrics read it. Do not carry over another product's definition.
 
 ---
 
@@ -311,31 +311,31 @@ Onboarding depends on what "activated customer" means for this product, and that
 
 Templates: the three files under `product-layer/AI/memory/`. Collision guard applies (see above).
 
-These three files are not distributed by the CLI, and the framework depends on them: roughly twenty framework files instruct agents to record a learning in `AI/memory/learnings.md`, promote one into `.kenovis/AI/policies/`, or look up a term in `AI/memory/glossary.md`. Without this Step, every one of those instructions points at a file that does not exist.
+These three files are not distributed by the CLI, and the framework depends on them: roughly twenty framework files instruct agents to record a learning in `company-os/AI/memory/learnings.md`, promote one into `.kenovis/AI/policies/`, or look up a term in `company-os/AI/memory/glossary.md`. Without this Step, every one of those instructions points at a file that does not exist.
 
 ```
-AI/memory/glossary.md
+company-os/AI/memory/glossary.md
 ```
 
-Author the Domain Terms section from the entities defined in Step 4 — every entity in DOMAIN/DOMAIN_MODEL.md should have a term here.
+Author the Domain Terms section from the entities defined in Step 4 — every entity in company-os/DOMAIN/DOMAIN_MODEL.md should have a term here.
 
 Carry the Framework Terms section over from the template unchanged.
 
 ```
-AI/memory/conventions.md
+company-os/AI/memory/conventions.md
 ```
 
 Carry the template over as-is. It is entirely framework-level rules; recorded conventions accumulate later, as real ones are established.
 
 ```
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 ```
 
 Carry the template's rules over unchanged — the Learning Philosophy, the format, the categories, the priority levels, the Review Process. Those are the mechanism by which this product's knowledge accumulates.
 
 The two entries in the template are format examples, not recorded learnings. Leave them or replace them; either way, nothing here yet describes this product.
 
-In a repurposed repository only: before deleting the previous product's recorded learnings, run the Review Process from `AI/memory/learnings.md` first.
+In a repurposed repository only: before deleting the previous product's recorded learnings, run the Review Process from `company-os/AI/memory/learnings.md` first.
 
 1. List every recorded learning marked Critical or Important.
 2. For each one, ask: is this reusable across any product built on this framework, or specific to the product being reset?
@@ -366,7 +366,7 @@ If this repository already ran `/init-project` for a different product before (a
 
 For a genuinely first-time install there is nothing to delete.
 
-`ENGINEERING/ARCHITECTURE.md` → "Suggested Project Structure" (Step 6) records whatever layout this product chooses going forward. A dedicated top-level directory for the implementation is one valid choice, not a rule every product must follow — Step 6 decides it explicitly, it is never a framework default.
+`company-os/ENGINEERING/ARCHITECTURE.md` → "Suggested Project Structure" (Step 6) records whatever layout this product chooses going forward. A dedicated top-level directory for the implementation is one valid choice, not a rule every product must follow — Step 6 decides it explicitly, it is never a framework default.
 
 Do not scaffold anything yet. Scaffolding is the first roadmap item, not part of initialization.
 
@@ -377,7 +377,7 @@ Do not scaffold anything yet. Scaffolding is the first roadmap item, not part of
 First, confirm no unanswered template question survived:
 
 ```
-grep -rn "\[ANSWER:" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/
+grep -rn "\[ANSWER:" company-os/COMPANY_OS.md company-os/DECISIONS.md company-os/DOMAIN/ company-os/PRODUCT/ company-os/ENGINEERING/ company-os/AUTOMATIONS/ company-os/AI/memory/
 ```
 
 Zero matches is the passing result. Every match is a question that was never answered. Either answer it, or replace it with an explicit statement that this product has no answer yet — never leave the instruction itself in place, because the next agent reads it as content.
@@ -386,12 +386,12 @@ The pattern is deliberately not anchored to the start of a line: a template ques
 
 Brackets that are not `[ANSWER:` are not failures — see "Where The Shape Comes From". A correctly completed product layer still contains format specifications, illustrative examples and deliberate "nothing recorded yet" statements, all of them in brackets.
 
-Second, read back what came over verbatim. The check above finds questions that were never answered; it cannot find a section that arrived already answered — about a different product. Templates are derived from the framework's own Product layer, and a derivation that missed a section ships that answer to every Installation (`AI/memory/learnings.md` Learning-017, fixed in three files but not provably absent from the rest).
+Second, read back what came over verbatim. The check above finds questions that were never answered; it cannot find a section that arrived already answered — about a different product. Templates are derived from the framework's own Product layer, and a derivation that missed a section ships that answer to every Installation (`company-os/AI/memory/learnings.md` Learning-017, fixed in three files but not provably absent from the rest).
 
 Read each section that was not written in Steps 2-8 and ask whether it describes this product. A concrete statement about infrastructure, distribution, accounts or tooling is the shape to look for — framework-level prose states principles and formats, never facts about one system:
 
 ```
-grep -rinE "in v1|not applicable|no backend|the CLI|npm" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/
+grep -rinE "in v1|not applicable|no backend|the CLI|npm" company-os/COMPANY_OS.md company-os/DECISIONS.md company-os/DOMAIN/ company-os/PRODUCT/ company-os/ENGINEERING/ company-os/AUTOMATIONS/ company-os/AI/memory/
 ```
 
 A hit is not automatically wrong — this product may genuinely have no backend. It is wrong when nobody decided it. Replace any such sentence with this product's real answer, or with an explicit statement that there is none.
@@ -416,7 +416,7 @@ Every file authored in Steps 2-8 must appear. The markers mark which files are p
 
 # Step 12 - Record The Initialization
 
-Add a decision to DECISIONS.md recording:
+Add a decision to company-os/DECISIONS.md recording:
 
 - What company this repository now serves.
 - The date.
@@ -424,7 +424,7 @@ Add a decision to DECISIONS.md recording:
 
 This is the first decision of the new product.
 
-If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis init` install, per DECISIONS.md DECISION-018):
+If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis init` install, per company-os/DECISIONS.md DECISION-018):
 
 - Delete `.kenovis/.setup-pending`.
 - Rewrite the root `CLAUDE.md` stub back to its passive, steady-state form (no first-session directive).
@@ -434,9 +434,9 @@ If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis i
 
 # Step 13 - Disposition What Initialization Itself Surfaced
 
-By this point every Product-layer destination exists — `PRODUCT/ROADMAP.md`, `DECISIONS.md`, `AI/memory/learnings.md`, `DOMAIN/`, `ENGINEERING/` were all authored in Steps 3-8. Between `kenovis init` and this step, none of them did, so anything noticed earlier in this run had nowhere to go until now — see `.kenovis/AI/SYSTEM.md` → "Nothing Stays In The Thread" for that exception.
+By this point every Product-layer destination exists — `company-os/PRODUCT/ROADMAP.md`, `company-os/DECISIONS.md`, `company-os/AI/memory/learnings.md`, `company-os/DOMAIN/`, `company-os/ENGINEERING/` were all authored in Steps 3-8. Between `kenovis init` and this step, none of them did, so anything noticed earlier in this run had nowhere to go until now — see `.kenovis/AI/SYSTEM.md` → "Nothing Stays In The Thread" for that exception.
 
-Anything noticed while running Steps 1-12 that is not already recorded — a limitation of the chosen stack, a business fact mentioned once and never repeated, a question nobody answered — gets a disposition now, the same as any other session: fixed, scheduled in `PRODUCT/ROADMAP.md`, or rejected. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+Anything noticed while running Steps 1-12 that is not already recorded — a limitation of the chosen stack, a business fact mentioned once and never repeated, a question nobody answered — gets a disposition now, the same as any other session: fixed, scheduled in `company-os/PRODUCT/ROADMAP.md`, or rejected. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 
 A session that found nothing writes nothing here and is done. A session that found something and skips this step is exactly the failure this AI-OS exists to prevent, on its very first run.
 
@@ -463,25 +463,25 @@ Always:
 
 Initialization is complete when:
 
-✓ PRODUCT/OPERATING_MODEL.md carries the owner's own statement of what this product is for, in the owner's words, and its Conformance table is present as an unfilled form.
+✓ company-os/PRODUCT/OPERATING_MODEL.md carries the owner's own statement of what this product is for, in the owner's words, and its Conformance table is present as an unfilled form.
 
-✓ COMPANY_OS.md describes the real company.
+✓ company-os/COMPANY_OS.md describes the real company.
 
-✓ DECISIONS.md carries the decision format and only decisions this company actually made.
+✓ company-os/DECISIONS.md carries the decision format and only decisions this company actually made.
 
-✓ DOMAIN/ describes the real business.
+✓ company-os/DOMAIN/ describes the real business.
 
-✓ PRODUCT/ describes the real roadmap, with research and competitive landscape left empty if none exists.
+✓ company-os/PRODUCT/ describes the real roadmap, with research and competitive landscape left empty if none exists.
 
-✓ ENGINEERING/ records real stack, database and tenancy decisions.
+✓ company-os/ENGINEERING/ records real stack, database and tenancy decisions.
 
-✓ AUTOMATIONS/ describes real processes.
+✓ company-os/AUTOMATIONS/ describes real processes.
 
-✓ AI/memory/ exists, holds this product's vocabulary and the framework's own memory rules, and carries no inherited learnings.
+✓ company-os/AI/memory/ exists, holds this product's vocabulary and the framework's own memory rules, and carries no inherited learnings.
 
 ✓ .gitignore matches the chosen stack, or was deliberately left untouched.
 
-✓ No implementation survives from a previous product, and ENGINEERING/ARCHITECTURE.md describes this product's chosen topology.
+✓ No implementation survives from a previous product, and company-os/ENGINEERING/ARCHITECTURE.md describes this product's chosen topology.
 
 ✓ No `[ANSWER: ...]` template question survives in any product-layer file.
 

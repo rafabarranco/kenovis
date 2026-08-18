@@ -111,11 +111,11 @@ Authorization answers:
 ---
 Authorization Model
 
-[ANSWER: Who may do what, and where that check runs. Must agree with ENGINEERING/ARCHITECTURE.md → Authorization Model. If this product has no accounts and no permissions, say so and give the reason — but do not write "not applicable" over a product that has roles, because the security agent reads this section and will skip what it says is absent.]
+[ANSWER: Who may do what, and where that check runs. Must agree with company-os/ENGINEERING/ARCHITECTURE.md → Authorization Model. If this product has no accounts and no permissions, say so and give the reason — but do not write "not applicable" over a product that has roles, because the security agent reads this section and will skip what it says is absent.]
 ---
 Multi-Tenant Security
 
-[ANSWER: How one tenant is prevented from reaching another tenant's data, and where that is enforced. If the product is single-tenant, say so and point at ENGINEERING/ARCHITECTURE.md → Tenancy Model.]
+[ANSWER: How one tenant is prevented from reaching another tenant's data, and where that is enforced. If the product is single-tenant, say so and point at company-os/ENGINEERING/ARCHITECTURE.md → Tenancy Model.]
 ---
 Personal Data Protection
 
@@ -163,7 +163,7 @@ AI assistance is useful for preparation but does not replace legal advice.
 ---
 Sensitive Operations
 
-[ANSWER: The operations this product performs that are dangerous if they go wrong — the ones worth naming individually rather than covering with a general rule. For each, state the constraint it must never violate, and reference the RULE-ID in DOMAIN/BUSINESS_RULES.md that it traces to.]
+[ANSWER: The operations this product performs that are dangerous if they go wrong — the ones worth naming individually rather than covering with a general rule. For each, state the constraint it must never violate, and reference the RULE-ID in company-os/DOMAIN/BUSINESS_RULES.md that it traces to.]
 
 [ANSWER: Examples of the shape, not the content: writing to something the product does not own, moving money, deleting history, granting access. Write this product's own — a product whose most dangerous operation is a database write has a different list from one that installs files on a customer's machine.]
 ---

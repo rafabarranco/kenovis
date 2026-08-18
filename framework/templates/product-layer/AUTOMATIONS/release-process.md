@@ -115,7 +115,7 @@ Purpose:
 
 Requirements:
 
-[ANSWER: What must be true before a change is allowed into production. Include how the artifact is versioned and where it is released from, and reference ENGINEERING/SECURITY.md → Supply-Chain Security for the trust requirements.]
+[ANSWER: What must be true before a change is allowed into production. Include how the artifact is versioned and where it is released from, and reference company-os/ENGINEERING/SECURITY.md → Supply-Chain Security for the trust requirements.]
 
 - [ANSWER: Backup and rollback requirements before a production release, or the reason none apply.]
 ---
@@ -178,7 +178,7 @@ Must include tests.
 
 Examples:
 
-- Core domain calculations, per DOMAIN/BUSINESS_RULES.md.
+- Core domain calculations, per company-os/DOMAIN/BUSINESS_RULES.md.
 - Permissions.
 ---
 Database Changes

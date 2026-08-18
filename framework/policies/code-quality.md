@@ -236,7 +236,7 @@ Run this sequence, in order, before declaring any code task done. It is delibera
 
 This document is the baseline. Prefer running the project's actual tool over manual self-review whenever the tool is runnable in this session — a real tool is always more accurate and more current than any static checklist.
 
-Typical tool families, by language (read `ENGINEERING/ARCHITECTURE.md` for what this project actually uses — never assume):
+Typical tool families, by language (read `company-os/ENGINEERING/ARCHITECTURE.md` for what this project actually uses — never assume):
 
 - JavaScript/TypeScript: ESLint (+ `typescript-eslint`, plus the relevant framework plugin), `tsc --noEmit`.
 - Python: Ruff or Pylint, Mypy or Pyright, Bandit for security.
@@ -260,7 +260,7 @@ Some quality gates (SonarQube behind a build server, DAST scanners, license/SBOM
 When that is the case for this project:
 
 - Do not skip the self-check because "CI will catch it." CI feedback arrives too late to be useful during implementation.
-- If the project maintains an export of its active ruleset (e.g. `ENGINEERING/CODE_QUALITY.md`, generated from the real tool's configuration — never hand-written from memory), self-review against that export before declaring work done, in addition to the categories above.
+- If the project maintains an export of its active ruleset (e.g. `company-os/ENGINEERING/CODE_QUALITY.md`, generated from the real tool's configuration — never hand-written from memory), self-review against that export before declaring work done, in addition to the categories above.
 - Keep that export machine-generated and regenerated whenever the tool's active ruleset changes. A stale hand-maintained rule list is worse than no list — it creates false confidence.
 
 ---

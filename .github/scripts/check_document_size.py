@@ -64,15 +64,15 @@ THRESHOLD_BYTES = 60 * 1024
 # still prints its size, because an archive nobody watches is how the next 120 KB
 # arrives unnoticed.
 GOVERNED = {
-    "PRODUCT/ROADMAP.md": {"split": "PRODUCT/ROADMAP-ARCHIVE.md"},
-    "PRODUCT/ROADMAP-ARCHIVE.md": {"archive_of": "PRODUCT/ROADMAP.md"},
-    "DECISIONS.md": {
+    "company-os/PRODUCT/ROADMAP.md": {"split": "company-os/PRODUCT/ROADMAP-ARCHIVE.md"},
+    "company-os/PRODUCT/ROADMAP-ARCHIVE.md": {"archive_of": "company-os/PRODUCT/ROADMAP.md"},
+    "company-os/DECISIONS.md": {
         "index": "its own Decision Index bounds what a session reads at start "
         "(check_decision_index.py verifies it stays complete); a decision body "
         "is opened by a targeted read, never the whole file (DECISION-042)",
     },
-    "AI/memory/learnings.md": {"split": "AI/memory/LEARNINGS-ARCHIVE.md"},
-    "AI/memory/LEARNINGS-ARCHIVE.md": {"archive_of": "AI/memory/learnings.md"},
+    "company-os/AI/memory/learnings.md": {"split": "company-os/AI/memory/LEARNINGS-ARCHIVE.md"},
+    "company-os/AI/memory/LEARNINGS-ARCHIVE.md": {"archive_of": "company-os/AI/memory/learnings.md"},
     "CHANGELOG.md": {"split": "CHANGELOG-ARCHIVE.md"},
     "CHANGELOG-ARCHIVE.md": {"archive_of": "CHANGELOG.md"},
 }

@@ -9,7 +9,7 @@ This repository has two layers — see [README.md](README.md) and [CLAUDE.md](CL
 | Layer | Path | Accepts contributions? |
 |---|---|---|
 | **Framework** | `.kenovis/AI/`, `CLAUDE.md`, `README.md`, `cli/README.md` | Yes — this is what the project is |
-| **Product** | `COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/`, `cli/` | No — this is placeholder content showing the expected shape for someone starting their own product |
+| **Product** | `company-os/COMPANY_OS.md`, `company-os/DECISIONS.md`, `company-os/PRODUCT/`, `company-os/DOMAIN/`, `company-os/ENGINEERING/`, `company-os/AUTOMATIONS/`, `company-os/AI/memory/`, `cli/` | No — this is placeholder content showing the expected shape for someone starting their own product |
 
 PRs that fill in the product layer with a real or fictional business will be closed. That layer is meant to stay empty scaffolding — see [.kenovis/AI/commands/init-project.md](.kenovis/AI/commands/init-project.md).
 
@@ -25,20 +25,20 @@ Before adding a new agent, workflow, policy, or command, check whether an existi
 
 ## Rules
 
-- **Stay tool-agnostic under `.kenovis/AI/`.** Per [DECISION-010](DECISIONS.md), the AI-OS must be followable by any AI tool, not just Claude Code. Tool-specific mechanisms (Skills, hooks, slash-command syntax) belong in the root `CLAUDE.md` only, never inside `.kenovis/AI/`. **Exception:** [DECISION-012](DECISIONS.md) carves out the `graphify` knowledge-graph CLI — `.kenovis/AI/commands/bootstrap.md` and `.kenovis/AI/workflows/*.md` reference `graphify query`/`explain`/`affected`/`god-nodes` directly. This is scoped to that one tool; don't use it as precedent for adding other tool-specific mechanisms inside `.kenovis/AI/`.
-- **Stay domain-agnostic.** Don't bake in assumptions about a specific vertical, stack, or tenancy model. Where a policy needs to reference something product-specific (e.g. a tenant key), it should say "look it up in `ENGINEERING/DATABASE.md`," not assume a name.
+- **Stay tool-agnostic under `.kenovis/AI/`.** Per [DECISION-010](company-os/DECISIONS.md), the AI-OS must be followable by any AI tool, not just Claude Code. Tool-specific mechanisms (Skills, hooks, slash-command syntax) belong in the root `CLAUDE.md` only, never inside `.kenovis/AI/`. **Exception:** [DECISION-012](company-os/DECISIONS.md) carves out the `graphify` knowledge-graph CLI — `.kenovis/AI/commands/bootstrap.md` and `.kenovis/AI/workflows/*.md` reference `graphify query`/`explain`/`affected`/`god-nodes` directly. This is scoped to that one tool; don't use it as precedent for adding other tool-specific mechanisms inside `.kenovis/AI/`.
+- **Stay domain-agnostic.** Don't bake in assumptions about a specific vertical, stack, or tenancy model. Where a policy needs to reference something product-specific (e.g. a tenant key), it should say "look it up in `company-os/ENGINEERING/DATABASE.md`," not assume a name.
 - **No secrets, no real business data.** This applies to examples too — use placeholders, not anything resembling a real customer, company, or dataset.
 - **Keep the `PROJECT-SPECIFIC` marker convention intact.** If you touch a product-layer file, the marker HTML comment on line 1 must survive.
-- **Never name a template as a destination.** Per [DECISION-024](DECISIONS.md), everything under `.kenovis/AI/templates/` is a form. An instruction that produces an artifact names three things separately: the artifact, the Product-layer document recording its durable residue, and the template that shapes it. CI enforces the visible half — any reference to a working template must state the rule or cite DECISION-024 within a few lines (`.github/scripts/check_template_refs.py`).
+- **Never name a template as a destination.** Per [DECISION-024](company-os/DECISIONS.md), everything under `.kenovis/AI/templates/` is a form. An instruction that produces an artifact names three things separately: the artifact, the Product-layer document recording its durable residue, and the template that shapes it. CI enforces the visible half — any reference to a working template must state the rule or cite DECISION-024 within a few lines (`.github/scripts/check_template_refs.py`).
 
 ## Framework Definition of Done
 
-The framework asks products to keep a changelog and a decision log (`.kenovis/AI/policies/documentation.md`, `AI/memory/learnings.md`). It must hold itself to the same standard — a framework that only documents other people's decisions is not practicing what it enforces.
+The framework asks products to keep a changelog and a decision log (`.kenovis/AI/policies/documentation.md`, `company-os/AI/memory/learnings.md`). It must hold itself to the same standard — a framework that only documents other people's decisions is not practicing what it enforces.
 
 Before a framework-layer PR (touching `.kenovis/AI/`, `CLAUDE.md`, or `README.md`) is considered done:
 
 - **CHANGELOG.md** — add a bullet under `[Unreleased]` describing what changed. CI checks this automatically for any PR touching `.kenovis/AI/**`, `CLAUDE.md`, or `README.md`. If the change is wording/typo-only and doesn't alter behavior, include `[skip changelog]` in the PR title or description instead. Released sections older than the two most recent live in `CHANGELOG-ARCHIVE.md`; the trim is a step of cutting a release (`cli/README.md` → "Cutting a release"), never something a feature PR does.
-- **DECISIONS.md** — add an entry when the change alters an agent's responsibilities, a workflow's phases, or a policy's mechanics (not for wording clarity or typo fixes). This is a judgment call, not CI-enforced — explain the reasoning in the PR description either way, per the rule below.
+- **company-os/DECISIONS.md** — add an entry when the change alters an agent's responsibilities, a workflow's phases, or a policy's mechanics (not for wording clarity or typo fixes). This is a judgment call, not CI-enforced — explain the reasoning in the PR description either way, per the rule below.
 
 ## Versioning framework files
 
@@ -52,7 +52,7 @@ A stale version number next to heavily edited content is worse than no version n
 
 ## Knowledge graph (graphify)
 
-This repo uses [graphify](https://graphify.net/) to keep context loading (bootstrap, feature/bugfix/review workflows) cheap in tokens — agents query a graph instead of reading the full doc/code tree every session. See [DECISION-012](DECISIONS.md).
+This repo uses [graphify](https://graphify.net/) to keep context loading (bootstrap, feature/bugfix/review workflows) cheap in tokens — agents query a graph instead of reading the full doc/code tree every session. See [DECISION-012](company-os/DECISIONS.md).
 
 Setup, once per clone:
 

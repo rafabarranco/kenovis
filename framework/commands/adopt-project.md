@@ -16,7 +16,7 @@ The difference is not cosmetic:
 
 `/adopt-project` assumes the code already decided most of this. It reads the code first, then asks the human only to confirm or correct what it found — not to decide from scratch.
 
-Both commands author their documents from the same templates in `.kenovis/AI/templates/product-layer/` (DECISIONS.md DECISION-021). What differs is where the answers come from: `/init-project` asks the human, `/adopt-project` reads the code and has the human confirm.
+Both commands author their documents from the same templates in `.kenovis/AI/templates/product-layer/` (company-os/DECISIONS.md DECISION-021). What differs is where the answers come from: `/init-project` asks the human, `/adopt-project` reads the code and has the human confirm.
 
 Treating an adoption like an initialization destroys a working product: `/init-project` Step 10 deletes leftover implementation on the assumption of a pivot, Step 6 asks the human to "decide" a stack that is already running, and Step 5 leaves research empty even when real, if undocumented, market context exists in the team's heads.
 
@@ -27,7 +27,7 @@ Treating an adoption like an initialization destroys a working product: `/init-p
 Execute when:
 
 - The target repository already contains a real implementation that predates the Kenovis AI-OS — wherever it actually lives (repo root, `src/`, a monorepo package). It never needs to be moved into any particular folder for this command to apply.
-- Product-layer files (`COMPANY_OS.md`, `DECISIONS.md`, `DOMAIN/`, `PRODUCT/`, `ENGINEERING/`) are absent, or still carry example/placeholder content, while the actual product is running somewhere in the repository. Absent is the normal case: `kenovis add` installs the Framework layer and nothing else.
+- Product-layer files (`company-os/COMPANY_OS.md`, `company-os/DECISIONS.md`, `company-os/DOMAIN/`, `company-os/PRODUCT/`, `company-os/ENGINEERING/`) are absent, or still carry example/placeholder content, while the actual product is running somewhere in the repository. Absent is the normal case: `kenovis add` installs the Framework layer and nothing else.
 
 Command:
 
@@ -91,7 +91,7 @@ head -1 <file>
 
 If the marker is missing, the file predates this command and may not be Kenovis's to overwrite — a brownfield target is exactly the case most likely to already have its own file at that path. Stop. Ask the human: overwrite it, or move it aside first. Do not write that file until answered.
 
-Same escape-hatch shape as `ExistingClaudeMdError` in `cli/src/domain/installation.ts` — a file this command is allowed to own is not the same guarantee as a file it may discard sight unseen (AI/memory/learnings.md Learning-006).
+Same escape-hatch shape as `ExistingClaudeMdError` in `cli/src/domain/installation.ts` — a file this command is allowed to own is not the same guarantee as a file it may discard sight unseen (company-os/AI/memory/learnings.md Learning-006).
 
 Files that already carry the marker need no confirmation.
 
@@ -155,7 +155,7 @@ Which rules must hold no matter what the schedule says?
 
 If the human already has a written statement of any of this, ask for it and keep it **verbatim**. A supplied statement is evidence of intent; summarising it destroys the thing that makes it rank 1.
 
-These four answers go into `PRODUCT/OPERATING_MODEL.md` in Step 3, and the four above them into `COMPANY_OS.md` in the same step. Nothing produced by this step is a file of its own.
+These four answers go into `company-os/PRODUCT/OPERATING_MODEL.md` in Step 3, and the four above them into `company-os/COMPANY_OS.md` in the same step. Nothing produced by this step is a file of its own.
 
 Do not continue without answers. Never invent a company. Never keep example content because no answer was given. Never author the operating model on the human's behalf — it is the one Product-layer document the AI does not get to write, because it is the document the AI is measured against.
 
@@ -166,7 +166,7 @@ Do not continue without answers. Never invent a company. Never keep example cont
 Two documents, in this order.
 
 ```
-PRODUCT/OPERATING_MODEL.md
+company-os/PRODUCT/OPERATING_MODEL.md
 ```
 
 Template: `product-layer/PRODUCT/OPERATING_MODEL.md`. Collision guard applies (see above).
@@ -178,7 +178,7 @@ This is the one document adoption cannot reconstruct from the code, and the reas
 Leave the Conformance table at the foot of that template as the form it is. Filling it during adoption would be recording states nobody measured, in the session least equipped to measure them.
 
 ```
-COMPANY_OS.md
+company-os/COMPANY_OS.md
 ```
 
 Template: `product-layer/COMPANY_OS.md`. Collision guard applies (see above).
@@ -192,7 +192,7 @@ Code has no opinion on this layer. It depends entirely on the Step 2 answers.
 # Step 4 - Start The Decision Log, Then Reconstruct It
 
 ```
-DECISIONS.md
+company-os/DECISIONS.md
 ```
 
 Template: `product-layer/DECISIONS.md`. Collision guard applies (see above).
@@ -213,8 +213,8 @@ A Low-confidence entry is still worth recording — mark it as needing verificat
 # Step 5 - Derive The Domain
 
 ```
-DOMAIN/DOMAIN_MODEL.md
-DOMAIN/BUSINESS_RULES.md
+company-os/DOMAIN/DOMAIN_MODEL.md
+company-os/DOMAIN/BUSINESS_RULES.md
 ```
 
 Templates: `product-layer/DOMAIN/DOMAIN_MODEL.md`, `product-layer/DOMAIN/BUSINESS_RULES.md`. Collision guard applies (see above).
@@ -228,10 +228,10 @@ Where the code's entity names or relationships are ambiguous, confirm meaning wi
 # Step 6 - Author The Product Layer
 
 ```
-PRODUCT/ROADMAP.md
-PRODUCT/FEATURES.md
-PRODUCT/USER_RESEARCH.md
-PRODUCT/COMPETITIVE_LANDSCAPE.md
+company-os/PRODUCT/ROADMAP.md
+company-os/PRODUCT/FEATURES.md
+company-os/PRODUCT/USER_RESEARCH.md
+company-os/PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
 Templates: the four files under `product-layer/PRODUCT/`. Collision guard applies (see above).
@@ -247,27 +247,27 @@ USER_RESEARCH.md and COMPETITIVE_LANDSCAPE.md: same rule as `init-project.md` �
 # Step 7 - Reconcile The Engineering Layer
 
 ```
-ENGINEERING/ARCHITECTURE.md
-ENGINEERING/DATABASE.md
-ENGINEERING/SECURITY.md
+company-os/ENGINEERING/ARCHITECTURE.md
+company-os/ENGINEERING/DATABASE.md
+company-os/ENGINEERING/SECURITY.md
 ```
 
 Templates: the three files under `product-layer/ENGINEERING/`. Collision guard applies (see above).
 
 Unlike `init-project.md` Step 6, do not "decide explicitly." Answer the templates' `[ANSWER: ...]` instructions from the Step 1 audit: the stack, database engine, tenancy model, authentication approach, and deployment target the code already runs.
 
-ARCHITECTURE.md → "Suggested Project Structure" describes the layout the repository already has. Adoption never relocates working code to match a shape a document suggests (DECISIONS.md DECISION-016). See Step 11.
+ARCHITECTURE.md → "Suggested Project Structure" describes the layout the repository already has. Adoption never relocates working code to match a shape a document suggests (company-os/DECISIONS.md DECISION-016). See Step 11.
 
-The human's role here is to confirm or correct the audit, not to choose from a blank slate. If the human wants to change something the code currently does differently, that is a new decision going forward — record it as such in DECISIONS.md, separate from the reconstruction entries.
+The human's role here is to confirm or correct the audit, not to choose from a blank slate. If the human wants to change something the code currently does differently, that is a new decision going forward — record it as such in company-os/DECISIONS.md, separate from the reconstruction entries.
 
 ---
 
 # Step 8 - Author The Automations
 
 ```
-AUTOMATIONS/customer-onboarding.md
-AUTOMATIONS/release-process.md
-AUTOMATIONS/user-feedback.md
+company-os/AUTOMATIONS/customer-onboarding.md
+company-os/AUTOMATIONS/release-process.md
+company-os/AUTOMATIONS/user-feedback.md
 ```
 
 Templates: the three files under `product-layer/AUTOMATIONS/`. Collision guard applies (see above).
@@ -280,10 +280,10 @@ Where the repository already has evidence of these processes (a CI/CD pipeline, 
 
 Templates: the three files under `product-layer/AI/memory/`. Collision guard applies (see above).
 
-The CLI does not distribute these three files, and roughly twenty framework files depend on them — instructing agents to record a learning in `AI/memory/learnings.md`, promote one into `.kenovis/AI/policies/`, or look up a term in `AI/memory/glossary.md`. Skip this Step and every one of those instructions points at a file that does not exist.
+The CLI does not distribute these three files, and roughly twenty framework files depend on them — instructing agents to record a learning in `company-os/AI/memory/learnings.md`, promote one into `.kenovis/AI/policies/`, or look up a term in `company-os/AI/memory/glossary.md`. Skip this Step and every one of those instructions points at a file that does not exist.
 
 ```
-AI/memory/glossary.md
+company-os/AI/memory/glossary.md
 ```
 
 Author the Domain Terms section from vocabulary drawn from real code identifiers — entity names, table names, class names — confirmed against Step 5, never invented terminology.
@@ -291,18 +291,18 @@ Author the Domain Terms section from vocabulary drawn from real code identifiers
 Carry the Framework Terms section over from the template unchanged.
 
 ```
-AI/memory/conventions.md
+company-os/AI/memory/conventions.md
 ```
 
 Carry the template over as-is, then add any convention the Step 1 audit found the codebase actually follows — naming patterns, folder organization, established architectural patterns. Cite the evidence, same rule as Step 12.
 
 ```
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 ```
 
 Carry the template's rules over unchanged: the Learning Philosophy, the format, the categories, the priority levels, the Review Process.
 
-Record no learnings yet. What the audit found belongs in `ENGINEERING/`, `DOMAIN/` and `conventions.md` as current state — a learning is something this team learned, not something an audit inferred.
+Record no learnings yet. What the audit found belongs in `company-os/ENGINEERING/`, `company-os/DOMAIN/` and `conventions.md` as current state — a learning is something this team learned, not something an audit inferred.
 
 In a repurposed repository only: before deleting inherited conventions and learnings, run the same Review Process `init-project.md` Step 8 requires — promote any Critical/Important, reusable learning to `.kenovis/AI/policies/` or the Framework Terms section of `conventions.md` before deleting it.
 
@@ -329,7 +329,7 @@ The customer's implementation holds the real product, wherever in the repository
 Rewrite only:
 
 ```
-ENGINEERING/ARCHITECTURE.md
+company-os/ENGINEERING/ARCHITECTURE.md
 ```
 
 Describe the actual repository topology found in Step 1 — the real layout, not a placeholder. There is no requirement to introduce any particular top-level directory; document the layout the repository already uses.
@@ -340,9 +340,9 @@ Describe the actual repository topology found in Step 1 — the real layout, not
 
 This is not the `init-project.md` Step 11 check for zero matches of example terms — adoption doesn't start from an example, it starts from real code that must not be contradicted.
 
-This check covers every factual claim in the document, not only the sentences authored in Steps 3-9. A section that came over from its template verbatim can carry an answer about a different product — the framework's own, left behind when the template was derived from it (`AI/memory/learnings.md` Learning-017). Such a sentence has no `[ANSWER:` marker and no code citation, which is exactly what the contrast check below is for. Apply it to `AUTOMATIONS/*.md` as well: two of the three known cases were there, describing a release process and a feedback system belonging to another company.
+This check covers every factual claim in the document, not only the sentences authored in Steps 3-9. A section that came over from its template verbatim can carry an answer about a different product — the framework's own, left behind when the template was derived from it (`company-os/AI/memory/learnings.md` Learning-017). Such a sentence has no `[ANSWER:` marker and no code citation, which is exactly what the contrast check below is for. Apply it to `company-os/AUTOMATIONS/*.md` as well: two of the three known cases were there, describing a release process and a feedback system belonging to another company.
 
-For every factual claim written into `ENGINEERING/*.md`, `DOMAIN/*.md` and `AUTOMATIONS/*.md`, confirm it matches something observable in the customer's actual code:
+For every factual claim written into `company-os/ENGINEERING/*.md`, `company-os/DOMAIN/*.md` and `company-os/AUTOMATIONS/*.md`, confirm it matches something observable in the customer's actual code:
 
 ```
 For each claim: does the code support it? Cite file/line, or mark it explicitly as inferred / Low confidence and unverified.
@@ -353,7 +353,7 @@ A claim with no code evidence and no explicit Low-confidence marker is a defect 
 Then confirm no unanswered template question survived:
 
 ```
-grep -rn "\[ANSWER:" COMPANY_OS.md DECISIONS.md DOMAIN/ PRODUCT/ ENGINEERING/ AUTOMATIONS/ AI/memory/
+grep -rn "\[ANSWER:" company-os/COMPANY_OS.md company-os/DECISIONS.md company-os/DOMAIN/ company-os/PRODUCT/ company-os/ENGINEERING/ company-os/AUTOMATIONS/ company-os/AI/memory/
 ```
 
 Zero matches is the passing result. Every match is a question that was never answered. Answer it, or replace it with an explicit statement that no answer exists yet — never leave the instruction, because the next agent reads it as content.
@@ -372,7 +372,7 @@ Every file authored in Steps 3-9 must appear.
 
 # Step 13 - Record The Adoption
 
-Add a decision to `DECISIONS.md` recording:
+Add a decision to `company-os/DECISIONS.md` recording:
 
 - What company this repository now serves.
 - The date.
@@ -381,7 +381,7 @@ Add a decision to `DECISIONS.md` recording:
 
 This is the first decision of the adopted product's Kenovis-tracked history — not the first decision of the product itself, which predates this adoption.
 
-If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis add` install, per DECISIONS.md DECISION-018):
+If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis add` install, per company-os/DECISIONS.md DECISION-018):
 
 - Delete `.kenovis/.setup-pending`.
 - Rewrite the root `CLAUDE.md` stub back to its passive, steady-state form (no first-session directive).
@@ -393,7 +393,7 @@ If `.kenovis/.setup-pending` exists (this run was auto-triggered by a `kenovis a
 
 By this point every Product-layer destination exists. Between `kenovis add` and this step, none of them did, so anything noticed earlier in this run had nowhere to go until now — see `.kenovis/AI/SYSTEM.md` → "Nothing Stays In The Thread" for that exception.
 
-An audit of a real, pre-existing codebase surfaces things a greenfield init rarely does — technical debt, defects, security gaps, architectural inconsistencies — found while reconstructing context for `ENGINEERING/`, `DOMAIN/` and the rest. Distinct from the audit facts Steps 1-12 already route into the reconstructed Product layer with a confidence level (Step 1's sense of "finding"): this is the other kind, the kind any session finds and must disposition. Anything noticed and not already recorded gets a disposition now: fixed, scheduled in `PRODUCT/ROADMAP.md`, or rejected. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+An audit of a real, pre-existing codebase surfaces things a greenfield init rarely does — technical debt, defects, security gaps, architectural inconsistencies — found while reconstructing context for `company-os/ENGINEERING/`, `company-os/DOMAIN/` and the rest. Distinct from the audit facts Steps 1-12 already route into the reconstructed Product layer with a confidence level (Step 1's sense of "finding"): this is the other kind, the kind any session finds and must disposition. Anything noticed and not already recorded gets a disposition now: fixed, scheduled in `company-os/PRODUCT/ROADMAP.md`, or rejected. See `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 
 This is the session most likely on this whole board to find real things — it reads an entire existing codebase end to end, once. A session that found nothing writes nothing here and is done.
 
@@ -403,10 +403,10 @@ This is the session most likely on this whole board to find real things — it r
 
 Never:
 
-- Delete, empty, relocate, or rewrite any of the customer's existing code. `ENGINEERING/ARCHITECTURE.md` is the only file this command writes to describe it.
+- Delete, empty, relocate, or rewrite any of the customer's existing code. `company-os/ENGINEERING/ARCHITECTURE.md` is the only file this command writes to describe it.
 - Modify anything under `.kenovis/AI/agents/`, `.kenovis/AI/workflows/`, `.kenovis/AI/policies/`, `.kenovis/AI/templates/` or `.kenovis/AI/commands/` during adoption. If a framework file blocks adoption, that is a framework defect — fix it as its own change, not silently during this command.
 - Treat "the code does X" as proof X is the right pattern going forward. Document what exists; flag anti-patterns to the human separately from recording them as the current state.
-- Write a fact into `ENGINEERING/` or `DOMAIN/` without either a file/line citation or an explicit Low-confidence marker.
+- Write a fact into `company-os/ENGINEERING/` or `company-os/DOMAIN/` without either a file/line citation or an explicit Low-confidence marker.
 - Ask the human to decide something the code already shows with High confidence.
 
 Always:
@@ -422,27 +422,27 @@ Always:
 
 Adoption is complete when:
 
-✓ PRODUCT/OPERATING_MODEL.md carries the owner's own statement of what this product is for, from human input rather than from the audit, and its Conformance table is present as an unfilled form.
+✓ company-os/PRODUCT/OPERATING_MODEL.md carries the owner's own statement of what this product is for, from human input rather than from the audit, and its Conformance table is present as an unfilled form.
 
-✓ COMPANY_OS.md describes the real company, from human input.
+✓ company-os/COMPANY_OS.md describes the real company, from human input.
 
-✓ DECISIONS.md carries the decision format, the reconstruction decisions with confidence markers, and real new decisions — and no framework decisions copied in from the framework's own log.
+✓ company-os/DECISIONS.md carries the decision format, the reconstruction decisions with confidence markers, and real new decisions — and no framework decisions copied in from the framework's own log.
 
-✓ DOMAIN/ describes entities derived from real schemas/models, confirmed by a human.
+✓ company-os/DOMAIN/ describes entities derived from real schemas/models, confirmed by a human.
 
-✓ PRODUCT/ describes the real roadmap; FEATURES.md reflects what is actually shipped; research and competitive landscape are left empty if none exists.
+✓ company-os/PRODUCT/ describes the real roadmap; FEATURES.md reflects what is actually shipped; research and competitive landscape are left empty if none exists.
 
-✓ ENGINEERING/ describes what the customer's actual code does — verified by contrast against it, not decided fresh.
+✓ company-os/ENGINEERING/ describes what the customer's actual code does — verified by contrast against it, not decided fresh.
 
-✓ AUTOMATIONS/ describes real processes, derived from evidence where it exists.
+✓ company-os/AUTOMATIONS/ describes real processes, derived from evidence where it exists.
 
-✓ AI/memory/ exists, holds vocabulary drawn from real code identifiers plus the framework's own memory rules, and carries no unpromoted inherited learnings.
+✓ company-os/AI/memory/ exists, holds vocabulary drawn from real code identifiers plus the framework's own memory rules, and carries no unpromoted inherited learnings.
 
 ✓ .gitignore is the repository's own, reconciled at most by addition — never overwritten.
 
 ✓ The customer's existing code is byte-identical to before this command ran, in its original location.
 
-✓ Every factual claim in ENGINEERING/ and DOMAIN/ has a code citation or an explicit Low-confidence marker.
+✓ Every factual claim in company-os/ENGINEERING/ and company-os/DOMAIN/ has a code citation or an explicit Low-confidence marker.
 
 ✓ No `[ANSWER: ...]` template question survives in any product-layer file.
 

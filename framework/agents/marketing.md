@@ -346,7 +346,7 @@ Do not copy them blindly.
 Read and update the shared record:
 
 ```
-PRODUCT/COMPETITIVE_LANDSCAPE.md
+company-os/PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
 Owner of the Positioning And Messaging dimension in that document. Pricing observations feed Finance's Business Model dimension there — do not duplicate them separately.

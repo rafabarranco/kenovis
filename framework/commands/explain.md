@@ -271,14 +271,14 @@ An explanation that reveals missing knowledge has found something. A finding get
 Recommending is prose, and **being described in prose is not a disposition** — see `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected", which is in force in this session whether or not this command names it. Write the gap into the Product layer before the session ends, in the file its kind belongs to:
 
 ```
-PRODUCT/ROADMAP.md   - the work the gap implies: a scheduled item, or a row in the findings queue
-PRODUCT/             - product knowledge the explanation had to reconstruct
-DOMAIN/              - a business concept, rule or term that was missing
-ENGINEERING/         - an architectural consequence
-AI/memory/learnings.md - a reusable lesson
+company-os/PRODUCT/ROADMAP.md   - the work the gap implies: a scheduled item, or a row in the findings queue
+company-os/PRODUCT/             - product knowledge the explanation had to reconstruct
+company-os/DOMAIN/              - a business concept, rule or term that was missing
+company-os/ENGINEERING/         - an architectural consequence
+company-os/AI/memory/learnings.md - a reusable lesson
 ```
 
-This command previously said *"Recommend creating documentation"*, and named `docs/` — a destination that exists in no Installation of this framework. Both are recorded as fixed in `PRODUCT/ROADMAP.md` OF-48. The reason the wording mattered more here than elsewhere: `/explain` is one of the three commands that actually run (`PRODUCT/OPERATING_MODEL.md` → Addendum A §3), its entire output is knowledge, and it is the command most likely to be standing in front of a gap at the moment it tells the session to merely recommend one.
+This command previously said *"Recommend creating documentation"*, and named `docs/` — a destination that exists in no Installation of this framework. Both are recorded as fixed in `company-os/PRODUCT/ROADMAP.md` OF-48. The reason the wording mattered more here than elsewhere: `/explain` is one of the three commands that actually run (`company-os/PRODUCT/OPERATING_MODEL.md` → Addendum A §3), its entire output is knowledge, and it is the command most likely to be standing in front of a gap at the moment it tells the session to merely recommend one.
 
 ---
 

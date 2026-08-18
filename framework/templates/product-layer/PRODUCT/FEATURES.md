@@ -25,7 +25,7 @@ Product Core
 
 [ANSWER: One line tracing the product's central path through the domain entities, e.g. "Customer → places → Order → fulfilled by → Shipment." This is the spine every feature hangs off.]
 
-See DOMAIN/DOMAIN_MODEL.md for full definitions. Individual FEATURE-NNN specs get added below as they are speced. Do not invent them here ahead of real specification — an unspeced feature listed as if it were speced is worse than an empty section.
+See company-os/DOMAIN/DOMAIN_MODEL.md for full definitions. Individual FEATURE-NNN specs get added below as they are speced. Do not invent them here ahead of real specification — an unspeced feature listed as if it were speced is worse than an empty section.
 ---
 Feature Specification Template
 
@@ -59,7 +59,7 @@ Required Information
 ---
 Business Rules
 
-[Constraints from DOMAIN/BUSINESS_RULES.md that apply to this feature.]
+[Constraints from company-os/DOMAIN/BUSINESS_RULES.md that apply to this feature.]
 ---
 Acceptance Criteria
 

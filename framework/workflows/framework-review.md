@@ -51,10 +51,10 @@ Read:
 README.md
 CONTRIBUTING.md
 CHANGELOG.md
-DECISIONS.md — its Decision Index, then the bodies of the entries the index marks framework-level. Not the product-specific ones, and not the whole log.
+company-os/DECISIONS.md — its Decision Index, then the bodies of the entries the index marks framework-level. Not the product-specific ones, and not the whole log.
 ```
 
-Do not load product-layer content (`COMPANY_OS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`) — it is out of scope for this workflow.
+Do not load product-layer content (`company-os/COMPANY_OS.md`, `company-os/PRODUCT/`, `company-os/DOMAIN/`, `company-os/ENGINEERING/`) — it is out of scope for this workflow.
 
 ---
 
@@ -100,7 +100,7 @@ Confirm `CONTRIBUTING.md`'s description of "what a good framework contribution l
 
 Confirm recent framework-layer changes (per `git log` on `.kenovis/AI/`, `CLAUDE.md`, `README.md`) are reflected in `CHANGELOG.md` under `[Unreleased]` or a released version, per `CONTRIBUTING.md` → "Framework Definition of Done".
 
-Confirm changes that altered agent responsibilities, workflow phases, or policy mechanics have a corresponding `DECISIONS.md` entry.
+Confirm changes that altered agent responsibilities, workflow phases, or policy mechanics have a corresponding `company-os/DECISIONS.md` entry.
 
 ---
 
@@ -147,12 +147,12 @@ For each finding, propose the minimal fix. Do not apply it as part of this workf
 Every finding classified in Phase 7 gets one of three dispositions before this workflow ends:
 
 - **Fixed** — applied in this session, with the evidence. Framework-layer changes like any other: follow `.kenovis/AI/policies/documentation.md` and `CONTRIBUTING.md` normally.
-- **Scheduled** — an entry with an id in `PRODUCT/ROADMAP.md`, carrying Pain, Frequency and Cost.
+- **Scheduled** — an entry with an id in `company-os/PRODUCT/ROADMAP.md`, carrying Pain, Frequency and Cost.
 - **Rejected** — with the reason, recorded so it is not proposed again.
 
-**A run that ends with a report and no dispositions has produced nothing durable.** Phase 8 forbids applying fixes here, correctly — so without this phase every finding this workflow exists to surface reaches the end of the session as a proposal and dies there. That is not a hypothetical: a review that classifies ten findings, proposes ten minimal fixes and schedules none is a fully compliant run of the previous version of this workflow, and leaves the framework exactly as it was. Recorded as fixed in `PRODUCT/ROADMAP.md`, in the OF-52 audit.
+**A run that ends with a report and no dispositions has produced nothing durable.** Phase 8 forbids applying fixes here, correctly — so without this phase every finding this workflow exists to surface reaches the end of the session as a proposal and dies there. That is not a hypothetical: a review that classifies ten findings, proposes ten minimal fixes and schedules none is a fully compliant run of the previous version of this workflow, and leaves the framework exactly as it was. Recorded as fixed in `company-os/PRODUCT/ROADMAP.md`, in the OF-52 audit.
 
-The run's own report is delivered in this session and is not a file to create, and never anywhere under `.kenovis/` — see DECISIONS.md DECISION-024. The dispositions above are what survives it.
+The run's own report is delivered in this session and is not a file to create, and never anywhere under `.kenovis/` — see company-os/DECISIONS.md DECISION-024. The dispositions above are what survives it.
 
 ---
 

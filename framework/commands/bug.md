@@ -81,9 +81,9 @@ Review the reported bug — from the human, an issue tracker, or a failing test.
 .kenovis/AI/templates/bug-report.md
 ```
 
-That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
+That path is a form, not a destination — never write into it, and never write any produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See company-os/DECISIONS.md DECISION-024.
 
-The report shapes this session; it is not a file to create. What survives the session is the regression test added in Step 8 and, when the bug taught something reusable, the entry in `AI/memory/learnings.md` written in Step 11.
+The report shapes this session; it is not a file to create. What survives the session is the regression test added in Step 8 and, when the bug taught something reusable, the entry in `company-os/AI/memory/learnings.md` written in Step 11.
 
 Capture:
 
@@ -319,13 +319,13 @@ Verify:
 Update if necessary:
 
 ```
-DOMAIN/
+company-os/DOMAIN/
 
-ENGINEERING/
+company-os/ENGINEERING/
 
-DECISIONS.md
+company-os/DECISIONS.md
 
-AI/memory/learnings.md
+company-os/AI/memory/learnings.md
 ```
 
 Especially when discovering:
@@ -338,11 +338,11 @@ Especially when discovering:
 
 # Step 12 - Generate Resolution Report
 
-Like the bug report in Step 2, this is delivered to the human in this session rather than written to a file, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024.
+Like the bug report in Step 2, this is delivered to the human in this session rather than written to a file, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see company-os/DECISIONS.md DECISION-024.
 
-What survives the session was already named: the regression test from Step 8, and the `AI/memory/learnings.md` entry from Step 11 when the bug taught something reusable.
+What survives the session was already named: the regression test from Step 8, and the `company-os/AI/memory/learnings.md` entry from Step 11 when the bug taught something reusable.
 
-Investigating one bug reliably surfaces others — an adjacent defect, a missing test, a rule the code breaks elsewhere. Each of those is scheduled with an id in `PRODUCT/ROADMAP.md` or rejected with a reason before this report is written. Naming it in the report is not a disposition; see `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
+Investigating one bug reliably surfaces others — an adjacent defect, a missing test, a rule the code breaks elsewhere. Each of those is scheduled with an id in `company-os/PRODUCT/ROADMAP.md` or rejected with a reason before this report is written. Naming it in the report is not a disposition; see `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected".
 
 Include:
 

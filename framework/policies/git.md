@@ -295,7 +295,7 @@ Automatic backmerges between protected branches carry `[skip ci]` in the commit 
 
 A promotion chain of protected branches merged with rebase only cannot stay history-aligned once any step introduces a commit the upstream branch will never contain. A content-sync commit on the downstream branch is exactly such a commit — so applying that fix guarantees the next promotion needs it again.
 
-That is a steady state, not a repair, and it is an acceptable one: what matters is that the branches are byte-identical after every promotion, not that their histories match. What is not acceptable is rediscovering it every release and spending the investigation again. (`AI/memory/LEARNINGS-ARCHIVE.md` Learning-012.)
+That is a steady state, not a repair, and it is an acceptable one: what matters is that the branches are byte-identical after every promotion, not that their histories match. What is not acceptable is rediscovering it every release and spending the investigation again. (`company-os/AI/memory/LEARNINGS-ARCHIVE.md` Learning-012.)
 
 A repository in that state promotes like this, every release:
 

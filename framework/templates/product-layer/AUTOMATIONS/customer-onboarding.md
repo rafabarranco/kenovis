@@ -23,7 +23,7 @@ Help users achieve their first success.
 ---
 Activation Definition
 
-[ANSWER: The exact, checkable moment a customer counts as activated. Not "signed up" — the first point at which they have received real value. This definition feeds PRODUCT/ROADMAP.md → MVP Success Metrics, so it must be measurable.]
+[ANSWER: The exact, checkable moment a customer counts as activated. Not "signed up" — the first point at which they have received real value. This definition feeds company-os/PRODUCT/ROADMAP.md → MVP Success Metrics, so it must be measurable.]
 ---
 Time-To-Value Objective
 

@@ -22,7 +22,7 @@ Core Principle
 ---
 Rule Format
 
-Group rules by the entity they govern, using DOMAIN/DOMAIN_MODEL.md as the entity list. For each rule:
+Group rules by the entity they govern, using company-os/DOMAIN/DOMAIN_MODEL.md as the entity list. For each rule:
 
 RULE-ID
 

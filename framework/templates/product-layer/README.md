@@ -8,18 +8,18 @@ Version: 1.4
 
 The Product layer's shape, shipped as part of the Framework layer.
 
-An Installation created by `kenovis init` or `kenovis add` contains no Product-layer files at all — the CLI writes `.kenovis/`, the root `CLAUDE.md` stub, and nothing else (DECISIONS.md DECISION-017, DECISION-021). These templates are where the Product layer's structure comes from when `/init-project` or `/adopt-project` authors it.
+An Installation created by `kenovis init` or `kenovis add` contains no Product-layer files at all — the CLI writes `.kenovis/`, the root `CLAUDE.md` stub, and nothing else (company-os/DECISIONS.md DECISION-017, DECISION-021). These templates are where the Product layer's structure comes from when `/init-project` or `/adopt-project` authors it.
 
 Each file here maps to the path of the same name in the repository root:
 
 ```
-product-layer/COMPANY_OS.md              →  COMPANY_OS.md
-product-layer/DECISIONS.md               →  DECISIONS.md
-product-layer/DOMAIN/*.md                →  DOMAIN/*.md
-product-layer/PRODUCT/*.md               →  PRODUCT/*.md
-product-layer/ENGINEERING/*.md           →  ENGINEERING/*.md
-product-layer/AUTOMATIONS/*.md           →  AUTOMATIONS/*.md
-product-layer/AI/memory/*.md             →  AI/memory/*.md
+product-layer/COMPANY_OS.md              →  company-os/COMPANY_OS.md
+product-layer/DECISIONS.md               →  company-os/DECISIONS.md
+product-layer/DOMAIN/*.md                →  company-os/DOMAIN/*.md
+product-layer/PRODUCT/*.md               →  company-os/PRODUCT/*.md
+product-layer/ENGINEERING/*.md           →  company-os/ENGINEERING/*.md
+product-layer/AUTOMATIONS/*.md           →  company-os/AUTOMATIONS/*.md
+product-layer/AI/memory/*.md             →  company-os/AI/memory/*.md
 ```
 
 ---
@@ -28,7 +28,7 @@ product-layer/AI/memory/*.md             →  AI/memory/*.md
 
 Only `/init-project` and `/adopt-project` read this directory. Do not copy a template into place by hand — both commands ask the human real questions first, then author the file from the answers. A template copied verbatim is placeholder content pretending to be a decision.
 
-`PRODUCT/OPERATING_MODEL.md` is authored first, before `COMPANY_OS.md`, and it is the one template the AI must not answer on the human's behalf under any circumstances. It is rank 1 of the Source Of Truth Hierarchy — the owner's statement of what the product is for — and it is what every later round is measured against. An operating model the AI wrote is the AI grading its own work. Where the owner supplies a written statement, it is recorded verbatim rather than summarised into the template's shape.
+`company-os/PRODUCT/OPERATING_MODEL.md` is authored first, before `company-os/COMPANY_OS.md`, and it is the one template the AI must not answer on the human's behalf under any circumstances. It is rank 1 of the Source Of Truth Hierarchy — the owner's statement of what the product is for — and it is what every later round is measured against. An operating model the AI wrote is the AI grading its own work. Where the owner supplies a written statement, it is recorded verbatim rather than summarised into the template's shape.
 
 Every template's first line carries the `PROJECT-SPECIFIC` marker, so a file authored from one is recognisable as Product layer from the moment it exists. That is what makes the Collision Guard (DECISION-019) work: a Product-layer path holding a file *without* the marker is someone else's file, and neither command may overwrite it without asking.
 
@@ -44,13 +44,13 @@ Replaced by an `[ANSWER: ...]` instruction: everything that describes one specif
 
 `[ANSWER: ...]` is the only bracket form that means "unanswered question", and it is what both commands' Verify step greps for. Brackets are used for other things too, and those legitimately survive into a completed document:
 
-- A format specification — `DOMAIN/BUSINESS_RULES.md` → "Rule Format", `PRODUCT/FEATURES.md`'s FEATURE-NNN shape, `AUTOMATIONS/release-process.md`'s `[ ]` checklists.
-- An illustrative example — `PRODUCT/ROADMAP.md`'s good/bad feature framing, `ENGINEERING/ARCHITECTURE.md`'s directory tree and `POST /[resources]` sample, `ENGINEERING/DATABASE.md`'s `[tenant_key]`.
-- A deliberate "nothing recorded yet" statement, in a section the product has genuinely not filled — `PRODUCT/USER_RESEARCH.md`, `PRODUCT/COMPETITIVE_LANDSCAPE.md`, an empty `DECISIONS.md`.
+- A format specification — `company-os/DOMAIN/BUSINESS_RULES.md` → "Rule Format", `company-os/PRODUCT/FEATURES.md`'s FEATURE-NNN shape, `company-os/AUTOMATIONS/release-process.md`'s `[ ]` checklists.
+- An illustrative example — `company-os/PRODUCT/ROADMAP.md`'s good/bad feature framing, `company-os/ENGINEERING/ARCHITECTURE.md`'s directory tree and `POST /[resources]` sample, `company-os/ENGINEERING/DATABASE.md`'s `[tenant_key]`.
+- A deliberate "nothing recorded yet" statement, in a section the product has genuinely not filled — `company-os/PRODUCT/USER_RESEARCH.md`, `company-os/PRODUCT/COMPETITIVE_LANDSCAPE.md`, an empty `company-os/DECISIONS.md`.
 
-When adding an instruction to a template, use `[ANSWER: ...]` if and only if leaving it in place would be a defect. An anchored, bracket-shaped check cannot tell these apart — that is why the marker exists (`AI/memory/learnings.md` Learning-015).
+When adding an instruction to a template, use `[ANSWER: ...]` if and only if leaving it in place would be a defect. An anchored, bracket-shaped check cannot tell these apart — that is why the marker exists (`company-os/AI/memory/learnings.md` Learning-015).
 
-`AI/memory/learnings.md` and `AI/memory/glossary.md` are the clearest case of the split. Their rules — the learning format, the categories, the Review Process that promotes a learning into `.kenovis/AI/policies/`, the Framework Terms section — are framework-level, and roughly twenty framework files reference them. Their recorded learnings and Domain Terms belong to one product.
+`company-os/AI/memory/learnings.md` and `company-os/AI/memory/glossary.md` are the clearest case of the split. Their rules — the learning format, the categories, the Review Process that promotes a learning into `.kenovis/AI/policies/`, the Framework Terms section — are framework-level, and roughly twenty framework files reference them. Their recorded learnings and Domain Terms belong to one product.
 
 ---
 
@@ -58,7 +58,7 @@ When adding an instruction to a template, use `[ANSWER: ...]` if and only if lea
 
 The rule above — a template never contains an answer, and never the framework author's own — was stated from the beginning and broken anyway, in three files, for three releases. It is worth knowing what the failure looks like, because it is invisible to every check the framework runs.
 
-These templates were derived from this repository's own completed Product layer. Deriving means deleting each Kenovis-specific answer and writing the question that produced it. Where that deletion was missed, Kenovis's own answer stayed behind — indistinguishable, in shape, from the framework-level prose that legitimately survives. `ENGINEERING/SECURITY.md` shipped "Audit System: not applicable in v1 — no backend exists", `AUTOMATIONS/release-process.md` shipped "Staging: validate the CLI before publishing", and a product with a backend, a staging server and no CLI inherited all of it as fact (`AI/memory/learnings.md` Learning-017).
+These templates were derived from this repository's own completed Product layer. Deriving means deleting each Kenovis-specific answer and writing the question that produced it. Where that deletion was missed, Kenovis's own answer stayed behind — indistinguishable, in shape, from the framework-level prose that legitimately survives. `company-os/ENGINEERING/SECURITY.md` shipped "Audit System: not applicable in v1 — no backend exists", `company-os/AUTOMATIONS/release-process.md` shipped "Staging: validate the CLI before publishing", and a product with a backend, a staging server and no CLI inherited all of it as fact (`company-os/AI/memory/learnings.md` Learning-017).
 
 Neither Verify step catches this. Both grep for `[ANSWER:`, and a leftover answer has no marker — that is exactly what makes it a leftover answer. The document passes, and reads as though someone decided it.
 

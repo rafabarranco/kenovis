@@ -154,7 +154,7 @@ So that [benefit]
 
 Example:
 
-As a [role from DOMAIN/DOMAIN_MODEL.md],
+As a [role from company-os/DOMAIN/DOMAIN_MODEL.md],
 
 I want to [capability],
 
@@ -336,7 +336,7 @@ Know where this product's features and roadmap stand relative to alternatives us
 Read and update:
 
 ```
-PRODUCT/COMPETITIVE_LANDSCAPE.md
+company-os/PRODUCT/COMPETITIVE_LANDSCAPE.md
 ```
 
 Owner, with Designer, of the Product / UX dimension in that document.

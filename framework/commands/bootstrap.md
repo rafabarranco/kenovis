@@ -37,7 +37,7 @@ Context before action.
 
 Before bootstrapping, confirm the product layer describes an actual product.
 
-Product-layer files (COMPANY_OS.md, DECISIONS.md, PRODUCT/, DOMAIN/, ENGINEERING/, AUTOMATIONS/, AI/memory/) carry a `PROJECT-SPECIFIC` marker on the first line.
+Product-layer files (company-os/COMPANY_OS.md, company-os/DECISIONS.md, company-os/PRODUCT/, company-os/DOMAIN/, company-os/ENGINEERING/, company-os/AUTOMATIONS/, company-os/AI/memory/) carry a `PROJECT-SPECIFIC` marker on the first line.
 
 If they still contain example content from a previous or sample company:
 
@@ -78,11 +78,11 @@ Understand:
 
 # Step 2 - Load Project Context
 
-Read `PRODUCT/OPERATING_MODEL.md` in full first — rank 1 of the Source Of Truth Hierarchy (`.kenovis/AI/SYSTEM.md`). Not as one file inside `PRODUCT/`, which is how it was reached before and meant it was loaded by accident or not at all. Setup authors it in every repository (`/init-project` Step 2, `/adopt-project` Step 3); a repository predating that requirement may not have one, and there the gap is work to raise with the owner, not a state to bootstrap around.
+Read `company-os/PRODUCT/OPERATING_MODEL.md` in full first — rank 1 of the Source Of Truth Hierarchy (`.kenovis/AI/SYSTEM.md`). Not as one file inside `company-os/PRODUCT/`, which is how it was reached before and meant it was loaded by accident or not at all. Setup authors it in every repository (`/init-project` Step 2, `/adopt-project` Step 3); a repository predating that requirement may not have one, and there the gap is work to raise with the owner, not a state to bootstrap around.
 
-Read `COMPANY_OS.md` in full.
+Read `company-os/COMPANY_OS.md` in full.
 
-Read `DECISIONS.md` as its Decision Index only — the section at the head of that file, one line per decision. Not the bodies. A decision log is append-only and grows without bound, so a session that loads it whole pays more every week to consult none of it.
+Read `company-os/DECISIONS.md` as its Decision Index only — the section at the head of that file, one line per decision. Not the bodies. A decision log is append-only and grows without bound, so a session that loads it whole pays more every week to consult none of it.
 
 Open a decision's body when it becomes relevant, and open it before citing it: the index says what a decision settled, never why. See `.kenovis/AI/SYSTEM.md` → "Context Loading Rules".
 
@@ -102,9 +102,9 @@ Read a file in full only when the graph is absent, stale, or the query result is
 Otherwise, read:
 
 ```
-PRODUCT/
-DOMAIN/
-ENGINEERING/
+company-os/PRODUCT/
+company-os/DOMAIN/
+company-os/ENGINEERING/
 ```
 
 Understand:
@@ -137,7 +137,7 @@ If the graph is available: query it first (`graphify query "<topic>"`, `graphify
 Otherwise, read:
 
 ```
-AI/memory/
+company-os/AI/memory/
 ```
 
 Specifically:
@@ -160,13 +160,13 @@ Understand:
 
 # Step 4 - Inspect Repository Structure
 
-`ENGINEERING/ARCHITECTURE.md` → "Suggested Project Structure" documents where this product's implementation actually lives. There is no framework-mandated directory for it — a literal top-level directory is a layout some products choose (this repository's own product uses `cli/`, for its own reasons — see its `ENGINEERING/ARCHITECTURE.md`), never a requirement every Installation must follow.
+`company-os/ENGINEERING/ARCHITECTURE.md` → "Suggested Project Structure" documents where this product's implementation actually lives. There is no framework-mandated directory for it — a literal top-level directory is a layout some products choose (this repository's own product uses `cli/`, for its own reasons — see its `company-os/ENGINEERING/ARCHITECTURE.md`), never a requirement every Installation must follow.
 
-For an Installation scaffolded from scratch by `/init-project` (greenfield), Step 6 decides and records this layout explicitly in `ENGINEERING/ARCHITECTURE.md`.
+For an Installation scaffolded from scratch by `/init-project` (greenfield), Step 6 decides and records this layout explicitly in `company-os/ENGINEERING/ARCHITECTURE.md`.
 
 For an Installation adopted from an existing repository by `/adopt-project` (brownfield), the implementation stays exactly where it already lives — root, `src/`, a monorepo package, anywhere. Adoption never relocates it to fit a Kenovis-chosen layout.
 
-Read `ENGINEERING/ARCHITECTURE.md` first. Do not assume a monorepo, a single app, or any particular directory layout.
+Read `company-os/ENGINEERING/ARCHITECTURE.md` first. Do not assume a monorepo, a single app, or any particular directory layout.
 
 If `graphify-out/graph.json` exists and is not stale, query it before walking the tree:
 
@@ -328,7 +328,7 @@ Never invent business requirements.
 
 # Step 9 - Create Execution Plan
 
-The plan is presented to the human in this session; it is not a file to create, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see DECISIONS.md DECISION-024. The workflow that follows bootstrap names what its own work records durably.
+The plan is presented to the human in this session; it is not a file to create, and never anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale — see company-os/DECISIONS.md DECISION-024. The workflow that follows bootstrap names what its own work records durably.
 
 Before modifying files provide:
 

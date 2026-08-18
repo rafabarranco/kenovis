@@ -2,7 +2,7 @@
 
 Version: 2.1
 
-This file is a form, not a destination. Fill it in where the workflow that sent you here says to record the artifact — never write into this file, and never write a produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See DECISIONS.md DECISION-024.
+This file is a form, not a destination. Fill it in where the workflow that sent you here says to record the artifact — never write into this file, and never write a produced artifact anywhere under `.kenovis/`, which `kenovis sync` replaces wholesale. See company-os/DECISIONS.md DECISION-024.
 
 ---
 
@@ -183,9 +183,9 @@ Include:
 References:
 
 ```
-PRODUCT/
+company-os/PRODUCT/
 
-DOMAIN/
+company-os/DOMAIN/
 
-ENGINEERING/
+company-os/ENGINEERING/
 ```
