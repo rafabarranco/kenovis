@@ -50,14 +50,14 @@ export interface SyncResult {
  * Updates an existing Installation's Framework layer to a newer Framework
  * Release.
  *
- * Enforces DOMAIN/BUSINESS_RULES.md RULE-INST-01 and RULE-INST-02: only
+ * Enforces company-os/DOMAIN/BUSINESS_RULES.md RULE-INST-01 and RULE-INST-02: only
  * `.kenovis/` (100% Kenovis-owned per DECISION-017) and the CLAUDE.md stub are
  * ever touched — Product-layer files and the customer's own code are never
  * read or written. The overwrite happens in place, but `.kenovis/` lives
  * inside the customer's own git-tracked repository, so `git diff`/`git
  * checkout` are the review-and-revert mechanism RULE-INST-02 requires; a
  * CLI-side diff preview is deferred to a later Framework Release
- * (PRODUCT/ROADMAP.md Phase 2).
+ * (company-os/PRODUCT/ROADMAP.md Phase 2).
  *
  * Also validates frameworkSourceDir itself before removing/copying anything:
  * it must match the known Framework-bundle shape (AI/, README.md), or this
@@ -68,7 +68,7 @@ export interface SyncResult {
  * Also guards the CLAUDE.md stub the same way runInit does: refuses with
  * ExistingClaudeMdError (bypassable with --force) if the target's existing
  * CLAUDE.md isn't already a Kenovis-managed stub, instead of silently
- * discarding a customer's own edits on every sync. See AI/memory/learnings.md
+ * discarding a customer's own edits on every sync. See company-os/AI/memory/learnings.md
  * Learning-006, which found and fixed this exact asymmetry for init's
  * --force path but never carried the fix over to sync.
  *
@@ -76,7 +76,7 @@ export interface SyncResult {
  * (`${FRAMEWORK_DIR_NAME}/${CLAUDE_MD_HASH_FILENAME}`, written by the prior
  * install/sync) rather than only a marker-prefix check, so content appended
  * below the stub is caught too, not just a CLAUDE.md that isn't Kenovis's at
- * all — see isClaudeMdSafeToOverwrite and AI/memory/learnings.md Learning-007.
+ * all — see isClaudeMdSafeToOverwrite and company-os/AI/memory/learnings.md Learning-007.
  *
  * Syncing never advances an Installation past a setup it has not completed:
  * a `.setup-pending` marker is read before the mirror-replace and written back
@@ -85,7 +85,7 @@ export interface SyncResult {
  * ships that marker (install time writes it), so the mirror would otherwise
  * erase it — see INSTALL_TIME_OWNED_ENTRIES for the general rule every
  * install-time-owned file under .kenovis/ must follow, and
- * AI/memory/learnings.md Learning-010 for how this was found.
+ * company-os/AI/memory/learnings.md Learning-010 for how this was found.
  *
  * Reports which Framework Release the Installation moved from and to, read
  * from the existing `.kenovis/` and the incoming bundle before the mirror

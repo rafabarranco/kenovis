@@ -526,6 +526,40 @@ Disposition: Fixed as an instance (this round, item 41). Not promoted to a polic
 
 ---
 
+## Learning-045
+
+Date:
+2026-08-18
+
+Category:
+Process
+
+Context:
+Item 44 / DECISION-043 — re-rooting the Product layer's seven elements under `company-os/`, ~660 citation-line rewrite across `framework/`, root docs, the template bundle, CI guards and `cli/src`.
+
+Problem:
+A mechanical mass path-rename over a document set that cites itself constantly is not one substitution rule. Three distinct failure shapes turned up in the same pass, each requiring a different guard, and none was visible from the initial `grep -rl` scope count alone:
+
+1. A bare path can be a *citation* (`See DECISIONS.md DECISION-031`) or the document's own *title* (`# COMPANY_OS.md`). The same regex matches both; only one should move.
+2. A citation living *inside* a document that itself moved (e.g. `ROADMAP.md` citing `DECISIONS.md`, both now under `company-os/`) is a same-layer sibling reference, unaffected by the move — but a citation living in a document that did *not* move (a `framework/` file, or a template that ships its content verbatim into the moved layer) is cross-layer and must gain the new prefix. Telling these apart requires knowing which side of the move each *file* is on, not just what each *line* says.
+3. Re-running an unscoped version of the same substitution script on a file already partially hand-edited produces silent double-prefixing (`company-os/company-os/X`) — the negative-lookbehind exclusion has to name every prefix the target could already carry, not just the one the first pass added.
+
+What happened:
+Built the rewrite as a script with `(?<!product-layer/)(?<!company-os/)` exclusions, ran it in report mode first, then hand-reviewed every changed file's diff before applying anything destructive further. That review caught failure 1 (two title lines) directly. Failure 2 was caught by checking `framework/policies/documentation.md`'s own already-established convention ("a path is written repository-relative, in backticks, from every file") against a direct read of what the template bundle's own content actually looked like — the convention settled a question the initial scope measurement couldn't answer on its own. Failure 3 was caught by re-diffing after a second, hastily-scoped script touched a file the first script had already edited.
+
+Root cause:
+A `grep -rl` count answers "how many files mention this string," which is scope-sizing evidence, not a work-item checklist. It cannot distinguish a title from a citation, or a same-layer reference from a cross-layer one — those require reading the file's role in the move, not just counting its hits.
+
+Learning:
+For any future mass rename/re-root in this repository: (1) dry-run the substitution script and diff-review before applying, every time, regardless of file count; (2) explicitly enumerate, before scripting, which files are *moving as a unit* (their internal cross-references to each other don't need rewriting) versus which are *external and pointing in* (their references do); (3) build the exclusion list for a rewrite script to survive being re-run over its own prior output, not just over the original tree — idempotency is not free.
+
+Future action:
+None queued — this is technique, not a standing gap. Cite this learning if a future item needs a similar repository-wide path rename.
+
+Disposition: Recorded as a reusable technique; no work implied. Not promoted to a policy clause — this is a one-off operation's method, not a standing rule the framework enforces every round.
+
+---
+
 ---
 Learning Examples
 

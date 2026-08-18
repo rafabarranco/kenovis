@@ -5,7 +5,7 @@
 //
 // Since DECISION-039 this repository's Framework-layer source lives at
 // framework/ (agents/, commands/, policies/, templates/, workflows/,
-// SYSTEM.md) — a directory of its own, kept apart from AI/memory/ (Product
+// SYSTEM.md) — a directory of its own, kept apart from company-os/AI/memory/ (Product
 // layer, stays at the repository root) so no directory mixes layers.
 // .kenovis/ in this repository is generated, gitignored, never hand-edited:
 // after bundling, this script also mirrors dist/framework-assets/ into
@@ -20,7 +20,7 @@
 // time on a customer's machine, and cannot: that path does not exist outside
 // this repository.
 //
-// See PRODUCT/ROADMAP.md Phase 0 item 3, item 43, and DECISIONS.md
+// See company-os/PRODUCT/ROADMAP.md Phase 0 item 3, item 43, and company-os/DECISIONS.md
 // DECISION-017/DECISION-020/DECISION-039.
 
 import { cp, mkdir, rm, readdir, readFile, writeFile } from "node:fs/promises";
