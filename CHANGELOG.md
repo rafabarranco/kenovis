@@ -6,6 +6,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+### Fixed
+
+- **A fully compliant `/init-project`/`/adopt-project` run could still fail its own Step 11/12 verify check.** `framework/templates/product-layer/PRODUCT/OPERATING_MODEL.md`, `PRODUCT/ROADMAP.md` OF-93. The Conformance table's row example used the `[ANSWER:]` marker reserved for founder questions on all three of its cells, but setup's own Step 2/3 explicitly tell the session to leave that one row unfilled — so the row's brackets always survived Step 11's "zero `[ANSWER:]` matches" check, on every Installation, unconditionally. Confirmed twice by independent fresh-subagent behavioral runs before the fix, and by simulation against the artifact after it: a Step-2-compliant setup now leaves zero `[ANSWER:]` matches, not three. The row was never a question for anyone — it is populated later, by the first closing `/next` round's own Step 13 — so the fix drops the marker rather than adding an exception to the check: the State cell reads the literal `unmeasured`, the other two use plain parenthetical example text.
+
 ### Changed
 
 - **Breaking (repository layout) — the Product layer re-roots under `company-os/`.** `DECISIONS.md` DECISION-043, `PRODUCT/ROADMAP.md` item 44. The seven Product-layer elements — `COMPANY_OS.md`, `DECISIONS.md`, `PRODUCT/`, `DOMAIN/`, `ENGINEERING/`, `AUTOMATIONS/`, `AI/memory/` — move from generic repository-root names into one directory, `company-os/`, so a brownfield customer's own file of the same name is never an overwrite-or-move-aside candidate for the Collision Guard (DECISION-019). Re-root only, no internal renames. `/init-project` and `/adopt-project` now author into `company-os/`; the CLI's `NON_EVIDENCE_ENTRIES` gains `company-os` so a re-run never mistakes an authored Product layer for customer implementation evidence.
