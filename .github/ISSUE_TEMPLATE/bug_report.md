@@ -20,7 +20,7 @@ What the documented behavior/instruction says should happen, vs what actually ha
 
 ## AI tool used
 
-Claude Code / other (name it) — framework is meant to be tool-agnostic per [DECISION-010](../../DECISIONS.md), so cross-tool bugs matter most.
+Claude Code / other (name it) — framework is meant to be tool-agnostic per [DECISION-010](../../company-os/DECISIONS.md), so cross-tool bugs matter most.
 
 ## Additional context
 
