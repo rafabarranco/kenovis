@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   AlreadyInstalledError,
   BrownfieldDetectedError,
+  buildCoexistingClaudeMdContent,
   claudeStubContent,
   detectInstallationKind,
   ExistingClaudeMdError,
@@ -16,6 +17,8 @@ import {
   isClaudeMdSafeToOverwrite,
   isKenovisManagedClaudeStub,
   isKenovisManagedCommandWrapper,
+  resolveClaudeMdWrite,
+  splitCoexistingClaudeMd,
   CLAUDE_MD_HASH_FILENAME,
   FRAMEWORK_VERSION_FILENAME,
   parseFrameworkVersion,
@@ -196,6 +199,86 @@ test("isClaudeMdSafeToOverwrite with no recorded hash falls back to the marker-p
   // still invisible here — the documented, intentional fallback behavior.
   assert.ok(isClaudeMdSafeToOverwrite(`${content}\nMy own notes.\n`, null));
   assert.equal(isClaudeMdSafeToOverwrite("# My Project\n", null), false);
+});
+
+test("splitCoexistingClaudeMd returns null for a plain stub or a foreign file with no boundary", () => {
+  assert.equal(splitCoexistingClaudeMd(claudeStubContent({ pending: false })), null);
+  assert.equal(splitCoexistingClaudeMd("# My Project\n\nDo whatever you want.\n"), null);
+});
+
+test("buildCoexistingClaudeMdContent and splitCoexistingClaudeMd round-trip byte-stable", () => {
+  const preserved = "# My Project\n\nMy own instructions.\n";
+  const stub = claudeStubContent({ pending: false });
+
+  const combined = buildCoexistingClaudeMdContent(preserved, stub);
+  assert.match(combined, /My own instructions\./);
+  assert.match(combined, /# Kenovis AI-OS/);
+  // The customer's content comes first — this CLI is the guest, appending
+  // to a file it did not create.
+  assert.ok(combined.indexOf("My own instructions") < combined.indexOf("# Kenovis AI-OS"));
+
+  const split = splitCoexistingClaudeMd(combined);
+  assert.ok(split !== null);
+  assert.equal(split.preserved, preserved.replace(/\n+$/, ""));
+  assert.equal(split.kenovisBlock, stub);
+
+  // Re-splitting a re-joined result changes nothing — no whitespace creep
+  // across repeated syncs.
+  const rejoined = buildCoexistingClaudeMdContent(split.preserved, split.kenovisBlock);
+  assert.deepEqual(splitCoexistingClaudeMd(rejoined), split);
+});
+
+test("resolveClaudeMdWrite overwrites when the existing file is already exactly a Kenovis-managed stub", () => {
+  const existing = claudeStubContent({ pending: false });
+  const newStub = claudeStubContent({ pending: true, kind: "brownfield" });
+  const recordedHash = hashClaudeMdContent(existing);
+
+  const resolution = resolveClaudeMdWrite(existing, recordedHash, newStub);
+
+  assert.deepEqual(resolution, {
+    action: "written",
+    content: newStub,
+    hashedBlock: hashClaudeMdContent(newStub),
+  });
+});
+
+test("resolveClaudeMdWrite coexists with a foreign file it has never seen before, preserving it verbatim", () => {
+  const existing = "# My Project\n\nMy own instructions.\n";
+  const newStub = claudeStubContent({ pending: false });
+
+  const resolution = resolveClaudeMdWrite(existing, null, newStub);
+
+  assert.equal(resolution.action, "coexisted");
+  if (resolution.action !== "coexisted") throw new Error("unreachable");
+  assert.equal(resolution.content, buildCoexistingClaudeMdContent(existing, newStub));
+  assert.equal(resolution.hashedBlock, hashClaudeMdContent(newStub));
+});
+
+test("resolveClaudeMdWrite re-merges a coexistence file whose Kenovis block is unchanged, carrying the preserved content forward untouched", () => {
+  const preserved = "# My Project\n\nMy own instructions.\n";
+  const oldStub = claudeStubContent({ pending: true, kind: "brownfield" });
+  const existing = buildCoexistingClaudeMdContent(preserved, oldStub);
+  const recordedHash = hashClaudeMdContent(oldStub);
+  const newStub = claudeStubContent({ pending: false });
+
+  const resolution = resolveClaudeMdWrite(existing, recordedHash, newStub);
+
+  assert.equal(resolution.action, "coexisted");
+  if (resolution.action !== "coexisted") throw new Error("unreachable");
+  assert.equal(resolution.content, buildCoexistingClaudeMdContent(preserved, newStub));
+  assert.equal(resolution.hashedBlock, hashClaudeMdContent(newStub));
+});
+
+test("resolveClaudeMdWrite refuses when a coexistence file's own Kenovis block was hand-edited since it was written", () => {
+  const preserved = "# My Project\n\nMy own instructions.\n";
+  const oldStub = claudeStubContent({ pending: true, kind: "brownfield" });
+  const recordedHash = hashClaudeMdContent(oldStub);
+  const handEdited = buildCoexistingClaudeMdContent(preserved, `${oldStub}\nHand-edited.\n`);
+  const newStub = claudeStubContent({ pending: false });
+
+  const resolution = resolveClaudeMdWrite(handEdited, recordedHash, newStub);
+
+  assert.deepEqual(resolution, { action: "refused" });
 });
 
 test("ExistingClaudeMdError names the path and mentions --force", () => {

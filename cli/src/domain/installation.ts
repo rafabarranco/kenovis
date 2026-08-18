@@ -139,6 +139,58 @@ export function isKenovisManagedClaudeStub(existingClaudeMdContent: string): boo
 }
 
 /**
+ * Marks the boundary in a coexistence CLAUDE.md between a customer's own
+ * preserved content (above) and the Kenovis-managed block this CLI wrote
+ * (below, starting with `CLAUDE_STUB_MARKER`) — see `buildCoexistingClaudeMdContent`
+ * and `resolveClaudeMdWrite`. Distinct from `CLAUDE_STUB_MARKER`: that line
+ * marks where the Kenovis block itself starts; this one marks that a split
+ * happened at all, so a plain stub (starts on line 1, no delimiter anywhere)
+ * is never mistaken for a coexistence file with an empty preserved section.
+ */
+const COEXISTENCE_DELIMITER =
+  "<!-- kenovis:end-of-your-content, kenovis-managed block below -->";
+
+export interface CoexistingClaudeMdParts {
+  /** The customer's own content, exactly as it read before this CLI ever touched the file. */
+  preserved: string;
+  /** The Kenovis-managed block: everything from `CLAUDE_STUB_MARKER` onward. */
+  kenovisBlock: string;
+}
+
+/**
+ * Splits a CLAUDE.md this CLI may have previously written in coexistence
+ * form back into the two parts `buildCoexistingClaudeMdContent` joined.
+ * Returns `null` when `COEXISTENCE_DELIMITER` isn't present at all — either
+ * a plain Kenovis-only stub (no split ever happened) or a foreign file this
+ * CLI has never touched.
+ */
+export function splitCoexistingClaudeMd(content: string): CoexistingClaudeMdParts | null {
+  const delimiterIndex = content.indexOf(COEXISTENCE_DELIMITER);
+  if (delimiterIndex === -1) return null;
+
+  return {
+    preserved: content.slice(0, delimiterIndex).replace(/\n+$/, ""),
+    kenovisBlock: content.slice(delimiterIndex + COEXISTENCE_DELIMITER.length).replace(/^\n+/, ""),
+  };
+}
+
+/**
+ * Inverse of `splitCoexistingClaudeMd`: combines a customer's preserved
+ * content with a Kenovis stub into one coexistence CLAUDE.md — the
+ * customer's own content first, the Kenovis block appended below it, since
+ * this CLI is a guest appending to a file it did not create, never the
+ * reverse. Round-trips through `splitCoexistingClaudeMd` byte-stable on
+ * repeated calls (both sides are trimmed of the boundary's own blank lines
+ * before rejoining), so a second sync never grows stray whitespace.
+ */
+export function buildCoexistingClaudeMdContent(
+  preservedContent: string,
+  kenovisStubContent: string,
+): string {
+  return `${preservedContent.replace(/\n+$/, "")}\n\n${COEXISTENCE_DELIMITER}\n\n${kenovisStubContent}`;
+}
+
+/**
  * The exact first line of every tool-adapter command wrapper this CLI has
  * ever written (`command-wrapper.md.tmpl`, rendered at bundle time — see
  * `scripts/bundle-framework-assets.mjs`). Same purpose as `CLAUDE_STUB_MARKER`,
@@ -192,22 +244,106 @@ export function isClaudeMdSafeToOverwrite(
 }
 
 /**
- * Thrown when a target's existing root CLAUDE.md is not safe to overwrite
- * (per `isClaudeMdSafeToOverwrite`) — either it was never written by this
- * CLI, or its content has diverged from what this Installation last wrote
- * (e.g. a customer's own notes appended below the stub). Install/sync must
- * not silently discard it — bypassable with --force, same escape hatch as
- * AlreadyInstalledError/BrownfieldDetectedError/GreenfieldDetectedError.
+ * Thrown only when the Kenovis-managed block of a coexistence CLAUDE.md
+ * (per `resolveClaudeMdWrite`/`splitCoexistingClaudeMd`) was hand-edited
+ * since this CLI last wrote it — the one case still worth refusing on,
+ * since a silent re-merge would erase an edit the customer made on purpose
+ * inside content they had no reason to think was theirs to keep. Every
+ * other "existing CLAUDE.md" case — a plain foreign file, or one already in
+ * coexistence form with its Kenovis block untouched — no longer refuses at
+ * all: `resolveClaudeMdWrite` coexists with it instead of aborting the
+ * whole install/sync over it (see PRODUCT/ROADMAP.md OF-94). Bypassable
+ * with --force, same escape hatch as AlreadyInstalledError/
+ * BrownfieldDetectedError/GreenfieldDetectedError.
  */
 export class ExistingClaudeMdError extends Error {
   constructor(public readonly claudeMdPath: string) {
     super(
-      `${claudeMdPath} already exists and doesn't look like an untouched Kenovis-managed ` +
-        `stub — refusing to overwrite it. Move your existing CLAUDE.md aside first, or ` +
-        `re-run with --force to overwrite it anyway.`,
+      `${claudeMdPath} has a Kenovis-managed section that was edited since it was last ` +
+        `written — refusing to silently overwrite your edit. Restore that section, or ` +
+        `re-run with --force to overwrite the whole file anyway.`,
     );
     this.name = "ExistingClaudeMdError";
   }
+}
+
+/**
+ * What this run did with the target's root CLAUDE.md — reported back so the
+ * non-interactive CLI can tell the customer what happened, since it never
+ * asks first. `"written"` covers both a fresh install (no prior file) and a
+ * plain overwrite (the existing file was already exactly a Kenovis-managed
+ * stub, or --force was passed) — either way, the file that now exists is a
+ * pure Kenovis stub with nothing else in it. `"coexisted"` means a
+ * customer's own content was preserved and the Kenovis block merged in
+ * alongside it, per `resolveClaudeMdWrite`.
+ */
+export type ClaudeMdAction = "written" | "coexisted";
+
+export type ClaudeMdWriteResolution =
+  | { action: "written" | "coexisted"; content: string; hashedBlock: string }
+  | { action: "refused" };
+
+/**
+ * Decides what a run should do with an *existing* root CLAUDE.md, given its
+ * current content, the hash sidecar recorded by the prior install/sync (if
+ * any), and the fresh stub content this run wants to write. Callers only
+ * reach this when the file exists and `--force` was not passed — a missing
+ * file or a `--force` run always just writes `newStubContent` directly, no
+ * resolution needed (see `runInit`/`runSync`).
+ *
+ * Three outcomes:
+ * - The existing file is already exactly a Kenovis-managed stub
+ *   (`isClaudeMdSafeToOverwrite`): overwrite it with the fresh stub,
+ *   `action: "written"` — unchanged from this CLI's original behaviour.
+ * - The existing file is a coexistence file this CLI previously wrote
+ *   (`splitCoexistingClaudeMd` finds the boundary, and the Kenovis block on
+ *   the far side of it still matches `recordedHash`): carry the customer's
+ *   preserved content forward untouched and replace only the Kenovis block,
+ *   `action: "coexisted"`.
+ * - Anything else: a foreign file this CLI has never seen (no boundary
+ *   found at all), or a coexistence file whose Kenovis block was hand-edited
+ *   since it was written (boundary found, but the block no longer matches
+ *   `recordedHash`). The first case coexists with it now rather than
+ *   aborting the whole install/sync the way this CLI used to (OF-94) — the
+ *   customer's content is never discarded either way, only whether it ends
+ *   up merged automatically or the run refuses so a human looks first
+ *   depends on whether this CLI has a reason to trust it already reconciled
+ *   this exact file before. The second case still refuses
+ *   (`action: "refused"`, caller throws `ExistingClaudeMdError`): the
+ *   customer edited content inside the region this CLI owns, and only a
+ *   human can say whether that edit or the incoming stub should win.
+ */
+export function resolveClaudeMdWrite(
+  existingContent: string,
+  recordedHash: string | null,
+  newStubContent: string,
+): ClaudeMdWriteResolution {
+  if (isClaudeMdSafeToOverwrite(existingContent, recordedHash)) {
+    return {
+      action: "written",
+      content: newStubContent,
+      hashedBlock: hashClaudeMdContent(newStubContent),
+    };
+  }
+
+  const split = splitCoexistingClaudeMd(existingContent);
+  if (split === null) {
+    return {
+      action: "coexisted",
+      content: buildCoexistingClaudeMdContent(existingContent, newStubContent),
+      hashedBlock: hashClaudeMdContent(newStubContent),
+    };
+  }
+
+  if (!isClaudeMdSafeToOverwrite(split.kenovisBlock, recordedHash)) {
+    return { action: "refused" };
+  }
+
+  return {
+    action: "coexisted",
+    content: buildCoexistingClaudeMdContent(split.preserved, newStubContent),
+    hashedBlock: hashClaudeMdContent(newStubContent),
+  };
 }
 
 /**
