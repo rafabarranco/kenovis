@@ -287,7 +287,7 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
 export async function main(argv: string[]): Promise<number> {
   // Checked before any dispatch, same as --help: an unrecognized flag would
   // otherwise fall through to the bare autodetect path and run a real install
-  // against cwd (AI/memory/learnings.md Learning-005).
+  // against cwd (company-os/AI/memory/learnings.md Learning-005).
   if (argv.includes("--help") || argv.includes("-h")) {
     printUsage();
     return 0;
