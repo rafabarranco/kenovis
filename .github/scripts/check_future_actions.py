@@ -36,9 +36,20 @@ Learning-022:
     the larger half of the same leak and has no mechanical form. Item 29's
     sweep is the manual counterpart, and it has to be repeated by hand.
 
+Framework-layer home: `.kenovis/AI/policies/documentation.md` -> "A Finding Is
+Fixed, Scheduled, Or Rejected" states the rule (its closing `Future action:`
+clause); `.kenovis/AI/templates/product-layer/AI/memory/learnings.md` ->
+"Learning Format" carries it inside the document the rule governs, so an
+Installation meets it while writing its first learning rather than by having
+read a policy first. Verified 2026-08-13 (PRODUCT/ROADMAP.md item 37).
+
 Scope: this repository's CI only. The bundle ships `.kenovis/AI/`, not
-`.github/` -- a customer Installation carries the rule with no guard behind it
-until `kenovis check` ships (PRODUCT/ROADMAP.md item 25).
+`.github/`, so a customer Installation runs this script never and carries the
+rule always. That is the intended split, not a gap -- the rule is what travels
+and this file is a local net over this repository's own dogfooding
+(DECISIONS.md DECISION-026). An earlier version of this paragraph said the gap
+closed "until `kenovis check` ships (PRODUCT/ROADMAP.md item 25)"; item 25 is
+rejected and `kenovis check` will not ship.
 """
 
 import re
@@ -47,8 +58,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 LEARNINGS = [
-    ROOT / "AI" / "memory" / "learnings.md",
-    ROOT / "AI" / "memory" / "LEARNINGS-ARCHIVE.md",
+    ROOT / "company-os" / "AI" / "memory" / "learnings.md",
+    ROOT / "company-os" / "AI" / "memory" / "LEARNINGS-ARCHIVE.md",
 ]
 
 LEARNING_HEADING = re.compile(r"^## (Learning-\d{3})\s*$", re.MULTILINE)

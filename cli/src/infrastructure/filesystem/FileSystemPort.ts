@@ -13,4 +13,10 @@ export interface FileSystemPort {
   removeTree(targetPath: string): Promise<void>;
   /** Top-level entry names directly inside dirPath. Empty array if dirPath does not exist. */
   listDir(dirPath: string): Promise<string[]>;
+  /**
+   * Every file's path relative to dirPath, recursively, posix-separated
+   * regardless of platform. Directories are not included. Empty array if
+   * dirPath does not exist.
+   */
+  walkFiles(dirPath: string): Promise<string[]>;
 }

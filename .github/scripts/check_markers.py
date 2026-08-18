@@ -6,6 +6,20 @@ on or near its first line. This is a guard against the marker silently
 disappearing during edits, not a claim that these are the only such files
 (README.md and .gitignore carry the marker inside a section/comment, not
 as the first line, and are checked separately).
+
+Framework-layer home: `.kenovis/AI/policies/architecture.md` -> "Distribution
+Is Part Of The Architecture" carries the rule for the case that was missing --
+a new Product-layer document carries the marker when it is created, and the
+marker states layer and never completion state. The setup path was already
+covered: `.kenovis/AI/SYSTEM.md` -> "Project Context",
+`.kenovis/AI/commands/init-project.md`, `.kenovis/AI/commands/adopt-project.md`,
+`.kenovis/AI/templates/product-layer/README.md`, and line 1 of all 18
+product-layer templates. Verified 2026-08-13 (PRODUCT/ROADMAP.md item 37).
+
+What the framework half could not cover, and why this script still exists here:
+the marker disappearing from a file that already has one. That is an editing
+accident with no instruction to attach to -- nobody decides to delete it -- so
+it is a genuine local-net case rather than a missing rule.
 """
 
 import sys
@@ -15,24 +29,24 @@ ROOT = Path(__file__).resolve().parents[2]
 MARKER = "PROJECT-SPECIFIC"
 
 FULL_FILE_MARKER_REQUIRED = [
-    "COMPANY_OS.md",
-    "DECISIONS.md",
-    "PRODUCT/ROADMAP.md",
-    "PRODUCT/ROADMAP-ARCHIVE.md",
-    "PRODUCT/FEATURES.md",
-    "PRODUCT/USER_RESEARCH.md",
-    "DOMAIN/DOMAIN_MODEL.md",
-    "DOMAIN/BUSINESS_RULES.md",
-    "ENGINEERING/ARCHITECTURE.md",
-    "ENGINEERING/DATABASE.md",
-    "ENGINEERING/SECURITY.md",
-    "AUTOMATIONS/customer-onboarding.md",
-    "AUTOMATIONS/release-process.md",
-    "AUTOMATIONS/user-feedback.md",
-    "AI/memory/glossary.md",
-    "AI/memory/conventions.md",
-    "AI/memory/learnings.md",
-    "AI/memory/LEARNINGS-ARCHIVE.md",
+    "company-os/COMPANY_OS.md",
+    "company-os/DECISIONS.md",
+    "company-os/PRODUCT/ROADMAP.md",
+    "company-os/PRODUCT/ROADMAP-ARCHIVE.md",
+    "company-os/PRODUCT/FEATURES.md",
+    "company-os/PRODUCT/USER_RESEARCH.md",
+    "company-os/DOMAIN/DOMAIN_MODEL.md",
+    "company-os/DOMAIN/BUSINESS_RULES.md",
+    "company-os/ENGINEERING/ARCHITECTURE.md",
+    "company-os/ENGINEERING/DATABASE.md",
+    "company-os/ENGINEERING/SECURITY.md",
+    "company-os/AUTOMATIONS/customer-onboarding.md",
+    "company-os/AUTOMATIONS/release-process.md",
+    "company-os/AUTOMATIONS/user-feedback.md",
+    "company-os/AI/memory/glossary.md",
+    "company-os/AI/memory/conventions.md",
+    "company-os/AI/memory/learnings.md",
+    "company-os/AI/memory/LEARNINGS-ARCHIVE.md",
 ]
 
 ANYWHERE_MARKER_REQUIRED = [

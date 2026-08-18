@@ -58,7 +58,7 @@ export interface InitResult {
 /**
  * Installs the Framework layer into a target repository.
  *
- * Enforces DECISION-016/017 and DOMAIN/BUSINESS_RULES.md RULE-INST-01: the
+ * Enforces DECISION-016/017 and company-os/DOMAIN/BUSINESS_RULES.md RULE-INST-01: the
  * target repository's own README.md is never read, written, or overwritten —
  * this function does not even open it, only checks whether it exists so the
  * result can report that it was left alone. The same protection extends to

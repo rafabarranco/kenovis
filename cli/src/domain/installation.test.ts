@@ -67,6 +67,27 @@ test("claudeStubContent, when pending and brownfield, directs the next session t
   assert.match(content, /\.kenovis\/AI\/commands\/adopt-project\.md/);
 });
 
+// OF-28: PRODUCT/ROADMAP.md, DECISIONS.md, DOMAIN/, ENGINEERING/ and AI/memory/ are
+// authored by init-project.md/adopt-project.md (DECISION-021), not by the CLI --
+// so between `kenovis init`/`kenovis add` and the end of setup, none of them exist.
+// The pending stub must not tell that session to route findings to paths that are
+// not there yet.
+test("claudeStubContent, when pending, does not claim destinations that do not exist yet", () => {
+  const content = claudeStubContent({ pending: true, kind: "greenfield" });
+  assert.ok(
+    !content.includes("→ `PRODUCT/ROADMAP.md`"),
+    "pending stub still routes findings to a Product-layer path setup has not created yet",
+  );
+});
+
+test("claudeStubContent, when pending, points at the setup command as where findings go until it creates the real destinations", () => {
+  const greenfield = claudeStubContent({ pending: true, kind: "greenfield" });
+  assert.match(greenfield, /init-project\.md.*creates\s*\nthem as it runs/s);
+
+  const brownfield = claudeStubContent({ pending: true, kind: "brownfield" });
+  assert.match(brownfield, /adopt-project\.md.*creates\s*\nthem as it runs/s);
+});
+
 test("setupPendingContent resolves greenfield to init-project and brownfield to adopt-project", () => {
   assert.equal(setupPendingContent("greenfield"), "init-project");
   assert.equal(setupPendingContent("brownfield"), "adopt-project");
