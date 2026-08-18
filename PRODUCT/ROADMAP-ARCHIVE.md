@@ -1690,3 +1690,19 @@ Closed and not repeated below: **OF-25** (Fixed — eleventh guard, framework-la
 Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external party. Item 22 requires `/architect` and an ADR before any file is touched. Item 25 (the numbered roadmap item, distinct from finding OF-25 above) is rejected as originally scoped.
 
 Per Learning-023, checked before writing this pointer: this round closed two findings and one learning, so the figure below is read after this round's own edits.
+
+---
+
+### item 22 (original text, superseded by REJECTED disposition and DECISION-042)
+
+22. SCHEDULED (R3) — `DECISIONS.md` becomes a directory, one file per decision, with the current file as its index.
+
+Problem: granularity of storage does not match granularity of use. A decision is consulted one at a time and stored in a 119.9 KB monolith, so no retrieval — item 18's index included — can load DECISION-024 without the other sixteen being present in the same file.
+
+Target: `DECISIONS/DECISION-NNN-*.md`, with `DECISIONS.md` retained as the index item 18 already reads. This is the item that turns item 18's deferral into a real ceiling.
+
+Highest risk in the block, and the reason it is last: it changes a path that exists inside every customer Installation. `sync` mirror-replaces `.kenovis/` and never touches the Product layer, so shipping new framework files does not migrate anyone — an existing Installation keeps a monolithic `DECISIONS.md` that the new framework instructions no longer describe, which is Learning-022's shape exactly: a document that reads perfectly and is wrong. Migration has to be designed, not assumed. Blast radius to enumerate exactly before starting: the Product-layer templates, `init-project.md`, `adopt-project.md`, `check_artifact_destinations.py`, `check_template_refs.py`, `check_links.py`, `check_markers.py`, and every framework cross-reference of the form "see DECISIONS.md DECISION-0NN".
+
+Requires `/architect` and an ADR before any file is touched. Do not start this item from `/next` without that.
+
+Validated when: the migration is exercised against a real published Installation on the upgrade sequence a customer actually runs — install the previous version, sync forward, confirm the Product layer migrated and nothing outside `.kenovis/` was touched.

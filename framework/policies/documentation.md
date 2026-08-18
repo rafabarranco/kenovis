@@ -362,6 +362,8 @@ So the governed documents — the ones that accumulate entries rather than descr
 
 **Threshold: 60 KB.** Past it, a governed document must have a split — an archive sibling, an index that bounds what is read, or a directory. The number is a trigger for a decision, not a law: crossing it means "decide how this document sheds weight", not "delete something".
 
+**Index-bounded is a third permanent answer, not a waypoint to one of the other two.** A document qualifies when it carries its own bounded index — read at session start, separately enforced for completeness — and every other reader of it retrieves one entry at a time by a targeted read (find the heading, read a bounded range), never the whole file. `DECISIONS.md` is the instance: `check_decision_index.py` bounds the index, `.kenovis/AI/SYSTEM.md` → "Context Loading Rules" requires the targeted-read discipline for a body. What this buys over a split into many files is the same retrieval property with none of a split's migration cost to an Installation that already has one file — see DECISIONS.md DECISION-042. A document that does not meet both conditions still needs an archive sibling or a directory split; index-bounding is not a lighter-weight substitute available on request.
+
 **The exit.** Closed entries move to the archive verbatim, per the section above. Superseded entries move rather than being marked in place, so the active document holds what is live and the archive holds the trail.
 
 **An exemption is allowed and must name its fix.** A governed document may sit over the threshold while the work that splits it is scheduled — but the exemption cites the roadmap item that closes it. An exemption with no item is the failure this whole rule exists to prevent, wearing a permission slip.
