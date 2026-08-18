@@ -60,6 +60,9 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-045** — No MVP Usage Target Is Set — Adoption Count Does Not Gate 1.0.0. Closes `PRODUCT/ROADMAP.md` OF-11 / item 32: the founder declined to set an installations target ("no nos preocupamos por el número de personas que nos usan"), completing what DECISION-041 left open — `1.0.0`'s only remaining gate is the roadmap reaching empty, with item 33 last.
 - **DECISION-046** ‡ — Multi-Tool AI Scaffolding: A Data-Driven Adapter Registry, Not A Hardcoded Tool List. Closes `PRODUCT/ROADMAP.md` OF-96: `kenovis init`/`add` generates per-AI-tool entrypoints (native `.claude/commands/` for Claude Code, an entrypoint file for others) from a `framework/tool-adapters/<id>/` registry selected by an explicit, non-interactive `--tools` flag (default `claude`) — never from tool-identity branching inside the CLI. A new tool is a new adapter file, shipped to every existing Installation via `kenovis sync` (DECISION-026), not a CLI code change tied to a release.
 - **DECISION-047** — CLAUDE.md Coexistence Replaces Refuse-Or-`--force` As The Default. Closes `PRODUCT/ROADMAP.md` OF-94: a pre-existing, non-Kenovis root `CLAUDE.md` no longer aborts the entire `init`/`add`/`sync` run. It is preserved verbatim and the Kenovis block is appended below it (`resolveClaudeMdWrite`, `cli/src/domain/installation.ts`), with the hash sidecar now scoped to the Kenovis block alone so a customer's preserved content is never part of the safety check. `ExistingClaudeMdError` (bypassable with `--force`, which still means "discard and overwrite entirely") now fires only when the Kenovis-managed block itself was hand-edited since it was last written.
+- **DECISION-048** — `sync` Reports A Framework Release Change As A Prompt To Review Product-Layer Templates, Not As A Structural Diff. Closes `PRODUCT/ROADMAP.md` OF-78: rejects comparing a Product-layer document's own `Version:` line against its template's, because that number tracks the customer's own edits (RULE-INST-01), not template lineage, and would false-positive on every healthy divergence. `kenovis sync` instead prints one informational line whenever the Framework Release actually changed, pointing at `framework/templates/product-layer/` for a manual comparison — no new provenance mechanism, no Product-layer write, nothing CLI-side claims to know precisely.
+- **DECISION-049** — `PRODUCT/OPERATING_MODEL.md`'s Conformance Table Gains A Per-Row `As of` Date Instead Of A New Re-Verification Cadence. Closes `PRODUCT/ROADMAP.md` OF-79: rejects a mandatory full seventeen-row pass every round (the row's own text names this as an ongoing per-round toll paid forever) in favor of making existing staleness visible — every row now carries the date it was last actually checked, so a round or the founder can see at a glance which rows are current and which are old, without a new mechanism forcing anyone to re-check on a schedule.
+- **DECISION-050** — An `Open` Row's Tagged `Role` Becomes A Ranking Factor In `/next` Step 3, Not A New Scheduling Slot. Closes `PRODUCT/ROADMAP.md` OF-90: rejects a per-role scheduling mechanism as architecturally unavailable (DECISION-010/DECISION-013, no scheduler, no backend) in favor of the only reachable shape — a round already activating a role for its own objective (Step 6) now weighs `Open` rows tagged with that same role higher in Step 3's priority ordering, opportunistic rather than systematic.
 
 ---
 
@@ -3664,6 +3667,166 @@ Adopt Option A. `resolveClaudeMdWrite` becomes the single decision point both `i
 Positive: closes OF-94's Pain-medium, install-blocking gap for the exact customer segment this product targets; the CLI's non-interactive nature stays fully respected — no prompt is added, the CLI still only ever acts and reports. Negative, accepted: default behavior changes for any existing brownfield customer who has a `CLAUDE.md` — previously a hard stop requiring a manual decision, now an automatic, reported append; the first-encounter case can produce a cosmetically redundant file (old stub content preserved twice) rather than a clean single copy.
 
 Implementation: `cli/src/domain/installation.ts` (`resolveClaudeMdWrite`, `splitCoexistingClaudeMd`, `buildCoexistingClaudeMdContent`, `ClaudeMdAction`), `init.ts`, `sync.ts`, `cli/src/cli/bin.ts`. Tests: `installation.test.ts` (resolver unit tests), `init.test.ts`/`sync.test.ts`/`add.test.ts` (`InMemoryFileSystem`), `NodeFileSystem.integration.test.ts` (real filesystem). Origin: OF-94.
+
+---
+
+# DECISION-048
+
+# `sync` Reports A Framework Release Change As A Prompt To Review Product-Layer Templates
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-78, run through `/architect` at the founder's instruction (bundled with OF-79/OF-90 per the `Next` pointer).
+
+Review Date:
+
+2027-02-19
+
+---
+
+## Context
+
+`sync` mirror-replaces `.kenovis/` and never writes `company-os/` (RULE-INST-01) — correct, and the whole reason a customer's own edits to their Product layer survive every sync. The consequence, named by OF-78: an Installation set up before a framework template changed keeps its old, correct-at-the-time answer forever, with nothing telling it a newer template exists. Two concrete instances: an Installation predating DECISION-032 has no `PRODUCT/OPERATING_MODEL.md` Conformance table at all; one that authored `COMPANY_OS.md` from the pre-OF-73 template still carries a third, wrong Source Of Truth ordering.
+
+`framework/templates/product-layer/**` is what the bundle ships (`AI/templates/product-layer/**` inside `frameworkSourceDir`), mapping 1:1 to `company-os/**`. 16 of 17 templates carry a `Version: X.Y` line at line 7.
+
+## Options Considered
+
+### Option A — Compare each document's own `Version:` line against its template's
+
+Read `company-os/<path>`'s `Version:` line, compare against `AI/templates/product-layer/<path>`'s. Rejected: verified against this repository's own `company-os/COMPANY_OS.md` (`Version: 2.2`) that the number tracks the *document's own* edit history — it increments every time the founder or an AI session materially changes that document's content, unrelated to the shipped template's own version. A customer's real, healthy Product layer diverges from its template's version number immediately and permanently by design (DECISION-023); comparing the two numbers produces a false positive on every Installation that has done any real work at all, and a false negative whenever a document's own version happens to already read higher than the template's, regardless of whether the template changed underneath it.
+
+### Option B — Template-lineage provenance: record "authored from template version X" at setup, compare against current at sync
+
+Would answer the question Option A cannot, but needs a mechanism that does not exist: setup-time provenance capture, one sidecar or manifest entry per Product-layer document, written by `/init-project`/`/adopt-project` (not the CLI, which does not author these files — DECISION-021) and read by `sync`. Real work, not a text change, and this round's own three-finding bundle is not the place to design a new cross-command provenance format. Not rejected outright — queued as a possible Phase 2 if Option C proves insufficient in practice (see Consequences).
+
+### Option C — An informational notice on every Framework Release change, no structural claim
+
+`sync` already computes `previousFrameworkVersion`/`frameworkVersion` and prints `Framework Release: X -> Y`. Add one more line, only when that comparison shows a real change: point the customer at `framework/templates/product-layer/` for a manual look, without claiming to know which document changed or how much. No new mechanism, no Product-layer read even (the notice fires off the Framework Release comparison already in hand), no false precision.
+
+## Decision
+
+Adopt Option C. `bin.ts`'s `runSyncCommand` prints, immediately after the existing `Framework Release: X -> Y` line, one additional line whenever `previousFrameworkVersion !== frameworkVersion`: this release may have changed Product-layer templates — review `framework/templates/product-layer/` against your own `company-os/` if you want to pick up template-level improvements; sync never does this for you. Presentation-layer only — no new `SyncResult` field, since the condition is already derivable from fields `sync` already returns.
+
+## Consequences
+
+Positive: closes the "nothing tells you" half of OF-78 immediately, at effectively zero implementation cost and zero new risk (pure text, fires off data already computed, never touches `company-os/`). Negative, accepted: the notice cannot say *which* document or *what* changed — a customer has to go read `framework/templates/product-layer/` themselves, the same manual comparison they could already do today, just now prompted rather than never mentioned. If this proves too coarse in practice (customers ignore the prompt, or ask for precision), Option B's provenance mechanism is the designed next step, not a redesign — queued as a fresh finding rather than assumed necessary.
+
+Implementation: `cli/src/cli/bin.ts` (`runSyncCommand`). Origin: OF-78.
+
+---
+
+# DECISION-049
+
+# `PRODUCT/OPERATING_MODEL.md`'s Conformance Table Gains A Per-Row `As of` Date
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-79, run through `/architect` at the founder's instruction (bundled with OF-78/OF-90 per the `Next` pointer).
+
+Review Date:
+
+2027-02-19
+
+---
+
+## Context
+
+`commands/next.md` Step 13 requires a closing round to update *the row for the section it served* — correct and bounded, per DECISION-033. It says nothing about the other sixteen rows, and nothing else re-reads them. Measured before scoping: the most recent round re-verified 1 of 17 rows, the round before it 4 of 17; the table's own full pass is dated 2026-08-14, a date that started decaying the moment the next round closed. The table's own "What A Row Means" section already says a row's state is "read off the tree with the command in the row" — true only for the row a round happens to touch.
+
+## Options Considered
+
+### Option A — Full seventeen-row pass on a fixed per-round cadence
+
+Rejected on the row's own numbers: seventeen commands per round, paid by every Installation on every round, forever — the exact per-round toll `commands/next.md`'s own Observe step (DECISION-038) was deliberately bounded to avoid when it chose document-weight drift as its first, narrow instance rather than an open-ended checklist.
+
+### Option B — Full pass tied to `/release` instead of every round
+
+Cheaper than Option A (a release is far less frequent than a `/next` round) but still a new required step in a workflow this bundle's own scope was not sized to redesign, and it does not fix the underlying visibility gap between releases — a founder reading the table the week before a release still sees rows that read `Present` without knowing whether that is current or eleven rounds stale.
+
+### Option C — Per-row `As of` date, no new cadence
+
+Every row gains a fourth cell (or an inline clause) naming the date it was actually last checked. Staleness becomes visible without requiring anyone to eliminate it — a row reading `Present (as of 2026-08-14)` today is a different, honest claim from a bare `Present`, and a reader can judge for themselves whether eleven days or eleven rounds of silence on a row is a problem worth a founder decision, rather than the table asserting freshness it does not have.
+
+## Decision
+
+Adopt Option C. The Conformance Table's format (`framework/templates/product-layer/PRODUCT/OPERATING_MODEL.md` and this repository's own `company-os/PRODUCT/OPERATING_MODEL.md`) gains an `As of` column between `State` and `Carried by`. `commands/next.md` Step 13's existing instruction ("updates that section's row") is extended by one clause: the update includes today's date in that column, and a row nobody's work verified this round keeps its existing date rather than being touched. `unmeasured` rows get no date until first verified — an unmeasured row's own state already says everything an `as of` date would add.
+
+Option B is not rejected outright, only not built now: nothing here prevents a future round from also adding a full-pass step to `/release` once the visibility half has had time to show whether it is sufficient on its own.
+
+## Consequences
+
+Positive: closes the actual defect OF-79 names (staleness is invisible) without a new per-round cost on any Installation; every existing round already states a date in its own narrative, so the marginal cost of also writing it into the table cell is one clause, not new work. Negative, accepted: this does not make any row *more* current — a row can still sit stale indefinitely, now visibly rather than silently, which is a real trade rather than a full fix. The row that first flagged this (OF-79) stays a useful pointer to "revisit staleness itself" if the visible dates show a pattern worth acting on.
+
+Implementation: `framework/templates/product-layer/PRODUCT/OPERATING_MODEL.md`, `company-os/PRODUCT/OPERATING_MODEL.md`, `framework/commands/next.md` Step 13. Origin: OF-79.
+
+---
+
+# DECISION-050
+
+# An `Open` Row's Tagged `Role` Becomes A Ranking Factor In `/next` Step 3
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-90, run through `/architect` at the founder's instruction (bundled with OF-78/OF-79 per the `Next` pointer).
+
+Review Date:
+
+2027-02-19
+
+---
+
+## Context
+
+DECISION-035 lets an `Open` finding name an owning `Role` from the Agent Roster. DECISION-036 makes every round refine the lowest-id `Open` row regardless of its tagged role. Verified against the tree: `grep -rln "Open Findings|disposition" framework/agents/*.md` → 0 across 12 files — no agent file reads its own tag, so a `security`-tagged row and a `cto`-tagged row are refined by whichever round happens to reach their id, never by a round actually operating as the tagged role. `PRODUCT/OPERATING_MODEL.md` §12 states "the role that owns the responsibility must process the discovery"; naming an owner is not the owner processing anything.
+
+## Options Considered
+
+### Option A — A structural per-role scheduling slot
+
+Rejected on the same architectural grounds DECISION-037/038 already applied to §15 and §1/§16: no scheduler, no backend, nothing runs between sessions (DECISION-010, DECISION-013). A "security round" that starts on its own, on a role's own cadence, needs exactly the runtime this framework has committed not to carry.
+
+### Option B — `/next` Step 3 weighs `Open` rows by role match, opportunistically
+
+A round already knows which agent roles it is activating for its own chosen objective (Step 6). Step 3's existing ranking criteria (User impact, Business value, Technical dependencies, Risk, Effort) gains one more named factor: an `Open` row whose `Role` matches a role this round is activating anyway ranks higher than an equally-aged row with no such match. This does not guarantee a role-tagged row gets processed by that role — it only means the round already has that expertise active is more likely to also pick up a matching row, the same opportunistic shape DECISION-036's own Refine action already uses (age order, not a guarantee of immediacy).
+
+### Option C — Leave role-tagging as documentation only, close the row as a known, accepted limitation
+
+Rejected: the row's own Pain (medium, twelve-role roster made decorative for its stated purpose) and the standing rule (`PRODUCT/OPERATING_MODEL.md` §12, `ABSOLUTE PRIORITY #1`) argue against accepting a gap this framework's own constitution names as a requirement, when a cheap, architecturally-consistent partial fix exists.
+
+## Decision
+
+Adopt Option B. `commands/next.md` Step 3's ranking criteria gains: "Role match — an `Open` row whose `Role` matches an agent role this round activates for its own objective (Step 6) ranks above an equally-aged row with no match." This is additive to the existing DECISION-036 mechanism, not a replacement: the Refine action still touches the lowest-id untouched row regardless of role; this only changes which *scheduled objective* a round picks when a role happens to already be in play.
+
+## Consequences
+
+Positive: role tags stop being purely decorative without inventing a scheduler this framework has twice already ruled out; the fix is a one-clause addition to a step every round already reads. Negative, accepted: this is opportunistic, not systematic — a role that a round never happens to activate for its own objective still never gets its tagged rows prioritized, which is the same residual §12 leaves `Absent` on the Conformance table rather than moving to `Partial` or `Present` on the strength of this decision alone; a behavioral instance is still needed before that row moves (OF-30/Learning-031's standing caveat, same as every other recent fix on this board).
+
+Implementation: `framework/commands/next.md` Step 3. Origin: OF-90.
 
 ---
 

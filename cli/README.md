@@ -16,7 +16,7 @@ npm publishing is wired up (`.github/workflows/publish.yml`): pushing a GitHub R
 
 ## Upgrading
 
-Which Framework Release an Installation currently tracks is recorded in its `.kenovis/.framework-version`, stamped into the bundle at build time and installed with it — `cat .kenovis/.framework-version` answers "what am I on?" offline. `init`, `add` and `sync` all print it; `sync` prints the transition (`0.3.0 -> 0.5.0`, or `unknown -> 0.5.0` for an Installation predating the stamp, which that same sync fixes). `kenovis --version` prints the CLI's own version, which is the Framework Release it bundles.
+Which Framework Release an Installation currently tracks is recorded in its `.kenovis/.framework-version`, stamped into the bundle at build time and installed with it — `cat .kenovis/.framework-version` answers "what am I on?" offline. `init`, `add` and `sync` all print it; `sync` prints the transition (`0.3.0 -> 0.5.0`, or `unknown -> 0.5.0` for an Installation predating the stamp, which that same sync fixes). Whenever that transition is a real change, `sync` also prints a one-line prompt to review `framework/templates/product-layer/` against your own `company-os/` — informational only (DECISION-048, OF-78): `sync` never reads or writes `company-os/` (RULE-INST-01), so it cannot say what changed, only that it may have. `kenovis --version` prints the CLI's own version, which is the Framework Release it bundles.
 
 An existing Installation does not auto-detect a newer Framework Release today (PRODUCT/ROADMAP.md Phase 2 — an active version-check is deferred, low priority against ~1 external team's data so far; the stamp above is the local half of that gap, with no network dependency). To upgrade by hand:
 

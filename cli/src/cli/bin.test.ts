@@ -1,9 +1,33 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs, parseContextArgs, defaultFrameworkSourceDir, main, cliVersion } from "./bin.js";
+
+async function withCapturedLog(run: () => Promise<void>): Promise<string[]> {
+  const printed: string[] = [];
+  const originalLog = console.log;
+  console.log = (message?: unknown) => {
+    printed.push(String(message));
+  };
+  try {
+    await run();
+  } finally {
+    console.log = originalLog;
+  }
+  return printed;
+}
+
+async function makeFrameworkSource(root: string, version: string): Promise<string> {
+  const sourceDir = join(root, `source-${version}`);
+  await mkdir(join(sourceDir, "AI"), { recursive: true });
+  await writeFile(join(sourceDir, "AI", "SYSTEM.md"), "# System\n");
+  await writeFile(join(sourceDir, "README.md"), "# Framework explanation\n");
+  await writeFile(join(sourceDir, ".framework-version"), `${version}\n`);
+  return sourceDir;
+}
 
 test("parseArgs reads command, positional targetDir, --source, and --force", () => {
   const args = parseArgs(["init", "/repo", "--source", "/assets", "--force"]);
@@ -155,6 +179,35 @@ test("main(['--version']) prints the CLI version and exits 0 without touching th
     assert.deepEqual(printed, [cliVersion()]);
   } finally {
     console.log = originalLog;
+  }
+});
+
+test("main(['sync']) prints a Product-layer template review notice only when the Framework Release actually changed (DECISION-048, OF-78)", async () => {
+  const root = await mkdtemp(join(tmpdir(), "kenovis-bin-test-"));
+  const targetDir = join(root, "target");
+  await mkdir(targetDir, { recursive: true });
+  const noticePattern = /may have changed Product-layer templates/;
+
+  try {
+    const sourceV1 = await makeFrameworkSource(root, "0.1.0");
+    await main(["init", targetDir, "--source", sourceV1]);
+
+    // Same release again: no notice.
+    const unchanged = await withCapturedLog(async () => {
+      const code = await main(["sync", targetDir, "--source", sourceV1]);
+      assert.equal(code, 0);
+    });
+    assert.ok(!unchanged.some((line) => noticePattern.test(line)));
+
+    // A different release: the notice fires.
+    const sourceV2 = await makeFrameworkSource(root, "0.2.0");
+    const changed = await withCapturedLog(async () => {
+      const code = await main(["sync", targetDir, "--source", sourceV2]);
+      assert.equal(code, 0);
+    });
+    assert.ok(changed.some((line) => noticePattern.test(line)));
+  } finally {
+    await rm(root, { recursive: true, force: true });
   }
 });
 
