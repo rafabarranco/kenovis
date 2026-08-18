@@ -1,6 +1,6 @@
 # Git Policy
 
-Version: 2.3
+Version: 2.4
 
 ---
 
@@ -264,6 +264,8 @@ git merge --ff-only origin/development
 ```
 
 Do not wait to notice reverted files before running this — run it as the very next command after every `gh pr merge --delete-branch`, whether or not the merge printed an error.
+
+**A harness permission classifier can refuse to run the fetch-and-relevel sequence outright — a distinct failure from every case above.** The failures above are all git reporting an error: exit `128`, a credential prompt, a stale-lease rejection. A classifier block looks nothing like that — the command never runs, no git error surfaces, and the response is `Blocked by classifier` from the harness itself, not from git. Treat it as its own case, not a retry target: state plainly that the sync could not run and why, do not re-issue the same command expecting a different result, and do not treat the local checkout as leveled — it is exactly as far behind as the last `git rev-list --count HEAD..origin/development` measured it, uncorrected. The checkout self-heals the next time any session there fetches; the risk is only proceeding as if this fetch already had.
 
 ---
 
