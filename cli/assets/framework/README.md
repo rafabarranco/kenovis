@@ -17,15 +17,17 @@ tool-owned, not yours to maintain by hand.
 - `AI/commands/` — entry points your AI tool triggers (`/next`, `/feature`, `/bug`, ...).
 - `AI/templates/` — document skeletons (ADR, decision, feature plan, bug report).
 - `AI/templates/product-layer/` — the shape of your own product context: one template
-  per document `/init-project` or `/adopt-project` will author at your repository root.
-  You do not copy these by hand; those commands ask you real questions first.
+  per document `/init-project` or `/adopt-project` will author under `company-os/`
+  at your repository root. You do not copy these by hand; those commands ask you
+  real questions first.
 
 ## What does NOT live here
 
 Your product's own context — company vision, decisions, domain model, roadmap,
-architecture, and your own code — lives at your repository's root, fully visible,
+architecture — lives under `company-os/` at your repository's root, fully visible,
 never inside `.kenovis/`. That separation is deliberate: this directory is Kenovis's
-infrastructure; your repository root is yours.
+infrastructure; `company-os/` is yours. (Your own code lives wherever it already
+does — Kenovis never relocates it.)
 
 Installing Kenovis creates none of those files. `kenovis init`/`add` write this
 directory plus a `CLAUDE.md` stub, and nothing else — your repository root is
