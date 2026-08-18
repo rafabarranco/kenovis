@@ -31,7 +31,15 @@ To pull a newer Framework Release into an Installation later:
 npx kenovis sync
 ```
 
-`sync` mirror-replaces `.kenovis/` only. Product-layer files and your own code are never touched. Reversible via your repository's own `git diff` / `git checkout`. See [cli/README.md](cli/README.md) for the full command reference.
+`sync` mirror-replaces `.kenovis/` only. Product-layer files and your own code are never touched. Reversible via your repository's own `git diff` / `git checkout`.
+
+To search your own accumulated Product-layer context instead of grepping or guessing which file to open:
+
+```
+npx kenovis context "rate limiting"
+```
+
+Filesystem-only — no network, no backend, nothing indexed or cached between runs — prints ranked `path:startLine-endLine` citations to open with a real read, never file contents itself. See [cli/README.md](cli/README.md) for the full command reference.
 
 ## Starting a new product
 

@@ -1748,3 +1748,21 @@ Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external 
 Per Learning-023, checked before writing this pointer: this round closed one item and refined one row (OF-64), added none, so the figure below is read after this round's own edits.
 
 ---
+
+### superseded `Next` ordering block, written after item 41 closed and OF-65 refined, replaced by the block written after item 23 closed and OF-67 refined
+
+Next (updated 2026-08-18, after item 41 closed via `/next`, OF-65 refined):
+
+**Departure from the previous pointer:** none. This round took the previous pointer's top-ranked item exactly as it named it — a fresh thread confirming item 41 independently — and closed it.
+
+Closed and not repeated below: item 41 (`DONE`, the framework's conformance to `PRODUCT/OPERATING_MODEL.md` confirmed independently, this round).
+
+1. **Item 23 — now the top candidate.** Structurally unblocked since items 18-22 resolved (18-21 `DONE`, 22 `Rejected`), but its own text requires reassessing against items 18-22's measurements *before* building, not building directly. Unchanged reasoning, promoted from rank 2.
+2. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged. The release question inherits this: hold until item 33 finally runs or the roadmap empties, whichever Addendum C reaches first.
+3. **OF-78, OF-79, OF-83, OF-84, OF-85, OF-87, OF-90 and OF-93 stay deliberately unranked above the block above.** Unchanged reasoning from the previous pointer. Two findings join this list new this round, not yet individually weighed against the rest: **OF-94** (a customer's pre-existing `CLAUDE.md` has no coexistence path with Kenovis's stub — recovered this round from a previous round's uncommitted work) and **OF-95** (a round that finds a predecessor's uncommitted Product-layer work has no stated recovery procedure, only detection — found this round).
+
+Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external party and ranks last by founder instruction. Item 25 (the numbered roadmap item) is rejected as originally scoped.
+
+Per Learning-023, checked before writing this pointer: this round closed one item (41) and refined one row (OF-65), found one new finding (OF-95) and recovered one already-dimensioned one from an interrupted round (OF-94), so the figure below is read after this round's own edits.
+
+---
