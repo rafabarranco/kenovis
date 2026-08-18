@@ -620,6 +620,36 @@ Disposition: Recorded; the standing-instruction gap it points at is OF-95, not f
 
 ---
 
+## Learning-048
+
+Date:
+2026-08-18
+
+Category:
+Engineering
+
+Context:
+Building `cli/src/application/commands/context.ts` (item 23) — a read-only command needed to know whether `company-os/` existed under a target directory before searching it, the same shape of check `runInit`/`runSync` already do before writing.
+
+Problem:
+The obvious check, `await fs.exists(rootPath)`, passed against `NodeFileSystem` in a manual run but failed every unit test written against `InMemoryFileSystem` — even ones that had seeded real files under that exact directory.
+
+What happened:
+`InMemoryFileSystem.exists()` is `this.files.has(targetPath)` — an exact-key lookup against a flat file map. It models files, not directories; a directory "exists" in this test double only if something explicitly set that literal path as a key (which is exactly why `copyTree` writes a synthetic "directory-existence marker" entry at `targetDir` after copying — visible in its own source, but easy to miss unless you already know to look). Seeding `company-os/DOMAIN/BUSINESS_RULES.md` does not make `exists("company-os")` true. Fixed by dropping the directory-exists check entirely and using `walkFiles(rootPath)`'s result directly — an empty result already means "nothing to search here," whether the directory is absent or genuinely empty, so the two cases never needed to be told apart.
+
+Root cause:
+`FileSystemPort` is files-only by design (no `isDirectory`/`listDir`-as-existence-proxy in its contract), which is correct for the port — but `exists()`'s real-filesystem behavior (true for directories too, via `access()`) is not obvious from the interface alone, and `InMemoryFileSystem`'s stricter, file-only model only surfaces the gap when a test exercises a directory-presence check specifically.
+
+Learning:
+Do not use `FileSystemPort.exists()` to check whether a directory has content — it works against `NodeFileSystem` by accident of how `access()` behaves, not by contract, and `InMemoryFileSystem` will not agree unless a fixture happens to seed the exact directory-path key. Use `walkFiles()` (or `listDir()`) and check whether it returned anything instead; that is true to the port's own files-only model on both implementations.
+
+Future action:
+None queued — this is a one-off implementation detail of a port both existing commands already work around correctly (see `InMemoryFileSystem.copyTree`'s own marker comment); worth citing if a future command hits the same shape.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 

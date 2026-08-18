@@ -10,6 +10,8 @@ This is where Kenovis's own implementation lives: the CLI that installs and sync
 
 Phase 0 item 4 (auto-trigger `init-project`/`adopt-project`, per [DECISIONS.md](../company-os/DECISIONS.md) DECISION-018) is also done: `init` now *refuses* on a detected-brownfield target (points at the new `kenovis add` instead, bypassable with `--force`), and `add` refuses symmetrically on a detected-greenfield target. Either command writes a `.kenovis/.setup-pending` marker naming the right AI command and a `CLAUDE.md` stub carrying a first-session directive to run it — so the very next AI session runs `init-project`/`adopt-project` automatically, no manual slash command required. `init-project.md`/`adopt-project.md` delete the marker and revert the stub to its passive form on their own completion. A bare `kenovis <targetDir>` (no subcommand) detects the target itself and dispatches to `init` or `add` internally — it never refuses.
 
+[PRODUCT/ROADMAP.md](../company-os/PRODUCT/ROADMAP.md) item 23 (a native retrieval command) is also done: `kenovis context "<query>"` searches an Installation's own `company-os/` (opt-in `--include-framework` also covers `.kenovis/AI/`) and prints ranked `path:startLine-endLine` citations with a short excerpt — filesystem-only, no network, no backend, nothing indexed or cached between runs, per [ENGINEERING/ARCHITECTURE.md](../company-os/ENGINEERING/ARCHITECTURE.md) Hard Rules and DECISION-013. It points at what to open with a real read (the same targeted-read discipline [SYSTEM.md](../.kenovis/AI/SYSTEM.md) → "Context Loading Rules" already requires of a decision body or an archive entry); it never prints file contents itself. v1 is deliberately plain keyword/term-frequency scoring, no embeddings — items 18-22 already bound what a session reads once it knows which citation to open, and this closes the other half: finding which citation to open in the first place.
+
 npm publishing is wired up (`.github/workflows/publish.yml`): pushing a GitHub Release triggers CI to build, test, typecheck and `npm publish --provenance --access public` the package — never from a developer's local machine, per [ENGINEERING/SECURITY.md](../company-os/ENGINEERING/SECURITY.md) → Supply-Chain Security. Latest publish: [`kenovis@0.2.0`](https://www.npmjs.com/package/kenovis) shipped from the `v0.2.0` GitHub Release, with provenance — closes the `--source` footgun found during Learning-004 smoke testing (`init`/`sync` now validate `--source` before touching anything). `npx kenovis init` now works against any external repository with no local setup.
 
 ## Upgrading
@@ -64,7 +66,8 @@ src/
 ├── application/commands/
 │   ├── init.ts                                   install use case: orchestrates the domain rules against a FileSystemPort, refuses on a detected-brownfield target unless invoked as "add" or given --force
 │   ├── add.ts                                     thin wrapper reusing init.ts's runInit with invokedAs: "add" — refuses symmetrically on a detected-greenfield target
-│   └── sync.ts                                   update use case: mirror-replaces .kenovis/ and the CLAUDE.md stub, nothing else
+│   ├── sync.ts                                   update use case: mirror-replaces .kenovis/ and the CLAUDE.md stub, nothing else
+│   └── context.ts                                read-only retrieval use case: chunks company-os/ (and, opt-in, .kenovis/AI/) markdown into paragraphs/table-rows, ranks by keyword overlap, returns citable path:line ranges — writes nothing
 ├── infrastructure/filesystem/
 │   ├── FileSystemPort.ts                         port every layer above depends on, never node:fs directly
 │   ├── NodeFileSystem.ts                          real implementation
@@ -88,6 +91,7 @@ npm run typecheck
 node bin/kenovis.js init <targetDir>                                    # uses the bundled Framework layer
 node bin/kenovis.js init <targetDir> --source <customFrameworkDir>      # or install something else instead
 node bin/kenovis.js sync <targetDir>                                    # update an existing .kenovis/ in place
+node bin/kenovis.js context "<query>" <targetDir>                      # search that Installation's own company-os/
 ```
 
 ## Before adding anything here
