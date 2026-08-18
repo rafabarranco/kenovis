@@ -1729,3 +1729,22 @@ Reverted with `git checkout -- AI/memory/learnings.md`: byte-identical to the or
 Findings this round did not fix: none. OF-51 refined in the active document (still `Open`, not closed — its own reasoning stays inline there per "Closed Work Is Archived, Not Kept Inline," which governs closed entries, not refinements of live ones).
 
 ---
+
+### superseded `Next` ordering block, written after item 38 closed and OF-64 refined, replaced by the block written after item 41 closed and OF-65 refined
+
+Next (updated 2026-08-18, after item 38 closed via `/next`, OF-64 refined):
+
+**Departure from the previous pointer, recorded per Step 3:** the previous pointer's top candidate — confirm item 41 independently — required a session that did not author the item 41 §3/§12 fixes. This round is the same thread that authored them (in the immediately preceding round, item 44), so it could not honestly execute that confirmation without repeating exactly the self-report bias `PRODUCT/OPERATING_MODEL.md` OF-30/Learning-031 hold every other behavioral claim in this document to. The pointer's own second-ranked item, item 38, carried no such constraint and was explicitly named as the fallback for this case ("take this if item 41's confirmation is a quick read rather than a full round's work") — taking it is following the pointer's own branching, not descending past its top item (DECISION-030 forbids the latter, not the former).
+
+Closed and not repeated below: item 38 (`DONE`, `sync` reports removed `.kenovis/` paths, this round).
+
+1. **Top candidate, unchanged and still not this round's to take: confirm item 41's `Validated when` bar independently and close the item if it holds — in a fresh thread that did not author the item 41 or item 44 fixes.** Neither this round nor the one before it touched `PRODUCT/OPERATING_MODEL.md` → Conformance §3, §12 or §15 (item 44 only re-annotated §10). A session with no authorship stake in either fix should re-read Conformance directly, confirm all three `Absent` rows still carry a live finding or decision, and close item 41 with that as the evidence — or state plainly what still fails if one does not hold. **Two consecutive rounds in this same thread have now deferred this item for the identical reason; if a third round in this thread reaches this point, deferring again is not obviously still the right call** — at some point the independence this item needs has to be sought (a genuinely new thread) rather than assumed away by continuing to work the list.
+2. Item 23 — structurally unblocked (items 18-22 all resolved: 18-21 `DONE`, 22 `Rejected`), but its own text requires reassessing against items 18-22's measurements *before* building, not building directly.
+3. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged. The release question inherits this: hold until item 33 finally runs or the roadmap empties, whichever Addendum C reaches first.
+4. **OF-78, OF-79, OF-83, OF-84, OF-85, OF-87, OF-90 and OF-93 stay deliberately unranked above the blocks above.** Unchanged reasoning from the previous pointer.
+
+Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external party and ranks last by founder instruction. Item 25 (the numbered roadmap item) is rejected as originally scoped.
+
+Per Learning-023, checked before writing this pointer: this round closed one item and refined one row (OF-64), added none, so the figure below is read after this round's own edits.
+
+---

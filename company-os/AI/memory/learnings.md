@@ -590,6 +590,36 @@ Disposition: Recorded as a technique; no work implied.
 
 ---
 
+## Learning-047
+
+Date:
+2026-08-18
+
+Category:
+Process
+
+Context:
+Bootstrap on a fresh thread (item 41's independent-confirmation round) found `company-os/PRODUCT/ROADMAP.md` modified and unstaged on `development`, no open PR — a fully-dimensioned finding (OF-94) written by a previous round whose thread had evidently ended before its own git steps ran.
+
+Problem:
+`commands/next.md`'s Completion Criteria (OF-80, `Fixed`) requires a round's output to reach a branch before its thread ends, and `commands/bootstrap.md` Step 5 tells a new round to inspect git status and determine "unfinished tasks, potential conflicts" — but neither document says what a *discovering* round should do once it finds exactly that. The rule governs the round that produced the orphaned work; it says nothing to the round that later finds it.
+
+What happened:
+Treated it the way general git-safety practice (not a framework instruction) suggests: investigated before touching anything (`diff`, mtimes, cross-checked against `learnings.md`/`ROADMAP-ARCHIVE.md` for whether the untracked sibling file `claude-info.md` was already dispositioned — it was, OF-45b, `Rejected`, deliberately left untracked), confirmed the modified content was a genuine, complete finding and not an artifact of something else, then folded it into this round's own feature branch and committed it as its own distinct, separately-attributed change before starting the round's own objective. Queued the gap itself as OF-95 rather than only fixing it silently in this session's behaviour.
+
+Root cause:
+OF-80's fix closes the loop for the round that produces uncommitted work, on the assumption that round reaches its own completion step. It does not, and structurally cannot, cover a thread that is interrupted from outside (context limit, human closing the session, a crash) before reaching that step — that failure mode needs a *second* round's instruction, not a stronger version of the first round's rule.
+
+Learning:
+Finding another round's uncommitted Product-layer content is not noise and is not automatically this round's problem to solve by discarding it — investigate what it is (diff it, check whether it's already dispositioned elsewhere) before deciding, and if it is genuine unrecorded work, the safe default is to fold it into the current round's own branch and commit it as its own atomic change, never to silently drop it or silently absorb it into an unrelated commit.
+
+Future action:
+OF-95, `Open` — state this explicitly as a clause in `commands/bootstrap.md` Step 5 rather than leaving it to be re-derived from general practice each time.
+
+Disposition: Recorded; the standing-instruction gap it points at is OF-95, not fixed here.
+
+---
+
 ---
 Learning Examples
 
