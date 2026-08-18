@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import { runInit, type InitResult } from "../application/commands/init.js";
 import { runAdd } from "../application/commands/add.js";
 import { runSync } from "../application/commands/sync.js";
+import { runContext } from "../application/commands/context.js";
 import { NodeFileSystem } from "../infrastructure/filesystem/NodeFileSystem.js";
 import {
   AlreadyInstalledError,
@@ -48,6 +49,46 @@ export function parseArgs(argv: string[]): ParsedArgs {
   return { command, targetDir: targetDir ?? ".", sourceDir, force };
 }
 
+const DEFAULT_CONTEXT_LIMIT = 15;
+
+export interface ContextArgs {
+  /** undefined means the caller passed no query text at all. */
+  query: string | undefined;
+  targetDir: string;
+  limit: number;
+  includeFramework: boolean;
+}
+
+/**
+ * `kenovis context "<query>" [<targetDir>] [--limit N] [--include-framework]`.
+ * Deliberately its own parser rather than an extension of parseArgs above:
+ * context takes a required query positional and has no --source/--force,
+ * so folding it into that shape would make both parsers read the other
+ * command's flags as valid.
+ */
+export function parseContextArgs(argv: string[]): ContextArgs {
+  let query: string | undefined;
+  let targetDir: string | undefined;
+  let limit = DEFAULT_CONTEXT_LIMIT;
+  let includeFramework = false;
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    if (arg === "--include-framework") {
+      includeFramework = true;
+    } else if (arg === "--limit") {
+      const raw = argv[++i];
+      const parsed = raw === undefined ? Number.NaN : Number.parseInt(raw, 10);
+      if (Number.isFinite(parsed) && parsed > 0) limit = parsed;
+    } else if (!arg.startsWith("--")) {
+      if (query === undefined) query = arg;
+      else if (targetDir === undefined) targetDir = arg;
+    }
+  }
+
+  return { query, targetDir: targetDir ?? ".", limit, includeFramework };
+}
+
 /**
  * dist/cli/bin.js -> dist/framework-assets, bundled at build time by
  * scripts/bundle-framework-assets.mjs from this repository's own .kenovis/AI/.
@@ -76,6 +117,7 @@ function printUsage(): void {
 kenovis init <targetDir> [--source <frameworkSourceDir>] [--force]
 kenovis add <targetDir> [--source <frameworkSourceDir>] [--force]
 kenovis sync <targetDir> [--source <frameworkSourceDir>] [--force]
+kenovis context "<query>" [<targetDir>] [--limit N] [--include-framework]
 
 The bare form (no subcommand) detects whether <targetDir> already holds a
 real implementation and dispatches to init or add accordingly — it never
@@ -107,6 +149,14 @@ files and your own code are never read or written. Review the change with
 \`git diff\` before committing (RULE-INST-02). If a CLAUDE.md already exists
 at <targetDir> and wasn't written by this CLI, sync refuses to overwrite it
 unless --force is passed, same as init/add.
+
+context searches <targetDir>'s own accumulated Product-layer context
+(company-os/) for <query> and prints ranked \`path:startLine-endLine\`
+citations with a short excerpt — filesystem-only, no network, no backend,
+nothing indexed or cached between runs. It points at what to open with a
+real read; it does not print file contents itself. <targetDir> defaults to
+the current directory. --include-framework also searches the read-only
+.kenovis/AI/ mirror. --limit caps how many matches print (default 15).
 
 --source defaults to this package's own bundled Framework layer. Pass it
 explicitly to install or sync a different or custom Framework layer instead.
@@ -258,10 +308,17 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
       `Framework Release: ${result.previousFrameworkVersion ?? UNKNOWN_VERSION} -> ` +
         `${result.frameworkVersion ?? UNKNOWN_VERSION}` +
         (result.previousFrameworkVersion !== null &&
-        result.previousFrameworkVersion === result.frameworkVersion
+        result.previousFrameworkVersion === result.frameworkVersion &&
+        result.removedPaths.length === 0
           ? " (already up to date)"
           : ""),
     );
+    if (result.removedPaths.length > 0) {
+      console.log(`Removed from .kenovis/ (no longer part of this Framework Release):`);
+      for (const removedPath of result.removedPaths) {
+        console.log(`  - ${removedPath}`);
+      }
+    }
     console.log(`CLAUDE.md stub rewritten at ${result.claudeStubWrittenTo}`);
     if (result.setupStillPending) {
       console.log(
@@ -284,10 +341,43 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
   }
 }
 
+async function runContextCommand(fs: NodeFileSystem, argv: string[]): Promise<number> {
+  const args = parseContextArgs(argv);
+  if (!args.query) {
+    console.error('Error: kenovis context requires a query, e.g. kenovis context "rate limiting"');
+    return 1;
+  }
+
+  const result = await runContext(fs, {
+    targetDir: resolve(args.targetDir),
+    query: args.query,
+    limit: args.limit,
+    includeFramework: args.includeFramework,
+  });
+
+  if (result.searchedRoots.length === 0) {
+    console.error(
+      `Error: no company-os/ found under ${resolve(args.targetDir)} — is this a Kenovis Installation?`,
+    );
+    return 1;
+  }
+
+  if (result.matches.length === 0) {
+    console.log(`No matches for "${args.query}" in ${result.searchedRoots.join(", ")}.`);
+    return 0;
+  }
+
+  for (const match of result.matches) {
+    console.log(`${match.path}:${match.startLine}-${match.endLine}  (score ${match.score})`);
+    console.log(`  ${match.excerpt}`);
+  }
+  return 0;
+}
+
 export async function main(argv: string[]): Promise<number> {
   // Checked before any dispatch, same as --help: an unrecognized flag would
   // otherwise fall through to the bare autodetect path and run a real install
-  // against cwd (AI/memory/learnings.md Learning-005).
+  // against cwd (company-os/AI/memory/learnings.md Learning-005).
   if (argv.includes("--help") || argv.includes("-h")) {
     printUsage();
     return 0;
@@ -296,6 +386,13 @@ export async function main(argv: string[]): Promise<number> {
   if (argv.includes("--version") || argv.includes("-v")) {
     console.log(cliVersion());
     return 0;
+  }
+
+  // Dispatched before parseArgs: context's positional/flag shape (a required
+  // query, --limit's value argument) is not the install commands' shape, and
+  // folding it into parseArgs would make each parser read the other's flags.
+  if (argv[0] === "context") {
+    return runContextCommand(new NodeFileSystem(), argv.slice(1));
   }
 
   const args = parseArgs(argv);

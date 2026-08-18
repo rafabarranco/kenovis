@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parseArgs, defaultFrameworkSourceDir, main, cliVersion } from "./bin.js";
+import { parseArgs, parseContextArgs, defaultFrameworkSourceDir, main, cliVersion } from "./bin.js";
 
 test("parseArgs reads command, positional targetDir, --source, and --force", () => {
   const args = parseArgs(["init", "/repo", "--source", "/assets", "--force"]);
@@ -48,6 +48,47 @@ test("parseArgs treats a bare targetDir (no recognized subcommand) as the autode
 test("parseArgs with no arguments at all is the autodetect dispatch against '.'", () => {
   const args = parseArgs([]);
   assert.deepEqual(args, { command: "", targetDir: ".", sourceDir: undefined, force: false });
+});
+
+test("parseContextArgs reads the query, an optional targetDir, --limit and --include-framework", () => {
+  const args = parseContextArgs(["rate limiting", "/repo", "--limit", "5", "--include-framework"]);
+  assert.deepEqual(args, {
+    query: "rate limiting",
+    targetDir: "/repo",
+    limit: 5,
+    includeFramework: true,
+  });
+});
+
+test("parseContextArgs defaults targetDir to '.', limit to 15, includeFramework to false", () => {
+  const args = parseContextArgs(["rate limiting"]);
+  assert.deepEqual(args, {
+    query: "rate limiting",
+    targetDir: ".",
+    limit: 15,
+    includeFramework: false,
+  });
+});
+
+test("parseContextArgs leaves query undefined when no positional is given", () => {
+  const args = parseContextArgs(["--include-framework"]);
+  assert.equal(args.query, undefined);
+});
+
+test("parseContextArgs ignores a non-numeric or non-positive --limit value, keeping the default", () => {
+  assert.equal(parseContextArgs(["q", "--limit", "not-a-number"]).limit, 15);
+  assert.equal(parseContextArgs(["q", "--limit", "0"]).limit, 15);
+  assert.equal(parseContextArgs(["q", "--limit", "-3"]).limit, 15);
+});
+
+test("main(['context']) with no query prints an error and exits 1", async () => {
+  const exitCode = await main(["context"]);
+  assert.equal(exitCode, 1);
+});
+
+test("main(['context', '--help']) prints usage and exits 0 without running a search", async () => {
+  const exitCode = await main(["context", "--help"]);
+  assert.equal(exitCode, 0);
 });
 
 test("main(['--help']) prints usage and exits 0 without touching the filesystem (never falls into bare autodetect against cwd)", async () => {

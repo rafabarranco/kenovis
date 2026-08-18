@@ -299,6 +299,43 @@ test("runSync reports an Installation that predates the stamp as coming from unk
   assert.equal(result.frameworkVersion, "0.6.0");
 });
 
+test("runSync reports a path that existed before and does not after as removed (closes OF-01)", async () => {
+  const fs = new InMemoryFileSystem();
+  const frameworkDir = join("/repo", FRAMEWORK_DIR_NAME);
+  fs.seed(frameworkDir, "<old install>");
+  fs.seed(join(frameworkDir, "AI", "agents", "retired.md"), "# Retired agent\n");
+  fs.seed(join("/source/framework", "AI", "agents", "current.md"), "# Current agent\n");
+
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.deepEqual(result.removedPaths, ["AI/agents/retired.md"]);
+  assert.equal(fs.files.has(join(frameworkDir, "AI", "agents", "retired.md")), false);
+  assert.equal(fs.files.get(join(frameworkDir, "AI", "agents", "current.md")), "# Current agent\n");
+});
+
+test("runSync reports no removed paths when the incoming bundle carries everything the old one had", async () => {
+  const fs = new InMemoryFileSystem();
+  const frameworkDir = join("/repo", FRAMEWORK_DIR_NAME);
+  fs.seed(frameworkDir, "<old install>");
+  fs.seed(join(frameworkDir, "AI", "SYSTEM.md"), "# System v1\n");
+  fs.seed(join("/source/framework", "AI", "SYSTEM.md"), "# System v2\n");
+
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.deepEqual(result.removedPaths, []);
+});
+
+test("runSync does not report .setup-pending or the CLAUDE.md hash sidecar as removed, even though the mirror-replace deletes and this command rewrites both", async () => {
+  const fs = new InMemoryFileSystem();
+  const frameworkDir = join("/repo", FRAMEWORK_DIR_NAME);
+  fs.seed(frameworkDir, "<old install>");
+  fs.seed(setupPendingPath, setupPendingContent("brownfield"));
+
+  const result = await runSync(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.deepEqual(result.removedPaths, []);
+});
+
 test("runSync reads the previous Framework Release before the mirror-replace destroys it", async () => {
   const fs = new InMemoryFileSystem();
   const frameworkDir = join("/repo", ".kenovis");

@@ -61,3 +61,13 @@ graphify-out/
 
 # Node.js CLI / npm package (ENGINEERING/ARCHITECTURE.md → Technology Stack)
 *.tgz
+
+# =============================================================
+# THIS REPOSITORY ONLY — never copy into a customer Installation.
+# A customer's .kenovis/ is installed content and must stay committed.
+# See DECISIONS.md DECISION-039.
+# =============================================================
+
+# Generated locally by cli/scripts/bundle-framework-assets.mjs — a mirror of
+# what a customer receives, for inspection only. Real source is framework/.
+/.kenovis/
