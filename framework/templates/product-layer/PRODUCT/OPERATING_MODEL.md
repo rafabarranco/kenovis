@@ -60,7 +60,7 @@ One row per numbered section above. The single row below is the form, not the ta
 
 | § | Rule | State | Carried by |
 |---|---|---|---|
-| 1 | [ANSWER: the section's rule, in one clause] | [ANSWER: Present / Partial / Absent, with the command or measurement that shows it] | [ANSWER: the roadmap item or finding id that carries the gap, or "—" when the row is Present] |
+| 1 | (the section's rule, in one clause) | unmeasured | (the roadmap item or finding id that carries the gap, or "—") |
 
 ## What A Row Means
 

@@ -1766,3 +1766,19 @@ Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external 
 Per Learning-023, checked before writing this pointer: this round closed one item (41) and refined one row (OF-65), found one new finding (OF-95) and recovered one already-dimensioned one from an interrupted round (OF-94), so the figure below is read after this round's own edits.
 
 ---
+
+### superseded `Next` ordering block, written after item 23 closed and OF-67 refined, replaced by the block written after OF-93 and OF-69 closed
+
+Next (updated 2026-08-18, after item 23 closed via `/next`, OF-67 refined):
+
+**Departure from the previous pointer:** none. This round took the previous pointer's top-ranked item exactly as it named it — reassess item 23 against items 18-22's actual measurements, then build if the premise still holds — and closed it.
+
+Closed and not repeated below: item 23 (`DONE`, `kenovis context "<query>"` shipped — filesystem-only retrieval over an Installation's own `company-os/`).
+
+**No `/next`-executable `SCHEDULED` item remains.** Item 23 was the last one items 18-22 were blocking; item 32 is founder-only input and item 33 needs an external party and ranks last by founder instruction (DECISION-041) — neither is this round's or the next round's to take. That means the next round's real objective is the one this document has deferred round after round rather than actually done: **run the priority formula (`Pain × Frequency × Business Impact / Cost`) over the Open Findings queue's long-held "deliberately unranked" cluster and produce an actual ranking**, not another restatement of "stays unranked." The cluster, unchanged in composition reasoning across many rounds and now ten items: **OF-78, OF-79, OF-83, OF-84, OF-85, OF-87, OF-90, OF-93, OF-94, OF-95.** This round read OF-78, OF-83, OF-85, OF-90, OF-93, OF-94 and OF-95 in enough depth to act on them (recovering OF-94, extending OF-85, adding OF-95); it did not re-read OF-79, OF-84 or OF-87 closely enough to rank them honestly against the rest, so ranking is deferred to a round that reads all ten rather than half.
+
+Not `/next` work, unchanged: item 32 (founder input). Item 33 needs an external party and ranks last by founder instruction. Item 25 (the numbered roadmap item) is rejected as originally scoped.
+
+Per Learning-023, checked before writing this pointer: this round closed one item (23) and refined one row (OF-67), so the figure below is read after this round's own edits.
+
+---
