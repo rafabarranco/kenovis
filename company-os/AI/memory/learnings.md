@@ -770,6 +770,36 @@ Disposition: Recorded as a technique; no work implied.
 
 ---
 
+## Learning-053
+
+Date:
+2026-08-18
+
+Category:
+Process
+
+Context:
+Refining OF-02 vs. OF-69 as this round's DECISION-036 Refine action (`PRODUCT/ROADMAP.md` OF-69 row, "OF-95 fixed, and OF-69 corrected" block). OF-69's own row had read `**Open.**`, unedited, since 2026-08-13 — through a round whose own commit message said "OF-69 closed via this round's Refine action" and a second round whose OF-85 note said "OF-69, refined and closed `Fixed` this same round." Both statements were about a fix that was real (`policies/git.md` → "Rebasing" does cover it), and both never touched the row.
+
+Problem:
+A round's own narrative — a commit message, a note inside a *different* finding's row — asserting that some other row was dispositioned is not the same claim as that row's own text saying so, and nothing compares the two. `check_item_findings.py` binds to items declaring findings, not to a round's prose claiming a disposition change elsewhere in the same document; a claim like "OF-69 closed" sitting inside OF-85's own paragraph is invisible to any guard built around ids-owned-by-items.
+
+What happened:
+Two separate rounds, on two separate days, each stated OF-69 was fixed. Neither wrote it. A third round (this one) found the mismatch only because it independently re-derived "the lowest-id row that has actually gone longest untouched" rather than trusting either round's self-report — the same OF-30/Learning-031 discipline, applied one layer over: not "did the round's fix work," but "did the round's own bookkeeping about a *different* row actually happen."
+
+Root cause:
+Writing "X closed" in a commit message or in another row's prose reads, to the round writing it, as equivalent to writing it in X's own row — it is the same fact, stated once. It is not the same edit. The queue's own convention (one row, one disposition, in that row) has no mechanism forcing a claim about a row to be made *in* that row rather than *about* it from somewhere else in the document.
+
+Learning:
+A disposition claim ("X is now Fixed") is only real where X's own row says so. A round that believes it closed a different row, from a commit message or from prose inside a third row, must open that row and edit it directly — pointing at it from elsewhere is not a disposition, the same way describing a finding in an item's narrative was already ruled not to be one (`policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected", "Being described in prose is not a disposition"). This extends that rule to a round's claims about rows it did not open in the edit that made the claim.
+
+Future action:
+None queued as new mechanism — a guard that diffs every row's own disposition marker against every commit message's prose claims is exactly the kind of speculative cross-checker this framework's testing policy has repeatedly declined to build (Learning-051's own reasoning applies here too). Recorded as a checking habit: when refining or citing a row, read that row's own current text, not the narrative that claims to have already updated it.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 
