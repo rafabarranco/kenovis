@@ -1,6 +1,6 @@
 # Bootstrap Command
 
-Version: 2.9
+Version: 2.10
 
 ---
 
@@ -206,6 +206,8 @@ Determine:
 - Current work.
 - Unfinished tasks.
 - Potential conflicts.
+
+**If a Product-layer file (`company-os/`) carries an uncommitted change with no open PR, that is a predecessor round's exposure to the exact failure `commands/next.md` Completion Criteria exists to prevent — a thread that ended before its own git steps ran.** The rule at that criterion binds the round that wrote the change, not the round that finds it stranded; finding it here is not evidence the rule failed, only that the thread that owed the commit never reached its own close. Recover it rather than discard or re-derive it: fold the change into this round's own branch and commit it as its own distinct, separately-attributed change, before starting this round's own objective. See `company-os/PRODUCT/ROADMAP.md` OF-94, the instance that first exposed the gap this clause closes.
 
 **First verify the current branch is level with its remote, because nothing else in this step can tell you it is not.**
 
