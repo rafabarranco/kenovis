@@ -1,6 +1,6 @@
 # Bootstrap Command
 
-Version: 2.10
+Version: 2.11
 
 ---
 
@@ -213,6 +213,13 @@ Determine:
 
 ```
 git fetch origin
+git rev-list --count HEAD..origin/<current-branch>
+```
+
+**If that fetch fails, do not proceed on unfetched local state.** An SSH remote with no key loaded — this repository's own case — exits `128` with `Permission denied (publickey)`. Use the HTTPS-credential-helper fallback `policies/git.md` → "Rebasing" already documents, rather than retrying the same command or reading local state as current:
+
+```
+git -c credential.helper='!gh auth git-credential' -c url."https://github.com/".insteadOf="git@github.com:" fetch origin
 git rev-list --count HEAD..origin/<current-branch>
 ```
 
