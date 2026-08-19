@@ -860,6 +860,36 @@ Disposition: Recorded as a technique; no work implied.
 
 ---
 
+## Learning-056
+
+Date:
+2026-08-19
+
+Category:
+Process
+
+Context:
+Refining OF-19 (this round's own Refine action, DECISION-036) required re-checking its premise against GitHub's actual branch-protection state for `development`, not the row's 2026-08-12 text. The session's active `gh` account at the time was `barve-leyias`, one of three logged in on this machine (`git_push_needs_gh_credential_helper`).
+
+Problem:
+`gh api repos/rafabarranco/kenovis/branches/development/protection` returned `404 Not Found` under the `barve-leyias` account — a response that reads identically to "no branch protection is configured on this branch." It was neither: protection exists (`required_pull_request_reviews.required_approving_review_count: 1`), and the account simply lacked admin read access to the endpoint. The same call under `rafabarranco` (the repository owner) returned the real, populated protection object immediately.
+
+What happened:
+Caught before writing anything into the row, by treating the 404 as suspicious rather than conclusive — this repository's own git.md already documents three separate `gh`-identity failure classes (OF-65, OF-86, OF-98) hitting this exact machine, which made "check which account is active before trusting a permission-shaped response" a reflex rather than an afterthought. Had it not been caught, the round would have recorded OF-19 as resolved by inaction ("no protection configured, nothing to bypass"), the opposite of what is actually true.
+
+Root cause:
+GitHub's branch-protection REST endpoint (`GET .../protection`) returns `404` both when no protection rule exists and when the authenticated caller lacks admin-level read access to the branch — the two states are not distinguished in the response, and nothing about a 404 signals which one occurred. A multi-account machine (three `gh` identities logged in, the active one fluctuating between sessions per Learning-054's own class of drift) makes the second case routine here, not exotic.
+
+Learning:
+Before reading a GitHub API response that can be permission-gated (branch protection, repository settings, admin-only endpoints) as a fact about the repository, confirm the active `gh` account actually holds the access level the endpoint requires — `gh auth status`, then `gh auth switch --hostname github.com --user <owner-or-admin-account>` if not. A 404 from an admin-scoped endpoint is not evidence of absence; it is evidence of absence *or* insufficient privilege, and only re-querying under a known-privileged account tells the two apart.
+
+Future action:
+None queued as new mechanism — `policies/git.md` → "Rebasing" already documents the account-switch command for the push/PR-creation case (OF-98); this is the same discipline applied to a read endpoint rather than a write one, recorded here as the generalization.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 
