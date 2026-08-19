@@ -830,6 +830,36 @@ Disposition: Recorded as a technique; no work implied.
 
 ---
 
+## Learning-055
+
+Date:
+2026-08-19
+
+Category:
+Process
+
+Context:
+Ranking `PRODUCT/ROADMAP.md`'s `Open Findings` queue for this round's own objective — the previous round's `Next:` pointer named no top candidate and required re-deriving one from the full queue, so every row's current disposition had to be read, not sampled.
+
+Problem:
+A first pass scanned each row for its bold disposition keyword (`**Fixed**`, `**Open.**`, etc.) and flagged **OF-69** as `Open` and never-refined — both wrong. The row's true, current disposition was `**Fixed** (2026-08-18)`, written mid-row; later in the same row, narrative prose *quoting the row's own earlier drift* read "...it sat reading `**Open.**` through two further rounds..." — the exact bold pattern the scan matched on, positioned later in the row than the real disposition, so a last-match or first-match heuristic both land on the wrong word depending on which one is used.
+
+What happened:
+Caught before acting on it, by reading the row's actual beginning-of-disposition-column word directly (immediately after the origin-column `|`) for every candidate rather than trusting the scan — the same discipline `.kenovis/AI/policies/documentation.md` already requires for a claim generally, applied here to a row's own status rather than to a count. Had it not been caught, OF-69 would have been ranked and possibly refined a second time as if still open, on a row that had already been fixed and, separately, already corrected for exactly this kind of drift.
+
+Root cause:
+A queue row in this document accumulates text over its lifetime rather than being rewritten in place — the original `Open.` dimensioning stays, later disposition updates append after it, and a closing round's narrative sometimes quotes the row's own prior wording verbatim (as OF-69's own "Row corrected" narrative did, to explain what had been wrong). A keyword scan for a disposition word cannot distinguish "the row's own current status" from "prose narrating what the row's status used to say" — both are the same bold markdown, and their relative position in the row is not a reliable discriminator either way (this row's real answer was in the middle, not first or last).
+
+Learning:
+When determining a queue row's current disposition mechanically (for ranking, for the Refine action's "never touched by a prior pass" check, or for any future tooling), read the word immediately following the origin column's closing `|` — the row's own author always states the disposition there first, before any narrative — never scan the row for any bold status keyword and take the first or last match. A row that later quotes its own history in prose is not a hypothetical case; it is how this row records having been wrong once already.
+
+Future action:
+None queued — this is a reading discipline, not a mechanism gap; the document's own structure (disposition stated first, narrative after) already supports reading it correctly. Worth citing if a future round builds tooling (a script, not a person) to classify queue-row status automatically, since a script has no judgment to fall back on when the naive scan disagrees with itself.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
 ---
 Learning Examples
 
