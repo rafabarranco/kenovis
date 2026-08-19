@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.15
+Version: 2.16
 
 ---
 
@@ -513,6 +513,14 @@ Next:
 ```
 
 with the ranked objectives and the reasoning that ranked them, or the single word `none` and why there is nothing to point at. `none` is a real answer — an empty roadmap is one, and a round blocked on a human decision is another. It is not the same answer as silence, and this line is what separates them.
+
+**Immediately alongside it, write the line that makes this round's own findings checkable regardless of what it closed:**
+
+```
+Findings this round did not fix:
+```
+
+naming the queued ids, or the word `none`. This is `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"'s own item-scoped declaration, required here too, because a round that ran no command's item to closure, or that ran `/architect`/`/analyze`/`/feature`, still owes a disposition for whatever it found — the `Next:` pointer is the one artifact every round writes, so this is the one place the declaration cannot be skipped by never closing anything (`company-os/PRODUCT/ROADMAP.md` OF-21, OF-61).
 
 Record important learnings:
 

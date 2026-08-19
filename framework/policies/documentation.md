@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.13
+Version: 3.14
 
 ---
 
@@ -425,6 +425,8 @@ So every finding a round does not fix gets exactly one disposition, stated where
 
 **Rejected** — decided against, with the reason, recorded so it is not proposed again. This is a first-class outcome, not a failure. Most findings should not become work.
 
+**Rejecting names its own citation sweep, in the same change.** A rejected item does not stop being cited — the surviving prose keeps narrating it as live or planned, which is a dead plan reading as a scheduled one. So a round that rejects an item or a queue row also runs `grep -rn "item N\b"` / `grep -rn "OF-NN\b"` (as applicable) across `company-os/` and `framework/`, corrects every hit it finds, and states doing so on the record: `Citations swept:` naming the command and its result — `0` is a complete answer, not a skipped step. A rejection with no `Citations swept:` line is the same omission `Findings this item did not fix:` already exists to prevent, aimed at a rejection's own reach instead of a round's own findings. (`company-os/PRODUCT/ROADMAP.md` OF-22.)
+
 **Being described in prose is not a disposition.**
 
 `Open` is a real disposition and also the easiest place to hide. A finding whose executor is not the AI — a decision only the human can make, work that needs an external party, a number nobody has — sits in the queue in perfect compliance with this rule and moves for no one. So an `Open` finding that the AI cannot execute names two more things: **who executes it, and what input they need to decide.** Without those, the queue becomes the new place where things stay still, with an id.
@@ -446,6 +448,8 @@ Promotion is a separate act. A queue row becomes a scheduled item when a round p
 So closing an item includes the line `Findings this item did not fix:` naming the queued ids, or stating none. A round that found nothing writes "none" and is done. A round that found something can no longer stay silent about it; it has to write "none" and be wrong on the record, which is a different act from forgetting.
 
 This is the inversion that makes the rule checkable at all. Detecting a finding inside narrative prose has no pattern — which is why guards built on classifying prose were correctly rejected twice. Requiring a declaration does: the population is every closed item, and a missing line is exact. Two things follow and both are part of the rule: every id a closing item declares exists in the queue, and a round with nothing to declare writes "none" rather than omitting the line.
+
+**A round that closes no item still owes this declaration, next to its own `Next:` pointer.** Binding the mechanism to closed items only was how a finding born as evidence inside a decision body, a proposal dropped in conversation, or a finding raised inside an item still open stayed invisible to it — the population was items, and none of those three is one (`company-os/PRODUCT/ROADMAP.md` OF-21). `commands/next.md` Step 13 → "Write The Next Pointer, Or Write That There Is None" requires the same line — `Findings this round did not fix:`, ids or `none` — next to every `Next:` pointer, written by every round regardless of what it closed. This is not a second rule; it is the same required-declaration mechanism moved to the one artifact every round writes unconditionally, which is also why it cannot go structurally empty the way an item-scoped population can once a roadmap is fully archived: the live `Next:` block is never itself a closed, archived entry while it is the current pointer (`company-os/PRODUCT/ROADMAP.md` OF-61).
 
 Two rules that follow from this, because both failure modes have already happened:
 
