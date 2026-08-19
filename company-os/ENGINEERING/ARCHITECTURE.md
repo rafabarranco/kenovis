@@ -4,7 +4,7 @@ ARCHITECTURE.md
 
 Software Architecture
 
-Version: 1.7
+Version: 1.8
 ---
 Purpose
 
@@ -99,7 +99,9 @@ Hard Rules (No Exceptions)
 ---
 CI Guards Are A Local Net, And Each One Names Its Framework-Layer Home
 
-`ls .github/scripts/check_*.py | wc -l` → **10** (2026-08-13). Guards a customer Installation runs: **0**. `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` and the customer README; `.github/` is not in the bundle, verified in PRODUCT/ROADMAP.md Phase 1 item 17.
+`ls .github/scripts/check_*.py | wc -l` → **13** (2026-08-19, was 10 on 2026-08-13 — OF-21/OF-61 folded into `check_item_findings.py` rather than adding a script; `check_rejection_citations.py` (OF-22) and `check_claude_stub_sync.py` (OF-27) are new). Guards a customer Installation runs: **0**. `cli/scripts/bundle-framework-assets.mjs` ships `.kenovis/AI/` and the customer README; `.github/` is not in the bundle, verified in PRODUCT/ROADMAP.md Phase 1 item 17.
+
+**Root `CLAUDE.md` is never the sole home of a rule meant to reach every Installation (OF-27).** DECISION-020 exempts this repository's own root `CLAUDE.md` from the CLI's stub generation because it carries real, repo-specific prose a generated stub would discard — but that exemption also means anything written there that is *not* repo-specific silently reaches zero customers, since nothing links this file to what `kenovis init`/`add`/`sync` actually writes into a customer's own root `CLAUDE.md` (`claudeStubContent`, `cli/src/domain/installation.ts`). A rule meant for every Installation is authored in `framework/` first — that is what `sync` delivers — or, for the one case that must appear verbatim inside every Installation's own autoloaded `CLAUDE.md` (the finding-routing table, DECISION-027), in `claudeStubContent` itself. Root `CLAUDE.md` may restate either, briefly, the same "cite, don't restate" discipline this file already applies to the Source Of Truth Hierarchy — but never originate one. `check_claude_stub_sync.py` guards the one restatement this repository currently carries (the routing table) against drifting from its generated counterpart; a future restatement of new content needs the same discipline applied by hand, since a generic structural comparison cannot verify prose it does not yet know to look for.
 
 That split is correct and is not a gap to close by shipping the scripts. Per DECISIONS.md DECISION-026 and `.kenovis/AI/policies/testing.md` → "A Guard Belongs Where The Work Is Loaded", the rule is what travels: it lives in the policy, command, workflow, agent or template the AI loads to do the work, and `sync` delivers it. The script is this repository's own net over its own dogfooding.
 

@@ -63,6 +63,9 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-048** — `sync` Reports A Framework Release Change As A Prompt To Review Product-Layer Templates, Not As A Structural Diff. Closes `PRODUCT/ROADMAP.md` OF-78: rejects comparing a Product-layer document's own `Version:` line against its template's, because that number tracks the customer's own edits (RULE-INST-01), not template lineage, and would false-positive on every healthy divergence. `kenovis sync` instead prints one informational line whenever the Framework Release actually changed, pointing at `framework/templates/product-layer/` for a manual comparison — no new provenance mechanism, no Product-layer write, nothing CLI-side claims to know precisely.
 - **DECISION-049** — `PRODUCT/OPERATING_MODEL.md`'s Conformance Table Gains A Per-Row `As of` Date Instead Of A New Re-Verification Cadence. Closes `PRODUCT/ROADMAP.md` OF-79: rejects a mandatory full seventeen-row pass every round (the row's own text names this as an ongoing per-round toll paid forever) in favor of making existing staleness visible — every row now carries the date it was last actually checked, so a round or the founder can see at a glance which rows are current and which are old, without a new mechanism forcing anyone to re-check on a schedule.
 - **DECISION-050** — An `Open` Row's Tagged `Role` Becomes A Ranking Factor In `/next` Step 3, Not A New Scheduling Slot. Closes `PRODUCT/ROADMAP.md` OF-90: rejects a per-role scheduling mechanism as architecturally unavailable (DECISION-010/DECISION-013, no scheduler, no backend) in favor of the only reachable shape — a round already activating a role for its own objective (Step 6) now weighs `Open` rows tagged with that same role higher in Step 3's priority ordering, opportunistic rather than systematic.
+- **DECISION-051** ‡★ — A Round's `Next:` Pointer Carries The Same Required Findings Declaration As A Closed Item. Closes `PRODUCT/ROADMAP.md` OF-21 and OF-61: `commands/next.md` Step 13 requires `Findings this round did not fix:` alongside every `Next:` pointer, the same required-declaration mechanism `Findings this item did not fix:` already uses, moved to the one artifact every round writes regardless of what it closed; `check_item_findings.py` checks both populations, closing the round-scoped blind spot and the item-scoped population's own inertness once a roadmap is fully archived.
+- **DECISION-052** ‡★ — Rejecting An Item Or Row Requires Its Own Citation Sweep, Declared In The Same Change. Closes `PRODUCT/ROADMAP.md` OF-22: a stale citation cannot be detected mechanically (the same prose-classification limit that rejected items 6 and 8), so the rejecting round instead declares `Citations swept:` — the grep command and its result — in the same change; `check_rejection_citations.py` guards the declaration's presence on every still-inline rejection.
+- **DECISION-053** — Root CLAUDE.md Restates, Never Originates, A Rule Meant For Every Installation. Closes `PRODUCT/ROADMAP.md` OF-27: this repository's own root `CLAUDE.md` is DECISION-020-exempt from generation, so a new framework-level rule written there silently reaches no Installation; the fix is a recorded convention (`ENGINEERING/ARCHITECTURE.md`) rather than generating the file, plus `check_claude_stub_sync.py` guarding the one restatement already in force — the finding-routing table — against drifting from its canonical, generated counterpart in `installation.ts`.
 
 ---
 
@@ -2220,23 +2223,6 @@ The Framework layer's enforcement is instructions read by an agent, not code tha
 
 ---
 
-# Future Decisions
-
-Future important decisions should be added here.
-
-Examples:
-
-- Technology choices.
-- Pricing changes.
-- Market expansion.
-- Architecture changes.
-- Business model changes.
-- Partnership decisions.
-
----
-
----
-
 # DECISION-027
 
 # Nothing Stays In The Thread
@@ -3827,6 +3813,218 @@ Adopt Option B. `commands/next.md` Step 3's ranking criteria gains: "Role match 
 Positive: role tags stop being purely decorative without inventing a scheduler this framework has twice already ruled out; the fix is a one-clause addition to a step every round already reads. Negative, accepted: this is opportunistic, not systematic — a role that a round never happens to activate for its own objective still never gets its tagged rows prioritized, which is the same residual §12 leaves `Absent` on the Conformance table rather than moving to `Partial` or `Present` on the strength of this decision alone; a behavioral instance is still needed before that row moves (OF-30/Learning-031's standing caveat, same as every other recent fix on this board).
 
 Implementation: `framework/commands/next.md` Step 3. Origin: OF-90.
+
+---
+
+# DECISION-051
+
+# A Round's `Next:` Pointer Carries The Same Required Findings Declaration As A Closed Item
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-21 and OF-61, via `/architect` (founder-directed bundle with OF-22 and OF-27 — "corre el architect o analyze según proceda de TODOS los OF que lo necesiten").
+
+Review Date:
+
+When a round stops writing a `Next:` pointer as its own closing artifact, or `commands/next.md` Step 13's required-line pattern changes shape.
+
+---
+
+## Context
+
+`check_item_findings.py` requires every closed roadmap item to declare `Findings this item did not fix:` — a proven mechanism, item 35's own defect closed by it. Its population was always item-scoped, and `PRODUCT/ROADMAP.md` OF-21 named the consequence directly: a finding born as evidence inside a decision body, a proposal dropped in conversation, or a finding raised inside an item that was still open at the time was invisible to a check bound to closed items, because none of those three is a closed item. Three instances were already on record when OF-21 was written, all found by a human asking rather than by the system.
+
+`PRODUCT/ROADMAP.md` OF-61 named a second, worse consequence of the same item-scoped binding: once `policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline" runs to completion on a roadmap, every closed item's narrative moves to the archive and only a one-line pointer remains — `check_item_findings.py`'s own item-scoped population goes to zero, structurally, by the archive rule working exactly as designed. The guard was fixed once already (splitting the empty case into "missing corpus" versus "archive rule completed") but the residue stood: in a fully-archived roadmap, this guard is **permanently inert**, passing while checking nothing, forever.
+
+Both rows named the same first output: whether the declaration should be round-scoped instead of item-scoped. Premise re-checked before this round: `PRODUCT/ROADMAP-ARCHIVE.md` confirms item 37 (cited by DECISION-036 as the reason no eleventh guard could be added) closed 2026-08-16 — that specific block no longer applies to a new guard proposed here, and this decision does not add one; it extends `check_item_findings.py` in place.
+
+## Options Considered
+
+### Option A — Detect a finding inside session or round prose directly
+
+Rejected. No pattern separates an assertion that something is live, unresolved work from a passing mention or a piece of history — the same reason `check_links.py`'s and this very guard's own docstrings have twice already rejected guards built on classifying prose (items 6 and 8). A round's closing narrative is exactly this kind of prose.
+
+### Option B — A new artifact recording "sessions" or "rounds", independent of the roadmap
+
+Rejected. This framework has no scheduler and nothing runs between sessions (DECISION-010, DECISION-013). A session-tracking file is new state with a write path nothing else in this framework requires — the same shape DECISION-036 already rejected for a persisted "rounds open" counter, for the same reason: it reconstructs an ordering or a boundary something else already gives for free.
+
+### Option C — Widen the existing declaration mechanism to the one artifact every round already writes unconditionally
+
+Adopted. `commands/next.md` Step 13 already requires every round — whether or not it closes an item, whether it runs `/next`, `/architect`, `/analyze`, `/feature`, or reaches an objective and stops — to write a `Next:` pointer, or state `none` and why. Pairing the proven `Findings this item did not fix:` mechanism with `Findings this round did not fix:` at that same guaranteed location covers every round shape with the identical mechanism, no new artifact, no new state to maintain.
+
+## Decision
+
+Adopt Option C.
+
+- `framework/commands/next.md` Step 13 → "Write The Next Pointer, Or Write That There Is None" requires `Findings this round did not fix:` immediately alongside every `Next:` pointer, naming the queued ids or `none`.
+- `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" states the round-scoped rule as the same required-declaration mechanism, moved to this artifact, and names why it also closes OF-61: the live `Next:` block is never itself a closed, archived entry while it is the current pointer, so this population cannot go structurally empty the way the item-scoped one can.
+- `.github/scripts/check_item_findings.py` is **extended, not replaced**: it still walks every closed item for the item-scoped declaration, and additionally finds the last `---`-delimited block in `PRODUCT/ROADMAP.md` that contains a `**Next:**` line and requires the paired declaration there. No twelfth guard file — DECISION-026's own "an improvement lands where the work is loaded" is satisfied by extending the guard that already owns this rule's mechanical half.
+
+## Reasoning
+
+**The live pointer is always exactly one thing, regardless of roadmap size.** A round writes one `Next:` pointer, superseding the previous one in place; the check always has exactly one current block to inspect, independent of how large the document has grown or how much of it is archived — which is precisely what the item-scoped population lost once archiving ran to completion.
+
+**Validating this change surfaced a second, independent defect, fixed in the same round because it directly blocked verification.** `check_item_findings.py`'s `OF_ID` and `QUEUE_ROW` regexes, and `check_future_actions.py`'s `CITES_ID` regex, all assumed exactly two-digit ids (`OF-\d{2}\b`). `PRODUCT/ROADMAP.md` OF-100 — the first three-digit id this roadmap has produced — silently failed to match: `\d{2}` consumed "10" and the trailing word-boundary check failed against the following "0", so a declaration citing OF-100 read as citing no id at all. Confirmed by running the extended guard against the live tree before this fix: it failed on exactly this. All three regexes widened to `\d{2,}`.
+
+## Alternatives Considered
+
+Options A and B above, both rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+OF-21 and OF-61 both close with one mechanism and zero new artifacts. The guard count stays at 13 rather than 14 (`ENGINEERING/ARCHITECTURE.md`'s own local net). The item-scoped check keeps its full historical value; the round-scoped check is what keeps this guard live once a roadmap the size of this one's is eventually archived in full.
+
+Negative, accepted:
+
+This does not cover a session that runs no command and never touches the `Next:` pointer at all — a thread that only answers a question and closes without invoking `/next` or updating the pointer still owes a disposition under `policies/documentation.md`'s own "Nothing Stays In The Thread" rule, and this mechanism cannot check that case, for the same "no scheduler, nothing observes a thread's own boundary" reason DECISION-038 already names for the `Observe` step's own limits. Left open rather than folded in silently — a session of that shape is still bound by the written rule, just not by this guard.
+
+Implementation: `framework/commands/next.md` Step 13; `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"; `.github/scripts/check_item_findings.py`; `.github/scripts/check_future_actions.py` (id-regex fix, found validating this change); `.github/workflows/ci.yml`. Origin: OF-21, OF-61.
+
+---
+
+# DECISION-052
+
+# Rejecting An Item Or Row Requires Its Own Citation Sweep, Declared In The Same Change
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-22, via `/architect` (bundled with OF-21/OF-61 and OF-27).
+
+Review Date:
+
+When a citation's phrasing on the item side becomes uniform enough to regex safely (see `PRODUCT/ROADMAP.md` OF-100's own finding about the reverse direction), reopening whether the inbound-reference side can also carry a mechanical check.
+
+---
+
+## Context
+
+Item 25 (`kenovis check`) was rejected 2026-08-12. Four guard docstrings kept citing it afterward as the plan that would eventually reach a customer, reading as scheduled, live work — for a full round. The four instances were fixed by hand in item 37's first round; the class was never made a rule, which `PRODUCT/ROADMAP.md` OF-22 named directly: a rejection is written into the rejected item itself and nothing walks the tree for inbound references to it, and a citation of the form "item N" or "OF-NN" asserts nothing about item N's current status on its face, so it cannot be wrong by inspection alone.
+
+## Options Considered
+
+### Option A — A guard walking the tree for citations, cross-checked against the cited entry's current disposition
+
+Rejected. Telling a citation that asserts liveness ("the plan that will reach a customer") from one that narrates history ("item 25 is rejected") is a judgment call on the surrounding prose, with no reliable pattern — the same class of guard this framework has already rejected twice, for `check_links.py` (item 6) and for detecting a finding inside narrative prose (item 8, and `check_item_findings.py`'s own docstring). A stale citation is not a structural fact like a broken relative link; it needs the sentence read.
+
+### Option B — The rejecting round runs the sweep and declares having run it
+
+Adopted. The round rejecting an item already knows the id, right now, at the one moment a mechanical search for it is cheap and precise. This is the same inversion `check_item_findings.py` already applies successfully: do not detect the omission after the fact, require the action's declaration at the moment it is possible.
+
+## Decision
+
+Adopt Option B.
+
+- `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" requires a `Citations swept:` line on every rejection, in the same change that rejects it — naming the grep command run across `company-os/` and `framework/`, and its result. `0` is a complete, valid answer.
+- `.github/scripts/check_rejection_citations.py` verifies the line's presence on every rejection that is still inline — i.e. not yet compacted to a `→ PRODUCT/ROADMAP-ARCHIVE.md` pointer by a later archive pass. Every rejection on record today (item 22, item 25, OF-16, OF-18, OF-20, OF-45b) predates this rule and is already compacted; the population is legitimately zero at the moment this decision lands, the same grandfather precedent DECISION-035 already set for existing rows not gaining Pain/Frequency/Cost retroactively.
+
+## Reasoning
+
+The sweep itself cannot be generalized into a guard without prose classification (Option A), but the *declaration that a sweep happened* can be checked exactly the way `Findings this item did not fix:` already is: a missing required line is exact, even though a plausible-but-incomplete one is not fully verifiable. This is the same honesty trade `check_item_findings.py`'s own docstring already accepts for its own declaration — it removes the silent path, which is the path item 25's own four stale citations actually took.
+
+## Alternatives Considered
+
+Option A, rejected above. Also considered: requiring every citing mention of "item N" to itself carry a live status check — rejected as the identical prose-classification problem approached from the other direction, and because most citations in this document set narrate history rather than assert liveness, so flagging all of them would be overwhelmingly false positives.
+
+## Consequences
+
+Positive:
+
+The one fix that already proved workable by hand (item 37's own sweep of item 25's four citations) becomes a standing rule instead of a one-off. Cheap: one required line, no new artifact beyond it.
+
+Negative, accepted:
+
+Like `Findings this item did not fix:`, this cannot verify the sweep was thorough — only that it was declared. A round could write `Citations swept: 0` without having actually run the grep. Accepted for the same reason `check_item_findings.py`'s own docstring already accepts the equivalent limit on its declaration: it is honest about being shallow, and what it removes is the silent path, which is the one that was actually being taken in the instance that produced this row.
+
+Implementation: `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"; `.github/scripts/check_rejection_citations.py`; `.github/workflows/ci.yml`. Origin: OF-22.
+
+---
+
+# DECISION-053
+
+# Root CLAUDE.md Restates, Never Originates, A Rule Meant For Every Installation
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-27, via `/architect` (bundled with OF-21/OF-61 and OF-22).
+
+Review Date:
+
+When root CLAUDE.md next restates framework-facing content beyond the routing table, or if DECISION-020's exemption is revisited.
+
+---
+
+## Context
+
+This repository's own root `CLAUDE.md` is not the `CLAUDE.md` any Installation receives: `kenovis init`/`add`/`sync` generate a minimal stub (`claudeStubContent`, `cli/src/domain/installation.ts`) pointing at `framework/SYSTEM.md`, and DECISION-020 exempts this repository's own root `CLAUDE.md` from that generation, because it carries real, repo-specific prose (Role, Repository Layers, the graphify instructions, the Session Initialization Protocol) a generated stub would discard. Nothing links the two files. `PRODUCT/ROADMAP.md` OF-27 named the consequence: a rule written into this repository's own root `CLAUDE.md`, thinking of it as this repository's constitution, reaches zero customers unless something else independently carries it to `installation.ts`.
+
+Investigating before designing a fix found a live instance, not a hypothetical one. The one rule that genuinely is meant to reach every Installation via its own `CLAUDE.md` — the finding-routing table, required by DECISION-027 to live in "the `CLAUDE.md` stub every Installation autoloads" — already made it into `installation.ts`'s generated stub. But only by hand: root `CLAUDE.md`'s own "Nothing Stays In The Thread" section and `installation.ts`'s routing constant are two independently hand-maintained copies of the same six-row table (verified: both list the same six `company-os/...` destinations, in the same order, in different prose — a markdown table versus a bullet list), with no mechanism keeping them in sync. This is a live instance of exactly the risk `policies/documentation.md` → "Single Source of Truth" already names for the policies themselves: "two copies of a rule do not stay identical: each is edited by whoever is looking at that file, neither reader opens the other."
+
+## Options Considered
+
+### Option A — Generate this repository's own root CLAUDE.md from its framework-level sections
+
+Rejected. DECISION-020 exempts root `CLAUDE.md` precisely because most of its content is hand-authored, repo-specific prose a generator would have no source for — generating it would either discard that content or require a generator sophisticated enough to preserve hand-authored prose verbatim alongside generated sections, which is not simpler than the file it replaces. Reopening DECISION-020's own exemption was not the finding in front of this round.
+
+### Option B — Stop treating root CLAUDE.md as a rule destination at all
+
+Rejected as too strong. The routing table legitimately needs to appear in root `CLAUDE.md`: every session working in this repository autoloads it (DECISION-010), exactly as every Installation's own session autoloads its generated stub. Removing the table from root `CLAUDE.md` to eliminate a drift risk would mean this repository's own sessions stop seeing the rule they are themselves supposed to follow — curing the disease by removing the patient.
+
+### Option C — Root CLAUDE.md may restate content whose canonical home is elsewhere, guarded structurally against drift
+
+Adopted. The canonical home of the routing table is `installation.ts`'s `claudeStubContent` — the text every Installation actually receives. Root `CLAUDE.md`'s copy is a required restatement, not a second origin; a structural CI comparison (the ordered list of destination paths each side names, not their wording) keeps the restatement honest without generating the file or removing content that belongs there.
+
+## Decision
+
+Adopt Option C.
+
+- `company-os/ENGINEERING/ARCHITECTURE.md` records the convention directly: root `CLAUDE.md` never originates a rule meant for every Installation. Such a rule is authored in `framework/` first (what `sync` actually delivers), or — for the one case that must appear verbatim inside every Installation's own autoloaded `CLAUDE.md` — in `claudeStubContent` itself. Root `CLAUDE.md` may restate either, briefly, under the same cite-don't-restate discipline this file already applies successfully to its own "Source Of Truth Hierarchy" section (fixed by DECISION-031: "This file does not restate it").
+- `.github/scripts/check_claude_stub_sync.py` guards the one restatement currently in force — the routing table — by extracting the ordered list of `company-os/...` destinations named in root `CLAUDE.md`'s "Nothing Stays In The Thread" section and in `installation.ts`'s non-pending routing block, and failing if the two orders diverge. No prose comparison: wording is expected to differ (a table versus a bullet list); destinations are not.
+
+## Reasoning
+
+Comparing destination order rather than wording is the right shape for the same reason `check_github_citations.py` and `check_links.py` stay structural: "does this path still route to the same place, in the same order" has no judgment in it, while "do these two paragraphs say the same thing" does. The guard is deliberately narrow — it checks the one table known to be duplicated, not a general claim that root `CLAUDE.md` and the generated stub never diverge elsewhere, because they are allowed to: most of root `CLAUDE.md`'s content has no customer-facing counterpart at all, by DECISION-020's own design.
+
+## Alternatives Considered
+
+Options A and B above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+The concrete drift risk this investigation found closes immediately — a future edit to either the table or the stub constant without the matching edit on the other side now fails CI instead of accumulating silently. The convention gives a future round somewhere to check before assuming new root-`CLAUDE.md` content reaches customers.
+
+Negative, accepted:
+
+The guard covers only the one restatement that exists today. A future round that restates new framework-facing content in root `CLAUDE.md` — rather than citing it briefly — reintroduces the same drift risk in a new place, and no generic mechanism catches that automatically; it needs the same discipline applied by hand, using this decision's own convention as the check. This decision records the convention as the durable defense and the guard as one instance of it, not a general-purpose drift detector across the whole file.
+
+Implementation: `company-os/ENGINEERING/ARCHITECTURE.md` → "CI Guards Are A Local Net, And Each One Names Its Framework-Layer Home"; `.github/scripts/check_claude_stub_sync.py`; `.github/workflows/ci.yml`. Origin: OF-27.
 
 ---
 
