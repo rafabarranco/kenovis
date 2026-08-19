@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.14
+Version: 2.15
 
 ---
 
@@ -107,7 +107,7 @@ Some work has an executor that is not this command: a decision only the human ca
 When the highest-ranked objective is one of those:
 
 - **Present the decision to the human**, with the input the item or finding already names. It is there so nobody has to invent it under pressure at the end of a round.
-- **Record in `company-os/PRODUCT/ROADMAP.md` that this round reached that item and stopped**, and on what it is blocked. A blocked round is a real outcome and leaves a real trace.
+- **Record in `company-os/PRODUCT/ROADMAP.md` that this round reached that item and stopped**, and on what it is blocked. A blocked round is a real outcome and leaves a real trace. The place to write it is the `Next:` pointer this round writes under Step 13 → "Write The Next Pointer, Or Write That There Is None" — not the item's own progress narrative and not a new row in the `Open Findings` queue, since a stop produces neither progress nor a new finding. Name the blocking item and the reason directly in that pointer.
 - **Stop.**
 
 **Do not descend the priority order looking for something executable.** Skipping leaves no artifact, so a board whose top item needs a human silently becomes a board of whatever the AI could do alone — every round defensible, the ranking quietly inverted, and nothing anywhere showing the top item was passed over. That is the drift `company-os/PRODUCT/ROADMAP.md` item 40 describes, and descending is how it happens with a fresh mechanism each time.
