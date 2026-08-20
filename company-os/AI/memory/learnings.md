@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.21
+Version: 1.22
 ---
 Scope
 
@@ -887,6 +887,36 @@ Future action:
 None queued as new mechanism — `policies/git.md` → "Rebasing" already documents the account-switch command for the push/PR-creation case (OF-98); this is the same discipline applied to a read endpoint rather than a write one, recorded here as the generalization.
 
 Disposition: Recorded as a technique; no work implied.
+
+---
+
+## Learning-057
+
+Date:
+2026-08-19
+
+Category:
+Process
+
+Context:
+This round's own objective was `PRODUCT/ROADMAP.md` OF-99: DECISION-036's Refine action ("refine the lowest-id `Open` row") and what rounds were actually doing had diverged, and choosing which one should be the rule was this round's own work, not a founder call — an in-framework process fix, not a product-direction decision.
+
+Problem:
+DECISION-036's rule ("lowest-id row still carrying `Open`") was justified by a claim that does not hold: "ids never resequence, so the lowest surviving id is, by construction, the row that has gone longest without being touched." That equivalence is only true if a row stops being the lowest id once refined — it does not, since refining changes a row's text, not its id or (usually) its disposition. A row that stays `Open` after being refined keeps winning the literal rule every subsequent round, forever, while every higher-id row is structurally unreachable through this mechanism regardless of how long it has actually sat untouched.
+
+What happened:
+The defect was not caught by inspection — it was caught by noticing that four separate rounds on the same day (2026-08-19) had already stopped applying the literal rule, each substituting "untouched by any prior refinement pass" without amending the text they cited as their own justification. That pattern — several independent rounds quietly agreeing on a correction to a written rule without any of them writing the correction down — was itself the signal something was wrong with the rule, not with the rounds. Fixed by adopting what practice had already converged on: the `Open` row least recently touched, read off each row's own most recent `Refined <date>` (or discovery date), tied rows broken by lowest id. DECISION-054.
+
+Root cause:
+A mechanical proxy (id order) was assumed equivalent to the property actually wanted (recency of last touch) based on a one-directional fact (ids never resequence downward) that does not imply the needed direction (a row's *position* relative to "untouched" status is stable). The asymmetry — closing/promoting a row moves it out of contention, but refining-without-closing does not — was never stated as a case the rule had to handle, so nobody design-checked it before four different rounds independently hit it and worked around it by hand.
+
+Learning:
+When a rule justifies a proxy with "by construction, X is always true," check the construction against the one operation the rule itself performs on the tracked entity — here, DECISION-036 requires refining a row, and refining a row is exactly the operation the "by construction" claim never considered happening to the row it was reasoning about. A rule that names its own governed action as an unexamined edge case is a rule worth re-deriving, not just re-citing.
+
+Future action:
+None queued as new mechanism — DECISION-054 and the corrected text in `commands/next.md` / `policies/documentation.md` are the fix. Worth citing if a future decision states a "by construction" invariant about an ordered set that the same decision's own mechanism can mutate.
+
+Disposition: Fixed. `framework/commands/next.md` (2.16 → 2.17), `framework/policies/documentation.md` (3.14 → 3.15), `company-os/DECISIONS.md` DECISION-054, `PRODUCT/ROADMAP.md` OF-99.
 
 ---
 

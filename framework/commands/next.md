@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.16
+Version: 2.17
 
 ---
 
@@ -171,11 +171,13 @@ Two commands, at most a handful of documents. This is not a framework-review aud
 
 ## Refine The Oldest Open Row
 
-Alongside choosing the round's own objective, refine exactly one row from `company-os/PRODUCT/ROADMAP.md` → "Open Findings": the lowest-id row still carrying `Open`. Ids are assigned in discovery order and the table is never reordered, so the lowest-id `Open` row is the one that has gone longest without being touched.
+Alongside choosing the round's own objective, refine exactly one row from `company-os/PRODUCT/ROADMAP.md` → "Open Findings": **the `Open` row least recently touched** — read each `Open` row's own most recent `Refined <date>` marker (or, for a row never yet refined, its Source column's discovery date), and pick the oldest. Tied rows break by lowest id.
+
+Not the lowest-id row still carrying `Open`. That was this step's original rule and it is wrong on its own terms: it assumed a refined-but-still-`Open` row leaves the "oldest" position once touched, and the mechanism never made that true — a row refined without closing keeps its id and stays the numerically lowest survivor, so a literal id reading re-selects that same row every round and starves every higher-id row regardless of how long it has actually sat untouched. `company-os/PRODUCT/ROADMAP.md` OF-99 is the recorded instance: on 2026-08-19, four rounds in a row refined a row other than the literal lowest id, each substituting "untouched by any prior refinement pass" without amending the rule. `company-os/DECISIONS.md` DECISION-054 corrects it. No new field, counter or CI guard is needed — the date each row already carries in prose is what a round reads.
 
 Refining means the row's text changes — its Pain/Frequency/Cost/Role re-checked against the current tree, or the row promoted to a scheduled item, or re-dispositioned with the reason. Leaving the row byte-identical is not refinement.
 
-This is a second, low-cost action, separate from the round's own chosen objective — do not let it become the objective itself, and do not skip the round's real work to perform it. See `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" and company-os/DECISIONS.md DECISION-036.
+This is a second, low-cost action, separate from the round's own chosen objective — do not let it become the objective itself, and do not skip the round's real work to perform it. See `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" and company-os/DECISIONS.md DECISION-036 and DECISION-054.
 
 ---
 
