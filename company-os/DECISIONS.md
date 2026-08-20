@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.16
+Version: 2.17
 
 Last updated: —
 
@@ -66,6 +66,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-051** ‡★ — A Round's `Next:` Pointer Carries The Same Required Findings Declaration As A Closed Item. Closes `PRODUCT/ROADMAP.md` OF-21 and OF-61: `commands/next.md` Step 13 requires `Findings this round did not fix:` alongside every `Next:` pointer, the same required-declaration mechanism `Findings this item did not fix:` already uses, moved to the one artifact every round writes regardless of what it closed; `check_item_findings.py` checks both populations, closing the round-scoped blind spot and the item-scoped population's own inertness once a roadmap is fully archived.
 - **DECISION-052** ‡★ — Rejecting An Item Or Row Requires Its Own Citation Sweep, Declared In The Same Change. Closes `PRODUCT/ROADMAP.md` OF-22: a stale citation cannot be detected mechanically (the same prose-classification limit that rejected items 6 and 8), so the rejecting round instead declares `Citations swept:` — the grep command and its result — in the same change; `check_rejection_citations.py` guards the declaration's presence on every still-inline rejection.
 - **DECISION-053** — Root CLAUDE.md Restates, Never Originates, A Rule Meant For Every Installation. Closes `PRODUCT/ROADMAP.md` OF-27: this repository's own root `CLAUDE.md` is DECISION-020-exempt from generation, so a new framework-level rule written there silently reaches no Installation; the fix is a recorded convention (`ENGINEERING/ARCHITECTURE.md`) rather than generating the file, plus `check_claude_stub_sync.py` guarding the one restatement already in force — the finding-routing table — against drifting from its canonical, generated counterpart in `installation.ts`.
+- **DECISION-054** ‡★ — DECISION-036's Refine Target Is The Least-Recently-Touched `Open` Row, Not The Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-99: "lowest surviving id" was the original proxy for "oldest untouched row," and the equivalence only held if a refined-but-still-`Open` row stopped being the lowest id once touched — it does not, so a row refined without closing keeps re-winning the literal reading forever and starves every higher-id row. `commands/next.md` and `policies/documentation.md` now name the actual criterion directly: each row's own most recent `Refined <date>` (or discovery date, if never refined), oldest first, tied rows broken by lowest id — codifying what four rounds had already done by hand on 2026-08-19 without amending the rule they cited.
 
 ---
 
@@ -4025,6 +4026,76 @@ Negative, accepted:
 The guard covers only the one restatement that exists today. A future round that restates new framework-facing content in root `CLAUDE.md` — rather than citing it briefly — reintroduces the same drift risk in a new place, and no generic mechanism catches that automatically; it needs the same discipline applied by hand, using this decision's own convention as the check. This decision records the convention as the durable defense and the guard as one instance of it, not a general-purpose drift detector across the whole file.
 
 Implementation: `company-os/ENGINEERING/ARCHITECTURE.md` → "CI Guards Are A Local Net, And Each One Names Its Framework-Layer Home"; `.github/scripts/check_claude_stub_sync.py`; `.github/workflows/ci.yml`. Origin: OF-27.
+
+---
+
+# DECISION-054
+
+# DECISION-036's Refine Target Is The Least-Recently-Touched `Open` Row, Not The Lowest Id
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-99, via `/next`.
+
+Review Date:
+
+If a full sweep of the `Open` queue ever leaves every row tied on its own last-touched date (every row refined the same day), when the tiebreak alone stops being enough to pick one.
+
+---
+
+## Context
+
+DECISION-036 requires every `/next` round to refine exactly one row from `PRODUCT/ROADMAP.md` → "Open Findings" as a second action alongside its own objective, so that `Open` rows do not sit forever unrevisited — the gap OF-32 named as "the chain stops at capture." Its operative rule, restated in `commands/next.md` and `policies/documentation.md`, was "the lowest-id row still carrying `Open`," justified by the claim that ids are assigned in discovery order and never resequence, so the lowest surviving id is "by construction" the row that has gone longest without being touched.
+
+That justification silently assumes a row leaves the "oldest" position once refined. Nothing in the mechanism makes that true. Refining a row changes its text but not its id or its disposition if it stays `Open` — so a row that gets refined without closing keeps its id, remains the numerically lowest survivor, and is re-selected by the literal rule on every subsequent round, forever. `PRODUCT/ROADMAP.md` OF-02 is the live instance: refined 2026-08-18 and again 2026-08-19 under the literal rule, while OF-03, OF-04 and (until this round) OF-19 sat untouched since 2026-08-14 — five days stale — and could never be selected by a literal id reading regardless.
+
+The gap was already being worked around, not exercised as written. On 2026-08-19 alone, four separate rounds refined a row other than the literal lowest id — OF-71, OF-74, OF-75, OF-85 and OF-87 among them — each citing "lowest-id `Open` row untouched by any prior refinement pass" as its own justification, a criterion the decision's text never states. `PRODUCT/ROADMAP.md` OF-99 recorded this directly: the rule and the practice had diverged, and neither is wrong on its face, but only one can be the rule a CI-checkable, cite-by-id mechanism actually runs on.
+
+## Options Considered
+
+### Option A — Keep the literal lowest-id rule
+
+Rejected. It is not a proxy for "oldest untouched" in the one case that matters most: a row that stays `Open` after refinement, which is the normal case for any finding that needs more than one round to close (OF-02, OF-03, blocked on real external validation; OF-51/OF-62, blocked on a structural idea). Keeping it means accepting that such a row permanently monopolizes the Refine slot and every higher-id row is structurally unreachable through this mechanism — the opposite of what DECISION-036 was written to guarantee.
+
+### Option B — Codify "least-recently-touched," with a full-sweep tiebreak
+
+Adopted. Matches what rounds were already doing in practice on 2026-08-19, which is evidence the reading is usable without inventing new process: read each `Open` row's own most recent `Refined <date>` marker (or, for a row never yet refined, its Source column's discovery date), and pick the row whose date is oldest. No new field, counter or CI guard — every row already carries this date in prose, because DECISION-036 already requires refining to state when it happened. Tied rows (same date, including "never refined, discovered the same day") break by lowest id, which keeps the mechanism deterministic without a new tiebreak concept.
+
+### Option C — Add a persisted, structured `last_refined` field per row, machine-checked
+
+Rejected as more than the finding calls for. The table is prose, read by an AI each round, not by a script — DECISION-026 and OF-21's own reasoning already established that adding a guard here is premature while item 37 (CI-guard reach) is mid-flight, and every row already states its own refinement date in the sentence that describes the refinement, which is sufficient for a round to read directly. A structured field would duplicate information the prose already carries for no mechanical benefit, since nothing currently parses this table automatically.
+
+## Decision
+
+Adopt Option B. `commands/next.md` → "Refine The Oldest Open Row" and `policies/documentation.md`'s matching paragraph both now state the criterion directly: the `Open` row least recently touched, tied rows broken by lowest id — not the lowest-id row still carrying `Open`. Both cite this decision and DECISION-036 together, since this decision corrects DECISION-036's operative rule rather than replacing the requirement to refine at all.
+
+## Reasoning
+
+The original rule optimized for a property ids do not actually have once refinement re-touches a row without closing it. The corrected rule uses the property the mechanism actually needs — recency of last touch — read off information every row is already required to carry. It costs nothing new to compute and directly fixes the starvation failure mode OF-99 observed live: under it, this round's own Refine action selects OF-03 (tied with OF-04 at 2026-08-14, tiebreak to lowest id), not OF-02 (last touched 2026-08-19), which is the outcome DECISION-036 was meant to produce all along.
+
+## Alternatives Considered
+
+Options A and C above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+Every `Open` row now has a real path to being revisited by the Refine mechanism, proportional to how long it has actually sat untouched, rather than a row's id alone determining whether it can ever be selected. The four rounds that already used this reading in practice on 2026-08-19 are retroactively in compliance with the written rule rather than in quiet departure from it — no work is invalidated, only the rule catches up to what those rounds correctly judged the mechanism should do.
+
+Negative, accepted:
+
+The rule now requires a round to compare dates across several `Open` rows rather than scan for the lowest surviving id, a small increase in per-round reading cost. It also depends on every row continuing to state its own refinement date in prose, which is already required by DECISION-036 but not mechanically enforced — a row that omits its own date on a future refinement makes this decision's ordering ambiguous for that row, the same unenforced-prose risk the original rule already carried and Option C declined to close with a guard.
+
+Implementation: `framework/commands/next.md` → "Refine The Oldest Open Row"; `framework/policies/documentation.md` → the `Open`-finding-refinement paragraph. Origin: OF-99.
 
 ---
 
