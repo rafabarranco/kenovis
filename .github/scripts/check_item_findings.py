@@ -184,10 +184,23 @@ def check_reverse_citations(text: str, closed_items: set, errors: list) -> int:
     `Scheduled` must name an item that has not itself already closed. Only the
     row's OWN most recent status word counts -- a row later corrected to
     `Fixed`/`Rejected`/etc. is not this drift, whatever its history quotes.
+
+    "Whatever its history quotes" was stated but not enforced: a status word
+    inside a backtick-quoted example (a row narrating its own past drift, or
+    citing another row's phrasing verbatim, the way this exact row -- OF-100
+    -- narrates OF-12's `**Scheduled -- item 33.**`) reads as a live status by
+    plain regex order, since it can appear textually after the row's real,
+    unquoted marker. A backtick-wrapped status word is never a row's own live
+    disposition in this document's convention -- a real marker is always bare
+    bold, `**Fixed** (...)`, never additionally fenced -- so it is excluded
+    here rather than counted as the row's most recent status.
     """
     checked = 0
     for row_id, body in queue_row_bodies(text):
-        matches = list(STATUS_WORD.finditer(body))
+        matches = [
+            m for m in STATUS_WORD.finditer(body)
+            if not (m.start() > 0 and body[m.start() - 1] == "`")
+        ]
         if not matches:
             continue
         last = matches[-1]
