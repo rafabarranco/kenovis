@@ -257,6 +257,8 @@ Why it outranks most of what is left: five findings in the queue are `Deferred` 
 
 Target: at least one external team installs `kenovis@0.13.0` on a real repository, completes `/init-project` or `/adopt-project`, and runs one workflow end to end. Record what breaks in the queue, with dispositions. Run `AUTOMATIONS/user-feedback.md` as written for the first time — if it does not survive contact, that is this item's finding.
 
+**Confirmed parked, 2026-08-21 (DECISION-058), founder-answered rather than assumed:** with the internal `Open Findings` queue fully exhausted the same day, `/next` presented the founder a direct choice — pursue sourcing a real external team now, or leave item 33 parked. Answer: stays parked, no new condition supplied. Does not auto-trigger on queue-exhaustion; moves only when the founder pursues it directly. A round reaching this item again with the queue still empty reports no change rather than re-asking.
+
 Not a smoke test. This repository has run those all day, and they only prove the artifact matches its own intent.
 
 Validated when: a real external team's run is recorded with its findings dispositioned, and `AUTOMATIONS/user-feedback.md` either worked or was corrected.
@@ -869,6 +871,16 @@ Findings this round did not fix: none — Observe found nothing, and OF-30's ref
 Operating model section served: none — this round re-confirmed prior work rather than serving a section itself; no Conformance row is touched.
 
 Per Learning-023, checked before writing this pointer: this round fixed no finding, refined one row via its Refine action (OF-30), and found no change to the previous round's own stop-and-present conclusion.
+---
+Item 33 answered, 2026-08-21, same thread — the question the previous two blocks presented and left open:
+
+Founder answered directly, in-session, in response to the item-33 decision above: leave it parked, no new condition. **DECISION-058** records it. Item 33's own row is updated with the same confirmation. This is not a new finding and not a new round — it is the founder resolving the exact question the previous pointer named as still open, in the same thread, before this pointer's own "not yet answered" line was acted on by any other session.
+
+**Next:** item 33 is confirmed parked (DECISION-058) — it does not auto-trigger, and the next `/next` round should not re-ask it. With the internal queue already exhausted and no new condition attached, the next round that lands with nothing else changed should expect the same: Observe, Refine the next-eligible row by DECISION-057's tiebreak, report no change, and stop — rather than re-deriving or re-presenting item 33 from scratch each time. Re-open the question only if the founder raises it, or if something in the tree actually changes what "nothing else internal remains" means (a new finding, a fix to one of OF-30/OF-64/OF-87's own blocking conditions).
+
+Findings this round did not fix: none.
+
+Operating model section served: §4 — the founder's answer is recorded here rather than left in the thread, per `SYSTEM.md`/`CLAUDE.md` → "Nothing Stays In The Thread." `PRODUCT/OPERATING_MODEL.md` Conformance row 4 not re-touched separately — the previous block's re-verification already covers this same round's own §4 instance.
 ---
 Founder instruction, 2026-08-13 — the roadmap check becomes a step of dispositioning, not a habit
 
