@@ -24,6 +24,13 @@ export interface ParsedArgs {
   targetDir: string;
   sourceDir?: string;
   force: boolean;
+  /**
+   * AI tool ids from `--tools claude,cursor` (comma-separated). Undefined
+   * means the flag was not passed — the caller applies DEFAULT_TOOLS, or for
+   * `sync`, the Installation's own persisted `.kenovis/.tools`. See
+   * DECISION-046.
+   */
+  tools?: string[];
 }
 
 export function parseArgs(argv: string[]): ParsedArgs {
@@ -34,6 +41,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
   let targetDir: string | undefined;
   let sourceDir: string | undefined;
   let force = false;
+  let tools: string[] | undefined;
 
   for (let i = 0; i < rest.length; i++) {
     const arg = rest[i];
@@ -41,12 +49,20 @@ export function parseArgs(argv: string[]): ParsedArgs {
       sourceDir = rest[++i];
     } else if (arg === "--force") {
       force = true;
+    } else if (arg === "--tools") {
+      const raw = rest[++i];
+      tools = raw
+        ? raw
+            .split(",")
+            .map((id) => id.trim())
+            .filter((id) => id.length > 0)
+        : [];
     } else if (!arg.startsWith("--") && targetDir === undefined) {
       targetDir = arg;
     }
   }
 
-  return { command, targetDir: targetDir ?? ".", sourceDir, force };
+  return { command, targetDir: targetDir ?? ".", sourceDir, force, tools };
 }
 
 const DEFAULT_CONTEXT_LIMIT = 15;
@@ -113,9 +129,9 @@ export function cliVersion(): string {
 }
 
 function printUsage(): void {
-  console.log(`kenovis <targetDir> [--source <frameworkSourceDir>] [--force]
-kenovis init <targetDir> [--source <frameworkSourceDir>] [--force]
-kenovis add <targetDir> [--source <frameworkSourceDir>] [--force]
+  console.log(`kenovis <targetDir> [--source <frameworkSourceDir>] [--force] [--tools <ids>]
+kenovis init <targetDir> [--source <frameworkSourceDir>] [--force] [--tools <ids>]
+kenovis add <targetDir> [--source <frameworkSourceDir>] [--force] [--tools <ids>]
 kenovis sync <targetDir> [--source <frameworkSourceDir>] [--force]
 kenovis context "<query>" [<targetDir>] [--limit N] [--include-framework]
 
@@ -158,6 +174,13 @@ real read; it does not print file contents itself. <targetDir> defaults to
 the current directory. --include-framework also searches the read-only
 .kenovis/AI/ mirror. --limit caps how many matches print (default 15).
 
+--tools selects which AI tools init/add generate native scaffolding for, e.g.
+--tools claude,cursor. Defaults to claude (DECISION-010's named primary tool)
+when omitted. A requested id this Framework Release ships no adapter for is
+reported, not silently ignored. The selection is persisted to
+.kenovis/.tools, so a later \`sync\` re-applies it automatically — sync itself
+takes no --tools flag.
+
 --source defaults to this package's own bundled Framework layer. Pass it
 explicitly to install or sync a different or custom Framework layer instead.
 
@@ -179,6 +202,11 @@ function printInstallResult(result: InitResult): void {
   console.log(`Framework layer installed to ${result.frameworkInstalledTo}`);
   console.log(`Framework Release: ${result.frameworkVersion ?? UNKNOWN_VERSION}`);
   console.log(`CLAUDE.md stub written to ${result.claudeStubWrittenTo}`);
+  if (result.claudeMdAction === "coexisted") {
+    console.log(
+      "Existing CLAUDE.md content preserved — the Kenovis block was appended below it in the same file.",
+    );
+  }
   console.log(
     result.targetReadmeUntouched
       ? "Existing README.md left untouched."
@@ -192,6 +220,28 @@ function printInstallResult(result: InitResult): void {
     `\nDetected ${result.detectedKind}${evidence}. The next AI session in this repository ` +
       `will run ${command} automatically — no manual slash command needed.`,
   );
+
+  printToolAdapterResult(result);
+}
+
+function printToolAdapterResult(result: {
+  toolsInstalled: string[];
+  unknownTools: string[];
+  skippedToolFiles: string[];
+}): void {
+  if (result.toolsInstalled.length > 0) {
+    console.log(`\nAI tool scaffolding generated for: ${result.toolsInstalled.join(", ")}`);
+  }
+  if (result.unknownTools.length > 0) {
+    console.error(
+      `Warning: this Framework Release ships no adapter for: ${result.unknownTools.join(", ")}.`,
+    );
+  }
+  if (result.skippedToolFiles.length > 0) {
+    console.log(
+      `Left untouched (already existed, not Kenovis-managed): ${result.skippedToolFiles.join(", ")}`,
+    );
+  }
 }
 
 async function resolveFrameworkSourceDir(
@@ -221,6 +271,7 @@ async function runInitCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
       frameworkSourceDir,
       force: args.force,
       invokedAs: "init",
+      tools: args.tools,
     });
     printInstallResult(result);
     return 0;
@@ -247,6 +298,7 @@ async function runAddCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<numb
       targetDir: resolve(args.targetDir),
       frameworkSourceDir,
       force: args.force,
+      tools: args.tools,
     });
     printInstallResult(result);
     return 0;
@@ -275,8 +327,14 @@ async function runAutoCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
   try {
     const result =
       detection.kind === "brownfield"
-        ? await runAdd(fs, { targetDir, frameworkSourceDir, force: args.force })
-        : await runInit(fs, { targetDir, frameworkSourceDir, force: args.force, invokedAs: "init" });
+        ? await runAdd(fs, { targetDir, frameworkSourceDir, force: args.force, tools: args.tools })
+        : await runInit(fs, {
+            targetDir,
+            frameworkSourceDir,
+            force: args.force,
+            invokedAs: "init",
+            tools: args.tools,
+          });
     printInstallResult(result);
     return 0;
   } catch (error) {
@@ -313,6 +371,20 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
           ? " (already up to date)"
           : ""),
     );
+    if (
+      result.previousFrameworkVersion !== null &&
+      result.previousFrameworkVersion !== result.frameworkVersion
+    ) {
+      // Informational only (DECISION-048, OF-78): sync never reads or writes
+      // company-os/ (RULE-INST-01), so this cannot say which document
+      // changed or how much — only that this release may have moved the
+      // templates your own Product layer was authored from.
+      console.log(
+        "This release may have changed Product-layer templates — review " +
+          "framework/templates/product-layer/ against your own company-os/ if you want to " +
+          "pick up any improvements. sync never does this for you.",
+      );
+    }
     if (result.removedPaths.length > 0) {
       console.log(`Removed from .kenovis/ (no longer part of this Framework Release):`);
       for (const removedPath of result.removedPaths) {
@@ -320,6 +392,12 @@ async function runSyncCommand(fs: NodeFileSystem, args: ParsedArgs): Promise<num
       }
     }
     console.log(`CLAUDE.md stub rewritten at ${result.claudeStubWrittenTo}`);
+    if (result.claudeMdAction === "coexisted") {
+      console.log(
+        "Existing CLAUDE.md content preserved — the Kenovis block was appended below it in the same file.",
+      );
+    }
+    printToolAdapterResult(result);
     if (result.setupStillPending) {
       console.log(
         "\nSetup is still pending — kept. The next AI session in this repository " +

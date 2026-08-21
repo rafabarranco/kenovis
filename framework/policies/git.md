@@ -1,6 +1,6 @@
 # Git Policy
 
-Version: 2.3
+Version: 2.6
 
 ---
 
@@ -232,6 +232,15 @@ git push --force-with-lease
 
 Use `--force-with-lease`, never `--force`.
 
+**When the push target is an explicit HTTPS URL rather than a tracked remote** — the case whenever `origin` is unreachable over SSH, which is this repository's own standing situation (see "Rebasing" below, OF-65) — bare `--force-with-lease` has no remote-tracking ref to compare against and is inert: it can reject a legitimate push with `stale info`, or, worse, pass against a local tracking ref that is itself stale and silently accept a push that overwrites work the lease never actually compared against. Read the remote's current SHA first and name it explicitly:
+
+```
+git ls-remote https://github.com/<owner>/<repo>.git refs/heads/<branch>
+git push https://github.com/<owner>/<repo>.git HEAD:<branch> --force-with-lease=<branch>:<remote-sha-from-ls-remote>
+```
+
+The qualified form is the only one that restores the guarantee `--force-with-lease` is supposed to provide when there is no local tracking ref to fall back on.
+
 ---
 
 # Rebasing
@@ -264,6 +273,30 @@ git merge --ff-only origin/development
 ```
 
 Do not wait to notice reverted files before running this — run it as the very next command after every `gh pr merge --delete-branch`, whether or not the merge printed an error.
+
+**A harness permission classifier can refuse to run the fetch-and-relevel sequence outright — a distinct failure from every case above.** The failures above are all git reporting an error: exit `128`, a credential prompt, a stale-lease rejection. A classifier block looks nothing like that — the command never runs, no git error surfaces, and the response is `Blocked by classifier` from the harness itself, not from git. Treat it as its own case, not a retry target: state plainly that the sync could not run and why, do not re-issue the same command expecting a different result, and do not treat the local checkout as leveled — it is exactly as far behind as the last `git rev-list --count HEAD..origin/development` measured it, uncorrected. The checkout self-heals the next time any session there fetches; the risk is only proceeding as if this fetch already had.
+
+**A `git push` or PR creation can fail with a `403 Permission... denied to <account>` against the wrong authenticated `gh` identity — a different failure class from an unreachable remote (OF-65) or `gh pr merge`'s own local housekeeping (OF-86): the remote is reachable, the command runs, and it is refused by GitHub itself because the *active* `gh` account is not the one this repository expects.** More than one `gh` account can be logged in on the same machine, and which one is "active" is a piece of global CLI state that is not scoped to this repository, this session, or this command — it can differ from what `gh auth status` showed earlier in the same session. Diagnose with `gh auth status` (look for `Active account: true` against the account this repository's remote expects) and fix with:
+
+```
+gh auth switch --hostname github.com --user <expected-account>
+```
+
+**This is a global, machine-wide state change, not a per-invocation override** — unlike the `-c credential.helper=` detour above, which is scoped to the one command it prefixes. Where multiple sessions can run against the same machine at once (`AI/memory/learnings.md` Learning-054), switching the active account can change which identity a *different* concurrent session's own next push uses. Run it immediately before the push or PR command it is fixing, not preemptively, and expect it may need re-running if another session has switched it back since.
+
+---
+
+# Stacked Pull Requests
+
+A pull request opened from another open pull request's head is stacked. Merging the base with **Rebase and Merge** rewrites its commits onto `development` under new SHAs, so the stacked branch — still built on the old commits — goes `CONFLICTING`/`DIRTY`, carrying its own commits plus copies of the base's, now conflicting with content that already landed. The instinctive recovery, rebase onto the new base and resolve, means resolving conflicts between a branch and an already-merged copy of itself: the most error-prone form of the operation, on the one occasion where a wrong resolution silently drops work that was already merged, and a diff review will not obviously catch it — a plausible-looking file addition reads as fine (Learning-035).
+
+Recover by rebuilding and asserting tree equality, not by reading the diff:
+
+1. **Before the base merges**, capture the stacked branch's own tree hash: `git rev-parse HEAD^{tree}`.
+2. After the base lands and `development` is leveled (see "Rebasing" above), rebuild the stacked branch on the new base — `git rebase origin/development` — resolving whatever conflicts appear.
+3. **Assert, do not eyeball:** `git rev-parse HEAD^{tree}` must equal the hash captured in step 1. The stacked branch's own net content does not change when its base merges — only the commits underneath it move — so any difference means the rebuild dropped or altered something the base merge did not touch.
+4. If the hashes differ, stop and investigate before pushing. Do not stage with `git add -A` during the rebuild — it stages by working-tree state, including untracked files that are deliberately untracked (Learning-035's own instance staged `claude-info.md`, rejected by OF-45b), which silently widens the very tree the assertion checks.
+5. Only once the hashes match, push with `--force-with-lease` (or its URL-qualified form above, if applicable).
 
 ---
 
