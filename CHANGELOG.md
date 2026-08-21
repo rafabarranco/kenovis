@@ -6,6 +6,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-08-22
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.15.0]. Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2: this release carries a CLI code change — the multi-tool adapter registry below, in the repository since 2026-08-18 but absent from the published [0.15.0] package its changelog entry originally sat under (`PRODUCT/ROADMAP.md` OF-104, see "Fixed" below).
+
+`1.0.0` remains out of scope for this release. OF-11 (`PRODUCT/ROADMAP.md`) is still open — no installations target is set — and DECISION-041 already settles that `1.0.0` ships only after the roadmap's external-facing validation work (item 33) runs, ranked last, independent of that number.
+
+No breaking changes for an existing Installation.
+
 ### Added
 
 - **`kenovis init`/`add` now generate native Claude Code slash commands (`.claude/commands/`), and `--tools` lets you choose which AI tools get scaffolding — not a hardcoded list this framework has to keep updating as new models ship.** `DECISIONS.md` DECISION-046, `PRODUCT/ROADMAP.md` OF-96/item 45, `cli/src/application/toolAdapters.ts`. Before this, your Installation got a root `CLAUDE.md` stub and nothing else — even Claude Code, this framework's own named primary tool, had no `/next`, `/feature`, `/bug` etc. as real slash commands; you had to know to point an agent at `.kenovis/AI/commands/<name>.md` by hand. `kenovis init`/`add --tools claude,cursor,...` (default `claude`, unchanged from today's behavior) now writes one `.claude/commands/<name>.md` per framework command, generated from `framework/tool-adapters/claude/`'s own template — the CLI never hardcodes a tool's identity or a command's name, so a new AI tool is future content under `framework/tool-adapters/`, shipped to your existing Installation via `sync`, not a CLI release you have to upgrade to. Your own pre-existing file at the same path is never overwritten: each wrapper carries a marker only Kenovis-generated files have, and anything else is left alone and reported. Your selection is remembered in `.kenovis/.tools`, so `sync` keeps it current without `--tools` being passed again. *(Entry relocated from `[0.15.0]`, where it was misfiled — see the Fixed entry below; this release is the first whose published package actually contains it.)*
