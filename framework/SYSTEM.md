@@ -2,7 +2,7 @@ AI Operating System
 
 SYSTEM.md
 
-Version: 1.12
+Version: 1.14
 ---
 Purpose
 
@@ -247,7 +247,7 @@ If `.kenovis/.setup-pending` exists, run the command it names (`init-project` or
 ---
 Source Of Truth Hierarchy
 
-**This is the only hierarchy.** `CLAUDE.md` cites this section and does not restate it. Two copies of the rule that resolves every other conflict is the one duplicate a document set cannot carry: they were edited independently, they diverged, and because both are loaded as authoritative neither reader ever opened the other. See company-os/DECISIONS.md DECISION-031.
+**This is the only hierarchy.** `CLAUDE.md` cites this section and does not restate it. Two copies of the rule that resolves every other conflict is the one duplicate a document set cannot carry: they were edited independently, they diverged, and because both are loaded as authoritative neither reader ever opened the other. See company-os/DECISIONS.md DECISION-031 (`company-os/AI/memory/LEARNINGS-ARCHIVE.md` Learning-034).
 
 When information conflicts, follow this priority:
 
@@ -275,7 +275,7 @@ Code is never the source of truth.
 
 **Rank 1 is not conditional, and one transition case exists.** Every Installation authors `company-os/PRODUCT/OPERATING_MODEL.md` at setup: `/init-project` Step 2 and `/adopt-project` Step 3 ask the owner for it and write it before `company-os/COMPANY_OS.md`, from `.kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md` — a form, not a destination. The AI never authors it on the owner's behalf; it is the document the AI is measured against.
 
-A repository set up before that requirement shipped may hold no such file. Where there is none, rank 2 is the top and the gap is real work, not a permitted state: the owner is asked for the document, using the same four questions the setup step asks. See company-os/DECISIONS.md DECISION-032.
+A repository set up before that requirement shipped may hold no such file. Where there is none, rank 2 is the top and the gap is real work, not a permitted state: the owner is asked for the document, using the same five questions the setup step asks. See company-os/DECISIONS.md DECISION-032.
 ---
 Execution Principles
 
