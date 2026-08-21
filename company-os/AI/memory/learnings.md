@@ -924,6 +924,36 @@ Disposition: Fixed. `framework/commands/next.md` (2.16 → 2.17), `framework/pol
 
 ---
 
+## Learning-058
+
+Date:
+2026-08-21
+
+Category:
+Process
+
+Context:
+This round's own objective was `PRODUCT/ROADMAP.md` OF-103: DECISION-057's own sub-day Refine tiebreak had saturated a second time the same day it shipped, and the previous round left it queued as needing a third tiebreak stage — a design decision, not a clause it was positioned to invent inline.
+
+Problem:
+The previous round (and OF-103's own text) framed the saturation as the tiebreak failing — the same row (`OF-02`) getting re-selected once every `Open` row tied, three times in one day, was read as the mechanism running out of ways to distinguish rows and needing a fourth stage to keep working.
+
+What happened:
+Before designing a third stage, the actual mechanism was traced by hand rather than assumed broken: DECISION-057's own rule (fewest same-day `Refined` markers, ascending) already removes a row from contention the moment it is picked, because being picked raises its own count — so a full sweep tying again is that same mechanism completing another lap of fair rotation, not failing to distinguish anything. The real, confirmed cost was somewhere else entirely: `policies/documentation.md`'s own requirement that a refinement change a row's text meant every one of those three same-day repeat-picks still had to write a new full paragraph, even though each one's honest content was "still true, nothing changed" — and that is what had grown `OF-02`'s own row large enough to weigh on `PRODUCT/ROADMAP.md`'s own tracked size problem (item 14). DECISION-059 declares lowest id the terminal tiebreak stage (no new stage) and replaces a genuine no-op re-check with a one-line compact form instead of a full paragraph — fixing the cost that was actually measured, not the stage count that was assumed to be the problem.
+
+Root cause:
+A symptom (the same row being picked repeatedly) was diagnosed as the cause (the tiebreak can't tell rows apart) without first checking whether the mechanism's own stated behavior already explains the symptom without being broken. Three consecutive findings on this exact mechanism (OF-99, OF-102, OF-103) each escalated to "add another stage" as the reflexive fix for "the same row got picked again," when only the first of the three (OF-99) was actually a case where the *rule itself* was wrong — the other two were the rule working as designed under a condition (full saturation) that is a legitimate, expected steady state for an exhausted queue, not a bug.
+
+Learning:
+Before adding a new stage, field, or mechanism to fix "the same thing keeps happening," trace whether the existing mechanism's own logic already accounts for the repetition as correct behavior — a rotation completing a lap looks identical, from one round's-eye view, to a rotation that is stuck. The two are told apart by checking the mechanism's own selection function across more than one pick, not by the fact that a pick repeated. When they turn out to be the former, the actual fix is usually in the cost of the repeat (what has to be written down every time), not in the selection logic itself.
+
+Future action:
+None queued as new mechanism — DECISION-059 and the corrected text in `commands/next.md` / `policies/documentation.md` are the fix. Worth citing before any future round proposes a further tiebreak stage on this same mechanism: trace the rotation first.
+
+Disposition: Fixed. `framework/commands/next.md`, `framework/policies/documentation.md`, `company-os/DECISIONS.md` DECISION-059, `PRODUCT/ROADMAP.md` OF-103.
+
+---
+
 ---
 Learning Examples
 

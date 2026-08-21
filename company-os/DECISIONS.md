@@ -71,6 +71,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-056** — `development`'s Required Review Is Dropped To Zero; CI Becomes A Required Status Check For The First Time. Closes `PRODUCT/ROADMAP.md` OF-19, founder decision: `required_pull_request_reviews` (unsatisfiable for a solo maintainer) is removed from `development`'s branch protection, and the 13 CI guard scripts — never previously wired as `required_status_checks` — are added as a required check with `strict: false`. A routine `gh pr merge --rebase` (no `--admin`) now succeeds once CI is green for the first time since `0.6.0`; `enforce_admins` stays `false` unchanged, so an admin override remains as a deliberate emergency escape hatch, not removed.
 - **DECISION-057** ‡★ — DECISION-054's Refine Tiebreak Gains A Sub-Day Second Stage: Fewest Same-Day `Refined` Markers, Then Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-102: a full same-day sweep of the `Open` queue leaves every row tied on calendar-date granularity, and DECISION-054's own "tied rows break by lowest id" then re-selects the same row (OF-02) for the rest of that day with no new premise to report; the fix counts each row's own already-written `Refined <today's date>` markers (fewer wins, tied to lowest id) rather than adding a persisted field or cross-referencing the document's narrative order, both rejected as more infrastructure than the finding calls for.
 - **DECISION-058** — Item 33 Stays Parked Even With The Internal Queue Exhausted, Founder-Confirmed Rather Than Assumed. With every `Open Findings` row non-actionable and item 33 the only `SCHEDULED` item left, the founder was asked directly whether "ranks last" (DECISION-041) means item 33 auto-triggers once nothing internal remains, or stays parked regardless. Answer: stays parked, no new condition, moves only on the founder's own decision to pursue it.
+- **DECISION-059** ‡★ — Lowest Id Is The Refine Tiebreak's Terminal Stage; A Saturated No-Op Re-Check Writes A Compact Form, Not A New Paragraph. Closes `PRODUCT/ROADMAP.md` OF-103: traced directly, DECISION-057's tiebreak already rotates every tied `Open` row through fair attention across a day — a repeat sweep tying again is that rotation completing another lap, not a defect — so no third stage (time-of-day, a persisted counter) is adopted. The real cost was a full new paragraph owed on every saturated repeat pick even with nothing new to report, which is what grew `OF-02`'s own row large enough to weigh on `PRODUCT/ROADMAP.md`'s own size (item 14); a genuine no-op re-check now writes a one-line compact form instead.
 
 ---
 
@@ -4358,6 +4359,70 @@ Positive: the next `/next` round (and any concurrent one) reads this decision in
 Negative, accepted: no calendar trigger exists to prompt revisiting this — if the founder's circumstances change, nothing in the mechanism itself will surface that; it depends on the founder raising it, consistent with Addendum B's own "founder decides" model rather than a mechanism watching for it.
 
 Implementation: none — no code or framework change. `PRODUCT/ROADMAP.md` item 33 and its `Next:` pointer record the founder's answer. Origin: this round's own presentation of the item-33 decision.
+
+---
+
+# DECISION-059
+
+# Lowest Id Is The Refine Tiebreak's Terminal Stage; A Saturated No-Op Re-Check Writes A Compact Form, Not A New Paragraph
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-103, via `/next`.
+
+Review Date:
+
+None set. This decision declares the tiebreak closed rather than open a further stage — see Reasoning. Revisit only if a future round finds the rotation itself, not its cost, is actually broken (a row genuinely starved despite ties, not merely repeated).
+
+---
+
+## Context
+
+DECISION-057's own `Review Date` field named the exact condition that fired next: "if the sub-day tiebreak itself ever ties... a third stage would be needed and is not designed here." It fired the same day DECISION-057 shipped — a second full sweep of the `Open Findings` queue left every genuinely-`Open` row (OF-02, OF-03, OF-04, OF-30, OF-64, OF-87) tied at 2 same-day `Refined` markers each, and the tiebreak fell through to lowest id (OF-02) a third time that day. `PRODUCT/ROADMAP.md` OF-103 recorded the live instance and named three candidate answers without picking one: order by time-of-day if the harness ever records one; a persisted per-row rotation counter; or explicitly widen Refine's expected cadence so a saturated repeat is not read as a defect.
+
+Re-examined directly rather than assumed: does the tiebreak actually fail to rotate through the queue, or does it already rotate correctly and the complaint is about something else? Traced by hand: DECISION-057's own mechanism (fewest same-day markers, ascending) already hands the next round to whichever tied row has been touched fewest times today — picking a row raises its own count, which removes it from "fewest" until every other tied row catches up. A full sweep tying again is that rotation completing another lap, not the mechanism breaking. The actual, confirmed cost was different: `OF-02`, the row lowest id keeps selecting once every row is fully tied, had by this point accumulated three near-duplicate "still `Open`, no premise change" paragraphs from three same-day passes — real byte weight added to `PRODUCT/ROADMAP.md`, which `PRODUCT/OPERATING_MODEL.md` Conformance row 14 already tracks as over its own size threshold (structurally passing only via its registered archive split, not by being small).
+
+## Options Considered
+
+### Option A — Third tiebreak stage: order by time-of-day
+
+Rejected. No reliable, comparable wall-clock timestamp exists across the sessions and tools this framework is built to be agnostic to (DECISION-010) — a round's own sense of "now" is not a mechanism property, and two genuinely concurrent rounds could tie there too, reproducing the same problem one level finer rather than closing it.
+
+### Option B — A persisted, structured per-row rotation counter
+
+Rejected, for the same reason DECISION-054's Option C and DECISION-057's Option B already rejected it: the queue is prose an AI reads each round, not a field a script parses — item 37 (CI-guard reach) is still mid-flight and DECISION-026/OF-21 already forbid adding mechanism ahead of it. A third rejection of the identical option is itself evidence the framework's own bias (prose over new state) is holding, not that the option deserves re-litigating a fourth time.
+
+### Option C — Declare lowest id the terminal stage; replace the saturated no-op paragraph with a compact form
+
+Adopted. The tiebreak was never broken — traced above, it already rotates fairly — so no new stage is owed. What needed fixing was the paragraph-per-pick cost once saturation makes the same row land twice or more in one day: a round whose premise re-check finds no change since that row's own most recent refinement writes `**Checked <today's date>, no change — see <date> refinement above.**` instead of a new full paragraph. This still satisfies `PRODUCT/OPERATING_MODEL.md` §1's `REFINE` step — the premise is re-checked against the current tree, not carried over unread — while removing the actual cost OF-103 measured. A full paragraph stays required the moment anything substantive changes (a new run landed, a dimension shifted, the row is promoted or re-dispositioned).
+
+## Decision
+
+Adopt Option C. `framework/commands/next.md` → "Refine The Oldest Open Row" and `framework/policies/documentation.md`'s matching paragraph both state: once DECISION-054's date-stage and DECISION-057's same-day-marker-count stage tie, lowest id is the terminal tiebreak — no third stage exists or is needed. A round landing on a row purely by that saturation, whose premise re-check finds no change, records it in the compact form rather than a new full paragraph.
+
+## Reasoning
+
+OF-103 diagnosed a symptom (the same row getting picked repeatedly, each pick adding prose) as if it were the tiebreak's own defect, the same shape DECISION-054 and DECISION-057 each corrected — but this time the mechanism, traced directly rather than assumed, is not actually starving anything: every tied row still gets fair rotation, because being picked raises a row's own count out of "fewest." The real cost was `policies/documentation.md`'s own requirement that refining changes the row's text, read as requiring a full new paragraph even when a re-check's honest answer is "still true, nothing new" — which is exactly the condition a compact form is for, and exactly the growth pattern already weighing on the document this mechanism lives in (item 14). Fixing the actual cost rather than adding a fourth stage to a tiebreak that already works keeps the framework's own bias — simplicity over complexity, no mechanism ahead of need (DECISION-026, DECISION-054 Option C, DECISION-057 Option B) — intact rather than making OF-103 the fourth time in a row that bias gets exercised as a rejection of new machinery without also asking whether new machinery was the right frame at all.
+
+## Alternatives Considered
+
+Options A and B above, rejected for the reasons stated.
+
+## Consequences
+
+Positive: no new mechanism, field, or CI guard. The tiebreak is documented as closed rather than left open-ended (three successive decisions each deferring "what happens if this ties again" is itself a pattern worth ending). `PRODUCT/ROADMAP.md` stops accumulating a new near-duplicate paragraph every time a saturated sweep re-lands on the same row, which directly serves item 14's own tracked growth problem without a dedicated archive-move round.
+
+Negative, accepted: a row's own history becomes slightly harder to read at a glance — a compact `Checked <date>, no change` line requires looking at the paragraph it points back to for the actual reasoning, rather than every entry being self-contained. Judged acceptable: the alternative (a new full paragraph restating the same conclusion) is *why* the row grew large enough to be a problem in the first place, so the trade is the entire point of this decision, not an incidental cost of it.
+
+Implementation: `framework/commands/next.md` → "Refine The Oldest Open Row"; `framework/policies/documentation.md` → the `Open`-finding-refinement paragraph. Verified live in the same round this decision was written: applying the compact form to `OF-02` (the row DECISION-057's tiebreak selects under the tied state that motivated this decision) — see that row's own text. Origin: OF-103.
 
 ---
 
