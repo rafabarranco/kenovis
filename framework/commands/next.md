@@ -179,13 +179,15 @@ Two commands, at most a handful of documents. This is not a framework-review aud
 
 ## Refine The Oldest Open Row
 
-Alongside choosing the round's own objective, refine exactly one row from `company-os/PRODUCT/ROADMAP.md` → "Open Findings": **the `Open` row least recently touched** — read each `Open` row's own most recent `Refined <date>` marker (or, for a row never yet refined, its Source column's discovery date), and pick the oldest. Tied rows break by lowest id.
+Alongside choosing the round's own objective, refine exactly one row from `company-os/PRODUCT/ROADMAP.md` → "Open Findings": **the `Open` row least recently touched** — read each `Open` row's own most recent `Refined <date>` marker (or, for a row never yet refined, its Source column's discovery date), and pick the oldest. Tied rows break first by **fewest `Refined <today's date>` markers the row already carries** (count the row's own prose, ascending — a row touched fewer times today wins over one touched more), then by lowest id.
+
+The date-tiebreak alone is not enough once a full sweep leaves every `Open` row tied on the same calendar date — a real condition, not a hypothetical: on 2026-08-21 seven separate `/next` rounds refined every `Open` row the same day, and from that point on the plain "tied rows break by lowest id" rule re-selected the same row (OF-02) every remaining round of the day, with nothing left to report. `company-os/PRODUCT/ROADMAP.md` OF-102 is the recorded instance; `company-os/DECISIONS.md` DECISION-057 corrects it. The fix reuses exactly what DECISION-054 already reads — the `Refined <date>` markers a row's own prose already carries — rather than adding a field, counter or CI guard: `grep -o` the row's own text for today's date is sufficient.
 
 Not the lowest-id row still carrying `Open`. That was this step's original rule and it is wrong on its own terms: it assumed a refined-but-still-`Open` row leaves the "oldest" position once touched, and the mechanism never made that true — a row refined without closing keeps its id and stays the numerically lowest survivor, so a literal id reading re-selects that same row every round and starves every higher-id row regardless of how long it has actually sat untouched. `company-os/PRODUCT/ROADMAP.md` OF-99 is the recorded instance: on 2026-08-19, four rounds in a row refined a row other than the literal lowest id, each substituting "untouched by any prior refinement pass" without amending the rule. `company-os/DECISIONS.md` DECISION-054 corrects it. No new field, counter or CI guard is needed — the date each row already carries in prose is what a round reads.
 
 Refining means the row's text changes — its Pain/Frequency/Cost/Role re-checked against the current tree, or the row promoted to a scheduled item, or re-dispositioned with the reason. Leaving the row byte-identical is not refinement.
 
-This is a second, low-cost action, separate from the round's own chosen objective — do not let it become the objective itself, and do not skip the round's real work to perform it. See `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" and company-os/DECISIONS.md DECISION-036 and DECISION-054.
+This is a second, low-cost action, separate from the round's own chosen objective — do not let it become the objective itself, and do not skip the round's real work to perform it. See `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" and company-os/DECISIONS.md DECISION-036, DECISION-054 and DECISION-057.
 
 ---
 
