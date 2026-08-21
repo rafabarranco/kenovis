@@ -1,6 +1,6 @@
 # Documentation Policy
 
-Version: 3.15
+Version: 3.16
 
 ---
 
@@ -452,6 +452,8 @@ So closing an item includes the line `Findings this item did not fix:` naming th
 This is the inversion that makes the rule checkable at all. Detecting a finding inside narrative prose has no pattern — which is why guards built on classifying prose were correctly rejected twice. Requiring a declaration does: the population is every closed item, and a missing line is exact. Two things follow and both are part of the rule: every id a closing item declares exists in the queue, and a round with nothing to declare writes "none" rather than omitting the line.
 
 **A round that closes no item still owes this declaration, next to its own `Next:` pointer.** Binding the mechanism to closed items only was how a finding born as evidence inside a decision body, a proposal dropped in conversation, or a finding raised inside an item still open stayed invisible to it — the population was items, and none of those three is one (`company-os/PRODUCT/ROADMAP.md` OF-21). `commands/next.md` Step 13 → "Write The Next Pointer, Or Write That There Is None" requires the same line — `Findings this round did not fix:`, ids or `none` — next to every `Next:` pointer, written by every round regardless of what it closed. This is not a second rule; it is the same required-declaration mechanism moved to the one artifact every round writes unconditionally, which is also why it cannot go structurally empty the way an item-scoped population can once a roadmap is fully archived: the live `Next:` block is never itself a closed, archived entry while it is the current pointer (`company-os/PRODUCT/ROADMAP.md` OF-61).
+
+**A `Scheduled` queue row is corrected to `Fixed` the moment the item it names closes — in the same change, not a later one.** The declaration above only ever runs forward: a closing item says what it left behind. Nothing made it run backward — an `OF-N` row reading `Scheduled — item N` has no obligation of its own to notice item N closed, so the row and reality drift apart with nothing to catch it. Confirmed five times in six days on this exact shape (OF-01, OF-42, OF-69, OF-92, OF-96), every one found by a human re-reading the queue for an unrelated reason. This repository's own CI now runs a mechanical check for exactly this: every queue row whose own last bolded disposition word is still `Scheduled` names an item, and that item cannot already be `DONE`. The citation form this trusts is the row's own `**Scheduled — item N**` text, written that way from the moment a finding is first scheduled — not a new declaration required on the item side, which DECISION-055 rejected as unreachable (the item-side phrasing already in use is not uniform enough to regex safely). (`company-os/PRODUCT/ROADMAP.md` OF-100, DECISION-055.)
 
 Two rules that follow from this, because both failure modes have already happened:
 
