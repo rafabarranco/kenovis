@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.22
+Version: 1.23
 ---
 Scope
 
@@ -826,7 +826,11 @@ A concurrent, multi-session shared working directory (`ListAgents` routinely sho
 Future action:
 None queued as new mechanism — this entry *is* the fix: the discipline now has a durable, tool-agnostic home. `.kenovis/AI/commands/next.md` Step 3 is a candidate for a short pointer to this entry in a future round, if the pattern recurs after this recording.
 
-Disposition: Recorded as a technique; no work implied.
+**Second confirmed instance, 2026-08-21, the pattern this row's own Future action asked to watch for.** A `/next` round ranked OF-74/OF-75 as its objective from the primary working directory's read, cloned fresh into an isolated directory per this entry's own discipline, and `git fetch` there — before any edit — surfaced that both had already been fixed by a concurrent session minutes earlier (`policies/git.md`'s `--force-with-lease` URL-qualified form and its "Stacked Pull Requests" section, both landed the same day). Zero wasted edits, because the fetch ran before the first one. This is the second live instance in the amount of time it took the first one's own "if the pattern recurs" condition to be checked, which is itself the signal: the discipline is not incidental, it is load-bearing on a normal day for this repository.
+
+Disposition: Fixed; no work implied beyond this entry.
+
+`framework/commands/next.md` (2.17 → 2.18) Step 3 gains "Under Concurrent Multi-Session Use, Verify The Tree Before Ranking," citing this entry directly and stating the clone-and-fetch-before-first-edit discipline inline — reachable by any tool loading the Framework layer, not only a session that happens to carry this file's own external, tool-specific memory forward. `PRODUCT/OPERATING_MODEL.md` Conformance row 5 cites it as a closed instance of "thread isolation must not silo knowledge."
 
 ---
 

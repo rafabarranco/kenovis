@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.17
+Version: 2.18
 
 ---
 
@@ -97,6 +97,14 @@ Read three inputs, not one.
 A round may depart from the pointer. When it does, it **says why, in `company-os/PRODUCT/ROADMAP.md`, in the same round** — new information, a dependency that turned out false, a founder instruction that outranks it. A departure that is not written down is indistinguishable from never having read the pointer. (DECISION-030; `company-os/AI/memory/LEARNINGS-ARCHIVE.md` Learning-033.)
 
 If no pointer exists yet — a first round, or one whose predecessor left none — rank from the two inputs above and write one in Step 15.
+
+---
+
+## Under Concurrent Multi-Session Use, Verify The Tree Before Ranking
+
+All three inputs above are read from whatever working directory the session started in. If that directory can be edited by another concurrent session against the same repository — several agent sessions active against one working tree is a normal, not an exotic, state for this kind of tool — its read can already be stale by the time bootstrap finishes: a race this repository has hit and recovered from repeatedly, including a live near-miss where a round almost re-implemented a fix a concurrent session had already shipped minutes earlier, caught only because it re-verified before its first edit (`company-os/AI/memory/learnings.md` Learning-054).
+
+Do the primary working directory's own reading and planning freely — it is cheap and informative even when stale. But before the first edit of the round: clone into an isolated directory, `git fetch origin` there, and confirm the base branch is level (`git rev-list --count HEAD..origin/<base>` → `0`) before trusting which finding is still open, which item is still scheduled, or what the `Next` pointer still says. If the fresh state disagrees with the primary directory's read, re-derive the round's objective from the fresh state and say so — do not proceed on the stale one.
 
 ---
 
