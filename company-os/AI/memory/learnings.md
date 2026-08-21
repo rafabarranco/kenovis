@@ -368,7 +368,7 @@ Second half: **`git add -A` is not safe inside a reconstruction.** It stages by 
 Future action:
 `PRODUCT/ROADMAP.md` → **OF-75** carries the missing rule (nothing in `policies/git.md` covers a stacked PR; `grep -cin "stacked\|dependent branch"` → 0) and **OF-74** carries the other half found by the same merge — `--force-with-lease` is inert when the push target is a URL rather than a tracked remote, which is this repository's only path because of OF-65.
 
-Disposition: Open — no rule promoted yet. The technique belongs in `policies/git.md` beside "Rebasing", and it is queued as OF-75 rather than written here because both git findings should land as one section rather than two, and because this round's mandate was to merge the open PRs, not to change the git policy while doing it.
+Disposition: **Fixed as a rule (2026-08-21, via `/next`)** — `framework/policies/git.md` → "Stacked Pull Requests" states the capture-tree-hash / rebuild / assert-equality technique and the `git add -A` warning, both citing this learning by id; the same round's "Use `--force-with-lease`, never `--force`" paragraph gains the URL-qualified lease form OF-74 asked for. Closes OF-74 and OF-75 together, landing as one section as this row's own text asked.
 
 ---
 
