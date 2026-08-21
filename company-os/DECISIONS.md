@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.18
+Version: 2.19
 
 Last updated: —
 
@@ -68,6 +68,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-053** — Root CLAUDE.md Restates, Never Originates, A Rule Meant For Every Installation. Closes `PRODUCT/ROADMAP.md` OF-27: this repository's own root `CLAUDE.md` is DECISION-020-exempt from generation, so a new framework-level rule written there silently reaches no Installation; the fix is a recorded convention (`ENGINEERING/ARCHITECTURE.md`) rather than generating the file, plus `check_claude_stub_sync.py` guarding the one restatement already in force — the finding-routing table — against drifting from its canonical, generated counterpart in `installation.ts`.
 - **DECISION-054** ‡★ — DECISION-036's Refine Target Is The Least-Recently-Touched `Open` Row, Not The Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-99: "lowest surviving id" was the original proxy for "oldest untouched row," and the equivalence only held if a refined-but-still-`Open` row stopped being the lowest id once touched — it does not, so a row refined without closing keeps re-winning the literal reading forever and starves every higher-id row. `commands/next.md` and `policies/documentation.md` now name the actual criterion directly: each row's own most recent `Refined <date>` (or discovery date, if never refined), oldest first, tied rows broken by lowest id — codifying what four rounds had already done by hand on 2026-08-19 without amending the rule they cited.
 - **DECISION-055** ★ — A Scheduled Queue Row's Own Citation Is What The Reverse-Drift Check Trusts, Not A New Declaration On The Item Side. Closes `PRODUCT/ROADMAP.md` OF-100: `check_item_findings.py` verified only that a closed item declares the ids it left behind, never the reverse — that an `OF-N` row citing `Scheduled — item N` gets corrected to `Fixed` once item N closes, a drift confirmed five times in six days. Rejects a new structured `Closes:` line on the item side (the existing item-side phrasing is not uniform enough to regex, and every instance was already-closed prose that a new going-forward line would not retroactively fix) in favor of trusting the queue row's own already-structured `**Scheduled — item N**` citation, cross-checked against that item's `DONE` state — no new prose convention required.
+- **DECISION-056** — `development`'s Required Review Is Dropped To Zero; CI Becomes A Required Status Check For The First Time. Closes `PRODUCT/ROADMAP.md` OF-19, founder decision: `required_pull_request_reviews` (unsatisfiable for a solo maintainer) is removed from `development`'s branch protection, and the 13 CI guard scripts — never previously wired as `required_status_checks` — are added as a required check with `strict: false`. A routine `gh pr merge --rebase` (no `--admin`) now succeeds once CI is green for the first time since `0.6.0`; `enforce_admins` stays `false` unchanged, so an admin override remains as a deliberate emergency escape hatch, not removed.
 
 ---
 
@@ -4165,6 +4166,72 @@ Negative, accepted:
 The check only fires once a row's own last status word is `Scheduled` — a row that skipped straight from `Open` to a stale `Fixed` claim with no `Scheduled` stage (not the shape any of the five confirmed instances took) would not be caught by this mechanism. That residual is not the problem OF-100 measured and is not manufactured a fix here.
 
 Implementation: `.github/scripts/check_item_findings.py`; `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected". Origin: OF-100.
+
+---
+
+# DECISION-056
+
+# `development`'s Required Review Is Dropped To Zero; CI Becomes A Required Status Check For The First Time
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder — repository-settings call, presented per `commands/next.md` Step 3 → "When The Next Objective Is Not Yours To Execute", decided in-session.
+
+Review Date:
+
+If this repository ever gains a second maintainer or reviewer, at which point a non-zero required-approving-review-count becomes satisfiable again and worth reconsidering.
+
+---
+
+## Context
+
+`PRODUCT/ROADMAP.md` OF-19 named two separate facts about `development`'s branch protection, confirmed live against GitHub's own API before this decision: `required_pull_request_reviews.required_approving_review_count: 1` with `enforce_admins.enabled: false`, and no `required_status_checks` key at all. Together these meant every merge since `0.6.0` ran `gh pr merge --rebase --admin` as standard practice — not to bypass an occasional exception, but because the review requirement was unsatisfiable by construction (no second maintainer exists to provide it) — while the thirteen CI guard scripts were never wired into branch protection in the first place, so a *plain*, non-admin merge would not have been blocked by red CI either. The row framed the open question as "whether required reviews should stop being required for a solo maintainer," and named it a repository-settings call, not code — this decision is that call, made by the founder once the input was assembled and presented.
+
+## Options Considered
+
+### Option A — Leave both settings as they are
+
+Rejected. The review requirement protects nothing for a solo maintainer and only manufactures a bypass habit (`--admin` on every single merge, not as a deliberate exception); the missing status-check wiring means CI has been advisory-only regardless of the review question, which is the larger and previously under-examined half of OF-19's own finding.
+
+### Option B — Wire CI as a required status check, keep the review requirement at 1
+
+Rejected as the weaker of the two real options. It adds genuine enforcement (CI now blocks a red merge) but leaves the unsatisfiable review requirement in place, so `--admin` remains necessary on every merge regardless — the habit OF-19 named survives even though CI drift-protection improves.
+
+### Option C — Drop the required review to 0 and wire CI as a required status check
+
+Adopted. Removes the one control that could never be satisfied (there is no second reviewer) and replaces it with the one control that was never actually enforcing anything (CI). Net effect: a routine merge no longer needs `--admin` at all — `required_pull_request_reviews` is removed from `development`'s protection entirely, and `required_status_checks` now names both CI jobs (`Markdown links, markers, template references and artifact destinations`; `cli/ build, typecheck and tests`) with `strict: false`. `enforce_admins` stays `false`, unchanged — an admin override remains available as a deliberate emergency escape hatch, not removed, since nothing in OF-19's own question asked for that to disappear.
+
+## Decision
+
+Adopt Option C. `development`'s branch protection is reconfigured via the GitHub API: `required_pull_request_reviews` → `null` (removed); `required_status_checks` → `{"strict": false, "checks": [{"context": "Markdown links, markers, template references and artifact destinations"}, {"context": "cli/ build, typecheck and tests"}]}`; every other existing setting (`required_linear_history`, `allow_force_pushes: false`, `allow_deletions: false`, `block_creations: false`, `required_conversation_resolution: true`, `lock_branch: false`, `allow_fork_syncing: false`, `enforce_admins: false`) preserved unchanged. Applied and verified live against the API before this decision closed.
+
+## Reasoning
+
+OF-19's own row already isolated the actionable question precisely: the review half was correctly diagnosed as unsatisfiable, the checks half was previously unexamined and turned out to be the real gap. Fixing only the review half (dropping it without adding checks) would remove `--admin`'s necessity but leave merges with no CI gate at all — worse than today in one respect even while fixing the habit. Fixing only the checks half (Option B) leaves the habit. Only doing both closes the actual gap OF-19 measured: a routine merge is now blocked by red CI, with no `--admin` needed to get past a control nobody was providing anyway.
+
+## Alternatives Considered
+
+Options A and B above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+`gh pr merge --rebase` (no `--admin`) now succeeds once CI is green, for the first time since `0.6.0` — the routine merge path finally has to pass the guards that were written to protect it. `--admin` becomes a genuine, visible exception again rather than the standard command, if it is ever used at all going forward.
+
+Negative, accepted:
+
+`enforce_admins: false` means an admin override can still merge past red CI in a genuine emergency — the "difficult," not "impossible," bar `PRODUCT/OPERATING_MODEL.md` Conformance §15 already names as the architectural ceiling here (DECISION-037: no runtime enforcement point exists under DECISION-010/DECISION-013). This decision does not attempt to close that residual; §15's other named gap (item 37, CI reach across Installations) is untouched by a change scoped to this repository's own GitHub settings.
+
+Implementation: `development` branch protection (GitHub repository settings, not code — no `framework/` or `cli/` file changed). Origin: OF-19.
 
 ---
 
