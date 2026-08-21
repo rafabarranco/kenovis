@@ -29,6 +29,26 @@ none of them, and wrote two into a session summary that no later round reads.
 The rule it broke was already written, already loaded, and already correct
 (DECISION-025). Nothing detected the omission, which is what made it repeatable.
 
+A THIRD CHECK, THE REVERSE DIRECTION, per PRODUCT/ROADMAP.md OF-100 and
+DECISION-055:
+
+  Both populations above verify a closed item declares the ids it left behind
+  -- the forward direction. Neither ever checks the reverse: that a queue row
+  citing `**Scheduled -- item N**` gets corrected to `Fixed` once item N
+  actually closes. That drift recurred five confirmed times in six days
+  (OF-01, OF-42, OF-69, OF-92, OF-96), none caught mechanically, all found by
+  a human re-reading the queue for an unrelated reason.
+
+  DECISION-055 names the citation form this check trusts, so a guard can
+  regex it safely: the queue row's own disposition-column citation, not a new
+  required declaration on the item side. The item-side phrasing was
+  confirmed too inconsistent to regex ("Closes OF-01", "closing OF-96", no
+  phrase at all in OF-42's own citing item) -- but every row that reaches
+  `Scheduled` is already written `**Scheduled -- item N**` from DECISION-025
+  onward, which is uniform enough to trust directly. So: for every queue row
+  whose own last bolded disposition word is still `Scheduled`, read the item
+  number cited right after it, and fail if that item is already `DONE`.
+
 TWO POPULATIONS, BOTH REQUIRED, per PRODUCT/ROADMAP.md OF-21 and DECISION-051:
 
   1. ITEM-SCOPED (original). Every `NN. DONE` item in `PRODUCT/ROADMAP.md`
@@ -91,7 +111,9 @@ Write That There Is None" orders the round-scoped line, Step 15 orders the
 item-scoped one (dispositions first, summary second); and
 `framework/templates/product-layer/PRODUCT/ROADMAP.md` -> "Open Findings"
 ships all of it to every Installation at initialization. Verified 2026-08-13
-(PRODUCT/ROADMAP.md item 37); extended 2026-08-19 (OF-21, OF-61, DECISION-051).
+(PRODUCT/ROADMAP.md item 37); extended 2026-08-19 (OF-21, OF-61, DECISION-051);
+extended again 2026-08-21 (OF-100, DECISION-055) with the reverse-direction
+check above.
 
 Scope: this repository's CI only. The bundle ships `framework/`, not
 `.github/`, so a customer Installation runs this script never and carries the
@@ -120,6 +142,9 @@ NONE_STATED = re.compile(r"\bnone\b", re.IGNORECASE)
 
 QUEUE_ROW = re.compile(r"^\| (OF-\d{2,}) \|", re.MULTILINE)
 
+STATUS_WORD = re.compile(r"\*\*(Fixed|Open|Rejected|Deferred|Scheduled)\b")
+ITEM_CITATION = re.compile(r"item\s*(\d+)")
+
 
 def item_blocks(text: str):
     """(number, state, heading_line, body) per item. The headings are the population."""
@@ -143,6 +168,44 @@ def live_pointer_block(text: str):
         if NEXT_POINTER.search(block):
             return block
     return None
+
+
+def queue_row_bodies(text: str):
+    """(id, body) per Open Findings queue row -- the population OF-100's own
+    reverse check reads its citations from."""
+    matches = list(QUEUE_ROW.finditer(text))
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        yield match.group(1), text[match.end():end]
+
+
+def check_reverse_citations(text: str, closed_items: set, errors: list) -> int:
+    """OF-100 / DECISION-055: a row whose own last bolded status is still
+    `Scheduled` must name an item that has not itself already closed. Only the
+    row's OWN most recent status word counts -- a row later corrected to
+    `Fixed`/`Rejected`/etc. is not this drift, whatever its history quotes.
+    """
+    checked = 0
+    for row_id, body in queue_row_bodies(text):
+        matches = list(STATUS_WORD.finditer(body))
+        if not matches:
+            continue
+        last = matches[-1]
+        if last.group(1) != "Scheduled":
+            continue
+        checked += 1
+        window = body[last.end():last.end() + 120]
+        item_match = ITEM_CITATION.search(window)
+        if not item_match:
+            continue
+        item_number = item_match.group(1)
+        if item_number in closed_items:
+            errors.append(
+                f"{row_id}: disposition still reads Scheduled — item {item_number}, "
+                f"but item {item_number} is closed (DONE) — the row was never "
+                f"corrected to Fixed (PRODUCT/ROADMAP.md OF-100, DECISION-055)"
+            )
+    return checked
 
 
 def check_declaration(where: str, declaration_text: str, queued: set, errors: list) -> int:
@@ -230,6 +293,11 @@ def main() -> int:
                 "live Next: pointer", round_declaration.group(1), queued, errors
             )
 
+    closed_items = {number for number, state, heading, body in item_blocks(text) if state == "DONE"}
+    reverse_checked = check_reverse_citations(text, closed_items, errors)
+    print(f"  reverse check: {reverse_checked} queue row(s) currently Scheduled, "
+          f"cross-checked against {len(closed_items)} closed item(s)")
+
     if errors:
         print("\nA closed item or the live round pointer does not say what it left behind:\n")
         for error in errors:
@@ -245,7 +313,8 @@ def main() -> int:
     print(
         f"\nClosed items and the live round pointer hold: {checked} item narratives plus "
         f"the round-scoped declaration, each declaring what it left behind, {declared_ids} "
-        f"declared ids all present in the queue."
+        f"declared ids all present in the queue. {reverse_checked} Scheduled row(s) all "
+        f"cite an item that has not yet closed."
     )
     return 0
 

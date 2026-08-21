@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.17
+Version: 2.18
 
 Last updated: —
 
@@ -67,6 +67,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-052** ‡★ — Rejecting An Item Or Row Requires Its Own Citation Sweep, Declared In The Same Change. Closes `PRODUCT/ROADMAP.md` OF-22: a stale citation cannot be detected mechanically (the same prose-classification limit that rejected items 6 and 8), so the rejecting round instead declares `Citations swept:` — the grep command and its result — in the same change; `check_rejection_citations.py` guards the declaration's presence on every still-inline rejection.
 - **DECISION-053** — Root CLAUDE.md Restates, Never Originates, A Rule Meant For Every Installation. Closes `PRODUCT/ROADMAP.md` OF-27: this repository's own root `CLAUDE.md` is DECISION-020-exempt from generation, so a new framework-level rule written there silently reaches no Installation; the fix is a recorded convention (`ENGINEERING/ARCHITECTURE.md`) rather than generating the file, plus `check_claude_stub_sync.py` guarding the one restatement already in force — the finding-routing table — against drifting from its canonical, generated counterpart in `installation.ts`.
 - **DECISION-054** ‡★ — DECISION-036's Refine Target Is The Least-Recently-Touched `Open` Row, Not The Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-99: "lowest surviving id" was the original proxy for "oldest untouched row," and the equivalence only held if a refined-but-still-`Open` row stopped being the lowest id once touched — it does not, so a row refined without closing keeps re-winning the literal reading forever and starves every higher-id row. `commands/next.md` and `policies/documentation.md` now name the actual criterion directly: each row's own most recent `Refined <date>` (or discovery date, if never refined), oldest first, tied rows broken by lowest id — codifying what four rounds had already done by hand on 2026-08-19 without amending the rule they cited.
+- **DECISION-055** ★ — A Scheduled Queue Row's Own Citation Is What The Reverse-Drift Check Trusts, Not A New Declaration On The Item Side. Closes `PRODUCT/ROADMAP.md` OF-100: `check_item_findings.py` verified only that a closed item declares the ids it left behind, never the reverse — that an `OF-N` row citing `Scheduled — item N` gets corrected to `Fixed` once item N closes, a drift confirmed five times in six days. Rejects a new structured `Closes:` line on the item side (the existing item-side phrasing is not uniform enough to regex, and every instance was already-closed prose that a new going-forward line would not retroactively fix) in favor of trusting the queue row's own already-structured `**Scheduled — item N**` citation, cross-checked against that item's `DONE` state — no new prose convention required.
 
 ---
 
@@ -4096,6 +4097,74 @@ Negative, accepted:
 The rule now requires a round to compare dates across several `Open` rows rather than scan for the lowest surviving id, a small increase in per-round reading cost. It also depends on every row continuing to state its own refinement date in prose, which is already required by DECISION-036 but not mechanically enforced — a row that omits its own date on a future refinement makes this decision's ordering ambiguous for that row, the same unenforced-prose risk the original rule already carried and Option C declined to close with a guard.
 
 Implementation: `framework/commands/next.md` → "Refine The Oldest Open Row"; `framework/policies/documentation.md` → the `Open`-finding-refinement paragraph. Origin: OF-99.
+
+---
+
+# DECISION-055
+
+# A Scheduled Queue Row's Own Citation Is What The Reverse-Drift Check Trusts, Not A New Declaration On The Item Side
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-100, via `/next`.
+
+Review Date:
+
+If the item-side citation phrasing (`Closes OF-N`, `closing OF-N`) is ever made uniform enough on its own terms to regex directly — at that point this decision's rejection of Option B below is worth re-opening.
+
+---
+
+## Context
+
+`check_item_findings.py` verifies the forward direction only: that a closed item declares the `OF-N` ids it left behind. Nothing verifies the reverse — that an `OF-N` queue row citing `Scheduled — item N` gets corrected to `Fixed` once item N actually closes. `PRODUCT/ROADMAP.md` OF-100 confirmed this drift by direct count, not estimate: it recurred five times in six days (OF-01, OF-42, OF-69, OF-92, OF-96), none caught mechanically, all found by a human re-reading the queue for an unrelated reason.
+
+OF-100's own row named the blocking question directly: which citation form is authoritative, since a guard can only regex a form uniform enough to trust. Two candidate forms exist, one on each side of the relationship — the closing item's own prose citing the row it resolved, and the queue row's own disposition text citing the item it is waiting on.
+
+## Options Considered
+
+### Option A — Trust the queue row's own `Scheduled — item N` citation, cross-checked against the item's own `DONE` state
+
+Adopted. Every row that reaches `Scheduled` is already written `**Scheduled — item N**` (or `**Scheduled — item N.**`) from DECISION-025 onward — the disposition vocabulary itself requires naming the item, so the citation already exists in a fixed, bolded, regex-safe form on every row this check needs to examine. No new prose convention, no new required line: the check reads what a round was already going to write when it scheduled the finding.
+
+### Option B — Require a structured `Closes: OF-N` declaration on every closing item, mirroring `Findings this item did not fix:`
+
+Rejected. This is the shape DECISION-051 already used successfully for the forward direction, so it was the first form considered — but the row's own text already ruled it out for the reverse direction: "the citation phrasing on the item side is not uniform enough yet to regex safely (`Closes OF-01`, `closing OF-96`, and no literal phrase at all — OF-42's own item 43 never named it, only this document's separate narrative did)." Requiring a *new* structured line going forward would fix future items but leaves every already-closed item's existing free-text citation exactly as unregexable as today, and the five confirmed instances are all already-closed items — Option B would not have caught any of them.
+
+### Option C — Detect drift by classifying the closing item's free-text prose for phrases like "Closes OF-N"
+
+Rejected on the same limit that already rejected guards for items 6 and 8: detecting a claim inside narrative prose has no reliable pattern, only a declaration does. This is the same reasoning DECISION-052 already applied to a rejected item's inbound citations — the side that already knows the fact in structured form is the side the check should trust, not the side stated in freehand prose.
+
+## Decision
+
+Adopt Option A. `.github/scripts/check_item_findings.py` gains a third check: for every Open Findings queue row whose own last bolded disposition word is `Scheduled`, read the item number cited immediately after it, and fail if that item's own heading is `DONE`. `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" states the same rule in prose, citing this decision and OF-100 together.
+
+## Reasoning
+
+The forward-direction check (DECISION-051) and this reverse-direction check are not symmetric, and forcing them into the same shape (a new required declaration on the item side) would have meant designing for a form of discipline the tree's own six-day, five-instance track record already shows does not hold reliably in free prose. The queue row's own citation is structured by construction — DECISION-025 already requires a scheduled row to name its item — so the cheaper, more reliable fix reads the citation that already exists rather than manufacturing a new one to keep in sync with it.
+
+## Alternatives Considered
+
+Options B and C above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+The five confirmed drift instances (OF-01, OF-42, OF-69, OF-92, OF-96) are exactly the shape this check now catches mechanically — verified live against a synthetic instance before this decision closed. No new prose convention is imposed on future rounds; the check reads a citation form that already existed.
+
+Negative, accepted:
+
+The check only fires once a row's own last status word is `Scheduled` — a row that skipped straight from `Open` to a stale `Fixed` claim with no `Scheduled` stage (not the shape any of the five confirmed instances took) would not be caught by this mechanism. That residual is not the problem OF-100 measured and is not manufactured a fix here.
+
+Implementation: `.github/scripts/check_item_findings.py`; `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected". Origin: OF-100.
 
 ---
 
