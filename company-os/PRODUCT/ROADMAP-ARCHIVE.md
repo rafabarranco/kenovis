@@ -4,7 +4,7 @@ ROADMAP-ARCHIVE.md
 
 Completed Roadmap Items
 
-Version: 1.8
+Version: 1.9
 ---
 Purpose
 
@@ -1824,3 +1824,468 @@ Per Learning-023, checked before writing this pointer: this round fixed one find
 Findings this round did not fix: none.
 
 ---
+### Round narrative — OF-83 fixed, OF-02 refined (2026-08-18, via `/next`)
+
+OF-83 fixed, and OF-02 refined (2026-08-18, via `/next`, a fresh thread with no authorship stake in the item 32/OF-10/OF-11/item 45 round immediately prior):
+
+**Followed the previous pointer, no departure.** The previous round's ranking (archived table, "superseded `Next` ordering block, written after OF-93 fixed and OF-69 closed") named OF-83 as top candidate — cheapest real fix in the cluster, no design decision blocking it. Taken as ranked.
+
+**OF-83 — `Fixed`.** Verified against the tree before touching anything, per the discipline every recent behavioural fix on this board carries (OF-30/Learning-031): the row's own premise — "the template gives that owner no place to state [a cadence]" — was already half false when written. The template's "5. Working cadence" section existed six hours before OF-83's own row was written, added by the same day's item 41/DECISION-032/033 commit; the actual gap was one step over, in `init-project.md` Step 1 and `adopt-project.md` Step 2, which each asked only the template's first four sections and never the fifth. Both setup commands (1.12 → 1.13) now ask a fifth question, worded from the template's own section 5 text. `framework/SYSTEM.md` (1.12 → 1.13) and `company-os/DECISIONS.md`'s DECISION-032 index line corrected from four to five; DECISION-034's own Consequences section, which named this exact gap, gets a one-line correction rather than a rewrite — the stale premise stays visible in both places, per the same discipline OF-04 already established.
+
+Not run this round, and named rather than assumed: no session has run `/init-project` or `/adopt-project` end to end since this fix landed, so — same caveat as every recent fix here — the design is correct by construction and the behavioural half (does a real setup session actually ask and record a fifth answer) is unvalidated.
+
+**Refine action (DECISION-036, lowest-id untouched `Open` row): OF-02.** Premise re-checked against the tree rather than carried over: item 45 (2026-08-18) ran `/architect` end to end since OF-02's previous refinement, which could have closed this row on its face. It does not — item 45 ran against this repository's own dogfooded Installation, and this document's own "Dogfooding caveat" (stated for item 18's validation) applies with equal force here: this repository is measurably unrepresentative of what a customer's own environment gives `/architect` to work with. Still `Open`, unchanged; only item 33 (real external validation, last per DECISION-041) would actually close it.
+
+**Observe, run per `commands/next.md` Step 3:** `check_document_size.py` re-run clean (7 governed documents, 2 archives over threshold by design, 1 index-bounded, 0 exempted) — no new over-threshold document. The two in-force exemptions (`LEARNINGS-ARCHIVE.md`, `ROADMAP-ARCHIVE.md`, both "archive of ... by design") name no roadmap item to check for staleness, being archive-of-record by construction rather than a pending fix; `DECISIONS.md`'s index-bounded classification cites DECISION-042, `Accepted` and not superseded. No drift found.
+
+**Operating model section served: none.** A setup-command completeness fix (the template already had the section; the commands never asked for it) and a queue-row refinement — neither advances a numbered `PRODUCT/OPERATING_MODEL.md` behaviour, the same "none" class OF-93's own round and item 32's audit both used for comparable fix-and-confirm work.
+
+Findings this round did not fix: none.
+
+**Next:**
+
+1. **OF-95, then OF-84 — the new top candidates.** Both named as "cheap follow-ons" in the previous round's own ranking table (archived), unblocked now that OF-83 is closed: single-clause fixes, no open design question. OF-95 first (Pain medium vs. OF-84's Pain low) — one clause in `bootstrap.md` Step 5 naming the recovery procedure for a predecessor round's uncommitted Product-layer work.
+2. **OF-94 — real value, real cost, still deserves its own round** rather than a cheap-fixes pass. Unchanged from the previous ranking.
+3. **OF-78, OF-90, OF-79 — still bundle candidates for a single design-decision round** (`/architect` or `/analyze`): each needs a shape chosen before any clause is writable. Unchanged.
+4. **OF-87 stays unranked, deliberately, per its own text.** Unchanged — not a candidate until the existing Observe checklist has run several more rounds.
+5. **OF-85 folds into the next archive-pass round**, not taken alone. Unchanged.
+6. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-83) and refined one more via its Refine action (OF-02, disposition unchanged), so the figure below is read after this round's own edit.
+
+OF-95 fixed, and OF-69 corrected (2026-08-18, via `/next`, a fresh thread with no authorship stake in the OF-83/OF-02 round immediately prior):
+
+**Followed the previous pointer, no departure on the ranking.** The previous round's own "Next" pointer named OF-95 as the new top candidate the moment OF-83 closed — "cheap follow-on... one clause in `bootstrap.md` Step 5." Taken as ranked.
+
+**Premise re-checked before scoping, per Learning-023:** this session's own working-directory read predated the OF-83/OF-02/item-45 rounds landing on `origin/development`; a fresh clone and `git fetch` (per `kenovis_shared_working_directory_concurrency` — two other `kenovis-*` sessions were active) surfaced four commits that arrived mid-session, including a release (`kenovis@0.15.0`) and OF-83's own fix. The objective this round had planned (OF-83) was already done. Re-derived the current top candidate from the fresh `Next` pointer rather than proceeding on stale context — the exact discipline `bootstrap.md` Step 5 and this round's own OF-95 fix both exist to protect.
+
+**OF-95 — `Fixed`.** `commands/bootstrap.md` (2.9 → 2.10) Step 5 gains the recovery clause the row asked for: a Product-layer file carrying an uncommitted change with no open PR is folded into the current round's own branch and committed as its own distinct, separately-attributed change, before the round's own objective starts — worded from the row's own "Cost" clause almost verbatim. Not run this round, named rather than assumed: no predecessor round has left uncommitted Product-layer work since this clause landed, so the behavioural half is unvalidated by construction (OF-30/Learning-031's standing caveat, same as every recent fix on this board).
+
+**Refine action (DECISION-036), and a correction found while doing it.** The lowest surviving `Open` id is OF-02, refined by the immediately preceding round this same day with nothing new to check since — re-running that same premise a second time hours later would add nothing. Read for intent rather than letter: the rule's own stated purpose is refining the row that has gone longest without being touched (`policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected", the "An `Open` finding is refined by the row that has waited longest" clause). The row that actually fits that description is **OF-69**: its own text has read `**Open.**`, unedited, since 2026-08-13, through two rounds that each *said* — in a commit message and in OF-85's own "Ninth instance" note, both still on this document — that OF-69 was refined and closed `Fixed`, without either round ever writing that disposition into the row itself. Verified independently rather than taken on either citation: `policies/git.md` → "Rebasing" does state the exact fix OF-69 asked for (confirm a merge from `gh pr view`'s state, not the command's exit, then repair the local checkout via `fetch` + `merge --ff-only`), so the underlying claim was true — only the artifact never caught up to it. Corrected in place: OF-69 now reads `**Fixed**`, with the correction stated on the row itself so a reader is not left wondering why two prior claims and one late row point in different directions.
+
+**Observe, run per `commands/next.md` Step 3:** `check_document_size.py` re-run clean (7 governed documents, 2 archives over threshold by design, 1 index-bounded, 0 exempted). `CHANGELOG.md` crossed its own 60 KB threshold this round (57.7 → 61.5 KB, this round's own two `Unreleased` bullets) but is registered `split` (`CHANGELOG-ARCHIVE.md` exists) and, per `policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline," a changelog's trim runs as a step of cutting a release, not on any round that merely appends to `[Unreleased]` — so no action here, named rather than silently passed over. `PRODUCT/ROADMAP.md` itself stays far over threshold (structurally satisfied, registered split, OF-62); checked for newly-compactable content from this round's own two `Fixed` rows and found none worth taking — both OF-95 and OF-69 are single-round-old, and OF-69's own text already states why a manual archive-move is left for a dedicated pass rather than folded into this one (OF-85's own precedent). Nothing archived this pass.
+
+**Operating model section served: none.** Both fixes are mechanical completeness/correctness work — a missing recovery clause, a stale disposition corrected against the artifact — the same "none" class the OF-83 and OF-93 rounds already used for comparable single-clause fixes. Neither changes what any numbered `PRODUCT/OPERATING_MODEL.md` section's Conformance row currently cites as its own gap, so no row moves.
+
+Findings this round did not fix: none.
+
+**Next:**
+
+1. **OF-84 is the new top candidate.** Cheapest remaining single-clause fix with a Role tag and no open design question — three prior learnings promoted with no citation added to their destination policy, one line per file. Unchanged from the previous ranking, now first rather than second.
+2. **OF-97, recorded by this round's predecessor and not yet incorporated into any ranking pass, is a close second — same shape as OF-95/OF-84** (single-instance-so-far, Cost low, one clause in `policies/git.md`). Its own Frequency is unknown (first observed instance, tied to a harness classifier this framework does not control), which is why it ranks behind OF-84's three-instance evidence rather than ahead of it, not because it is any less real.
+3. **OF-94 — real value, real cost, still deserves its own round** rather than a cheap-fixes pass. Unchanged.
+4. **OF-78, OF-90, OF-79 — still bundle candidates for a single design-decision round** (`/architect` or `/analyze`): each needs a shape chosen before any clause is writable. Unchanged.
+5. **OF-87 stays unranked, deliberately, per its own text.** Unchanged.
+6. **OF-85 folds into the next archive-pass round**, not taken alone. Unchanged — now with a third live instance (OF-69, this round).
+7. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-95) and corrected one more via its Refine action (OF-69, `Open` → `Fixed`), so the figure below is read after this round's own edit.
+
+### Round narrative — OF-84 fixed, OF-71 refined (2026-08-19, via `/next`)
+
+OF-84 fixed, and OF-71 refined (2026-08-19, via `/next`, a fresh thread with no authorship stake in the OF-95/OF-69 round immediately prior):
+
+**Followed the previous pointer, no departure.** The previous round's own `Next:` pointer named OF-84 top candidate the moment OF-95/OF-69 closed — "cheapest remaining single-clause fix with a Role tag and no open design question." Taken as ranked.
+
+Premise checked before scoping, per Learning-023 and `kenovis_shared_working_directory_concurrency`: this session's own earlier working-directory read had gone stale exactly the way the immediately preceding round's own finding (OF-97) describes — a fresh isolated clone plus `git fetch` surfaced five commits that had landed since, including OF-83 and OF-95 both already fixed by other concurrent sessions and a stray, colliding `DECISION-046` id. All work planned against the stale snapshot was discarded before anything was committed; this round's objective was re-derived from the fresh `Next:` pointer above rather than proceeding on the stale plan. `ListAgents` showed 3 other `kenovis-*` sessions active at the time.
+
+**OF-84 — `Fixed`.** One citation line added at the point each rule appears, matching Learning-036's own precedent: `policies/documentation.md` (3.12 → 3.13) → "Recording is not planning" now cites DECISION-029 and `LEARNINGS-ARCHIVE.md` Learning-032; `commands/next.md` (2.12 → 2.13) Step 3's pointer paragraph now cites DECISION-030 and Learning-033; `SYSTEM.md` (1.13 → 1.14) → "Source Of Truth Hierarchy" now cites Learning-034 alongside its existing DECISION-031 citation. Validated per `policies/documentation.md` → "A Claim Is Read Back Off The Artifact": `grep -n "Learning-032\|Learning-033\|Learning-034"` across the three files, re-run after the edit, returns exactly one match each (was zero in all three); `check_learning_promotions.py` re-run clean (30 indexed, 30 archived, 23 policy destinations, each citing).
+
+**Refine action (DECISION-036, lowest-id `Open` row untouched by any prior refinement pass): OF-71.** OF-69 (the mechanically-lowest surviving id) is excluded — the immediately preceding round already refined it under the same "row that has actually gone longest without being touched" reading DECISION-036's own text calls for, and re-checking it again hours later would add nothing. Premise re-checked against the tree rather than carried over: `commands/next.md` Step 3 → "When The Next Objective Is Not Yours To Execute" is unchanged since OF-71 was written, but the row's own citation was stale — it named OF-70 as where this belonged, and OF-70 closed 2026-08-14 (DECISION-033) with a fix generic enough to narrow OF-71's gap without closing it. Row updated in place to state this rather than continuing to point at a closed id.
+
+**Observe, run per `commands/next.md` Step 3:** `check_document_size.py` re-run clean (7 governed documents, 2 archives over threshold by design, 1 index-bounded, 0 exempted). `CHANGELOG.md` (61.5 KB) and `company-os/AI/memory/learnings.md` (83.9 KB) both sit over the 60 KB threshold and both are registered `split` (`CHANGELOG-ARCHIVE.md`, `LEARNINGS-ARCHIVE.md` both exist) — the same non-finding the immediately preceding round already named for `CHANGELOG.md`, restated rather than re-raised as new. No new over-threshold document, no exemption in force citing a closed item.
+
+**Operating model section served: none.** A citation-completeness fix and a queue-row refinement — neither advances a numbered `PRODUCT/OPERATING_MODEL.md` behaviour, the same "none" class the OF-83, OF-93 and OF-95/OF-69 rounds all used for comparable single-clause fix-and-confirm work.
+
+Findings this round did not fix: none.
+
+**Next:**
+
+1. **OF-97 is the new top candidate.** Same shape as OF-84/OF-95 before it: single-instance-so-far but Cost low and no open design question — one clause in `policies/git.md` naming "blocked by classifier, not a git error" as its own recovery case. Unchanged from the previous ranking, now first rather than second.
+2. **OF-94 — real value, real cost, still deserves its own round** rather than a cheap-fixes pass. Unchanged.
+3. **OF-78, OF-90, OF-79 — still bundle candidates for a single design-decision round** (`/architect` or `/analyze`): each needs a shape chosen before any clause is writable. Unchanged.
+4. **OF-87 stays unranked, deliberately, per its own text.** Unchanged.
+5. **OF-85 folds into the next archive-pass round**, not taken alone. Unchanged.
+6. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-84) and refined one more via its Refine action (OF-71, disposition unchanged), so the figure below is read after this round's own edit.
+
+### Round narrative — OF-97 fixed, OF-74 refined (2026-08-19, via `/next`)
+
+OF-97 fixed, and OF-74 refined (2026-08-19, via `/next`, a fresh thread with no authorship stake in the OF-84/OF-71 round immediately prior):
+
+**Followed the previous pointer, no departure.** The previous round's own `Next:` pointer named OF-97 top candidate the moment OF-84 closed — "same shape as OF-84/OF-95 before it: single-instance-so-far but Cost low and no open design question." Taken as ranked.
+
+**Premise re-checked before scoping, per Learning-023 and `kenovis_shared_working_directory_concurrency`:** this session's own working-directory read (`framework/commands/init-project.md` showing four questions, no cadence line) went stale between that read and starting edits — a fresh isolated clone plus `git fetch`, taken immediately before touching anything per this project's own recorded discipline, surfaced that OF-83 (this session's originally planned objective, picked before this session had read the `Next:` pointer below it) had already landed on `origin/development` one round ago, alongside OF-95, OF-69's correction and OF-84. `ListAgents` showed 4 other `kenovis-*` sessions active at the time. All work planned against the stale snapshot was discarded before anything was committed; the objective was re-derived from the fresh `Next:` pointer above, which named OF-97.
+
+**OF-97 — `Fixed`.** `policies/git.md` (2.3 → 2.4) → "Rebasing" gains the clause the row asked for, directly after the existing `gh pr merge --delete-branch` relevel paragraph: a harness classifier block (`Blocked by classifier`) is named as its own failure case, distinct from every git-reported failure the section already covers (OF-65/OF-86/OF-88's class), with the row's own three directives carried in almost verbatim — state it plainly, do not retry silently, do not treat the checkout as leveled. Validated per `policies/documentation.md` → "A Claim Is Read Back Off The Artifact": `grep -c "Blocked by classifier" policies/git.md` → **1** (was 0). Not run this round, named rather than assumed: the classifier's own trigger is still not reproducible on demand, so the behavioural half stays unvalidated by construction — the same standing caveat (OF-30/Learning-031) every recent single-clause fix on this board carries.
+
+**Refine action (DECISION-036, lowest-id `Open` row untouched by any prior refinement pass): OF-74.** OF-02, OF-19, OF-21, OF-61, OF-65, OF-69, OF-71 all carry a `Refined` tag already (checked each row directly rather than assumed); OF-74 is the lowest surviving id without one. Premise re-checked against the tree: `grep -cin "force-with-lease" framework/policies/git.md` still returns **3**, still bare (never `=<ref>:<sha>`), still silent on the URL-push-inertness case this row names — unchanged since 2026-08-14. Dimensions unchanged. Citation corrected in place: the row pointed at "item 42 part 2," closed 2026-08-14 and never touched this gap; the relationship to OF-65 is conceptual (both trace to `origin` being SSH-only), not administrative, and is restated as such rather than left pointing at a closed item.
+
+**Observe, run per `commands/next.md` Step 3:** `check_document_size.py` re-run clean (7 governed documents, 2 archives over threshold by design, 1 index-bounded, 0 exempted). `CHANGELOG.md` (62.1 KB) and `company-os/AI/memory/learnings.md` (83.9 KB) both sit over the 60 KB threshold and both are registered `split` — the same non-finding the two immediately preceding rounds already named, restated rather than re-raised. `PRODUCT/ROADMAP.md` itself (265.1 KB, structurally satisfied per OF-62) checked for newly-compactable content from this round's own one `Fixed` row (OF-97): single-round-old, same reasoning the OF-95/OF-69 and OF-84 rounds each gave for leaving their own fresh closures inline rather than folding a compaction pass into the same round. Nothing archived this pass. No new over-threshold document, no exemption in force citing a closed item.
+
+**Operating model section served: none.** A single-clause git-policy fix and a queue-row refinement — neither advances a numbered `PRODUCT/OPERATING_MODEL.md` behaviour, the same "none" class the OF-83, OF-93, OF-95/OF-69 and OF-84/OF-71 rounds all used for comparable single-clause fix-and-confirm work.
+
+Findings this round did not fix: none.
+
+**Next:**
+
+1. **OF-94 is the new top candidate.** Named "real value, real cost, still deserves its own round" by every ranking pass since it was queued; the cheap single-clause cluster ahead of it (OF-83, OF-95, OF-84, OF-97) is now exhausted. Needs a real design decision (a third CLAUDE.md coexistence path beyond refuse-or-force), not a fix-in-place.
+2. **OF-78, OF-90, OF-79 — still bundle candidates for a single design-decision round** (`/architect` or `/analyze`): each needs a shape chosen before any clause is writable. Unchanged.
+3. **OF-87 stays unranked, deliberately, per its own text.** Unchanged.
+4. **OF-85 folds into the next archive-pass round**, not taken alone. Unchanged — now with a fourth live instance (OF-97, this round) added to the pattern it names.
+5. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-97) and refined one more via its Refine action (OF-74, disposition unchanged), so the figure below is read after this round's own edit.
+
+### Round narrative — OF-94 fixed, OF-75 refined (2026-08-19, via `/next`)
+
+OF-94 fixed, and OF-75 refined (2026-08-19, via `/next`, a fresh thread with no authorship stake in the OF-97/OF-74 round immediately prior):
+
+**Followed the previous pointer, no departure.** The previous round's own `Next:` pointer named OF-94 top candidate the moment OF-97 closed — "real value, real cost, still deserves its own round... needs a real design decision (a third CLAUDE.md coexistence path beyond refuse-or-force), not a fix-in-place." Taken as ranked.
+
+**Premise re-checked before scoping, per Learning-023 and `kenovis_shared_working_directory_concurrency`:** bootstrapped and read the top of the `Next:` pointer in the primary working directory first — cheap and informative even though stale by construction (`ListAgents` showed 5 other `kenovis-*` sessions active). A fresh isolated clone plus `git fetch`, run immediately before the first edit, surfaced four commits that had landed since that primary-directory read: OF-83, OF-95, OF-84 and OF-97 had all already been fixed by concurrent sessions in the meantime — exactly the race this project's own standing memory describes ("the very fact a finding is the top-ranked `Next:` candidate is exactly why it is likeliest to already be gone"). The fresh clone's own `origin/development` (`049e974`) carried the current, correct `Next:` pointer naming **OF-94** as the new top candidate now that the cheap cluster ahead of it was exhausted — re-derived from there rather than proceeding on the stale primary-directory snapshot.
+
+**OF-94 — `Fixed`.** Design plan (Objective/User Value/Technical Approach/Affected Areas/Risks/Validation) presented to the human before any code was written, per this command's own Step 8. `resolveClaudeMdWrite` (`cli/src/domain/installation.ts`) is now the single decision point `init.ts`/`sync.ts` both call for an existing, non-`--force`-overwritable `CLAUDE.md`: overwrite (already a plain Kenovis stub — unchanged), coexist (a foreign file, or a coexistence file whose Kenovis block is unchanged — preserve the customer's content verbatim and re-merge the fresh stub in via `splitCoexistingClaudeMd`/`buildCoexistingClaudeMdContent`), or refuse (a coexistence file's own managed block was hand-edited since it was last written — the one case still worth `ExistingClaudeMdError`, unchanged meaning for `--force`). Full design reasoning, options considered (data-driven registry precedent aside — this is CLAUDE.md-specific — an explicit opt-in flag and a prepend-instead-of-append ordering were both considered and rejected) and consequences: **DECISION-047**. Validated per `.kenovis/AI/policies/documentation.md` → "A Claim Is Read Back Off The Artifact": `cd cli && npm run typecheck` clean, `npm test` → **155/155** (was 146, +9: a resolver unit-test suite in `installation.test.ts` plus one new "refuses on a hand-edited managed block" case each in `init.test.ts`, `sync.test.ts` and `NodeFileSystem.integration.test.ts`), the seven pre-existing tests that asserted the old refuse-outright behavior rewritten to assert coexistence instead — not deleted, since the underlying scenario (a foreign or hand-edited CLAUDE.md) is still real and still covered, only the expected outcome changed. `cli/README.md`'s architecture-layer description of this guard updated to match. Known, accepted trade-off recorded in DECISION-047 itself rather than left as a residual finding: a file that predates this fix and already carries notes appended below a plain stub (no coexistence delimiter yet) gets wrapped whole on first encounter, so the old stub content appears twice in the result — non-destructive, and a one-time cosmetic artifact of the upgrade path, not a recurring cost.
+
+**Observe, run per `commands/next.md` Step 3:** `python3 .github/scripts/check_document_size.py` → all 7 governed documents hold: 2 archives over threshold by design, `DECISIONS.md` index-bounded (re-run after DECISION-047 landed — still holds, since the index stays the session-start cost regardless of body count). All ten remaining CI guards re-run clean after this round's edits (`check_decision_index.py`, `check_item_findings.py`, `check_learning_promotions.py`, `check_links.py`, `check_markers.py`, `check_template_refs.py`, `check_future_actions.py`, `check_github_citations.py`, `check_artifact_destinations.py`). No new finding from this pass.
+
+**Refine (second action, DECISION-036):** the lowest-id `Open` row untouched by any prior refinement pass was **OF-75** (stacked-PR merge recovery, paired with OF-74 by its own text — OF-74 was this round's immediate predecessor's own Refine target) — refined in place: premise re-checked (`grep -cin "stacked\|dependent branch" framework/policies/git.md` → **0**, path corrected from the row's stale `.kenovis/AI/policies/git.md` citation since DECISION-039 moved framework source), Role backfilled (`cto`), truth-value and priority unchanged.
+
+**Operating model section served: §4** — *"The founder decides; Kenovis owns engineering awareness."* This round is a technical implementation decision (a CLI behavior change with real design trade-offs) made and executed entirely inside what §2/§4 and Addendum B already assign to the AI-OS, with no founder stop — the exact division of labour those sections state. **The row does not move; it stays `Partial`** — one more instance of the AI deciding inside its own assigned scope, not new evidence about the founder's own model of the repository's layers, which is what the row's residual note names.
+
+Findings this round did not fix: none.
+
+**Next:**
+
+1. **OF-78, OF-90, OF-79 — bundle candidates for a single design-decision round** (`/architect` or `/analyze`): each needs a shape chosen before any clause is writable. Unchanged from the previous pointer, now first since OF-94 (ahead of them) is fixed.
+2. **OF-87 stays unranked, deliberately, per its own text.** Unchanged.
+3. **OF-85 folds into the next archive-pass round**, not taken alone. Unchanged.
+4. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-94) and refined one more via its Refine action (OF-75, disposition unchanged), so the figure below is read after this round's own edit.
+
+### Round narrative — OF-78/OF-79/OF-90 fixed via `/architect` (2026-08-19, founder-directed)
+
+OF-78, OF-79, OF-90 fixed via `/architect` (2026-08-19, founder-directed — "corre el architect o analyze según proceda de TODOS los OF que lo necesiten"), not a `/next` round:
+
+**Followed the previous pointer's own bundle.** Every `Next:` pointer since OF-94 closed named OF-78/OF-90/OF-79 as "bundle candidates for a single design-decision round (`/architect` or `/analyze`)." The founder asked directly for that round to run. All three named `/architect` as the right command (each already has a diagnosed problem and named candidate shapes in its own row — the work remaining was choosing, not investigating, which is `/architect`'s job, not `/analyze`'s).
+
+**Premise re-checked before scoping, per Learning-023:** fresh `git fetch` against `origin/development` in this same isolated clone immediately before starting — 0 commits behind, no concurrent session had moved any of the three findings since the OF-94 merge.
+
+**OF-78 — `Fixed`.** DECISION-048. Considered comparing a Product-layer document's own `Version:` line against its template's — rejected once checked against this repository's own `COMPANY_OS.md`: that number tracks the document's *own* edit history, not template lineage, and would false-positive on every healthy divergence (which is every real Installation, by DECISION-023's own design). `sync` (`cli/src/cli/bin.ts`) instead prints one informational line whenever the Framework Release actually changed, pointing at `framework/templates/product-layer/` — no new mechanism, no `company-os/` read, nothing claimed precisely. A provenance-tracked precise version is named as a possible Phase 2 in the ADR, not built now.
+
+**OF-79 — `Fixed`.** DECISION-049. A mandatory full seventeen-row re-verification every round was rejected on the row's own numbers (a per-round toll paid forever, the same shape DECISION-038 already declined once for `Observe`). The Conformance Table gains an `As of` column instead — `framework/templates/product-layer/PRODUCT/OPERATING_MODEL.md` (1.1 → 1.2) and this repository's own `company-os/PRODUCT/OPERATING_MODEL.md` (1.2 → 1.3), all 17 of this repository's own rows backfilled with the date each row's own existing text already cited (not guessed — re-derived from each row's own "re-verified 2026-08-18," "closed 2026-08-16," etc.). `commands/next.md` (2.13 → 2.14) Step 13 now requires the date whenever a round actually checks a row.
+
+**OF-90 — `Fixed`.** DECISION-050. A structural per-role scheduling slot rejected on the same architectural grounds DECISION-037/038 already established (no scheduler, no backend — DECISION-010, DECISION-013). `commands/next.md` Step 3's ranking criteria gains "Role match": an `Open` row whose `Role` matches an agent role a round is already activating for its own objective (Step 6) ranks above an equally-aged row with no match — additive to DECISION-036's own Refine action, not a replacement.
+
+Validated per `.kenovis/AI/policies/documentation.md` → "A Claim Is Read Back Off The Artifact": `cd cli && npm run typecheck` clean, `npm test` → **156/156** (was 155; +1 new real-filesystem test for OF-78's notice, asserted both firing and non-firing cases). All 10 CI guards re-run clean after every edit in this round, including `check_decision_index.py` (43 bodies, 43 index lines) and `check_document_size.py` (unchanged — no document crossed a new threshold).
+
+**Observe:** covered by the guard re-run above; no new finding surfaced beyond the three this round closed.
+
+**Operating model section served: §12** — *"The role that owns the responsibility must process the discovery."* OF-90 is this row's own directly-named residual. **The row does not move; it stays `Absent`** — DECISION-050 is a mechanism, not yet a behavioural instance of a round actually being routed toward a role-matched row (OF-30/Learning-031's standing caveat, same as every recent fix on this board). §1, §6, §7 and §9 are each touched tangentially by OF-78/79 (persistence, continuous improvement) but none moves either, for the same reason.
+
+Findings this round did not fix: none.
+
+**Next:**
+
+1. **OF-87 stays unranked, deliberately, per its own text.** Unchanged — not a design question this round was positioned to answer well, per its own reasoning.
+2. **OF-85 folds into the next archive-pass round**, not taken alone. Unchanged.
+3. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+4. No new top candidate is named — the founder's own instruction that produced this round was scoped to the OF-78/79/90 bundle specifically, and the next `/next` round should re-derive the current top candidate from this pointer rather than assume one of the three unranked/deferred items above is now first by default.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction.
+
+Per Learning-023, checked before writing this pointer: this round fixed three findings (OF-78, OF-79, OF-90) and refined none (not a `/next` round, DECISION-036's Refine action does not apply), so the figure below is read after this round's own edit.
+
+### Round narrative — OF-91 fixed, OF-85 refined, two stale dispositions corrected (2026-08-19, via `/next`)
+
+OF-91 fixed, OF-85 refined, and two stale dispositions corrected (2026-08-19, via `/next`, a fresh thread with no authorship stake in the OF-78/79/90 `/architect` round immediately prior):
+
+**Re-derived per the previous pointer's own instruction.** The previous round's `Next:` pointer named no new top candidate on purpose — its own closing line: "the next `/next` round should re-derive the current top candidate from this pointer rather than assume one of the three unranked/deferred items above is now first by default." Re-derived from the full `Open Findings` queue rather than assumed, per DECISION-030.
+
+**Premise re-checked before scoping, per Learning-023 and `kenovis_shared_working_directory_concurrency`:** bootstrapped in the primary working directory first (10 commits behind `origin/development`, `ListAgents` showed 13 other `kenovis-*` sessions active), then did all reading and every edit in a fresh isolated clone, `git fetch`ed immediately before ranking and again immediately before the first edit — `0` commits behind both times, no concurrent session had moved the queue in between.
+
+**Ranking.** Read every row in the `Open Findings` queue directly off its own current disposition text rather than trusting a keyword scan — an automated first pass mis-flagged **OF-69** as `Open` and never-refined, when its row already carried `**Fixed** (2026-08-18)`; the word "Open" it matched on was quoted, historical text describing the row's own earlier, since-corrected drift. Corrected before ranking, not after. Of the 20 rows genuinely `Open`, most name `Cost: unknown` pending a design decision (OF-21, OF-22, OF-27 — bundle candidates for a future `/architect`/`/analyze` round, the same shape OF-78/79/90 closed from) or are structurally stuck pending a bigger idea (OF-51/OF-62 — "no further lever" without trimming closed-item narrative length at write time, which is itself a design question). **OF-91** was the highest-ranked row with a known, low cost and no design decision pending: Pain medium-high (a founder session spent worrying the answer to "are learnings lost on install" was yes, when the tree already answers no), Frequency low-medium, Cost low (one README section, no mechanism change), ready to execute now.
+
+**OF-91 — `Fixed`.** `README.md` gains "Where learnings go" (between "Repository map" and "Source of truth"): product knowledge stays inside `company-os/`, never sent anywhere (RULE-INST-01); team craft promoted out of a learning entry lands in the Framework layer and reaches every Installation on its next `kenovis sync`; a framework-level (`‡`) `DECISIONS.md` entry ships the same way. Validated per `.kenovis/AI/policies/documentation.md` → "A Claim Is Read Back Off The Artifact": the row's own cited command, `grep -icn "promot" README.md cli/README.md`, read `0`/`0` before and `2`/`0` after — `cli/README.md` deliberately untouched, since the row's own Cost dimensioning named one section in root `README.md` only, not a second file. All 10 CI guards re-run clean, including `check_links.py` against the two new links this section adds.
+
+**Two stale dispositions corrected, found while ranking, not new findings:** **OF-01** and **OF-92** each still read `Scheduled — item N` naming an item that had, in fact, already closed (item 38 and item 44 respectively — both confirmed `DONE` in this same document, both confirmed shipped in code/CHANGELOG) — the implementing item closed without the queue row that named it ever being updated to match, the same drift class OF-69's own row already named for itself one refinement cycle ago. Corrected both rows to `Fixed`, citing what actually shipped, rather than leaving a closed id sitting behind a `Scheduled` marker for a future round to re-investigate. Neither queued as a new finding: the underlying work was already done, only the record was wrong.
+
+**Observe, run per `commands/next.md` Step 3:** `python3 .github/scripts/check_document_size.py` → all 7 governed documents hold: 2 archives over threshold by design, `DECISIONS.md` index-bounded. `PRODUCT/ROADMAP.md` itself is now **286.8 KB** against the 60 KB threshold — registered `split` (OF-62) still satisfies the guard structurally, and OF-51/OF-62 already carry the fact that this number keeps growing with no further archiving lever. All 10 guards re-run clean after every edit in this round (`check_decision_index.py`: 43/43; `check_item_findings.py`: 8 closed narratives, 8 ids all present; `check_learning_promotions.py`: 30/30/23; the rest unaffected by this round's changes). No new finding from this pass beyond what OF-51/OF-62 already track.
+
+**Refine (second action, DECISION-036):** the lowest-id `Open` row genuinely untouched by any prior refinement pass was **OF-85** (after excluding OF-69, confirmed `Fixed` above, and OF-91, this round's own fix target) — refined in place: premise re-checked against the tree, not carried over. Six of the eight instances OF-85 was written against (OF-48, OF-52, OF-54, OF-56, OF-80, OF-49) are no longer live — each now carries a `→ PRODUCT/ROADMAP-ARCHIVE.md` pointer and a compact, one-clause disposition, confirmed by direct read rather than assumed — so a dedicated archive-pass round already fixed most of the population this row names. OF-43 (seventh instance) is likewise now compact. What remains live: OF-69 (ninth instance) and item 41's own closing narrative (eighth instance), both still inline and uncompacted. Truth-value unchanged (`Open`), population narrowed from eight instances to two, dimensioning otherwise unchanged.
+
+**Operating model section served: §4** — *"The founder decides; Kenovis owns engineering awareness."* OF-91 is this row's own directly-named residual carrier of §4's gap ("the founder's own model of this repository's layers differs from the tree, with nothing comparing them") — this round closed one live instance of that divergence. **The row does not move; it stays `Partial`** — a single instance closed is not the mechanism OF-30/Learning-031 already hold every such claim to, and the row's own residual note (nothing structurally compares the founder's model to the tree) stands exactly as written.
+
+Findings this round did not fix: none.
+
+**Next:**
+
+1. **OF-71 is the new top candidate.** Cost low, no design decision pending — its own text: "add one clause to Step 3 naming the `Next:` pointer as where a blocked round's stop-and-reason goes." Ready to execute as-is.
+2. **OF-21, OF-22, OF-27 — bundle candidates for a single design-decision round** (`/architect` or `/analyze`), same shape as the OF-78/79/90 bundle this thread's immediately preceding round closed: each needs a shape chosen (round-scoped vs. item-scoped population; stale-citation detection; CLAUDE.md-as-rule-destination) before any clause is writable.
+3. **OF-51/OF-62 need a structural idea, not a next-round default pick.** Both are "no further lever" as written — the only lever either row names is trimming closed-item narrative length at write time, which is a design question about this document's own conventions, not a mechanical fix.
+4. **OF-19 is a repository-settings call, not code** — whether required PR review should stay required for a solo maintainer who already uses `--admin` on every merge. Present to the founder when a round reaches it; do not silently pick either side.
+5. **OF-64 stays a cheap, five-minute fix** — merge `[Unreleased]`'s fragmenting same-heading sections — take it opportunistically or at the next release cut, per its own text.
+6. **OF-65/OF-74/OF-75 stay paired**, low individual priority, git-edge-case fixes for whoever picks either up.
+7. **OF-85 folds into the next dedicated archive-pass round**, narrowed this round to its two remaining live instances (OF-69, item 41's narrative).
+8. **OF-87 stays unranked, deliberately, per its own text.** Unchanged.
+9. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction; OF-19 needs a founder decision on repository settings.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-91), corrected two stale dispositions found while ranking (OF-01, OF-92), and refined one row via its Refine action (OF-85), so the figures above are read after this round's own edits.
+
+### Round narrative — OF-71 fixed, OF-87 refined, two stale dispositions corrected (2026-08-19, via `/next`)
+
+OF-71 fixed, OF-87 refined, two stale dispositions corrected (2026-08-19, via `/next`, a fresh thread with no authorship stake in the OF-91 round immediately prior):
+
+**This round's objective, exactly as the previous pointer named it:** OF-71 — the blocked-round stop-and-reason record had a named file (`PRODUCT/ROADMAP.md`) and no named place inside it. No departure from the pointer; taken as named.
+
+**Premise re-checked before scoping, per Learning-023 and `AI/memory/learnings.md` Learning-054:** bootstrapped in the primary working directory first (11 commits behind `origin/development`, `ListAgents` showed 7 other `kenovis-*` sessions active), fast-forwarded and rebuilt `.kenovis/` there, then did all reading and every edit in a fresh isolated clone, fetched immediately before touching the queue — `0` commits behind — and re-read OF-71's own row directly from that fresh clone rather than trusting the primary directory's copy. Still `Open`, unchanged, unraced.
+
+**OF-71 — `Fixed`.** `framework/commands/next.md` (2.14 → 2.15) → "When The Next Objective Is Not Yours To Execute": the record-in-`ROADMAP.md` clause now names the `Next:` pointer (written under Step 13 → "Write The Next Pointer, Or Write That There Is None") as the destination directly, and rules out the item's own progress narrative and the `Open Findings` queue by name, since a stop produces neither progress nor a new finding. Validated per `policies/documentation.md` → "A Claim Is Read Back Off The Artifact": `grep -n "Next: pointer" framework/commands/next.md` finds the new sentence; the surrounding three-way distinction (progress narrative / findings queue / `Next:` pointer) matches this row's own Finding text, which is the thing the fix had to actually resolve rather than merely gesture at.
+
+**Two stale dispositions corrected, found while ranking, not new findings:** **OF-64** claimed `[Unreleased]` in `CHANGELOG.md` carried 12 fragmenting headers; the [0.15.0] release cut (2026-08-18) had already flushed that section, and it now holds exactly 1 (`### Fixed`) — re-measured, not carried over. Truth-value unchanged (`Open`, the underlying no-merge-rule defect is still real and unmanifested only by timing), row corrected to say so rather than repeat a number three rounds stale. **OF-65** claimed 3 bare `git fetch origin` instances with no failure branch; re-measured at 4 (`bootstrap.md` Step 5 plus three in `git.md`), same gap, now with a live instance from this round's own bootstrap (`git fetch origin` exited `128` at session start; the recovery came from a session-external memory file, not from `bootstrap.md` itself). Neither queued as a new finding: both are re-measurements of an already-open row, not new discoveries.
+
+**Observe, run per `commands/next.md` Step 3:** `python3 .github/scripts/check_document_size.py` → exit 0, all 7 governed documents hold (2 archives over threshold by design, 1 index-bounded, 0 live exemptions to re-check). No new finding from this pass.
+
+**Refine (second action, DECISION-036):** the lowest-id `Open` row genuinely untouched by any prior refinement pass, correcting an automated first-pass misread that flagged **OF-69** as untouched-`Open` (it is `Fixed`; the word "Open" in its row is inside a quoted historical fragment describing its own earlier, since-corrected drift) was **OF-87** — refined in place: premise re-checked, not carried over. `commands/next.md` → "Observe" still names the same document-size-and-exemptions checklist as when this row was written (2026-08-15); roughly a dozen rounds have closed since (`DECISIONS.md` now runs through DECISION-050) with no observed instance of a non-size structural finding Observe's current scope should have caught and did not — every structural finding in that window was still found by a human prompt, `/analyze`/`/architect`, or a round's own objective. Truth-value unchanged (`Open`, deliberately unranked), the row's own "let it run for several rounds" evidence-gathering extended rather than concluded.
+
+**Operating model section served: §5** — *"Thread isolation MUST NOT cause knowledge loss."* OF-71 is squarely this section's mechanism: the `Next:` pointer is the artifact that lets Thread B know what Thread A found, and a blocked round's stop-and-reason is exactly the class of knowledge Addendum A requires to survive the thread boundary. `PRODUCT/OPERATING_MODEL.md` Conformance row 5 re-verified rather than carried over — `grep -rin "one thread\|one conversation\|per thread\|session boundary" framework/ CLAUDE.md` → **1**, up from the row's own cited **0**, but the one hit (`policies/documentation.md`'s "session boundary" in an unrelated discussion of when findings are dispositioned) is incidental, not evidence the cadence itself is implemented. **The row does not move; it stays `Partial`** — this round closed one narrow instance of item 42's cadence work (where a blocked round writes), not the cadence mechanism itself (a thread boundary is still nothing the framework observes or enforces).
+
+Findings this round did not fix: none — OF-64 and OF-65 are corrected re-measurements of already-`Open` rows, not new findings requiring a fresh disposition.
+
+**Next:**
+
+1. **OF-65's narrowed residual is the new top candidate.** Cost low, no design decision pending — this round's own re-measurement scoped it precisely: add one clause to `bootstrap.md` Step 5 naming the HTTPS-credential-helper fallback `policies/git.md` → "Rebasing" already documents, so the highest-frequency of the four bare `git fetch origin` instances stops being the one with no stated failure branch. Ready to execute as-is.
+2. **OF-21, OF-22, OF-27 — bundle candidates for a single design-decision round** (`/architect` or `/analyze`), unchanged: each needs a shape chosen before any clause is writable.
+3. **OF-51/OF-62 need a structural idea, not a next-round default pick.** Unchanged.
+4. **OF-19 is a repository-settings call, not code.** Present to the founder when a round reaches it; do not silently pick either side. Unchanged.
+5. **OF-64 stays open but is not currently actionable** — nothing to merge in `[Unreleased]` until a future round appends a `### Changed` or `### Added` bullet alongside `### Fixed`; re-check when that happens, not before.
+6. **OF-74/OF-75 stay paired with OF-65**, low individual priority, git-edge-case fixes for whoever picks either up after OF-65's residual clears.
+7. **OF-85 folds into the next dedicated archive-pass round**, unchanged.
+8. **OF-87 stays unranked, deliberately, per its own text — evidence window extended this round, not concluded.**
+9. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction; OF-19 needs a founder decision on repository settings.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-71), corrected two stale dispositions found while ranking (OF-64, OF-65), and refined one row via its Refine action (OF-87), so the figures above are read after this round's own edits.
+
+### Round narrative — OF-65 fixed, OF-02 refined, OF-99 opened (2026-08-19, via `/next`)
+
+**Followed the previous pointer, no departure.** The previous round's own `Next:` pointer named OF-65's narrowed residual as top candidate — "Cost low, no design decision pending... Ready to execute as-is." Taken as ranked.
+
+**Premise re-checked before scoping, per Learning-023 and `kenovis_shared_working_directory_concurrency`:** bootstrapped in the primary working directory first (cheap, informative, stale by construction — `ListAgents` showed 18 peer sessions, several `kenovis-*`, active at the time). A fresh isolated clone plus `git fetch`, run immediately before the first edit and again immediately before writing this closing block, both found `origin/development` level with the primary directory's own read (`0101342`) — no race this round, the top candidate held.
+
+**OF-65 — `Fixed`.** `framework/commands/bootstrap.md` (2.10 → 2.11) Step 5 gains the exact clause the previous round's re-measurement scoped: immediately after the bare `git fetch origin`/`git rev-list` block, a new paragraph names the `128`/`Permission denied (publickey)` failure and repeats the HTTPS-credential-helper fallback `policies/git.md` → "Rebasing" already documents, inline rather than one hop away. Scoped exactly to the row's own claim — the highest-frequency of the four bare instances — leaving the other three (`policies/git.md` Branch Strategy, the post-merge check, Hotfixes) untouched, since the row never claimed those.
+
+**Refine (second action, DECISION-036):** applied the decision's own literal text — "the lowest-id row still carrying `Open`" — rather than the "untouched by any prior refinement pass" substitute the immediately preceding cluster of rounds used on 2026-08-19. That is a departure from recent *practice*, not from the *pointer* (the pointer named OF-65 only), so it is recorded here rather than left silent: the two readings give different answers (OF-02 under the literal rule, versus OF-03/OF-04/OF-19 or similar under "least-recently-touched"), the decision's own text states the literal rule, and picking between them is a real design question — queued fresh as **OF-99** rather than decided unilaterally mid-round. Refined **OF-02** under the literal rule: premise re-checked, not carried over — no `/architect` run since the previous refinement (2026-08-18) targeted a real published Installation; the one `/architect` run in the interim (closing OF-78/OF-79/OF-90) ran against this repository's own dogfooded instance, the identical caveat the row already carried. Still `Open`, dimensions unchanged.
+
+**Observe, run per `commands/next.md` Step 3:** `python3 .github/scripts/check_document_size.py` → exit 0, all 7 governed documents hold (2 archives over threshold by design, 1 index-bounded, 0 live exemptions to re-check). No new finding from this pass. All ten CI guards re-run clean after this round's own edits.
+
+**Operating model section served: none.** A single-clause bootstrap fix, a queue-row refinement, and a new finding about the refinement mechanism itself — none advances a numbered `PRODUCT/OPERATING_MODEL.md` behaviour, the same "none" class the OF-83, OF-93, OF-95/OF-69, OF-84/OF-71 and the immediately preceding round's own comparable single-clause fixes all used.
+
+Findings this round did not fix: **OF-99** (new, this round — which reading of DECISION-036's Refine rule governs).
+
+**Next:**
+
+1. **OF-21, OF-22, OF-27 — bundle candidates for a single design-decision round** (`/architect` or `/analyze`), unchanged: each needs a shape chosen before any clause is writable.
+2. **OF-99 is new and cheap to scope, not yet to fix** — the design question is real (restate DECISION-036 around "least-recently-touched" with a full-sweep tiebreak, or keep literal lowest-id and accept that a refined-not-closed row can starve the rest of the queue) but is itself a design decision, not a clause — candidate for `/architect` alongside the OF-21/OF-22/OF-27 bundle, or a founder call if the two rejected-in-practice rounds' own judgment should simply be ratified.
+3. **OF-51/OF-62 need a structural idea, not a next-round default pick.** Unchanged.
+4. **OF-19 is a repository-settings call, not code.** Present to the founder when a round reaches it; do not silently pick either side. Unchanged.
+5. **OF-64 stays open but is not currently actionable** — unchanged.
+6. **OF-74/OF-75 stay paired with the now-closed OF-65**, low individual priority, git-edge-case fixes for whoever picks either up.
+7. **OF-85 folds into the next dedicated archive-pass round**, unchanged.
+8. **OF-87 stays unranked, deliberately, per its own text — evidence window extended, not concluded.**
+9. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction; OF-19 needs a founder decision on repository settings.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-65), opened one new finding (OF-99), and refined one row via its Refine action (OF-02), so the figures above are read after this round's own edits.
+
+### Round narrative — OF-42/OF-96 disposition drift corrected; OF-100 queued (2026-08-19, founder question in-thread)
+
+Two stale dispositions corrected and one new finding queued (2026-08-19, not a `/next` round — a founder question in-thread ("qué queda del roadmap para terminar todo lo que hay abierto ahora mismo?") surfaced the drift while summarizing the queue for the answer):
+
+**Premise checked before touching anything, per Learning-023 and `kenovis_shared_working_directory_concurrency`:** primary working directory read first (cheap, informative, stale by construction — `ListAgents` showed 20 other peer sessions, several `kenovis-*`, active at the time). All reading and every edit done in a fresh isolated clone, `git fetch`ed immediately before the first edit — level with the primary directory's own read (`19c1153`), no race this pass.
+
+**OF-42 and OF-96 corrected from stale `Scheduled — item N` to `Fixed`:** both named items (43, 45) had already closed in this same document — item 43's DONE line plus item 40 part 3's own addendum narrative for OF-42, and item 45's one-line closing narrative naming OF-96 directly ("closing OF-96") — but neither queue row had been updated to match. Same drift class OF-01/OF-92/OF-69 already name for themselves (corrected 2026-08-19, per their own rows above). Neither queued as a new finding: the underlying work was already done, only the record was wrong.
+
+**OF-100 queued (new):** the drift itself has now recurred five times in six days (OF-69, OF-01, OF-92, OF-42, OF-96) and nothing mechanical catches it — `check_item_findings.py` verifies a closed item declares the ids it leaves behind, never the reverse. Not fixed here: the citation phrasing on the item side is not yet uniform enough to regex safely, which is a design question, not a clause. `Open`, dimensioned, Role `cto`.
+
+**Observe, run per `commands/next.md` Step 3:** all 11 CI guards re-run clean after every edit in this pass (`check_document_size.py`: 7 governed documents hold; `check_item_findings.py` and `check_links.py` unaffected by a Product-layer-only change). No new finding from this pass beyond OF-100 itself.
+
+**Operating model section served: none.** Two row corrections and one new queued finding advance no numbered `PRODUCT/OPERATING_MODEL.md` behaviour, the same "none" class several prior single-clause housekeeping passes already used.
+
+Findings this pass did not fix: **OF-100** (new, this pass).
+
+**Next:** unchanged from the pointer immediately above — this pass ranked nothing and executed no ranked item; the OF-21/OF-22/OF-27 bundle stays the named top candidate for the next `/next` round, and OF-100 joins the unranked queue for a future round to fold into that ranking.
+
+### Round narrative — OF-21/OF-22/OF-27 fixed via `/architect` (2026-08-19, user-directed)
+
+OF-21, OF-22, OF-27 fixed via `/architect` (2026-08-19, user-directed — `/architect OF-21/OF-22/OF-27`), not a `/next` round:
+
+**Followed the previous pointer's own bundle.** Every `Next:` pointer since these three were first named has held them as "bundle candidates for a single design-decision round (`/architect` or `/analyze`)." This session invoked `/architect` directly against exactly that bundle, the same command the pointer itself named as right (each of the three already had a diagnosed problem and named candidate shapes in its own row — the work remaining was choosing, the same shape the immediately preceding OF-78/OF-79/OF-90 bundle closed from).
+
+**Premise re-checked before scoping, per Learning-023:** local branch was 1 commit behind `origin/development` at bootstrap (fetched via the `gh`-token-scoped HTTPS form, `rafabarranco` confirmed active — see `kenovis_shared_working_directory_concurrency`/`git_push_needs_gh_credential_helper`), fast-forwarded before any read. OF-21, OF-22, OF-27, OF-61 and item 37's `DONE` state were each re-read directly from that leveled tree rather than trusted from a prior summary; item 37's `DONE` status (2026-08-16) matters directly here, since DECISION-036 cited it as the reason no eleventh guard could be added and this round adds two.
+
+**OF-21 — `Fixed`. OF-61 — `Fixed` as a direct consequence.** DECISION-051. Round-scoped declaration (`Findings this round did not fix:`) required alongside every `Next:` pointer, the same mechanism `Findings this item did not fix:` already uses for closed items, moved to the one artifact every round writes regardless of outcome. `check_item_findings.py` extended in place — no new guard file. Closes OF-61 as a consequence, not separately: the live pointer is never itself archived while current, so this population cannot go structurally empty the way a fully-archived item population can. Validating the change against the live tree surfaced a second, independent defect: `OF_ID`/`QUEUE_ROW` (this script) and `CITES_ID` (`check_future_actions.py`) all hardcoded two-digit ids and silently failed to recognize `OF-100`, this roadmap's first three-digit id — fixed in the same change since it directly blocked verification.
+
+**OF-22 — `Fixed`.** DECISION-052. A stale citation cannot be detected mechanically without classifying prose (the same limit that rejected guards for items 6 and 8), so the rejecting round now declares its own sweep: `Citations swept:`, naming the grep command and result, required on every still-inline rejection (`check_rejection_citations.py`). Population today: 0 — every rejection on record predates the rule and is already archive-pointer-compacted, the grandfather shape DECISION-035 already set for Pain/Frequency/Cost.
+
+**OF-27 — `Fixed`.** DECISION-053. Neither original candidate (generate root `CLAUDE.md`; stop treating it as a rule destination) — root `CLAUDE.md` may restate content whose canonical home is elsewhere, never originate it, recorded as a convention in `ENGINEERING/ARCHITECTURE.md`. Investigating surfaced the concrete, live instance rather than a hypothetical one: the finding-routing table (DECISION-027) is hand-duplicated between root `CLAUDE.md` and `installation.ts`'s `claudeStubContent`, with nothing keeping the two in sync — exactly the "two copies, edited independently, diverge" risk `policies/documentation.md` → "Single Source of Truth" already names for the policies themselves. `check_claude_stub_sync.py` guards that one restatement structurally (ordered destination-path comparison, not prose).
+
+**OF-101 — found and `Fixed`, same round.** Opening DECISION-026 and DECISION-036's bodies to cite them accurately (required before citing, per `SYSTEM.md` → "Context Loading Rules") surfaced a four-line orphaned template placeholder — "# Future Decisions... Examples: Technology choices..." — sitting inline between DECISION-026 and DECISION-027 rather than at the file's actual end, referenced nowhere (`grep -rn "Future Decisions" company-os/ framework/` → 0 before deletion, checked, and 0 after). Deleted; not a decision's own reasoning trail, so the no-remove rule does not protect it.
+
+**Validated per `policies/documentation.md` → "A Claim Is Read Back Off The Artifact":** `cd cli && npm run typecheck` clean, `npm test` → **156/156** (unchanged — this round touched no `cli/src` code, only `.github/scripts/`, `framework/`, and Product-layer docs). All 13 CI guards re-run clean after every edit in this round (13, not 11: `check_rejection_citations.py` and `check_claude_stub_sync.py` are new; `ENGINEERING/ARCHITECTURE.md`'s own count updated to match).
+
+**Observe:** covered by the full guard re-run above, plus `check_document_size.py` (7 governed documents: 2 archives over threshold by design, 1 index-bounded, 0 exempted — `company-os/PRODUCT/ROADMAP.md` itself sits at 324.7 KB, over threshold under its declared `split`, which is OF-51/OF-62's own already-tracked residual, not a new finding — the archive pass those rows ask for is explicitly "not a next-round default pick" and stays out of this round's scope). No new finding from this pass beyond OF-101 itself.
+
+**Operating model section served: §2** — *"ABSOLUTE PRIORITY #1 — nothing discovered may be lost."* OF-21/OF-61 are squarely this section's own mechanism: the one mechanical check on "nothing discovered may be lost" had two structural blind spots (round-scoped findings, permanent inertness once archived) that this round closed. `PRODUCT/OPERATING_MODEL.md` Conformance row 2 re-verified, not carried over — stays `Partial`: the fix is a mechanism, the behavioural half (an independent round exercising it unprompted) is still open per OF-30/Learning-031's standing caveat.
+
+Findings this round did not fix: none — OF-101 is found and fixed in this same round, not carried forward.
+
+**Next:**
+
+1. **No new top candidate asserted.** This was a user-directed `/architect` round scoped to the OF-21/OF-22/OF-27 bundle specifically, the same posture the immediately preceding OF-78/OF-79/OF-90 round took — the next `/next` round re-derives the current top candidate from Step 3's own ranking rather than assume one of the items below is first by default.
+2. **OF-99 is new and cheap to scope, not yet to fix** — unchanged: restate DECISION-036 around "least-recently-touched" with a full-sweep tiebreak, or keep literal lowest-id and accept a refined-not-closed row can starve the rest of the queue.
+3. **OF-51/OF-62 need a structural idea, not a next-round default pick.** Unchanged — and this round's own `check_document_size.py` run above re-confirms the pressure directly: `PRODUCT/ROADMAP.md` at 324.7 KB, 5.4× its 60 KB threshold.
+4. **OF-19 is a repository-settings call, not code.** Present to the founder when a round reaches it; do not silently pick either side. Unchanged.
+5. **OF-64 stays open but is not currently actionable.** Unchanged.
+6. **OF-74/OF-75 stay paired with the closed OF-65**, low individual priority, git-edge-case fixes for whoever picks either up.
+7. **OF-85 folds into the next dedicated archive-pass round**, unchanged — the same round OF-51/OF-62 above are also waiting for.
+8. **OF-87 stays unranked, deliberately, per its own text — evidence window extended, not concluded.**
+9. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction; OF-19 needs a founder decision on repository settings.
+
+Per Learning-023, checked before writing this pointer: this round fixed five findings (OF-21, OF-22, OF-27, OF-61, OF-101) and refined none (not a `/next` round, DECISION-036's Refine action does not apply), so the figures above are read after this round's own edits.
+
+### Round narrative — OF-67 fixed, OF-19 refined (2026-08-19, via `/next`)
+
+OF-67 fixed, OF-19 refined, via `/next` (2026-08-19):
+
+**Premise checked before touching anything, per Learning-023 and `kenovis_shared_working_directory_concurrency`:** primary working directory read first (26 peer sessions shown by `ListAgents`, several `kenovis-*`, active at the time). All reading and every edit done in a fresh isolated clone, `git fetch`ed immediately before the first edit — 0 commits behind `origin/development`, level with the primary directory's own read.
+
+**Ranked this round's own objective from Step 3, since the previous pointer named no top candidate and asked the next round to re-derive one.** Scheduled items: none actionable — item 33 is the only `SCHEDULED` row and ranks last by DECISION-041, needing an external party. Open Findings queue: of the eleven rows still `Open` (OF-19, OF-51, OF-62, OF-64, OF-67, OF-74, OF-75, OF-85, OF-87, OF-99, OF-100), six are excluded from a plain `/next` pick on their own terms — OF-19 needs a founder decision, OF-51/OF-62/OF-85 need a structural idea rather than a next-round default pick, OF-64 has nothing to merge right now, OF-87 is deliberately unranked pending evidence, OF-99/OF-100 each name a design decision as their own first output, closer to `/architect` shape than a single clause. That leaves OF-67, OF-74 and OF-75 as the only rows both `Open` and executable without a prior design call. OF-67 ranked highest: Pain medium × Frequency high ("every finding in every Installation") against OF-74/OF-75's Pain high × Frequency confined to a narrower, already-downgraded git-edge-case class ("low individual priority... for whoever picks either up," this document's own prior pointer) — and OF-67 touches the mechanism `COMPANY_OS.md` → "Product Philosophy" names as a measured differentiator (documented decision discipline), where OF-74/OF-75 are operational hardening local to this repository's own broken-SSH-remote workaround.
+
+**OF-67 — `Fixed`.** `framework/policies/documentation.md`'s Pain/Frequency/Cost requirement (the paragraph beginning "An `Open` finding is dimensioned...") now names where the formula those terms feed is actually defined — `framework/templates/product-layer/PRODUCT/ROADMAP.md` → "Features Backlog Philosophy" — instead of requiring three undefined terms. Took the row's own second candidate fix (cite, do not duplicate) over the first (restate the formula inline), since restating it would violate this same policy's own "Single Source of Truth" section (OF-24). The row's original citation path was itself stale under DECISION-039 (`.kenovis/AI/templates/...` is what an Installation reads after `sync`; this repository's own source is `framework/`) and is corrected in the same edit.
+
+**OF-19 — refined, not fixed (DECISION-036, lowest-id `Open` row after this round's own OF-67 fix).** Premise re-checked against GitHub's branch-protection API for `development`, not carried over: `required_pull_request_reviews.required_approving_review_count: 1` and `enforce_admins.enabled: false` confirm the row's *review* claim exactly; the response carries no `required_status_checks` key at all, so the row's *checks* claim ("bypasses required status checks") overstates what exists — the guards were never wired into branch protection as required checks, so `--admin` bypasses one control (review), not two. Practical conclusion unchanged (CI is not enforcement; a repository-settings call is the actual fix), specific mechanism corrected. Still `Open`, still a founder call — presented in this pointer, not picked, per `commands/next.md` Step 3 → "When The Next Objective Is Not Yours To Execute."
+
+**Validated per `policies/documentation.md` → "A Claim Is Read Back Off The Artifact":** `grep -n "OF-67" framework/policies/documentation.md` → the new clause, present. All 13 CI guards re-run clean after every edit in this round.
+
+**Observe, run per `commands/next.md` Step 3:** `check_document_size.py` → 7 governed documents hold (2 archives over threshold by design, 1 index-bounded, 0 exempted) — `company-os/PRODUCT/ROADMAP.md` itself now 339.3 KB, up from 324.7 KB last measured, same already-tracked OF-51/OF-62 pressure, not a new finding. No new finding from this pass beyond the two rows already dispositioned above.
+
+**Operating model section served: none.** A policy self-citation fix and a premise correction advance no numbered `PRODUCT/OPERATING_MODEL.md` behaviour, the same "none" class several prior single-clause housekeeping passes already used.
+
+Findings this round did not fix: **OF-19** (this round's Refine action — re-verified, its mechanism corrected, still `Open`, founder call).
+
+**Next:**
+
+1. **No new top candidate asserted, same posture as the previous two pointers.** The next `/next` round re-derives from Step 3 rather than defaulting to the first row below.
+2. **OF-74/OF-75 are now the cheapest remaining executable pair** — both concrete, both known fixes (`--force-with-lease=<ref>:<sha>` for OF-74; capture-tree-hash-and-assert-equality for OF-75), both `framework/policies/git.md`, previously deprioritized only relative to OF-67, which is now closed.
+3. **OF-99 stays a design question, unchanged** — restate DECISION-036 around "least-recently-touched" with a full-sweep tiebreak, or keep literal lowest-id and accept a refined-not-closed row can starve the rest of the queue. Candidate for `/architect` or a founder call.
+4. **OF-51/OF-62 need a structural idea, not a next-round default pick.** Unchanged, and this round's own `check_document_size.py` run above re-confirms the pressure has grown, not shrunk.
+5. **OF-19 is a repository-settings call, not code**, its mechanism now corrected (this round's Refine action, above). Present to the founder when a round reaches it; do not silently pick either side.
+6. **OF-64 stays open but is not currently actionable.** Unchanged.
+7. **OF-85 folds into the next dedicated archive-pass round.** Unchanged.
+8. **OF-87 stays unranked, deliberately, per its own text — evidence window extended, not concluded.**
+9. **OF-100 needs a design decision on which item-side citation form is authoritative before a guard can regex it** — same shape the OF-21/OF-22/OF-27 bundle already closed from, candidate for the same `/architect` treatment.
+10. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction; OF-19 needs a founder decision on repository settings.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-67) and refined one row via its Refine action (OF-19), so the figures above are read after this round's own edits.
+
+### Round narrative — OF-99 fixed, OF-03 refined (2026-08-19, via `/next`)
+
+OF-99 fixed, OF-03 refined, via `/next` (2026-08-19):
+
+**Premise re-checked before scoping, per Learning-023 and `kenovis_shared_working_directory_concurrency`:** primary working directory read first (`ListAgents` showed 17 peer sessions, several `kenovis-*`, active at the time). All reading and every edit done in a fresh isolated clone, `git fetch`ed immediately before the first edit and again immediately before writing this closing block — `0` commits behind `origin/development` both times, level at `dc22c64` (the OF-67 fix). No race this round.
+
+**Ranked this round's own objective from Step 3, since the previous pointer named no top candidate and asked the next round to re-derive one.** Scheduled items: none actionable, item 33 unchanged. Open Findings queue, re-derived fresh rather than assumed from the previous pointer's own count (which had itself undercounted — see below): OF-19 needs a founder decision; OF-51/OF-62/OF-85 need a structural idea; OF-64 has nothing to merge; OF-87 is deliberately unranked; OF-02/OF-03/OF-04/OF-30 are each blocked on item 33 or on a since-closed item (OF-30 cites item 24, confirmed `DONE` this round — its own premise is now stale and is left for a future refinement pass, not chased here). That left OF-74/OF-75 (concrete, no design call) and OF-99/OF-100 (each naming a design decision as their own first output) as the real candidates. **Ranked OF-99 above OF-74/OF-75**, departing from the previous pointer's implicit lean toward "the cheapest remaining executable pair": OF-99's Frequency term is "every round from here" — it governs the correctness of the Refine mechanism this very round is required to execute — against OF-74/OF-75's narrower, already-downgraded git-edge-case class local to this repository's own broken-SSH-remote workaround. OF-99 had also already named its own two candidate resolutions in full, evidenced by the same day's own round history, which put it closer to a ratification than a fresh `/architect` scope.
+
+**Found while ranking, not a new finding:** the immediately preceding round's own Step 3 paragraph enumerated "eleven rows still `Open`" and omitted OF-02, OF-03, OF-04 and OF-30 — all four confirmed `Open` in this round's own fresh read. Not queued as its own row: this round's OF-99 fix changes Refine-target selection from a manually-scanned id list to a per-row date read, which is less error-prone to hand-count than the enumeration that missed these four, so the same fix that is this round's main objective is also the mitigation for what would otherwise be a fresh finding here.
+
+**OF-99 — `Fixed`.** See its own row, below, for the full disposition. `framework/commands/next.md` (2.16 → 2.17) → "Refine The Oldest Open Row" and `framework/policies/documentation.md` (3.14 → 3.15)'s matching paragraph now state the corrected criterion — the `Open` row least recently touched, tied rows broken by lowest id — replacing the "by construction" claim that never held once a row could be refined without closing. **DECISION-054.**
+
+**This round's own Refine action (DECISION-054, applied for the first time to select its own target): `OF-03`.** Under the corrected rule, OF-02 (touched 2026-08-19) and OF-19 (touched 2026-08-19, this document's own immediately preceding round) both drop out of contention; OF-03 and OF-04 tie as least-recently-touched at 2026-08-14, and the tiebreak (lowest id) selects OF-03. See its own row, below, for the refinement.
+
+**Validated per `policies/documentation.md` → "A Claim Is Read Back Off The Artifact":** `grep -n "least recently touched\|Refine The Oldest Open Row" framework/commands/next.md framework/policies/documentation.md` finds the corrected text in both files, citing DECISION-054 and OF-99 by id. `cd cli && npm install && npm run typecheck` clean; `npm test` → **156/156**. All 13 CI guards re-run clean after every edit in this round. `npm run build` (via `npm test`'s own `pretest`) regenerated `.kenovis/` from the edited `framework/` source, per DECISION-039.
+
+**Observe, run per `commands/next.md` Step 3:** `check_document_size.py` → 7 governed documents hold (2 archives over threshold by design, 1 index-bounded, 0 exempted); `company-os/PRODUCT/ROADMAP.md` itself now 346.5 KB, up from 339.3 KB last measured, same already-tracked OF-51/OF-62 pressure, not a new finding. No new finding from this pass beyond the enumeration gap folded into OF-99's own fix, above.
+
+**Operating model section served: §1** — *"Observes continuously; raises to the right role; role refines; becomes planned work."* OF-99/DECISION-054 is squarely this section's own `refine` mechanism: the rule the section's Conformance row cites as "has a mechanism" carried a real defect — a row that stays `Open` after refinement could monopolize the mechanism forever — and this round corrected it. `PRODUCT/OPERATING_MODEL.md` Conformance row 1 re-verified, not carried over — **row does not move, stays `Partial`**: the mechanism is now correct, but refine and observe each still rest on the round that authored their own fix judging that it holds, the same OF-30/Learning-031 caveat as before.
+
+Findings this round did not fix: none — the enumeration gap noticed while ranking is mitigated by this round's own fix, not a new id.
+
+**Next:**
+
+1. **No new top candidate asserted.** The next `/next` round re-derives from Step 3 — OF-74/OF-75 (cheapest, no design call), OF-51/OF-62 (structural, needs an idea), OF-100 (design question, `/architect`-shaped) and OF-19/item 33 (founder/external, present rather than pick) are this pointer's own live candidates, none asserted first.
+2. **OF-74/OF-75 remain the cheapest executable pair**, unchanged from the previous pointer — both concrete, both known fixes, both `framework/policies/git.md`.
+3. **OF-51/OF-62 need a structural idea, not a next-round default pick.** Unchanged; this round's own `check_document_size.py` re-confirms the pressure has grown again (339.3 → 346.5 KB).
+4. **OF-100 needs a design decision on which item-side citation form is authoritative before a guard can regex it.** Unchanged — candidate for the same `/architect` treatment the OF-21/OF-22/OF-27 bundle already closed from.
+5. **OF-19 is a repository-settings call, not code**, its mechanism corrected two rounds ago. Present to the founder when a round reaches it; do not silently pick either side.
+6. **OF-30's own premise is now stale** (it cites item 24 as unresolved; item 24 is `DONE`) — worth its own refinement pass by whichever round's Refine action reaches it next, not chased here since this round's own Refine action landed on OF-03.
+7. **OF-64 stays open but is not currently actionable.** Unchanged.
+8. **OF-85 folds into the next dedicated archive-pass round.** Unchanged.
+9. **OF-87 stays unranked, deliberately, per its own text — evidence window extended, not concluded.**
+10. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction; OF-19 needs a founder decision on repository settings.
+
+Per Learning-023, checked before writing this pointer: this round fixed one finding (OF-99) and refined one row via its Refine action (OF-03), so the figures above are read after this round's own edits.
+
+### Round narrative — OF-74/OF-75 fixed, OF-04 refined (2026-08-21, via `/next`)
+
+OF-74/OF-75 fixed, OF-04 refined, via `/next` (2026-08-21):
+
+**Premise re-checked before scoping, per Learning-023 and `kenovis_shared_working_directory_concurrency`:** the primary working directory was 2 commits behind `origin/development` at bootstrap (`ListAgents` showed several concurrent `kenovis-*` peer sessions active). All reading and every edit for this round done in a fresh isolated clone, fetched immediately before branching, again before the first edit, and again immediately before writing this closing block — `0` commits behind `origin/development` each time, level at `55ad73b` (the OF-99/DECISION-054 fix) throughout. No race this round.
+
+**Ranked this round's own objective from Step 3**, since the previous pointer named no top candidate and asked the next round to re-derive one. Scheduled items: none actionable, item 33 unchanged. Open Findings queue, re-derived fresh: OF-19 and item 33 need a founder decision or an external party, not a pick; OF-51/OF-62 need a structural idea, not a next-round default; OF-64 has nothing to merge right now; OF-85 folds into a dedicated archive-pass round; OF-87 is deliberately unranked, evidence window still open; OF-100 names its own first output as a design decision on which citation form is authoritative, `/architect`-shaped, not `/next` work. **OF-74 and OF-75 were the only candidates naming a known fix with no design decision pending** — both already state the exact recovery procedure in their own text, both land in the same file (`framework/policies/git.md`), and both were found by the same merge (Learning-035), so closing them together is one change, not two.
+
+**OF-74 — `Fixed`.** `framework/policies/git.md` → "Use `--force-with-lease`, never `--force`" gains the URL-qualified form: read the remote's current SHA with `git ls-remote` first, then push `--force-with-lease=<branch>:<remote-sha>` against the explicit HTTPS URL, since a bare lease has no remote-tracking ref to compare against when the push target is a URL rather than a tracked remote.
+
+**OF-75 — `Fixed`.** `framework/policies/git.md` gains a new "Stacked Pull Requests" section: capture the stacked branch's tree hash before its base merges, rebuild on the new base once `development` is leveled, and assert tree equality (`git rev-parse HEAD^{tree}`) rather than reading the diff — the diff will not obviously show a conflict resolution that silently dropped already-merged work, per Learning-035's own instance. Also states the `git add -A`-during-a-rebuild hazard Learning-035 found (it stages deliberately-untracked files, widening the very tree being asserted).
+
+**No new `DECISIONS.md` entry** — both fixes are the known, already-scoped recovery each row's own text already named, the same shape OF-65/OF-86/OF-97/OF-98 used to extend this same section without a design decision; nothing here weighs alternatives.
+
+`framework/policies/git.md` Version 2.5 → 2.6. `AI/memory/learnings.md` Learning-035's own `Disposition: Open` line is promoted: **Fixed as a rule**, citing both rows.
+
+**This round's own Refine action (DECISION-054): `OF-04`.** Under the corrected least-recently-touched rule: OF-02, OF-03 and OF-19 were all touched 2026-08-19 (the two immediately preceding rounds); OF-74/OF-75 are touched by this round's own main objective, above; OF-30/OF-51/OF-62/OF-64/OF-85/OF-87/OF-100 are each dated 2026-08-15 or later. OF-04, last touched 2026-08-14, is the sole oldest survivor — no tie, no tiebreak needed. Premise re-checked rather than carried over: `grep -c "per Learning-023\|Learning-023" PRODUCT/ROADMAP.md` → **44** citations, up from the "thirteen consecutive rounds" this row was last measured against — the premise-recheck habit is now the majority practice, not a minority one. `grep -rl "Learning-023\|stale premise\|premise" .github/scripts/*.py` → **0**, unchanged: still a practiced discipline, not a mechanism. Dimensions otherwise unchanged, still `Open`.
+
+**Validated per `policies/documentation.md` → "A Claim Is Read Back Off The Artifact":** `grep -n "force-with-lease=<branch>\|Stacked Pull Requests" framework/policies/git.md` finds both additions; `grep -n "Stacked Pull Requests\|force-with-lease=<branch>" .kenovis/AI/policies/git.md` confirms the build regenerated `.kenovis/` from the edited `framework/` source (DECISION-039). `cd cli && npm install && npm run typecheck` clean; `npm test` → **156/156**. All 13 CI guards re-run clean after every edit in this round.
+
+**Observe, run per `commands/next.md` Step 3:** `check_document_size.py` → 7 governed documents hold (2 archives over threshold by design, 1 index-bounded, 0 exempted). `wc -c PRODUCT/ROADMAP.md` → **363,766 bytes**, up from 346.5 KB last measured — same already-tracked OF-51/OF-62 pressure, not a new finding. No new finding from this pass.
+
+**Operating model section served: §13** — *"No silent debt... it must remain visible and planned. 'Known but not tracked' is unacceptable."* OF-74 and OF-75 were exactly this: known, dimensioned, visible in the queue for a full week (found 2026-08-14, fixed 2026-08-21) with a stated recovery procedure the whole time. `PRODUCT/OPERATING_MODEL.md` Conformance row 13 re-verified, not carried over: **11** `Open` rows remain (down from the 54-total/47-`Open` figures last cited there, 2026-08-14), and — checked directly, not assumed — every one of the 11 now carries Pain, Frequency and Cost; the "six carry no ranking terms" this row previously flagged do not survive in the current tree. Row moves from citing a stale count to a fresh one; State stays **Present as a rule**, since visibility and dimensioning are what the rule requires and both hold, not that every debt item closes quickly.
+
+Findings this round did not fix: none.
+
+**Next:**
+
+1. **No new top candidate asserted.** The next `/next` round re-derives from Step 3 — OF-51/OF-62 (structural, needs an idea), OF-100 (design question, `/architect`-shaped) and OF-19/item 33 (founder/external, present rather than pick) are this pointer's own live candidates, none asserted first.
+2. **OF-51/OF-62 need a structural idea, not a next-round default pick.** Unchanged; this round's own `check_document_size.py` re-confirms the pressure has grown again (346.5 → 355.2 KB).
+3. **OF-100 needs a design decision on which item-side citation form is authoritative before a guard can regex it.** Unchanged — candidate for the same `/architect` treatment the OF-21/OF-22/OF-27 bundle already closed from.
+4. **OF-19 is a repository-settings call, not code.** Present to the founder when a round reaches it; do not silently pick either side. Unchanged.
+5. **OF-30's own premise is stale** (cites item 24 as unresolved; item 24 is `DONE`) — worth its own refinement pass by whichever round's Refine action reaches it next. Unchanged, not chased here since this round's own Refine action landed on OF-04.
+6. **OF-64 stays open but is not currently actionable.** Unchanged.
+7. **OF-85 folds into the next dedicated archive-pass round.** Unchanged.
+8. **OF-87 stays unranked, deliberately, per its own text — evidence window extended, not concluded.**
+9. **Item 33 ranks last, unconditionally, per DECISION-041.** Unchanged.
+
+Not `/next` work, unchanged: item 33 needs an external party and ranks last by founder instruction; OF-19 needs a founder decision on repository settings.
+
+Per Learning-023, checked before writing this pointer: this round fixed two findings (OF-74, OF-75) and refined one row via its Refine action (OF-04), so the figures above are read after this round's own edits.
