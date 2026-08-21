@@ -3,6 +3,7 @@ import {
   CLAUDE_MD_HASH_FILENAME,
   CLAUDE_STUB_FILENAME,
   claudeStubContent,
+  DEFAULT_TOOLS,
   detectInstallationKind,
   ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
@@ -10,12 +11,18 @@ import {
   installationKindFromSetupPending,
   InvalidFrameworkSourceError,
   invalidFrameworkSourceEntries,
-  isClaudeMdSafeToOverwrite,
   NotInstalledError,
+  parseToolsMarker,
+  resolveClaudeMdWrite,
   SETUP_PENDING_FILENAME,
   setupPendingContent,
+  toolsMarkerContent,
+  TOOLS_MARKER_FILENAME,
+  type ClaudeMdAction,
+  type InstallationKind,
 } from "../../domain/installation.js";
 import { readFrameworkVersion } from "../frameworkVersion.js";
+import { installSelectedToolAdapters } from "../toolAdapters.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
 
 export interface SyncOptions {
@@ -30,6 +37,8 @@ export interface SyncOptions {
 export interface SyncResult {
   frameworkSyncedTo: string;
   claudeStubWrittenTo: string;
+  /** What happened to the target's CLAUDE.md — see `ClaudeMdAction`. */
+  claudeMdAction: ClaudeMdAction;
   /**
    * True when this Installation still had `.setup-pending` — the first-session
    * init-project/adopt-project directive was preserved rather than cleared.
@@ -51,6 +60,12 @@ export interface SyncResult {
    * removed.
    */
   removedPaths: string[];
+  /** Tool ids re-applied this sync (DECISION-046) — from `.kenovis/.tools`, or DEFAULT_TOOLS for an Installation that predates it. */
+  toolsInstalled: string[];
+  /** Requested tool ids the newly-synced Framework Release ships no adapter for. */
+  unknownTools: string[];
+  /** Command-wrapper paths left untouched — see `installSelectedToolAdapters`. */
+  skippedToolFiles: string[];
 }
 
 /**
@@ -72,18 +87,21 @@ export interface SyncResult {
  * .kenovis/ — see runInit's equivalent check for why this only ever inspects
  * the operator-supplied --source path, never the target repository.
  *
- * Also guards the CLAUDE.md stub the same way runInit does: refuses with
- * ExistingClaudeMdError (bypassable with --force) if the target's existing
- * CLAUDE.md isn't already a Kenovis-managed stub, instead of silently
- * discarding a customer's own edits on every sync. See company-os/AI/memory/learnings.md
- * Learning-006, which found and fixed this exact asymmetry for init's
- * --force path but never carried the fix over to sync.
+ * Also guards the CLAUDE.md stub the same way runInit does: an existing
+ * CLAUDE.md that isn't already a Kenovis-managed stub is preserved and
+ * merged via `resolveClaudeMdWrite` (OF-94) rather than silently discarded
+ * on every sync — see company-os/AI/memory/learnings.md Learning-006, which found and
+ * fixed this exact asymmetry for init's --force path but never carried the
+ * fix over to sync. ExistingClaudeMdError (bypassable with --force) fires
+ * only when a coexistence file's own Kenovis-managed block was hand-edited
+ * since it was last written.
  *
  * The guard compares against a recorded content hash
  * (`${FRAMEWORK_DIR_NAME}/${CLAUDE_MD_HASH_FILENAME}`, written by the prior
  * install/sync) rather than only a marker-prefix check, so content appended
- * below the stub is caught too, not just a CLAUDE.md that isn't Kenovis's at
- * all — see isClaudeMdSafeToOverwrite and company-os/AI/memory/learnings.md Learning-007.
+ * inside the Kenovis-managed block is caught too, not just a CLAUDE.md that
+ * isn't Kenovis's at all — see isClaudeMdSafeToOverwrite and
+ * company-os/AI/memory/learnings.md Learning-007.
  *
  * Syncing never advances an Installation past a setup it has not completed:
  * a `.setup-pending` marker is read before the mirror-replace and written back
@@ -104,8 +122,17 @@ export interface SyncResult {
  * 38. RULE-INST-03 already settled that removal itself is correct (the AI-OS
  * layer belongs to the AI-OS); what was missing was saying so. Compared
  * before `removeTree` and after every install-time-owned file
- * (`.setup-pending`, the CLAUDE.md hash sidecar) is written back, so neither
- * shows up as falsely "removed" on an ordinary sync.
+ * (`.setup-pending`, the CLAUDE.md hash sidecar, the `.tools` marker) is
+ * written back, so none of them show up as falsely "removed" on an ordinary
+ * sync.
+ *
+ * Also re-applies whichever AI tool adapters (DECISION-046) this Installation
+ * was set up with — read from `.kenovis/.tools`, the same install-time-owned
+ * marker shape as `.setup-pending` — so a customer's `.claude/commands/`
+ * (or another selected tool's own scaffolding) picks up whatever the newly
+ * synced Framework Release changed, without `--tools` needing to be passed
+ * again on every sync. An Installation predating this marker falls back to
+ * `DEFAULT_TOOLS`, the same default a fresh `init` would choose.
  */
 export async function runSync(
   fs: FileSystemPort,
@@ -125,19 +152,55 @@ export async function runSync(
 
   const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
   const hashPath = join(frameworkDir, CLAUDE_MD_HASH_FILENAME);
-  if (!options.force && (await fs.exists(claudeStubPath))) {
-    const existingClaudeMd = await fs.readFile(claudeStubPath);
-    const recordedHash = (await fs.exists(hashPath)) ? await fs.readFile(hashPath) : null;
-    if (!isClaudeMdSafeToOverwrite(existingClaudeMd, recordedHash)) {
-      throw new ExistingClaudeMdError(claudeStubPath);
-    }
-  }
 
   // Read install-time-owned state before the mirror destroys it.
   const setupPendingPath = join(frameworkDir, SETUP_PENDING_FILENAME);
   const pendingMarker = (await fs.exists(setupPendingPath))
     ? await fs.readFile(setupPendingPath)
     : null;
+
+  // Computed before the mirror runs, purely from reads — the same content
+  // this run intends to write regardless of what the CLAUDE.md guard below
+  // decides, so resolveClaudeMdWrite always resolves against the real
+  // incoming stub rather than a placeholder.
+  let pendingKind: InstallationKind | null = null;
+  let newClaudeMdContent = claudeStubContent({ pending: false });
+  if (pendingMarker !== null) {
+    // A marker this CLI wrote names the command directly. Anything else is
+    // re-detected from the target rather than guessed at, the same way
+    // install time chose it.
+    pendingKind =
+      installationKindFromSetupPending(pendingMarker) ??
+      detectInstallationKind(await fs.listDir(options.targetDir)).kind;
+    newClaudeMdContent = claudeStubContent({ pending: true, kind: pendingKind });
+  }
+
+  let claudeMdContentToWrite = newClaudeMdContent;
+  let claudeMdHashToWrite = hashClaudeMdContent(newClaudeMdContent);
+  let claudeMdAction: ClaudeMdAction = "written";
+
+  if (!options.force && (await fs.exists(claudeStubPath))) {
+    const existingClaudeMd = await fs.readFile(claudeStubPath);
+    const recordedHash = (await fs.exists(hashPath)) ? await fs.readFile(hashPath) : null;
+    const resolution = resolveClaudeMdWrite(existingClaudeMd, recordedHash, newClaudeMdContent);
+    if (resolution.action === "refused") {
+      throw new ExistingClaudeMdError(claudeStubPath);
+    }
+    claudeMdContentToWrite = resolution.content;
+    claudeMdHashToWrite = resolution.hashedBlock;
+    claudeMdAction = resolution.action;
+  }
+
+  const toolsMarkerPath = join(frameworkDir, TOOLS_MARKER_FILENAME);
+  const existingToolsMarker = (await fs.exists(toolsMarkerPath))
+    ? await fs.readFile(toolsMarkerPath)
+    : null;
+  // Missing marker means an Installation from before DECISION-046 — falls
+  // back to the same default a fresh `init` would choose, rather than
+  // installing nothing on its first sync past this Framework Release.
+  const tools = (existingToolsMarker !== null ? parseToolsMarker(existingToolsMarker) : null) ?? [
+    ...DEFAULT_TOOLS,
+  ];
 
   // Read for reporting only, also before the mirror. Unlike the entries in
   // INSTALL_TIME_OWNED_ENTRIES, the stamp needs no preserve/rewrite rule — the
@@ -150,36 +213,39 @@ export async function runSync(
   await fs.removeTree(frameworkDir);
   await fs.copyTree(options.frameworkSourceDir, frameworkDir);
 
-  let newClaudeMdContent = claudeStubContent({ pending: false });
-
-  if (pendingMarker !== null) {
-    // A marker this CLI wrote names the command directly. Anything else is
-    // re-detected from the target rather than guessed at, the same way install
-    // time chose it — and rewritten in its canonical form, so the marker and
-    // the stub's directive can never name different commands.
-    const kind =
-      installationKindFromSetupPending(pendingMarker) ??
-      detectInstallationKind(await fs.listDir(options.targetDir)).kind;
-
-    await fs.writeFile(setupPendingPath, setupPendingContent(kind));
-    newClaudeMdContent = claudeStubContent({ pending: true, kind });
+  if (pendingMarker !== null && pendingKind !== null) {
+    // Rewritten in its canonical form, so the marker and the stub's
+    // directive can never name different commands.
+    await fs.writeFile(setupPendingPath, setupPendingContent(pendingKind));
   }
 
-  await fs.writeFile(claudeStubPath, newClaudeMdContent);
-  await fs.writeFile(hashPath, hashClaudeMdContent(newClaudeMdContent));
+  await fs.writeFile(claudeStubPath, claudeMdContentToWrite);
+  await fs.writeFile(hashPath, claudeMdHashToWrite);
+  await fs.writeFile(toolsMarkerPath, toolsMarkerContent(tools));
+
+  const { installed, unknown, skipped } = await installSelectedToolAdapters(fs, {
+    frameworkSourceDir: options.frameworkSourceDir,
+    targetDir: options.targetDir,
+    tools,
+  });
 
   // Diffed after every install-time-owned file above is written back, so
-  // .setup-pending and the hash sidecar never show up as falsely "removed"
-  // on an ordinary sync that only touches the mirrored bundle content.
+  // .setup-pending, the hash sidecar and the tools marker never show up as
+  // falsely "removed" on an ordinary sync that only touches the mirrored
+  // bundle content.
   const pathsAfter = new Set(await fs.walkFiles(frameworkDir));
   const removedPaths = pathsBefore.filter((p) => !pathsAfter.has(p)).sort();
 
   return {
     frameworkSyncedTo: frameworkDir,
     claudeStubWrittenTo: claudeStubPath,
+    claudeMdAction,
     setupStillPending: pendingMarker !== null,
     previousFrameworkVersion,
     frameworkVersion,
     removedPaths,
+    toolsInstalled: installed,
+    unknownTools: unknown,
+    skippedToolFiles: skipped,
   };
 }

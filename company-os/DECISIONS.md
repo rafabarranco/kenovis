@@ -4,7 +4,7 @@
 
 Company Decision Log
 
-Version: 2.16
+Version: 2.19
 
 Last updated: —
 
@@ -44,7 +44,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-029** ‡ — A Finding Is Checked Against The Roadmap, And An Open Finding Is Dimensioned. Before a finding is dispositioned it cites the roadmap id that already covers it or takes a new one; an `Open` row carries Pain, Frequency and Cost, writing `unknown` where a term is unknown; promotion to a scheduled item is a separate act.
 - **DECISION-030** ‡ — `/next` Starts From The Pointer, And Stops Rather Than Descends. Step 3 reads three inputs including the `Next` pointer the previous round wrote, and a departure from it is recorded; when the highest-ranked objective needs a human, the round presents the decision with the input already named, records that it stopped and on what, and stops — descending the priority order to find something executable is forbidden.
 - **DECISION-031** ‡★ — One Source Of Truth Hierarchy, In `SYSTEM.md`, With The Operating Model At Rank 1. `CLAUDE.md` cites it and states no ordering of its own; a business rule outranks a recorded decision; `PRODUCT/OPERATING_MODEL.md` is rank 1 and joins the session-initialization path. Rank 1's "conditional on the owner having authored one" clause was removed by DECISION-032.
-- **DECISION-032** ‡★ — Every Installation Authors Its Operating Model At Setup, And The Conformance Table Lives In It. Both setup commands ask the owner four questions and write `PRODUCT/OPERATING_MODEL.md` before `COMPANY_OS.md`, from a template the AI may never answer itself; the conformance table moves there from the roadmap, a closing round states which section its work served, and `COMPANY_OS.md` stops carrying a third Source Of Truth ordering.
+- **DECISION-032** ‡★ — Every Installation Authors Its Operating Model At Setup, And The Conformance Table Lives In It. Both setup commands ask the owner four questions and write `PRODUCT/OPERATING_MODEL.md` before `COMPANY_OS.md`, from a template the AI may never answer itself; the conformance table moves there from the roadmap, a closing round states which section its work served, and `COMPANY_OS.md` stops carrying a third Source Of Truth ordering. The question count became five when OF-83 closed (2026-08-18): both setup commands now also ask the working cadence DECISION-034 reads, matching the template's own "5. Working cadence" section.
 - **DECISION-033** ‡ — The Closing Round Builds The Conformance Table, And Declares The Two Lines Whose Absence Is Otherwise Invisible. The first closing round in an Installation writes one row per operating-model section with `unmeasured` where it did not verify; `Operating model section served:` and `Next:` become required lines that must say `none` rather than be omitted; the population instruction moves out of the setup commands and the template into `commands/next.md` Step 13, the only place a round loads it.
 - **DECISION-034** ‡★ — One Item Per Round Is The Framework Default, And An Installation's Operating Model Is Where A Different Cadence Is Stated. `commands/next.md` → "Autonomous Mode" stops asserting that a round may continue through multiple roadmap items and defers to the Installation's own `PRODUCT/OPERATING_MODEL.md`, which is rank 1; the default is one item ending with the thread, on the mechanics of context and of a shared disposition pass rather than on one founder's preference.
 - **DECISION-035** ‡★ — Findings Route By Role As Well As By Destination File, And This Repository's Own CTO Owns Its Framework Layer. `policies/documentation.md` requires an `Open` finding to name its owning role from the existing Agent Roster, loaded once rather than copied into twelve agent files; which role owns which kind of finding is a product-specific fact and stays out of the framework layer entirely — this repository's own instance (CTO owns `.kenovis/AI/`) lives in `ENGINEERING/ARCHITECTURE.md`, never in `.kenovis/AI/agents/cto.md`.
@@ -58,6 +58,20 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-043** ‡ — The Product Layer Namespaces Under One Visible Root Directory, `company-os/`. Reopens the placement half of DECISION-017 (its `.kenovis/` half is untouched): the seven Product-layer elements relocate from seven generic root names into `company-os/` in every Installation, so a brownfield customer's own files are never overwrite candidates and the Collision Guard's surface drops from seven names to one. Fixed neutral name — a customer-chosen name and per-collision renames were both rejected. Migration lands before 1.0.0 (`PRODUCT/ROADMAP.md` item 44); origin OF-92.
 - **DECISION-044** — No Per-Session Context Budget Is Imposed By Design. Closes `PRODUCT/ROADMAP.md` OF-10 / item 32: the founder declined to set a per-session reading cap ("no hay un contexto máximo por sesión") — the existing bounding work (Decision Index, targeted reads, document lifecycle, `kenovis context`) is confirmed sufficient on its own, not a partial answer awaiting a hard ceiling on top.
 - **DECISION-045** — No MVP Usage Target Is Set — Adoption Count Does Not Gate 1.0.0. Closes `PRODUCT/ROADMAP.md` OF-11 / item 32: the founder declined to set an installations target ("no nos preocupamos por el número de personas que nos usan"), completing what DECISION-041 left open — `1.0.0`'s only remaining gate is the roadmap reaching empty, with item 33 last.
+- **DECISION-046** ‡ — Multi-Tool AI Scaffolding: A Data-Driven Adapter Registry, Not A Hardcoded Tool List. Closes `PRODUCT/ROADMAP.md` OF-96: `kenovis init`/`add` generates per-AI-tool entrypoints (native `.claude/commands/` for Claude Code, an entrypoint file for others) from a `framework/tool-adapters/<id>/` registry selected by an explicit, non-interactive `--tools` flag (default `claude`) — never from tool-identity branching inside the CLI. A new tool is a new adapter file, shipped to every existing Installation via `kenovis sync` (DECISION-026), not a CLI code change tied to a release.
+- **DECISION-047** — CLAUDE.md Coexistence Replaces Refuse-Or-`--force` As The Default. Closes `PRODUCT/ROADMAP.md` OF-94: a pre-existing, non-Kenovis root `CLAUDE.md` no longer aborts the entire `init`/`add`/`sync` run. It is preserved verbatim and the Kenovis block is appended below it (`resolveClaudeMdWrite`, `cli/src/domain/installation.ts`), with the hash sidecar now scoped to the Kenovis block alone so a customer's preserved content is never part of the safety check. `ExistingClaudeMdError` (bypassable with `--force`, which still means "discard and overwrite entirely") now fires only when the Kenovis-managed block itself was hand-edited since it was last written.
+- **DECISION-048** — `sync` Reports A Framework Release Change As A Prompt To Review Product-Layer Templates, Not As A Structural Diff. Closes `PRODUCT/ROADMAP.md` OF-78: rejects comparing a Product-layer document's own `Version:` line against its template's, because that number tracks the customer's own edits (RULE-INST-01), not template lineage, and would false-positive on every healthy divergence. `kenovis sync` instead prints one informational line whenever the Framework Release actually changed, pointing at `framework/templates/product-layer/` for a manual comparison — no new provenance mechanism, no Product-layer write, nothing CLI-side claims to know precisely.
+- **DECISION-049** — `PRODUCT/OPERATING_MODEL.md`'s Conformance Table Gains A Per-Row `As of` Date Instead Of A New Re-Verification Cadence. Closes `PRODUCT/ROADMAP.md` OF-79: rejects a mandatory full seventeen-row pass every round (the row's own text names this as an ongoing per-round toll paid forever) in favor of making existing staleness visible — every row now carries the date it was last actually checked, so a round or the founder can see at a glance which rows are current and which are old, without a new mechanism forcing anyone to re-check on a schedule.
+- **DECISION-050** — An `Open` Row's Tagged `Role` Becomes A Ranking Factor In `/next` Step 3, Not A New Scheduling Slot. Closes `PRODUCT/ROADMAP.md` OF-90: rejects a per-role scheduling mechanism as architecturally unavailable (DECISION-010/DECISION-013, no scheduler, no backend) in favor of the only reachable shape — a round already activating a role for its own objective (Step 6) now weighs `Open` rows tagged with that same role higher in Step 3's priority ordering, opportunistic rather than systematic.
+- **DECISION-051** ‡★ — A Round's `Next:` Pointer Carries The Same Required Findings Declaration As A Closed Item. Closes `PRODUCT/ROADMAP.md` OF-21 and OF-61: `commands/next.md` Step 13 requires `Findings this round did not fix:` alongside every `Next:` pointer, the same required-declaration mechanism `Findings this item did not fix:` already uses, moved to the one artifact every round writes regardless of what it closed; `check_item_findings.py` checks both populations, closing the round-scoped blind spot and the item-scoped population's own inertness once a roadmap is fully archived.
+- **DECISION-052** ‡★ — Rejecting An Item Or Row Requires Its Own Citation Sweep, Declared In The Same Change. Closes `PRODUCT/ROADMAP.md` OF-22: a stale citation cannot be detected mechanically (the same prose-classification limit that rejected items 6 and 8), so the rejecting round instead declares `Citations swept:` — the grep command and its result — in the same change; `check_rejection_citations.py` guards the declaration's presence on every still-inline rejection.
+- **DECISION-053** — Root CLAUDE.md Restates, Never Originates, A Rule Meant For Every Installation. Closes `PRODUCT/ROADMAP.md` OF-27: this repository's own root `CLAUDE.md` is DECISION-020-exempt from generation, so a new framework-level rule written there silently reaches no Installation; the fix is a recorded convention (`ENGINEERING/ARCHITECTURE.md`) rather than generating the file, plus `check_claude_stub_sync.py` guarding the one restatement already in force — the finding-routing table — against drifting from its canonical, generated counterpart in `installation.ts`.
+- **DECISION-054** ‡★ — DECISION-036's Refine Target Is The Least-Recently-Touched `Open` Row, Not The Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-99: "lowest surviving id" was the original proxy for "oldest untouched row," and the equivalence only held if a refined-but-still-`Open` row stopped being the lowest id once touched — it does not, so a row refined without closing keeps re-winning the literal reading forever and starves every higher-id row. `commands/next.md` and `policies/documentation.md` now name the actual criterion directly: each row's own most recent `Refined <date>` (or discovery date, if never refined), oldest first, tied rows broken by lowest id — codifying what four rounds had already done by hand on 2026-08-19 without amending the rule they cited.
+- **DECISION-055** ★ — A Scheduled Queue Row's Own Citation Is What The Reverse-Drift Check Trusts, Not A New Declaration On The Item Side. Closes `PRODUCT/ROADMAP.md` OF-100: `check_item_findings.py` verified only that a closed item declares the ids it left behind, never the reverse — that an `OF-N` row citing `Scheduled — item N` gets corrected to `Fixed` once item N closes, a drift confirmed five times in six days. Rejects a new structured `Closes:` line on the item side (the existing item-side phrasing is not uniform enough to regex, and every instance was already-closed prose that a new going-forward line would not retroactively fix) in favor of trusting the queue row's own already-structured `**Scheduled — item N**` citation, cross-checked against that item's `DONE` state — no new prose convention required.
+- **DECISION-056** — `development`'s Required Review Is Dropped To Zero; CI Becomes A Required Status Check For The First Time. Closes `PRODUCT/ROADMAP.md` OF-19, founder decision: `required_pull_request_reviews` (unsatisfiable for a solo maintainer) is removed from `development`'s branch protection, and the 13 CI guard scripts — never previously wired as `required_status_checks` — are added as a required check with `strict: false`. A routine `gh pr merge --rebase` (no `--admin`) now succeeds once CI is green for the first time since `0.6.0`; `enforce_admins` stays `false` unchanged, so an admin override remains as a deliberate emergency escape hatch, not removed.
+- **DECISION-057** ‡★ — DECISION-054's Refine Tiebreak Gains A Sub-Day Second Stage: Fewest Same-Day `Refined` Markers, Then Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-102: a full same-day sweep of the `Open` queue leaves every row tied on calendar-date granularity, and DECISION-054's own "tied rows break by lowest id" then re-selects the same row (OF-02) for the rest of that day with no new premise to report; the fix counts each row's own already-written `Refined <today's date>` markers (fewer wins, tied to lowest id) rather than adding a persisted field or cross-referencing the document's narrative order, both rejected as more infrastructure than the finding calls for.
+- **DECISION-058** — Item 33 Stays Parked Even With The Internal Queue Exhausted, Founder-Confirmed Rather Than Assumed. With every `Open Findings` row non-actionable and item 33 the only `SCHEDULED` item left, the founder was asked directly whether "ranks last" (DECISION-041) means item 33 auto-triggers once nothing internal remains, or stays parked regardless. Answer: stays parked, no new condition, moves only on the founder's own decision to pursue it.
+- **DECISION-059** ‡★ — Lowest Id Is The Refine Tiebreak's Terminal Stage; A Saturated No-Op Re-Check Writes A Compact Form, Not A New Paragraph. Closes `PRODUCT/ROADMAP.md` OF-103: traced directly, DECISION-057's tiebreak already rotates every tied `Open` row through fair attention across a day — a repeat sweep tying again is that rotation completing another lap, not a defect — so no third stage (time-of-day, a persisted counter) is adopted. The real cost was a full new paragraph owed on every saturated repeat pick even with nothing new to report, which is what grew `OF-02`'s own row large enough to weigh on `PRODUCT/ROADMAP.md`'s own size (item 14); a genuine no-op re-check now writes a one-line compact form instead.
 
 ---
 
@@ -2215,23 +2229,6 @@ The Framework layer's enforcement is instructions read by an agent, not code tha
 
 ---
 
-# Future Decisions
-
-Future important decisions should be added here.
-
-Examples:
-
-- Technology choices.
-- Pricing changes.
-- Market expansion.
-- Architecture changes.
-- Business model changes.
-- Partnership decisions.
-
----
-
----
-
 # DECISION-027
 
 # Nothing Stays In The Thread
@@ -2764,6 +2761,8 @@ OF-54's row named the honest first output — is the cadence a framework default
 **Nothing checks that an Installation's stated cadence is honoured**, and nothing checks the default either. This is `PRODUCT/OPERATING_MODEL.md` §15 and OF-44 again, unchanged by this decision.
 
 **The template does not yet prompt for a cadence.** `.kenovis/AI/templates/product-layer/PRODUCT/OPERATING_MODEL.md` asks the owner four questions and none of them is "how many roadmap items per session". An Installation therefore gets the default and no invitation to change it, which is the right failure direction and is still a gap — recorded as `PRODUCT/ROADMAP.md` OF-83.
+
+**OF-83 closed 2026-08-18.** The template already carried a "5. Working cadence" section asking this exact question — added the same day as this decision, by an earlier commit the round that wrote OF-83 did not check against — so the gap was in `init-project.md` Step 1 and `adopt-project.md` Step 2 never asking it, not in the template. Both steps now ask a fifth question, worded from the template's own section 5. The body above stays as written, because the trail — including the stale premise — is the point.
 
 ---
 
@@ -3527,6 +3526,903 @@ No installations target is set, now or ever, as a `1.0.0` gate. `PRODUCT/ROADMAP
 Positive: removes the one criterion every release round since `0.9.0` re-argued without resolving; `1.0.0` now has a single, unambiguous, purely roadmap-completion gate. Negative, accepted: no adoption signal informs prioritisation before `1.0.0` ships — consistent with COMPANY_OS.md's own Distribution Strategy (no paid acquisition, no sales team, customer satisfaction as the channel) and `PRODUCT/OPERATING_MODEL.md` Addendum C (external usage follows completion, not the other way round).
 
 Implementation: `PRODUCT/ROADMAP.md` → MVP Success Metrics, Usage line. `PRODUCT/ROADMAP.md` OF-11 struck from the queue. Origin: item 32.
+
+---
+
+# DECISION-046
+
+# Multi-Tool AI Scaffolding: A Data-Driven Adapter Registry, Not A Hardcoded Tool List
+
+Date:
+
+2026-08-18
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+2027-02-18
+
+---
+
+## Context
+
+Founder-raised in-session, queued as `PRODUCT/ROADMAP.md` OF-96, run through `/architect` in the same session at the founder's instruction.
+
+Verified against the code, not inferred: `runInit` (`cli/src/application/commands/init.ts`) writes exactly four things into a target repository — `.kenovis/` (the copied Framework tree), `.kenovis/.setup-pending`, root `CLAUDE.md`, `.kenovis/.claude-md.sha256`. No `.claude/` directory is ever written. `cli/scripts/bundle-framework-assets.mjs` bundles only `framework/` into the npm package — no per-tool scaffolding at all. This directly contradicts `company-os/ENGINEERING/ARCHITECTURE.md` → Hard Rules, which already states as settled fact that "`.claude/`... stay[s] at repo root because Claude Code requires it" — a Hard Rule the code has never implemented, not a new capability being proposed from nothing. This repository's own `.claude/commands/*.md` (12 files, one per `framework/commands/*.md`) proves the native-slash-command shape works — `.claude/commands/next.md` is five lines: a `description:` frontmatter field and "Read `.kenovis/AI/commands/next.md` in full and execute every step in order... Arguments (optional focus/constraint): $ARGUMENTS" — but it is dogfooding-only and never packaged for distribution.
+
+DECISION-010 names Claude Code primary and requires everything under `AI/` to stay tool-agnostic plain markdown; its stated answer for every other tool is "manually load `AI/SYSTEM.md`" as its equivalent entry point — a policy sentence with no CLI behavior behind it, for any tool including Claude Code itself.
+
+Founder's explicit constraint, binding on the option set: no hardcoded, enumerable list of AI tools/models (Claude, Gemini, Grok, GPT, Ollama, DeepSeek, ...) that a human must keep updating every time a new one ships. That would violate DECISION-010's tool-agnosticism at the exact place it is supposed to hold, and does not scale against a market that ships new models faster than this product ships releases.
+
+---
+
+## Options Considered
+
+### Option A — Data-driven adapter registry, selected by an explicit `--tools` flag
+
+Each supported tool is a small declarative spec under `framework/tool-adapters/<id>/` (entrypoint filename, whether it supports native per-command files, the stub template) — data, not a code branch. `kenovis init`/`add` reads `--tools=<id>,<id>,...` (non-interactive, explicit, scriptable — consistent with how `--force` already works), defaulting to `claude` alone when omitted, matching DECISION-010's named primary and today's actual behavior. The CLI's own logic never encodes a tool's identity: it iterates whichever adapters were selected and applies one generic write-these-files-from-this-template routine to each. Within the `claude` adapter, the command-wrapper list itself is derived by listing `framework/commands/*.md` at bundle time — not a hardcoded name list either, so a 13th framework command gets a wrapper automatically. A new tool is a new adapter directory, shipped to every already-installed customer via `kenovis sync` (DECISION-026) the next time they sync, not a CLI code change gated behind a new npm major version.
+
+Advantages: CLI code has zero tool-specific branches, ever — satisfies the founder's constraint at both the tool layer and the command layer. Extending support is a content change, using the exact distribution channel every other framework improvement already uses. Default behavior for existing Claude Code customers is unchanged (still `claude`), just now complete (native commands, closing the gap Hard Rules already claimed was closed).
+
+Disadvantages: a customer on a non-default tool who never reads about `--tools` gets nothing extra out of the box — mitigated by documenting the flag prominently in the CLI's own `--help` and `README.md`, and by the phased rollout below not promising more tools than are actually built.
+
+### Option B — Best-effort detection
+
+Scan the target repository for existing markers (`.cursor/`, `.github/copilot-instructions.md`, `.windsurfrules`, etc.) and auto-select adapters with no flag needed. Rejected: `PRODUCT/OPERATING_MODEL.md` §8 names INIT — a new product, "development has not meaningfully started" — as one of exactly two entry points, and a fresh repository has no marker to detect by construction; the case with a real signal to read (ADD/brownfield) is the minority path. A wrong detection also actively writes files the customer did not ask for, which is worse than writing nothing and pointing at a flag — this CLI already refuses silent, unrequested writes elsewhere (`ExistingClaudeMdError`, the Collision Guard, DECISION-019).
+
+### Option C — Universal-only entrypoint, no native per-tool scaffolding
+
+Emit a single generic file (e.g. `AGENTS.md`) for every install, and never generate a tool's own native command mechanism. Rejected as the sole answer: it does not close OF-96's actual, measured Pain — Claude Code, DECISION-010's own named primary tool and the tool `COMPANY_OS.md`'s Ideal Customer Profile most expects a customer to run, would permanently keep the manual-instruction path instead of the one-keystroke `/next`, `/feature`, `/bug` ergonomics this repository already runs on itself. Folded into Option A instead, as a cheap always-on baseline (see Decision).
+
+---
+
+## Decision
+
+Adopt Option A.
+
+- `framework/tool-adapters/<id>/` becomes a new directory in the Framework layer, one subdirectory per supported tool, each holding only data (entrypoint filename and location, whether native per-command files are supported, the stub/template content) — never CLI logic keyed on the tool's name.
+- `kenovis init`/`add` gain a `--tools=<id>[,<id>...]` flag, non-interactive and explicit per `company-os/ENGINEERING/ARCHITECTURE.md` → Hard Rules' existing non-interactive constraint. Default when omitted: `claude` — unchanged from today's actual primary-tool behavior, now completed rather than redefined.
+- The `claude` adapter's command-wrapper generation lists `framework/commands/*.md` at bundle time and writes one `.claude/commands/<name>.md` per file found, mirroring this repository's own dogfooded `.claude/commands/` mechanically rather than by a maintained list of command names.
+- A cheap, always-on baseline from Option C rides along regardless of `--tools`: every install also gets a generic, tool-agnostic entrypoint pointing at `.kenovis/AI/SYSTEM.md`, so a customer on a tool with no adapter yet is never left with literally nothing, only the same manual-load fallback DECISION-010 already names — now actually written to disk instead of merely documented.
+- `company-os/ENGINEERING/ARCHITECTURE.md` → Hard Rules' existing line ("`.claude/`... stay at repo root because Claude Code requires it") stops being an unimplemented claim once Phase 1 ships; it is not being newly written by this decision, only finally made true.
+- Phased rollout, not everything at once (see `PRODUCT/ROADMAP.md` item 45): Phase 1 ships the registry mechanism and exactly the `claude` adapter, which is the only one with a measured, high-Pain gap today. Later phases add further adapters (Cursor, GitHub Copilot, Gemini CLI, etc.) as separate, individually-scoped content additions — each one is new data under `framework/tool-adapters/`, never a reason to touch `runInit`/`runAdd` again.
+
+---
+
+## Consequences
+
+Positive: closes OF-96's Pain-high finding for Claude Code with a mechanical, low-cost change; makes "support a new AI tool" a content PR instead of a CLI release, reaching every existing Installation through the channel DECISION-026 already built for exactly this; the CLI itself never grows a tool-identity branch, so the founder's scaling concern is structurally satisfied rather than promised.
+
+Negative, accepted: a customer must pass `--tools` to get anything beyond the `claude` default and the generic baseline — no zero-config multi-tool experience exists yet, which Option B would have offered unreliably at higher engineering cost; each future adapter still needs someone to write and validate its content, so "add Grok support" is cheap per the mechanism but not free in absolute terms; `framework/tool-adapters/` is a new maintenance surface (however small per entry) that did not exist before.
+
+Implementation: `PRODUCT/ROADMAP.md` item 45. Origin: OF-96.
+
+---
+
+# DECISION-047
+
+# CLAUDE.md Coexistence Replaces Refuse-Or-`--force` As The Default
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-94. Technical implementation choice inside what `PRODUCT/OPERATING_MODEL.md` §2/§4 and Addendum B already assign to the AI-OS (engineering awareness, technical planning), not a product-direction, strategic or business call reserved to the founder.
+
+Review Date:
+
+2027-02-19
+
+---
+
+## Context
+
+`PRODUCT/ROADMAP.md` OF-94, ranked top of the `Next` pointer's cheap-fix cluster once OF-83/OF-95/OF-84/OF-97 closed. Verified against the code before scoping: `kenovis init`/`add`/`sync` (`cli/src/application/commands/init.ts`, `sync.ts`) had exactly two outcomes for a target's existing root `CLAUDE.md` that isn't already a Kenovis-managed stub — throw `ExistingClaudeMdError` and abort the *entire* run before writing anything, or `--force`, which discards the file's content outright. There was no middle path. Refusal was not a partial install with CLAUDE.md skipped; it aborted before `.kenovis/` itself was ever written (`init.ts`'s guard runs before `fs.removeTree`/`fs.copyTree`) — a brownfield customer with any pre-existing `CLAUDE.md` could not install Kenovis at all without first moving the file aside by hand. `COMPANY_OS.md`'s own Ideal Customer Profile names developers "already fluent in agentic tooling" — exactly the segment likely to already have one, so this was not an edge case.
+
+## Options Considered
+
+### Option A — Preserve-and-append coexistence, replacing refusal as the default
+
+Customer's existing content is kept verbatim; the Kenovis stub is appended below it, joined by a fixed delimiter (`splitCoexistingClaudeMd`/`buildCoexistingClaudeMdContent`, `cli/src/domain/installation.ts`). The hash sidecar records the Kenovis block's hash alone (not the whole file), so a future sync can tell "did our own block change" independent of the customer's untouched portion. `--force` keeps its existing meaning (discard everything, write a fresh plain stub) for anyone who wants it. `ExistingClaudeMdError` survives, narrowed to the one case still worth a human's attention: a coexistence file's own Kenovis-managed block was hand-edited since this CLI last wrote it — the customer edited content inside a region they had no reason to think was theirs to keep, and only a human can say which version should win.
+
+Advantages: removes a complete-install blocker for exactly the stated Ideal Customer Profile; nothing is ever silently discarded — strictly gentler than the `--force` escape hatch this CLI already ships; the non-interactive CLI still reports what happened (`ClaudeMdAction`, printed by `bin.ts`), so "explicit confirmation" is satisfied after the fact the same way every other install-time decision this CLI makes already is (`targetReadmeUntouched`, `skippedToolFiles`).
+
+Disadvantages: a customer who syncs before ever seeing this Framework Release's CHANGELOG gets their file modified without having asked for coexistence specifically — mitigated by the file being reported, never destroyed, and by `git diff` being the existing review mechanism `sync`'s own docstring already points customers at (RULE-INST-02). A file this CLI has never established a coexistence boundary for (an old plain stub with notes appended below it, predating this fix) gets wrapped whole on first encounter, so the old stub content appears twice — once inside the newly-preserved text, once as the fresh canonical block. Accepted: still non-destructive, and a one-time cosmetic artifact of the upgrade path rather than a recurring cost.
+
+### Option B — Coexistence gated behind a new explicit flag (e.g. `--merge-claude-md`)
+
+Keep today's refuse-or-`--force` as the unflagged default; add opt-in merging only when asked. Rejected: the customer already expressed intent by running `init`/`add`/`sync` in the first place, and every existing safety mechanism (`--force` itself) works the same way — a flag distinct from `--force` would need to exist and be discovered before this fix helps anyone, and OF-94's own Pain (blocks the entire install) argues for fixing the default, not adding a lever few would find.
+
+### Option C — Prepend Kenovis's block, customer content below
+
+Same append mechanism, reversed order. Rejected as scoped: OF-94's own text explicitly names "append Kenovis's stub... below" the customer's content — this CLI is a guest appending to a file it did not create, not the reverse — and prepending would also break the existing `CLAUDE_STUB_MARKER` prefix-detection convention (`isKenovisManagedClaudeStub`) for the plain-stub case, requiring a second detection path instead of reusing the one already in place.
+
+## Decision
+
+Adopt Option A. `resolveClaudeMdWrite` becomes the single decision point both `init.ts` and `sync.ts` call once an existing, non-force-overwritable `CLAUDE.md` is found: overwrite (already a plain Kenovis stub), coexist (foreign file, or a coexistence file whose block is unchanged), or refuse (a coexistence file's own block was hand-edited).
+
+## Consequences
+
+Positive: closes OF-94's Pain-medium, install-blocking gap for the exact customer segment this product targets; the CLI's non-interactive nature stays fully respected — no prompt is added, the CLI still only ever acts and reports. Negative, accepted: default behavior changes for any existing brownfield customer who has a `CLAUDE.md` — previously a hard stop requiring a manual decision, now an automatic, reported append; the first-encounter case can produce a cosmetically redundant file (old stub content preserved twice) rather than a clean single copy.
+
+Implementation: `cli/src/domain/installation.ts` (`resolveClaudeMdWrite`, `splitCoexistingClaudeMd`, `buildCoexistingClaudeMdContent`, `ClaudeMdAction`), `init.ts`, `sync.ts`, `cli/src/cli/bin.ts`. Tests: `installation.test.ts` (resolver unit tests), `init.test.ts`/`sync.test.ts`/`add.test.ts` (`InMemoryFileSystem`), `NodeFileSystem.integration.test.ts` (real filesystem). Origin: OF-94.
+
+---
+
+# DECISION-048
+
+# `sync` Reports A Framework Release Change As A Prompt To Review Product-Layer Templates
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-78, run through `/architect` at the founder's instruction (bundled with OF-79/OF-90 per the `Next` pointer).
+
+Review Date:
+
+2027-02-19
+
+---
+
+## Context
+
+`sync` mirror-replaces `.kenovis/` and never writes `company-os/` (RULE-INST-01) — correct, and the whole reason a customer's own edits to their Product layer survive every sync. The consequence, named by OF-78: an Installation set up before a framework template changed keeps its old, correct-at-the-time answer forever, with nothing telling it a newer template exists. Two concrete instances: an Installation predating DECISION-032 has no `PRODUCT/OPERATING_MODEL.md` Conformance table at all; one that authored `COMPANY_OS.md` from the pre-OF-73 template still carries a third, wrong Source Of Truth ordering.
+
+`framework/templates/product-layer/**` is what the bundle ships (`AI/templates/product-layer/**` inside `frameworkSourceDir`), mapping 1:1 to `company-os/**`. 16 of 17 templates carry a `Version: X.Y` line at line 7.
+
+## Options Considered
+
+### Option A — Compare each document's own `Version:` line against its template's
+
+Read `company-os/<path>`'s `Version:` line, compare against `AI/templates/product-layer/<path>`'s. Rejected: verified against this repository's own `company-os/COMPANY_OS.md` (`Version: 2.2`) that the number tracks the *document's own* edit history — it increments every time the founder or an AI session materially changes that document's content, unrelated to the shipped template's own version. A customer's real, healthy Product layer diverges from its template's version number immediately and permanently by design (DECISION-023); comparing the two numbers produces a false positive on every Installation that has done any real work at all, and a false negative whenever a document's own version happens to already read higher than the template's, regardless of whether the template changed underneath it.
+
+### Option B — Template-lineage provenance: record "authored from template version X" at setup, compare against current at sync
+
+Would answer the question Option A cannot, but needs a mechanism that does not exist: setup-time provenance capture, one sidecar or manifest entry per Product-layer document, written by `/init-project`/`/adopt-project` (not the CLI, which does not author these files — DECISION-021) and read by `sync`. Real work, not a text change, and this round's own three-finding bundle is not the place to design a new cross-command provenance format. Not rejected outright — queued as a possible Phase 2 if Option C proves insufficient in practice (see Consequences).
+
+### Option C — An informational notice on every Framework Release change, no structural claim
+
+`sync` already computes `previousFrameworkVersion`/`frameworkVersion` and prints `Framework Release: X -> Y`. Add one more line, only when that comparison shows a real change: point the customer at `framework/templates/product-layer/` for a manual look, without claiming to know which document changed or how much. No new mechanism, no Product-layer read even (the notice fires off the Framework Release comparison already in hand), no false precision.
+
+## Decision
+
+Adopt Option C. `bin.ts`'s `runSyncCommand` prints, immediately after the existing `Framework Release: X -> Y` line, one additional line whenever `previousFrameworkVersion !== frameworkVersion`: this release may have changed Product-layer templates — review `framework/templates/product-layer/` against your own `company-os/` if you want to pick up template-level improvements; sync never does this for you. Presentation-layer only — no new `SyncResult` field, since the condition is already derivable from fields `sync` already returns.
+
+## Consequences
+
+Positive: closes the "nothing tells you" half of OF-78 immediately, at effectively zero implementation cost and zero new risk (pure text, fires off data already computed, never touches `company-os/`). Negative, accepted: the notice cannot say *which* document or *what* changed — a customer has to go read `framework/templates/product-layer/` themselves, the same manual comparison they could already do today, just now prompted rather than never mentioned. If this proves too coarse in practice (customers ignore the prompt, or ask for precision), Option B's provenance mechanism is the designed next step, not a redesign — queued as a fresh finding rather than assumed necessary.
+
+Implementation: `cli/src/cli/bin.ts` (`runSyncCommand`). Origin: OF-78.
+
+---
+
+# DECISION-049
+
+# `PRODUCT/OPERATING_MODEL.md`'s Conformance Table Gains A Per-Row `As of` Date
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-79, run through `/architect` at the founder's instruction (bundled with OF-78/OF-90 per the `Next` pointer).
+
+Review Date:
+
+2027-02-19
+
+---
+
+## Context
+
+`commands/next.md` Step 13 requires a closing round to update *the row for the section it served* — correct and bounded, per DECISION-033. It says nothing about the other sixteen rows, and nothing else re-reads them. Measured before scoping: the most recent round re-verified 1 of 17 rows, the round before it 4 of 17; the table's own full pass is dated 2026-08-14, a date that started decaying the moment the next round closed. The table's own "What A Row Means" section already says a row's state is "read off the tree with the command in the row" — true only for the row a round happens to touch.
+
+## Options Considered
+
+### Option A — Full seventeen-row pass on a fixed per-round cadence
+
+Rejected on the row's own numbers: seventeen commands per round, paid by every Installation on every round, forever — the exact per-round toll `commands/next.md`'s own Observe step (DECISION-038) was deliberately bounded to avoid when it chose document-weight drift as its first, narrow instance rather than an open-ended checklist.
+
+### Option B — Full pass tied to `/release` instead of every round
+
+Cheaper than Option A (a release is far less frequent than a `/next` round) but still a new required step in a workflow this bundle's own scope was not sized to redesign, and it does not fix the underlying visibility gap between releases — a founder reading the table the week before a release still sees rows that read `Present` without knowing whether that is current or eleven rounds stale.
+
+### Option C — Per-row `As of` date, no new cadence
+
+Every row gains a fourth cell (or an inline clause) naming the date it was actually last checked. Staleness becomes visible without requiring anyone to eliminate it — a row reading `Present (as of 2026-08-14)` today is a different, honest claim from a bare `Present`, and a reader can judge for themselves whether eleven days or eleven rounds of silence on a row is a problem worth a founder decision, rather than the table asserting freshness it does not have.
+
+## Decision
+
+Adopt Option C. The Conformance Table's format (`framework/templates/product-layer/PRODUCT/OPERATING_MODEL.md` and this repository's own `company-os/PRODUCT/OPERATING_MODEL.md`) gains an `As of` column between `State` and `Carried by`. `commands/next.md` Step 13's existing instruction ("updates that section's row") is extended by one clause: the update includes today's date in that column, and a row nobody's work verified this round keeps its existing date rather than being touched. `unmeasured` rows get no date until first verified — an unmeasured row's own state already says everything an `as of` date would add.
+
+Option B is not rejected outright, only not built now: nothing here prevents a future round from also adding a full-pass step to `/release` once the visibility half has had time to show whether it is sufficient on its own.
+
+## Consequences
+
+Positive: closes the actual defect OF-79 names (staleness is invisible) without a new per-round cost on any Installation; every existing round already states a date in its own narrative, so the marginal cost of also writing it into the table cell is one clause, not new work. Negative, accepted: this does not make any row *more* current — a row can still sit stale indefinitely, now visibly rather than silently, which is a real trade rather than a full fix. The row that first flagged this (OF-79) stays a useful pointer to "revisit staleness itself" if the visible dates show a pattern worth acting on.
+
+Implementation: `framework/templates/product-layer/PRODUCT/OPERATING_MODEL.md`, `company-os/PRODUCT/OPERATING_MODEL.md`, `framework/commands/next.md` Step 13. Origin: OF-79.
+
+---
+
+# DECISION-050
+
+# An `Open` Row's Tagged `Role` Becomes A Ranking Factor In `/next` Step 3
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-90, run through `/architect` at the founder's instruction (bundled with OF-78/OF-79 per the `Next` pointer).
+
+Review Date:
+
+2027-02-19
+
+---
+
+## Context
+
+DECISION-035 lets an `Open` finding name an owning `Role` from the Agent Roster. DECISION-036 makes every round refine the lowest-id `Open` row regardless of its tagged role. Verified against the tree: `grep -rln "Open Findings|disposition" framework/agents/*.md` → 0 across 12 files — no agent file reads its own tag, so a `security`-tagged row and a `cto`-tagged row are refined by whichever round happens to reach their id, never by a round actually operating as the tagged role. `PRODUCT/OPERATING_MODEL.md` §12 states "the role that owns the responsibility must process the discovery"; naming an owner is not the owner processing anything.
+
+## Options Considered
+
+### Option A — A structural per-role scheduling slot
+
+Rejected on the same architectural grounds DECISION-037/038 already applied to §15 and §1/§16: no scheduler, no backend, nothing runs between sessions (DECISION-010, DECISION-013). A "security round" that starts on its own, on a role's own cadence, needs exactly the runtime this framework has committed not to carry.
+
+### Option B — `/next` Step 3 weighs `Open` rows by role match, opportunistically
+
+A round already knows which agent roles it is activating for its own chosen objective (Step 6). Step 3's existing ranking criteria (User impact, Business value, Technical dependencies, Risk, Effort) gains one more named factor: an `Open` row whose `Role` matches a role this round is activating anyway ranks higher than an equally-aged row with no such match. This does not guarantee a role-tagged row gets processed by that role — it only means the round already has that expertise active is more likely to also pick up a matching row, the same opportunistic shape DECISION-036's own Refine action already uses (age order, not a guarantee of immediacy).
+
+### Option C — Leave role-tagging as documentation only, close the row as a known, accepted limitation
+
+Rejected: the row's own Pain (medium, twelve-role roster made decorative for its stated purpose) and the standing rule (`PRODUCT/OPERATING_MODEL.md` §12, `ABSOLUTE PRIORITY #1`) argue against accepting a gap this framework's own constitution names as a requirement, when a cheap, architecturally-consistent partial fix exists.
+
+## Decision
+
+Adopt Option B. `commands/next.md` Step 3's ranking criteria gains: "Role match — an `Open` row whose `Role` matches an agent role this round activates for its own objective (Step 6) ranks above an equally-aged row with no match." This is additive to the existing DECISION-036 mechanism, not a replacement: the Refine action still touches the lowest-id untouched row regardless of role; this only changes which *scheduled objective* a round picks when a role happens to already be in play.
+
+## Consequences
+
+Positive: role tags stop being purely decorative without inventing a scheduler this framework has twice already ruled out; the fix is a one-clause addition to a step every round already reads. Negative, accepted: this is opportunistic, not systematic — a role that a round never happens to activate for its own objective still never gets its tagged rows prioritized, which is the same residual §12 leaves `Absent` on the Conformance table rather than moving to `Partial` or `Present` on the strength of this decision alone; a behavioral instance is still needed before that row moves (OF-30/Learning-031's standing caveat, same as every other recent fix on this board).
+
+Implementation: `framework/commands/next.md` Step 3. Origin: OF-90.
+
+---
+
+# DECISION-051
+
+# A Round's `Next:` Pointer Carries The Same Required Findings Declaration As A Closed Item
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-21 and OF-61, via `/architect` (founder-directed bundle with OF-22 and OF-27 — "corre el architect o analyze según proceda de TODOS los OF que lo necesiten").
+
+Review Date:
+
+When a round stops writing a `Next:` pointer as its own closing artifact, or `commands/next.md` Step 13's required-line pattern changes shape.
+
+---
+
+## Context
+
+`check_item_findings.py` requires every closed roadmap item to declare `Findings this item did not fix:` — a proven mechanism, item 35's own defect closed by it. Its population was always item-scoped, and `PRODUCT/ROADMAP.md` OF-21 named the consequence directly: a finding born as evidence inside a decision body, a proposal dropped in conversation, or a finding raised inside an item that was still open at the time was invisible to a check bound to closed items, because none of those three is a closed item. Three instances were already on record when OF-21 was written, all found by a human asking rather than by the system.
+
+`PRODUCT/ROADMAP.md` OF-61 named a second, worse consequence of the same item-scoped binding: once `policies/documentation.md` → "Closed Work Is Archived, Not Kept Inline" runs to completion on a roadmap, every closed item's narrative moves to the archive and only a one-line pointer remains — `check_item_findings.py`'s own item-scoped population goes to zero, structurally, by the archive rule working exactly as designed. The guard was fixed once already (splitting the empty case into "missing corpus" versus "archive rule completed") but the residue stood: in a fully-archived roadmap, this guard is **permanently inert**, passing while checking nothing, forever.
+
+Both rows named the same first output: whether the declaration should be round-scoped instead of item-scoped. Premise re-checked before this round: `PRODUCT/ROADMAP-ARCHIVE.md` confirms item 37 (cited by DECISION-036 as the reason no eleventh guard could be added) closed 2026-08-16 — that specific block no longer applies to a new guard proposed here, and this decision does not add one; it extends `check_item_findings.py` in place.
+
+## Options Considered
+
+### Option A — Detect a finding inside session or round prose directly
+
+Rejected. No pattern separates an assertion that something is live, unresolved work from a passing mention or a piece of history — the same reason `check_links.py`'s and this very guard's own docstrings have twice already rejected guards built on classifying prose (items 6 and 8). A round's closing narrative is exactly this kind of prose.
+
+### Option B — A new artifact recording "sessions" or "rounds", independent of the roadmap
+
+Rejected. This framework has no scheduler and nothing runs between sessions (DECISION-010, DECISION-013). A session-tracking file is new state with a write path nothing else in this framework requires — the same shape DECISION-036 already rejected for a persisted "rounds open" counter, for the same reason: it reconstructs an ordering or a boundary something else already gives for free.
+
+### Option C — Widen the existing declaration mechanism to the one artifact every round already writes unconditionally
+
+Adopted. `commands/next.md` Step 13 already requires every round — whether or not it closes an item, whether it runs `/next`, `/architect`, `/analyze`, `/feature`, or reaches an objective and stops — to write a `Next:` pointer, or state `none` and why. Pairing the proven `Findings this item did not fix:` mechanism with `Findings this round did not fix:` at that same guaranteed location covers every round shape with the identical mechanism, no new artifact, no new state to maintain.
+
+## Decision
+
+Adopt Option C.
+
+- `framework/commands/next.md` Step 13 → "Write The Next Pointer, Or Write That There Is None" requires `Findings this round did not fix:` immediately alongside every `Next:` pointer, naming the queued ids or `none`.
+- `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" states the round-scoped rule as the same required-declaration mechanism, moved to this artifact, and names why it also closes OF-61: the live `Next:` block is never itself a closed, archived entry while it is the current pointer, so this population cannot go structurally empty the way the item-scoped one can.
+- `.github/scripts/check_item_findings.py` is **extended, not replaced**: it still walks every closed item for the item-scoped declaration, and additionally finds the last `---`-delimited block in `PRODUCT/ROADMAP.md` that contains a `**Next:**` line and requires the paired declaration there. No twelfth guard file — DECISION-026's own "an improvement lands where the work is loaded" is satisfied by extending the guard that already owns this rule's mechanical half.
+
+## Reasoning
+
+**The live pointer is always exactly one thing, regardless of roadmap size.** A round writes one `Next:` pointer, superseding the previous one in place; the check always has exactly one current block to inspect, independent of how large the document has grown or how much of it is archived — which is precisely what the item-scoped population lost once archiving ran to completion.
+
+**Validating this change surfaced a second, independent defect, fixed in the same round because it directly blocked verification.** `check_item_findings.py`'s `OF_ID` and `QUEUE_ROW` regexes, and `check_future_actions.py`'s `CITES_ID` regex, all assumed exactly two-digit ids (`OF-\d{2}\b`). `PRODUCT/ROADMAP.md` OF-100 — the first three-digit id this roadmap has produced — silently failed to match: `\d{2}` consumed "10" and the trailing word-boundary check failed against the following "0", so a declaration citing OF-100 read as citing no id at all. Confirmed by running the extended guard against the live tree before this fix: it failed on exactly this. All three regexes widened to `\d{2,}`.
+
+## Alternatives Considered
+
+Options A and B above, both rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+OF-21 and OF-61 both close with one mechanism and zero new artifacts. The guard count stays at 13 rather than 14 (`ENGINEERING/ARCHITECTURE.md`'s own local net). The item-scoped check keeps its full historical value; the round-scoped check is what keeps this guard live once a roadmap the size of this one's is eventually archived in full.
+
+Negative, accepted:
+
+This does not cover a session that runs no command and never touches the `Next:` pointer at all — a thread that only answers a question and closes without invoking `/next` or updating the pointer still owes a disposition under `policies/documentation.md`'s own "Nothing Stays In The Thread" rule, and this mechanism cannot check that case, for the same "no scheduler, nothing observes a thread's own boundary" reason DECISION-038 already names for the `Observe` step's own limits. Left open rather than folded in silently — a session of that shape is still bound by the written rule, just not by this guard.
+
+Implementation: `framework/commands/next.md` Step 13; `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"; `.github/scripts/check_item_findings.py`; `.github/scripts/check_future_actions.py` (id-regex fix, found validating this change); `.github/workflows/ci.yml`. Origin: OF-21, OF-61.
+
+---
+
+# DECISION-052
+
+# Rejecting An Item Or Row Requires Its Own Citation Sweep, Declared In The Same Change
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-22, via `/architect` (bundled with OF-21/OF-61 and OF-27).
+
+Review Date:
+
+When a citation's phrasing on the item side becomes uniform enough to regex safely (see `PRODUCT/ROADMAP.md` OF-100's own finding about the reverse direction), reopening whether the inbound-reference side can also carry a mechanical check.
+
+---
+
+## Context
+
+Item 25 (`kenovis check`) was rejected 2026-08-12. Four guard docstrings kept citing it afterward as the plan that would eventually reach a customer, reading as scheduled, live work — for a full round. The four instances were fixed by hand in item 37's first round; the class was never made a rule, which `PRODUCT/ROADMAP.md` OF-22 named directly: a rejection is written into the rejected item itself and nothing walks the tree for inbound references to it, and a citation of the form "item N" or "OF-NN" asserts nothing about item N's current status on its face, so it cannot be wrong by inspection alone.
+
+## Options Considered
+
+### Option A — A guard walking the tree for citations, cross-checked against the cited entry's current disposition
+
+Rejected. Telling a citation that asserts liveness ("the plan that will reach a customer") from one that narrates history ("item 25 is rejected") is a judgment call on the surrounding prose, with no reliable pattern — the same class of guard this framework has already rejected twice, for `check_links.py` (item 6) and for detecting a finding inside narrative prose (item 8, and `check_item_findings.py`'s own docstring). A stale citation is not a structural fact like a broken relative link; it needs the sentence read.
+
+### Option B — The rejecting round runs the sweep and declares having run it
+
+Adopted. The round rejecting an item already knows the id, right now, at the one moment a mechanical search for it is cheap and precise. This is the same inversion `check_item_findings.py` already applies successfully: do not detect the omission after the fact, require the action's declaration at the moment it is possible.
+
+## Decision
+
+Adopt Option B.
+
+- `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" requires a `Citations swept:` line on every rejection, in the same change that rejects it — naming the grep command run across `company-os/` and `framework/`, and its result. `0` is a complete, valid answer.
+- `.github/scripts/check_rejection_citations.py` verifies the line's presence on every rejection that is still inline — i.e. not yet compacted to a `→ PRODUCT/ROADMAP-ARCHIVE.md` pointer by a later archive pass. Every rejection on record today (item 22, item 25, OF-16, OF-18, OF-20, OF-45b) predates this rule and is already compacted; the population is legitimately zero at the moment this decision lands, the same grandfather precedent DECISION-035 already set for existing rows not gaining Pain/Frequency/Cost retroactively.
+
+## Reasoning
+
+The sweep itself cannot be generalized into a guard without prose classification (Option A), but the *declaration that a sweep happened* can be checked exactly the way `Findings this item did not fix:` already is: a missing required line is exact, even though a plausible-but-incomplete one is not fully verifiable. This is the same honesty trade `check_item_findings.py`'s own docstring already accepts for its own declaration — it removes the silent path, which is the path item 25's own four stale citations actually took.
+
+## Alternatives Considered
+
+Option A, rejected above. Also considered: requiring every citing mention of "item N" to itself carry a live status check — rejected as the identical prose-classification problem approached from the other direction, and because most citations in this document set narrate history rather than assert liveness, so flagging all of them would be overwhelmingly false positives.
+
+## Consequences
+
+Positive:
+
+The one fix that already proved workable by hand (item 37's own sweep of item 25's four citations) becomes a standing rule instead of a one-off. Cheap: one required line, no new artifact beyond it.
+
+Negative, accepted:
+
+Like `Findings this item did not fix:`, this cannot verify the sweep was thorough — only that it was declared. A round could write `Citations swept: 0` without having actually run the grep. Accepted for the same reason `check_item_findings.py`'s own docstring already accepts the equivalent limit on its declaration: it is honest about being shallow, and what it removes is the silent path, which is the one that was actually being taken in the instance that produced this row.
+
+Implementation: `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"; `.github/scripts/check_rejection_citations.py`; `.github/workflows/ci.yml`. Origin: OF-22.
+
+---
+
+# DECISION-053
+
+# Root CLAUDE.md Restates, Never Originates, A Rule Meant For Every Installation
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-27, via `/architect` (bundled with OF-21/OF-61 and OF-22).
+
+Review Date:
+
+When root CLAUDE.md next restates framework-facing content beyond the routing table, or if DECISION-020's exemption is revisited.
+
+---
+
+## Context
+
+This repository's own root `CLAUDE.md` is not the `CLAUDE.md` any Installation receives: `kenovis init`/`add`/`sync` generate a minimal stub (`claudeStubContent`, `cli/src/domain/installation.ts`) pointing at `framework/SYSTEM.md`, and DECISION-020 exempts this repository's own root `CLAUDE.md` from that generation, because it carries real, repo-specific prose (Role, Repository Layers, the graphify instructions, the Session Initialization Protocol) a generated stub would discard. Nothing links the two files. `PRODUCT/ROADMAP.md` OF-27 named the consequence: a rule written into this repository's own root `CLAUDE.md`, thinking of it as this repository's constitution, reaches zero customers unless something else independently carries it to `installation.ts`.
+
+Investigating before designing a fix found a live instance, not a hypothetical one. The one rule that genuinely is meant to reach every Installation via its own `CLAUDE.md` — the finding-routing table, required by DECISION-027 to live in "the `CLAUDE.md` stub every Installation autoloads" — already made it into `installation.ts`'s generated stub. But only by hand: root `CLAUDE.md`'s own "Nothing Stays In The Thread" section and `installation.ts`'s routing constant are two independently hand-maintained copies of the same six-row table (verified: both list the same six `company-os/...` destinations, in the same order, in different prose — a markdown table versus a bullet list), with no mechanism keeping them in sync. This is a live instance of exactly the risk `policies/documentation.md` → "Single Source of Truth" already names for the policies themselves: "two copies of a rule do not stay identical: each is edited by whoever is looking at that file, neither reader opens the other."
+
+## Options Considered
+
+### Option A — Generate this repository's own root CLAUDE.md from its framework-level sections
+
+Rejected. DECISION-020 exempts root `CLAUDE.md` precisely because most of its content is hand-authored, repo-specific prose a generator would have no source for — generating it would either discard that content or require a generator sophisticated enough to preserve hand-authored prose verbatim alongside generated sections, which is not simpler than the file it replaces. Reopening DECISION-020's own exemption was not the finding in front of this round.
+
+### Option B — Stop treating root CLAUDE.md as a rule destination at all
+
+Rejected as too strong. The routing table legitimately needs to appear in root `CLAUDE.md`: every session working in this repository autoloads it (DECISION-010), exactly as every Installation's own session autoloads its generated stub. Removing the table from root `CLAUDE.md` to eliminate a drift risk would mean this repository's own sessions stop seeing the rule they are themselves supposed to follow — curing the disease by removing the patient.
+
+### Option C — Root CLAUDE.md may restate content whose canonical home is elsewhere, guarded structurally against drift
+
+Adopted. The canonical home of the routing table is `installation.ts`'s `claudeStubContent` — the text every Installation actually receives. Root `CLAUDE.md`'s copy is a required restatement, not a second origin; a structural CI comparison (the ordered list of destination paths each side names, not their wording) keeps the restatement honest without generating the file or removing content that belongs there.
+
+## Decision
+
+Adopt Option C.
+
+- `company-os/ENGINEERING/ARCHITECTURE.md` records the convention directly: root `CLAUDE.md` never originates a rule meant for every Installation. Such a rule is authored in `framework/` first (what `sync` actually delivers), or — for the one case that must appear verbatim inside every Installation's own autoloaded `CLAUDE.md` — in `claudeStubContent` itself. Root `CLAUDE.md` may restate either, briefly, under the same cite-don't-restate discipline this file already applies successfully to its own "Source Of Truth Hierarchy" section (fixed by DECISION-031: "This file does not restate it").
+- `.github/scripts/check_claude_stub_sync.py` guards the one restatement currently in force — the routing table — by extracting the ordered list of `company-os/...` destinations named in root `CLAUDE.md`'s "Nothing Stays In The Thread" section and in `installation.ts`'s non-pending routing block, and failing if the two orders diverge. No prose comparison: wording is expected to differ (a table versus a bullet list); destinations are not.
+
+## Reasoning
+
+Comparing destination order rather than wording is the right shape for the same reason `check_github_citations.py` and `check_links.py` stay structural: "does this path still route to the same place, in the same order" has no judgment in it, while "do these two paragraphs say the same thing" does. The guard is deliberately narrow — it checks the one table known to be duplicated, not a general claim that root `CLAUDE.md` and the generated stub never diverge elsewhere, because they are allowed to: most of root `CLAUDE.md`'s content has no customer-facing counterpart at all, by DECISION-020's own design.
+
+## Alternatives Considered
+
+Options A and B above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+The concrete drift risk this investigation found closes immediately — a future edit to either the table or the stub constant without the matching edit on the other side now fails CI instead of accumulating silently. The convention gives a future round somewhere to check before assuming new root-`CLAUDE.md` content reaches customers.
+
+Negative, accepted:
+
+The guard covers only the one restatement that exists today. A future round that restates new framework-facing content in root `CLAUDE.md` — rather than citing it briefly — reintroduces the same drift risk in a new place, and no generic mechanism catches that automatically; it needs the same discipline applied by hand, using this decision's own convention as the check. This decision records the convention as the durable defense and the guard as one instance of it, not a general-purpose drift detector across the whole file.
+
+Implementation: `company-os/ENGINEERING/ARCHITECTURE.md` → "CI Guards Are A Local Net, And Each One Names Its Framework-Layer Home"; `.github/scripts/check_claude_stub_sync.py`; `.github/workflows/ci.yml`. Origin: OF-27.
+
+---
+
+# DECISION-054
+
+# DECISION-036's Refine Target Is The Least-Recently-Touched `Open` Row, Not The Lowest Id
+
+Date:
+
+2026-08-19
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-99, via `/next`.
+
+Review Date:
+
+If a full sweep of the `Open` queue ever leaves every row tied on its own last-touched date (every row refined the same day), when the tiebreak alone stops being enough to pick one.
+
+---
+
+## Context
+
+DECISION-036 requires every `/next` round to refine exactly one row from `PRODUCT/ROADMAP.md` → "Open Findings" as a second action alongside its own objective, so that `Open` rows do not sit forever unrevisited — the gap OF-32 named as "the chain stops at capture." Its operative rule, restated in `commands/next.md` and `policies/documentation.md`, was "the lowest-id row still carrying `Open`," justified by the claim that ids are assigned in discovery order and never resequence, so the lowest surviving id is "by construction" the row that has gone longest without being touched.
+
+That justification silently assumes a row leaves the "oldest" position once refined. Nothing in the mechanism makes that true. Refining a row changes its text but not its id or its disposition if it stays `Open` — so a row that gets refined without closing keeps its id, remains the numerically lowest survivor, and is re-selected by the literal rule on every subsequent round, forever. `PRODUCT/ROADMAP.md` OF-02 is the live instance: refined 2026-08-18 and again 2026-08-19 under the literal rule, while OF-03, OF-04 and (until this round) OF-19 sat untouched since 2026-08-14 — five days stale — and could never be selected by a literal id reading regardless.
+
+The gap was already being worked around, not exercised as written. On 2026-08-19 alone, four separate rounds refined a row other than the literal lowest id — OF-71, OF-74, OF-75, OF-85 and OF-87 among them — each citing "lowest-id `Open` row untouched by any prior refinement pass" as its own justification, a criterion the decision's text never states. `PRODUCT/ROADMAP.md` OF-99 recorded this directly: the rule and the practice had diverged, and neither is wrong on its face, but only one can be the rule a CI-checkable, cite-by-id mechanism actually runs on.
+
+## Options Considered
+
+### Option A — Keep the literal lowest-id rule
+
+Rejected. It is not a proxy for "oldest untouched" in the one case that matters most: a row that stays `Open` after refinement, which is the normal case for any finding that needs more than one round to close (OF-02, OF-03, blocked on real external validation; OF-51/OF-62, blocked on a structural idea). Keeping it means accepting that such a row permanently monopolizes the Refine slot and every higher-id row is structurally unreachable through this mechanism — the opposite of what DECISION-036 was written to guarantee.
+
+### Option B — Codify "least-recently-touched," with a full-sweep tiebreak
+
+Adopted. Matches what rounds were already doing in practice on 2026-08-19, which is evidence the reading is usable without inventing new process: read each `Open` row's own most recent `Refined <date>` marker (or, for a row never yet refined, its Source column's discovery date), and pick the row whose date is oldest. No new field, counter or CI guard — every row already carries this date in prose, because DECISION-036 already requires refining to state when it happened. Tied rows (same date, including "never refined, discovered the same day") break by lowest id, which keeps the mechanism deterministic without a new tiebreak concept.
+
+### Option C — Add a persisted, structured `last_refined` field per row, machine-checked
+
+Rejected as more than the finding calls for. The table is prose, read by an AI each round, not by a script — DECISION-026 and OF-21's own reasoning already established that adding a guard here is premature while item 37 (CI-guard reach) is mid-flight, and every row already states its own refinement date in the sentence that describes the refinement, which is sufficient for a round to read directly. A structured field would duplicate information the prose already carries for no mechanical benefit, since nothing currently parses this table automatically.
+
+## Decision
+
+Adopt Option B. `commands/next.md` → "Refine The Oldest Open Row" and `policies/documentation.md`'s matching paragraph both now state the criterion directly: the `Open` row least recently touched, tied rows broken by lowest id — not the lowest-id row still carrying `Open`. Both cite this decision and DECISION-036 together, since this decision corrects DECISION-036's operative rule rather than replacing the requirement to refine at all.
+
+## Reasoning
+
+The original rule optimized for a property ids do not actually have once refinement re-touches a row without closing it. The corrected rule uses the property the mechanism actually needs — recency of last touch — read off information every row is already required to carry. It costs nothing new to compute and directly fixes the starvation failure mode OF-99 observed live: under it, this round's own Refine action selects OF-03 (tied with OF-04 at 2026-08-14, tiebreak to lowest id), not OF-02 (last touched 2026-08-19), which is the outcome DECISION-036 was meant to produce all along.
+
+## Alternatives Considered
+
+Options A and C above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+Every `Open` row now has a real path to being revisited by the Refine mechanism, proportional to how long it has actually sat untouched, rather than a row's id alone determining whether it can ever be selected. The four rounds that already used this reading in practice on 2026-08-19 are retroactively in compliance with the written rule rather than in quiet departure from it — no work is invalidated, only the rule catches up to what those rounds correctly judged the mechanism should do.
+
+Negative, accepted:
+
+The rule now requires a round to compare dates across several `Open` rows rather than scan for the lowest surviving id, a small increase in per-round reading cost. It also depends on every row continuing to state its own refinement date in prose, which is already required by DECISION-036 but not mechanically enforced — a row that omits its own date on a future refinement makes this decision's ordering ambiguous for that row, the same unenforced-prose risk the original rule already carried and Option C declined to close with a guard.
+
+Implementation: `framework/commands/next.md` → "Refine The Oldest Open Row"; `framework/policies/documentation.md` → the `Open`-finding-refinement paragraph. Origin: OF-99.
+
+---
+
+# DECISION-055
+
+# A Scheduled Queue Row's Own Citation Is What The Reverse-Drift Check Trusts, Not A New Declaration On The Item Side
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-100, via `/next`.
+
+Review Date:
+
+If the item-side citation phrasing (`Closes OF-N`, `closing OF-N`) is ever made uniform enough on its own terms to regex directly — at that point this decision's rejection of Option B below is worth re-opening.
+
+---
+
+## Context
+
+`check_item_findings.py` verifies the forward direction only: that a closed item declares the `OF-N` ids it left behind. Nothing verifies the reverse — that an `OF-N` queue row citing `Scheduled — item N` gets corrected to `Fixed` once item N actually closes. `PRODUCT/ROADMAP.md` OF-100 confirmed this drift by direct count, not estimate: it recurred five times in six days (OF-01, OF-42, OF-69, OF-92, OF-96), none caught mechanically, all found by a human re-reading the queue for an unrelated reason.
+
+OF-100's own row named the blocking question directly: which citation form is authoritative, since a guard can only regex a form uniform enough to trust. Two candidate forms exist, one on each side of the relationship — the closing item's own prose citing the row it resolved, and the queue row's own disposition text citing the item it is waiting on.
+
+## Options Considered
+
+### Option A — Trust the queue row's own `Scheduled — item N` citation, cross-checked against the item's own `DONE` state
+
+Adopted. Every row that reaches `Scheduled` is already written `**Scheduled — item N**` (or `**Scheduled — item N.**`) from DECISION-025 onward — the disposition vocabulary itself requires naming the item, so the citation already exists in a fixed, bolded, regex-safe form on every row this check needs to examine. No new prose convention, no new required line: the check reads what a round was already going to write when it scheduled the finding.
+
+### Option B — Require a structured `Closes: OF-N` declaration on every closing item, mirroring `Findings this item did not fix:`
+
+Rejected. This is the shape DECISION-051 already used successfully for the forward direction, so it was the first form considered — but the row's own text already ruled it out for the reverse direction: "the citation phrasing on the item side is not uniform enough yet to regex safely (`Closes OF-01`, `closing OF-96`, and no literal phrase at all — OF-42's own item 43 never named it, only this document's separate narrative did)." Requiring a *new* structured line going forward would fix future items but leaves every already-closed item's existing free-text citation exactly as unregexable as today, and the five confirmed instances are all already-closed items — Option B would not have caught any of them.
+
+### Option C — Detect drift by classifying the closing item's free-text prose for phrases like "Closes OF-N"
+
+Rejected on the same limit that already rejected guards for items 6 and 8: detecting a claim inside narrative prose has no reliable pattern, only a declaration does. This is the same reasoning DECISION-052 already applied to a rejected item's inbound citations — the side that already knows the fact in structured form is the side the check should trust, not the side stated in freehand prose.
+
+## Decision
+
+Adopt Option A. `.github/scripts/check_item_findings.py` gains a third check: for every Open Findings queue row whose own last bolded disposition word is `Scheduled`, read the item number cited immediately after it, and fail if that item's own heading is `DONE`. `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" states the same rule in prose, citing this decision and OF-100 together.
+
+## Reasoning
+
+The forward-direction check (DECISION-051) and this reverse-direction check are not symmetric, and forcing them into the same shape (a new required declaration on the item side) would have meant designing for a form of discipline the tree's own six-day, five-instance track record already shows does not hold reliably in free prose. The queue row's own citation is structured by construction — DECISION-025 already requires a scheduled row to name its item — so the cheaper, more reliable fix reads the citation that already exists rather than manufacturing a new one to keep in sync with it.
+
+## Alternatives Considered
+
+Options B and C above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+The five confirmed drift instances (OF-01, OF-42, OF-69, OF-92, OF-96) are exactly the shape this check now catches mechanically — verified live against a synthetic instance before this decision closed. No new prose convention is imposed on future rounds; the check reads a citation form that already existed.
+
+Negative, accepted:
+
+The check only fires once a row's own last status word is `Scheduled` — a row that skipped straight from `Open` to a stale `Fixed` claim with no `Scheduled` stage (not the shape any of the five confirmed instances took) would not be caught by this mechanism. That residual is not the problem OF-100 measured and is not manufactured a fix here.
+
+Implementation: `.github/scripts/check_item_findings.py`; `framework/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected". Origin: OF-100.
+
+---
+
+# DECISION-056
+
+# `development`'s Required Review Is Dropped To Zero; CI Becomes A Required Status Check For The First Time
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder — repository-settings call, presented per `commands/next.md` Step 3 → "When The Next Objective Is Not Yours To Execute", decided in-session.
+
+Review Date:
+
+If this repository ever gains a second maintainer or reviewer, at which point a non-zero required-approving-review-count becomes satisfiable again and worth reconsidering.
+
+---
+
+## Context
+
+`PRODUCT/ROADMAP.md` OF-19 named two separate facts about `development`'s branch protection, confirmed live against GitHub's own API before this decision: `required_pull_request_reviews.required_approving_review_count: 1` with `enforce_admins.enabled: false`, and no `required_status_checks` key at all. Together these meant every merge since `0.6.0` ran `gh pr merge --rebase --admin` as standard practice — not to bypass an occasional exception, but because the review requirement was unsatisfiable by construction (no second maintainer exists to provide it) — while the thirteen CI guard scripts were never wired into branch protection in the first place, so a *plain*, non-admin merge would not have been blocked by red CI either. The row framed the open question as "whether required reviews should stop being required for a solo maintainer," and named it a repository-settings call, not code — this decision is that call, made by the founder once the input was assembled and presented.
+
+## Options Considered
+
+### Option A — Leave both settings as they are
+
+Rejected. The review requirement protects nothing for a solo maintainer and only manufactures a bypass habit (`--admin` on every single merge, not as a deliberate exception); the missing status-check wiring means CI has been advisory-only regardless of the review question, which is the larger and previously under-examined half of OF-19's own finding.
+
+### Option B — Wire CI as a required status check, keep the review requirement at 1
+
+Rejected as the weaker of the two real options. It adds genuine enforcement (CI now blocks a red merge) but leaves the unsatisfiable review requirement in place, so `--admin` remains necessary on every merge regardless — the habit OF-19 named survives even though CI drift-protection improves.
+
+### Option C — Drop the required review to 0 and wire CI as a required status check
+
+Adopted. Removes the one control that could never be satisfied (there is no second reviewer) and replaces it with the one control that was never actually enforcing anything (CI). Net effect: a routine merge no longer needs `--admin` at all — `required_pull_request_reviews` is removed from `development`'s protection entirely, and `required_status_checks` now names both CI jobs (`Markdown links, markers, template references and artifact destinations`; `cli/ build, typecheck and tests`) with `strict: false`. `enforce_admins` stays `false`, unchanged — an admin override remains available as a deliberate emergency escape hatch, not removed, since nothing in OF-19's own question asked for that to disappear.
+
+## Decision
+
+Adopt Option C. `development`'s branch protection is reconfigured via the GitHub API: `required_pull_request_reviews` → `null` (removed); `required_status_checks` → `{"strict": false, "checks": [{"context": "Markdown links, markers, template references and artifact destinations"}, {"context": "cli/ build, typecheck and tests"}]}`; every other existing setting (`required_linear_history`, `allow_force_pushes: false`, `allow_deletions: false`, `block_creations: false`, `required_conversation_resolution: true`, `lock_branch: false`, `allow_fork_syncing: false`, `enforce_admins: false`) preserved unchanged. Applied and verified live against the API before this decision closed.
+
+## Reasoning
+
+OF-19's own row already isolated the actionable question precisely: the review half was correctly diagnosed as unsatisfiable, the checks half was previously unexamined and turned out to be the real gap. Fixing only the review half (dropping it without adding checks) would remove `--admin`'s necessity but leave merges with no CI gate at all — worse than today in one respect even while fixing the habit. Fixing only the checks half (Option B) leaves the habit. Only doing both closes the actual gap OF-19 measured: a routine merge is now blocked by red CI, with no `--admin` needed to get past a control nobody was providing anyway.
+
+## Alternatives Considered
+
+Options A and B above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+`gh pr merge --rebase` (no `--admin`) now succeeds once CI is green, for the first time since `0.6.0` — the routine merge path finally has to pass the guards that were written to protect it. `--admin` becomes a genuine, visible exception again rather than the standard command, if it is ever used at all going forward.
+
+Negative, accepted:
+
+`enforce_admins: false` means an admin override can still merge past red CI in a genuine emergency — the "difficult," not "impossible," bar `PRODUCT/OPERATING_MODEL.md` Conformance §15 already names as the architectural ceiling here (DECISION-037: no runtime enforcement point exists under DECISION-010/DECISION-013). This decision does not attempt to close that residual; §15's other named gap (item 37, CI reach across Installations) is untouched by a change scoped to this repository's own GitHub settings.
+
+Implementation: `development` branch protection (GitHub repository settings, not code — no `framework/` or `cli/` file changed). Origin: OF-19.
+
+---
+
+# DECISION-057
+
+# DECISION-054's Refine Tiebreak Gains A Sub-Day Second Stage: Fewest Same-Day `Refined` Markers, Then Lowest Id
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-102, via `/next`.
+
+Review Date:
+
+If the sub-day tiebreak itself ever ties (two rows with the same today's-date `Refined` count), at which point a third stage would be needed and is not designed here.
+
+---
+
+## Context
+
+DECISION-054 corrected DECISION-036's Refine mechanism from "lowest-id `Open` row" to "least-recently-touched `Open` row, tied rows broken by lowest id" — reading each row's own `Refined <date>` marker, oldest wins. Its own `Review Date` field named the condition that would break it: "if a full sweep of the `Open` queue ever leaves every row tied on its own last-touched date... when the tiebreak alone stops being enough to pick one." That condition fired the same day the decision was written: on 2026-08-21, seven separate `/next` rounds each refined a different `Open` row, and by the eighth round every remaining `Open` row (OF-02, OF-03, OF-04, OF-30, OF-64, OF-87, and OF-102 itself once opened) carried a `Refined 2026-08-21` marker — tied on calendar-date granularity. From that point, the id-only tiebreak re-selected OF-02 (the lowest id among them) for every subsequent round of the day, each producing no new premise to report — `policies/documentation.md`'s own "restating unchanged is not refinement" rule flags exactly this as a defect, not a compliant outcome.
+
+`PRODUCT/ROADMAP.md` OF-102 recorded the live instance. Confirmed empirically before this decision: counting each `Open` row's own `Refined 2026-08-21` occurrences gave OF-02 → 2, every other row → 1 — so a tiebreak that prefers fewer same-day touches would have selected OF-03 instead, the outcome DECISION-054 was written to produce.
+
+## Options Considered
+
+### Option A — Keep the id-only tiebreak, accept the intra-day repeat
+
+Rejected. It reproduces, bounded to one calendar day, the exact monopolization DECISION-054 was written to end at the id-forever scope — a row refined with nothing new to say still consumes the round's one Refine action, and every other tied row stays unreachable through this mechanism for the rest of the day.
+
+### Option B — A persisted, structured per-row counter or ordering field
+
+Rejected, for the same reason DECISION-054's own Option C rejected it: the queue is prose, read by an AI each round, not parsed by a script — item 37 (CI-guard reach) is still mid-flight and DECISION-026/OF-21 already forbid adding mechanism ahead of it. A structured field would duplicate what the row's own prose already states.
+
+### Option C — Cross-reference the document's own narrative append order
+
+Rejected as more design than the finding needs right now. `PRODUCT/ROADMAP.md`'s round-by-round narrative blocks are chronological and could in principle rank same-day rows by which round's narrative most recently named them — but that narrative lives in a different part of the document from the table row it would resolve, and keeping the two aligned correctly is a real cross-referencing problem, not a one-line rule. OF-102's own text already flagged this option as needing a real design pass; Option D below reaches the same practical result without it.
+
+### Option D — Second tiebreak stage: fewest same-day `Refined` markers already on the row, then lowest id
+
+Adopted. Extends DECISION-054's own method rather than replacing it: count the row's own already-written `Refined <today's date>` occurrences (a plain `grep -o` over prose already required to exist by DECISION-036), ascending — the row touched fewer times today wins. If that also ties, fall back to lowest id, same as before. No new field, no new counter, no cross-referencing a second document section: it reads the identical prose DECISION-054 already reads, one level more finely.
+
+## Decision
+
+Adopt Option D. `framework/commands/next.md` → "Refine The Oldest Open Row" and `framework/policies/documentation.md`'s matching paragraph both state the two-stage tiebreak: same-date-tied rows are broken first by fewest `Refined <today's date>` markers already on the row (ascending), then by lowest id. Both cite this decision alongside DECISION-036 and DECISION-054, since this decision extends DECISION-054's tiebreak rather than replacing the least-recently-touched criterion itself.
+
+## Reasoning
+
+DECISION-054 fixed the cross-day case (a row refined-but-not-closed no longer monopolizes the mechanism across multiple days) but left the same-day case using a tiebreak — lowest id — that carries no information about which row has already had this round's attention today. Counting today's own markers does carry that information, is already sitting in every row's own text, and directly produces the outcome DECISION-054's Reasoning section already argued for: the mechanism should pick up the row that has waited longest for attention, at whatever granularity the queue can actually distinguish.
+
+## Alternatives Considered
+
+Options A, B and C above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+A same-day sweep of the `Open` queue no longer collapses into repeating the lowest-id row once every row is date-tied — this round's own Refine action, applying the new rule to the live state that motivated it, selects OF-03 rather than OF-02, matching the empirical check above. The mechanism keeps working exactly as DECISION-054 intended even under the high-concurrency condition that first broke its single-stage tiebreak.
+
+Negative, accepted:
+
+A round now compares two figures (last-refined date, then same-day marker count) rather than one, a further small increase in per-round reading cost on top of the one DECISION-054 already accepted. It still depends on unenforced prose — a row that omits its own date on a refinement makes both this decision's and DECISION-054's ordering ambiguous for that row, the same risk Option C (there and here) declined to close with a guard.
+
+Implementation: `framework/commands/next.md` → "Refine The Oldest Open Row"; `framework/policies/documentation.md` → the `Open`-finding-refinement paragraph. Origin: OF-102.
+
+---
+
+# DECISION-058
+
+# Item 33 Stays Parked Even With The Internal Queue Exhausted, Founder-Confirmed Rather Than Assumed
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+None set — stays parked until the founder gives a new condition or pursues it directly; no calendar trigger applies.
+
+---
+
+## Context
+
+Two consecutive `/next` rounds this same day reached the same conclusion: every `Open Findings` row is non-actionable (OF-02/OF-03 blocked on item 33 itself, OF-04 a practiced discipline rather than a task, OF-30 waiting on a future validating session, OF-64 nothing to merge, OF-87 deliberately unranked), and item 33 (real external validation) is the only remaining `SCHEDULED` item. DECISION-041 already ranked item 33 last, unconditionally, below all internal work — but it did not say what happens once internal work runs out entirely, which is what actually occurred this round. The first round presented the ambiguity directly rather than assume either reading: does "ranks last" mean item 33 becomes next by elimination once nothing internal remains, or does it stay parked regardless, awaiting the founder's own move to source an external team? Put to the founder as a direct choice (pursue it now, leave it parked, or name a different condition).
+
+Founder's answer: leave it parked, no new condition supplied.
+
+## Decision
+
+Item 33 does not auto-trigger when the internal `Open Findings` queue empties. It stays exactly where DECISION-041 left it — ranked last, blocked on the founder's own act of sourcing a real external team — with no calendar date, roadmap state, or queue condition that reactivates it on its own. It moves only when the founder decides to pursue it directly.
+
+## Reasoning
+
+`PRODUCT/OPERATING_MODEL.md` Addendum B holds that the founder decides and does not search; sourcing an external team is exactly the kind of distribution/GTM act that Addendum reserves to the founder, not something `/next` can execute or manufacture a trigger for on the founder's behalf. Leaving item 33 to auto-trigger on queue-exhaustion would have made an engineering mechanism (the priority formula emptying out) stand in for a business decision (whether now is the moment to pursue external validation) — the same category error DECISION-029 already rejected once for "every finding becomes `SCHEDULED` at discovery" and item 32 rejected for treating OF-12 as a decision instead of work. Asking directly, rather than assuming either reading of "ranks last," keeps the business call with the person who owns it.
+
+## Alternatives Considered
+
+**Auto-promote item 33 once the internal queue is empty.** Rejected — it would have let a structural condition (nothing else left) make a business decision (source external users now) without the founder's own input, exactly backwards from Addendum B.
+
+**Leave the ambiguity unresolved and let each round re-derive its own reading.** Rejected — two consecutive rounds already reached the same fork and would have kept re-asking or, worse, drifted toward one reading by default without it ever being a decision. Asking once and recording the answer is cheaper than re-deriving it indefinitely.
+
+## Consequences
+
+Positive: the next `/next` round (and any concurrent one) reads this decision instead of re-presenting the same question — a round with nothing else to do performs Observe and Refine and reports no change, rather than re-litigating item 33 each time. The ambiguity DECISION-041 left open is now closed by the same authority (the founder) rather than by whichever round happened to reach it first.
+
+Negative, accepted: no calendar trigger exists to prompt revisiting this — if the founder's circumstances change, nothing in the mechanism itself will surface that; it depends on the founder raising it, consistent with Addendum B's own "founder decides" model rather than a mechanism watching for it.
+
+Implementation: none — no code or framework change. `PRODUCT/ROADMAP.md` item 33 and its `Next:` pointer record the founder's answer. Origin: this round's own presentation of the item-33 decision.
+
+---
+
+# DECISION-059
+
+# Lowest Id Is The Refine Tiebreak's Terminal Stage; A Saturated No-Op Re-Check Writes A Compact Form, Not A New Paragraph
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-103, via `/next`.
+
+Review Date:
+
+None set. This decision declares the tiebreak closed rather than open a further stage — see Reasoning. Revisit only if a future round finds the rotation itself, not its cost, is actually broken (a row genuinely starved despite ties, not merely repeated).
+
+---
+
+## Context
+
+DECISION-057's own `Review Date` field named the exact condition that fired next: "if the sub-day tiebreak itself ever ties... a third stage would be needed and is not designed here." It fired the same day DECISION-057 shipped — a second full sweep of the `Open Findings` queue left every genuinely-`Open` row (OF-02, OF-03, OF-04, OF-30, OF-64, OF-87) tied at 2 same-day `Refined` markers each, and the tiebreak fell through to lowest id (OF-02) a third time that day. `PRODUCT/ROADMAP.md` OF-103 recorded the live instance and named three candidate answers without picking one: order by time-of-day if the harness ever records one; a persisted per-row rotation counter; or explicitly widen Refine's expected cadence so a saturated repeat is not read as a defect.
+
+Re-examined directly rather than assumed: does the tiebreak actually fail to rotate through the queue, or does it already rotate correctly and the complaint is about something else? Traced by hand: DECISION-057's own mechanism (fewest same-day markers, ascending) already hands the next round to whichever tied row has been touched fewest times today — picking a row raises its own count, which removes it from "fewest" until every other tied row catches up. A full sweep tying again is that rotation completing another lap, not the mechanism breaking. The actual, confirmed cost was different: `OF-02`, the row lowest id keeps selecting once every row is fully tied, had by this point accumulated three near-duplicate "still `Open`, no premise change" paragraphs from three same-day passes — real byte weight added to `PRODUCT/ROADMAP.md`, which `PRODUCT/OPERATING_MODEL.md` Conformance row 14 already tracks as over its own size threshold (structurally passing only via its registered archive split, not by being small).
+
+## Options Considered
+
+### Option A — Third tiebreak stage: order by time-of-day
+
+Rejected. No reliable, comparable wall-clock timestamp exists across the sessions and tools this framework is built to be agnostic to (DECISION-010) — a round's own sense of "now" is not a mechanism property, and two genuinely concurrent rounds could tie there too, reproducing the same problem one level finer rather than closing it.
+
+### Option B — A persisted, structured per-row rotation counter
+
+Rejected, for the same reason DECISION-054's Option C and DECISION-057's Option B already rejected it: the queue is prose an AI reads each round, not a field a script parses — item 37 (CI-guard reach) is still mid-flight and DECISION-026/OF-21 already forbid adding mechanism ahead of it. A third rejection of the identical option is itself evidence the framework's own bias (prose over new state) is holding, not that the option deserves re-litigating a fourth time.
+
+### Option C — Declare lowest id the terminal stage; replace the saturated no-op paragraph with a compact form
+
+Adopted. The tiebreak was never broken — traced above, it already rotates fairly — so no new stage is owed. What needed fixing was the paragraph-per-pick cost once saturation makes the same row land twice or more in one day: a round whose premise re-check finds no change since that row's own most recent refinement writes `**Checked <today's date>, no change — see <date> refinement above.**` instead of a new full paragraph. This still satisfies `PRODUCT/OPERATING_MODEL.md` §1's `REFINE` step — the premise is re-checked against the current tree, not carried over unread — while removing the actual cost OF-103 measured. A full paragraph stays required the moment anything substantive changes (a new run landed, a dimension shifted, the row is promoted or re-dispositioned).
+
+## Decision
+
+Adopt Option C. `framework/commands/next.md` → "Refine The Oldest Open Row" and `framework/policies/documentation.md`'s matching paragraph both state: once DECISION-054's date-stage and DECISION-057's same-day-marker-count stage tie, lowest id is the terminal tiebreak — no third stage exists or is needed. A round landing on a row purely by that saturation, whose premise re-check finds no change, records it in the compact form rather than a new full paragraph.
+
+## Reasoning
+
+OF-103 diagnosed a symptom (the same row getting picked repeatedly, each pick adding prose) as if it were the tiebreak's own defect, the same shape DECISION-054 and DECISION-057 each corrected — but this time the mechanism, traced directly rather than assumed, is not actually starving anything: every tied row still gets fair rotation, because being picked raises a row's own count out of "fewest." The real cost was `policies/documentation.md`'s own requirement that refining changes the row's text, read as requiring a full new paragraph even when a re-check's honest answer is "still true, nothing new" — which is exactly the condition a compact form is for, and exactly the growth pattern already weighing on the document this mechanism lives in (item 14). Fixing the actual cost rather than adding a fourth stage to a tiebreak that already works keeps the framework's own bias — simplicity over complexity, no mechanism ahead of need (DECISION-026, DECISION-054 Option C, DECISION-057 Option B) — intact rather than making OF-103 the fourth time in a row that bias gets exercised as a rejection of new machinery without also asking whether new machinery was the right frame at all.
+
+## Alternatives Considered
+
+Options A and B above, rejected for the reasons stated.
+
+## Consequences
+
+Positive: no new mechanism, field, or CI guard. The tiebreak is documented as closed rather than left open-ended (three successive decisions each deferring "what happens if this ties again" is itself a pattern worth ending). `PRODUCT/ROADMAP.md` stops accumulating a new near-duplicate paragraph every time a saturated sweep re-lands on the same row, which directly serves item 14's own tracked growth problem without a dedicated archive-move round.
+
+Negative, accepted: a row's own history becomes slightly harder to read at a glance — a compact `Checked <date>, no change` line requires looking at the paragraph it points back to for the actual reasoning, rather than every entry being self-contained. Judged acceptable: the alternative (a new full paragraph restating the same conclusion) is *why* the row grew large enough to be a problem in the first place, so the trade is the entire point of this decision, not an incidental cost of it.
+
+Implementation: `framework/commands/next.md` → "Refine The Oldest Open Row"; `framework/policies/documentation.md` → the `Open`-finding-refinement paragraph. Verified live in the same round this decision was written: applying the compact form to `OF-02` (the row DECISION-057's tiebreak selects under the tied state that motivated this decision) — see that row's own text. Origin: OF-103.
 
 ---
 

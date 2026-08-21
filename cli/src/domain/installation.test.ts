@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   AlreadyInstalledError,
   BrownfieldDetectedError,
+  buildCoexistingClaudeMdContent,
   claudeStubContent,
   detectInstallationKind,
   ExistingClaudeMdError,
@@ -15,11 +16,18 @@ import {
   invalidFrameworkSourceEntries,
   isClaudeMdSafeToOverwrite,
   isKenovisManagedClaudeStub,
+  isKenovisManagedCommandWrapper,
+  resolveClaudeMdWrite,
+  splitCoexistingClaudeMd,
   CLAUDE_MD_HASH_FILENAME,
   FRAMEWORK_VERSION_FILENAME,
   parseFrameworkVersion,
+  parseToolsMarker,
   SETUP_PENDING_FILENAME,
   setupPendingContent,
+  toolsMarkerContent,
+  TOOLS_MARKER_FILENAME,
+  DEFAULT_TOOLS,
 } from "./installation.js";
 
 test("claudeStubContent points at .kenovis/AI/SYSTEM.md", () => {
@@ -109,7 +117,34 @@ test("installationKindFromSetupPending returns null for a marker this CLI never 
 
 test("INSTALL_TIME_OWNED_ENTRIES covers every file the CLI writes inside .kenovis/", () => {
   const covered = [...INSTALL_TIME_OWNED_ENTRIES.preserved, ...INSTALL_TIME_OWNED_ENTRIES.rewritten];
-  assert.deepEqual(covered.sort(), [SETUP_PENDING_FILENAME, CLAUDE_MD_HASH_FILENAME].sort());
+  assert.deepEqual(
+    covered.sort(),
+    [SETUP_PENDING_FILENAME, CLAUDE_MD_HASH_FILENAME, TOOLS_MARKER_FILENAME].sort(),
+  );
+});
+
+test("toolsMarkerContent/parseToolsMarker round-trip a tool id list", () => {
+  const content = toolsMarkerContent(["claude", "cursor"]);
+  assert.deepEqual(parseToolsMarker(content), ["claude", "cursor"]);
+});
+
+test("parseToolsMarker returns null for blank content, so the caller falls back to DEFAULT_TOOLS", () => {
+  assert.equal(parseToolsMarker(""), null);
+  assert.equal(parseToolsMarker("\n\n"), null);
+});
+
+test("DEFAULT_TOOLS is claude alone, matching DECISION-010's named primary tool", () => {
+  assert.deepEqual([...DEFAULT_TOOLS], ["claude"]);
+});
+
+test("isKenovisManagedCommandWrapper recognizes a generated wrapper and rejects a customer's own file", () => {
+  assert.ok(
+    isKenovisManagedCommandWrapper(
+      "<!-- kenovis:managed-command-wrapper -->\n---\ndescription: x\n---\n",
+    ),
+  );
+  assert.equal(isKenovisManagedCommandWrapper("# My own custom command\n\nDo something else.\n"), false);
+  assert.equal(isKenovisManagedCommandWrapper(""), false);
 });
 
 test("BrownfieldDetectedError cites the evidence and points at kenovis add", () => {
@@ -166,6 +201,86 @@ test("isClaudeMdSafeToOverwrite with no recorded hash falls back to the marker-p
   assert.equal(isClaudeMdSafeToOverwrite("# My Project\n", null), false);
 });
 
+test("splitCoexistingClaudeMd returns null for a plain stub or a foreign file with no boundary", () => {
+  assert.equal(splitCoexistingClaudeMd(claudeStubContent({ pending: false })), null);
+  assert.equal(splitCoexistingClaudeMd("# My Project\n\nDo whatever you want.\n"), null);
+});
+
+test("buildCoexistingClaudeMdContent and splitCoexistingClaudeMd round-trip byte-stable", () => {
+  const preserved = "# My Project\n\nMy own instructions.\n";
+  const stub = claudeStubContent({ pending: false });
+
+  const combined = buildCoexistingClaudeMdContent(preserved, stub);
+  assert.match(combined, /My own instructions\./);
+  assert.match(combined, /# Kenovis AI-OS/);
+  // The customer's content comes first — this CLI is the guest, appending
+  // to a file it did not create.
+  assert.ok(combined.indexOf("My own instructions") < combined.indexOf("# Kenovis AI-OS"));
+
+  const split = splitCoexistingClaudeMd(combined);
+  assert.ok(split !== null);
+  assert.equal(split.preserved, preserved.replace(/\n+$/, ""));
+  assert.equal(split.kenovisBlock, stub);
+
+  // Re-splitting a re-joined result changes nothing — no whitespace creep
+  // across repeated syncs.
+  const rejoined = buildCoexistingClaudeMdContent(split.preserved, split.kenovisBlock);
+  assert.deepEqual(splitCoexistingClaudeMd(rejoined), split);
+});
+
+test("resolveClaudeMdWrite overwrites when the existing file is already exactly a Kenovis-managed stub", () => {
+  const existing = claudeStubContent({ pending: false });
+  const newStub = claudeStubContent({ pending: true, kind: "brownfield" });
+  const recordedHash = hashClaudeMdContent(existing);
+
+  const resolution = resolveClaudeMdWrite(existing, recordedHash, newStub);
+
+  assert.deepEqual(resolution, {
+    action: "written",
+    content: newStub,
+    hashedBlock: hashClaudeMdContent(newStub),
+  });
+});
+
+test("resolveClaudeMdWrite coexists with a foreign file it has never seen before, preserving it verbatim", () => {
+  const existing = "# My Project\n\nMy own instructions.\n";
+  const newStub = claudeStubContent({ pending: false });
+
+  const resolution = resolveClaudeMdWrite(existing, null, newStub);
+
+  assert.equal(resolution.action, "coexisted");
+  if (resolution.action !== "coexisted") throw new Error("unreachable");
+  assert.equal(resolution.content, buildCoexistingClaudeMdContent(existing, newStub));
+  assert.equal(resolution.hashedBlock, hashClaudeMdContent(newStub));
+});
+
+test("resolveClaudeMdWrite re-merges a coexistence file whose Kenovis block is unchanged, carrying the preserved content forward untouched", () => {
+  const preserved = "# My Project\n\nMy own instructions.\n";
+  const oldStub = claudeStubContent({ pending: true, kind: "brownfield" });
+  const existing = buildCoexistingClaudeMdContent(preserved, oldStub);
+  const recordedHash = hashClaudeMdContent(oldStub);
+  const newStub = claudeStubContent({ pending: false });
+
+  const resolution = resolveClaudeMdWrite(existing, recordedHash, newStub);
+
+  assert.equal(resolution.action, "coexisted");
+  if (resolution.action !== "coexisted") throw new Error("unreachable");
+  assert.equal(resolution.content, buildCoexistingClaudeMdContent(preserved, newStub));
+  assert.equal(resolution.hashedBlock, hashClaudeMdContent(newStub));
+});
+
+test("resolveClaudeMdWrite refuses when a coexistence file's own Kenovis block was hand-edited since it was written", () => {
+  const preserved = "# My Project\n\nMy own instructions.\n";
+  const oldStub = claudeStubContent({ pending: true, kind: "brownfield" });
+  const recordedHash = hashClaudeMdContent(oldStub);
+  const handEdited = buildCoexistingClaudeMdContent(preserved, `${oldStub}\nHand-edited.\n`);
+  const newStub = claudeStubContent({ pending: false });
+
+  const resolution = resolveClaudeMdWrite(handEdited, recordedHash, newStub);
+
+  assert.deepEqual(resolution, { action: "refused" });
+});
+
 test("ExistingClaudeMdError names the path and mentions --force", () => {
   const error = new ExistingClaudeMdError("/repo/CLAUDE.md");
   assert.equal(error.claudeMdPath, "/repo/CLAUDE.md");
@@ -217,6 +332,11 @@ test("invalidFrameworkSourceEntries accepts an empty directory", () => {
 
 test("invalidFrameworkSourceEntries ignores dotfiles/dot-directories", () => {
   const unexpected = invalidFrameworkSourceEntries(["AI", "README.md", ".git", ".DS_Store"]);
+  assert.deepEqual(unexpected, []);
+});
+
+test("invalidFrameworkSourceEntries accepts tool-adapters/ alongside AI/ and README.md (DECISION-046)", () => {
+  const unexpected = invalidFrameworkSourceEntries(["AI", "README.md", "tool-adapters"]);
   assert.deepEqual(unexpected, []);
 });
 
