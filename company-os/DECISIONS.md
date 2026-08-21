@@ -69,6 +69,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-054** ‡★ — DECISION-036's Refine Target Is The Least-Recently-Touched `Open` Row, Not The Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-99: "lowest surviving id" was the original proxy for "oldest untouched row," and the equivalence only held if a refined-but-still-`Open` row stopped being the lowest id once touched — it does not, so a row refined without closing keeps re-winning the literal reading forever and starves every higher-id row. `commands/next.md` and `policies/documentation.md` now name the actual criterion directly: each row's own most recent `Refined <date>` (or discovery date, if never refined), oldest first, tied rows broken by lowest id — codifying what four rounds had already done by hand on 2026-08-19 without amending the rule they cited.
 - **DECISION-055** ★ — A Scheduled Queue Row's Own Citation Is What The Reverse-Drift Check Trusts, Not A New Declaration On The Item Side. Closes `PRODUCT/ROADMAP.md` OF-100: `check_item_findings.py` verified only that a closed item declares the ids it left behind, never the reverse — that an `OF-N` row citing `Scheduled — item N` gets corrected to `Fixed` once item N closes, a drift confirmed five times in six days. Rejects a new structured `Closes:` line on the item side (the existing item-side phrasing is not uniform enough to regex, and every instance was already-closed prose that a new going-forward line would not retroactively fix) in favor of trusting the queue row's own already-structured `**Scheduled — item N**` citation, cross-checked against that item's `DONE` state — no new prose convention required.
 - **DECISION-056** — `development`'s Required Review Is Dropped To Zero; CI Becomes A Required Status Check For The First Time. Closes `PRODUCT/ROADMAP.md` OF-19, founder decision: `required_pull_request_reviews` (unsatisfiable for a solo maintainer) is removed from `development`'s branch protection, and the 13 CI guard scripts — never previously wired as `required_status_checks` — are added as a required check with `strict: false`. A routine `gh pr merge --rebase` (no `--admin`) now succeeds once CI is green for the first time since `0.6.0`; `enforce_admins` stays `false` unchanged, so an admin override remains as a deliberate emergency escape hatch, not removed.
+- **DECISION-057** ‡★ — DECISION-054's Refine Tiebreak Gains A Sub-Day Second Stage: Fewest Same-Day `Refined` Markers, Then Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-102: a full same-day sweep of the `Open` queue leaves every row tied on calendar-date granularity, and DECISION-054's own "tied rows break by lowest id" then re-selects the same row (OF-02) for the rest of that day with no new premise to report; the fix counts each row's own already-written `Refined <today's date>` markers (fewer wins, tied to lowest id) rather than adding a persisted field or cross-referencing the document's narrative order, both rejected as more infrastructure than the finding calls for.
 
 ---
 
@@ -4232,6 +4233,78 @@ Negative, accepted:
 `enforce_admins: false` means an admin override can still merge past red CI in a genuine emergency — the "difficult," not "impossible," bar `PRODUCT/OPERATING_MODEL.md` Conformance §15 already names as the architectural ceiling here (DECISION-037: no runtime enforcement point exists under DECISION-010/DECISION-013). This decision does not attempt to close that residual; §15's other named gap (item 37, CI reach across Installations) is untouched by a change scoped to this repository's own GitHub settings.
 
 Implementation: `development` branch protection (GitHub repository settings, not code — no `framework/` or `cli/` file changed). Origin: OF-19.
+
+---
+
+# DECISION-057
+
+# DECISION-054's Refine Tiebreak Gains A Sub-Day Second Stage: Fewest Same-Day `Refined` Markers, Then Lowest Id
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+AI — engineering, closing `PRODUCT/ROADMAP.md` OF-102, via `/next`.
+
+Review Date:
+
+If the sub-day tiebreak itself ever ties (two rows with the same today's-date `Refined` count), at which point a third stage would be needed and is not designed here.
+
+---
+
+## Context
+
+DECISION-054 corrected DECISION-036's Refine mechanism from "lowest-id `Open` row" to "least-recently-touched `Open` row, tied rows broken by lowest id" — reading each row's own `Refined <date>` marker, oldest wins. Its own `Review Date` field named the condition that would break it: "if a full sweep of the `Open` queue ever leaves every row tied on its own last-touched date... when the tiebreak alone stops being enough to pick one." That condition fired the same day the decision was written: on 2026-08-21, seven separate `/next` rounds each refined a different `Open` row, and by the eighth round every remaining `Open` row (OF-02, OF-03, OF-04, OF-30, OF-64, OF-87, and OF-102 itself once opened) carried a `Refined 2026-08-21` marker — tied on calendar-date granularity. From that point, the id-only tiebreak re-selected OF-02 (the lowest id among them) for every subsequent round of the day, each producing no new premise to report — `policies/documentation.md`'s own "restating unchanged is not refinement" rule flags exactly this as a defect, not a compliant outcome.
+
+`PRODUCT/ROADMAP.md` OF-102 recorded the live instance. Confirmed empirically before this decision: counting each `Open` row's own `Refined 2026-08-21` occurrences gave OF-02 → 2, every other row → 1 — so a tiebreak that prefers fewer same-day touches would have selected OF-03 instead, the outcome DECISION-054 was written to produce.
+
+## Options Considered
+
+### Option A — Keep the id-only tiebreak, accept the intra-day repeat
+
+Rejected. It reproduces, bounded to one calendar day, the exact monopolization DECISION-054 was written to end at the id-forever scope — a row refined with nothing new to say still consumes the round's one Refine action, and every other tied row stays unreachable through this mechanism for the rest of the day.
+
+### Option B — A persisted, structured per-row counter or ordering field
+
+Rejected, for the same reason DECISION-054's own Option C rejected it: the queue is prose, read by an AI each round, not parsed by a script — item 37 (CI-guard reach) is still mid-flight and DECISION-026/OF-21 already forbid adding mechanism ahead of it. A structured field would duplicate what the row's own prose already states.
+
+### Option C — Cross-reference the document's own narrative append order
+
+Rejected as more design than the finding needs right now. `PRODUCT/ROADMAP.md`'s round-by-round narrative blocks are chronological and could in principle rank same-day rows by which round's narrative most recently named them — but that narrative lives in a different part of the document from the table row it would resolve, and keeping the two aligned correctly is a real cross-referencing problem, not a one-line rule. OF-102's own text already flagged this option as needing a real design pass; Option D below reaches the same practical result without it.
+
+### Option D — Second tiebreak stage: fewest same-day `Refined` markers already on the row, then lowest id
+
+Adopted. Extends DECISION-054's own method rather than replacing it: count the row's own already-written `Refined <today's date>` occurrences (a plain `grep -o` over prose already required to exist by DECISION-036), ascending — the row touched fewer times today wins. If that also ties, fall back to lowest id, same as before. No new field, no new counter, no cross-referencing a second document section: it reads the identical prose DECISION-054 already reads, one level more finely.
+
+## Decision
+
+Adopt Option D. `framework/commands/next.md` → "Refine The Oldest Open Row" and `framework/policies/documentation.md`'s matching paragraph both state the two-stage tiebreak: same-date-tied rows are broken first by fewest `Refined <today's date>` markers already on the row (ascending), then by lowest id. Both cite this decision alongside DECISION-036 and DECISION-054, since this decision extends DECISION-054's tiebreak rather than replacing the least-recently-touched criterion itself.
+
+## Reasoning
+
+DECISION-054 fixed the cross-day case (a row refined-but-not-closed no longer monopolizes the mechanism across multiple days) but left the same-day case using a tiebreak — lowest id — that carries no information about which row has already had this round's attention today. Counting today's own markers does carry that information, is already sitting in every row's own text, and directly produces the outcome DECISION-054's Reasoning section already argued for: the mechanism should pick up the row that has waited longest for attention, at whatever granularity the queue can actually distinguish.
+
+## Alternatives Considered
+
+Options A, B and C above, rejected for the reasons stated.
+
+## Consequences
+
+Positive:
+
+A same-day sweep of the `Open` queue no longer collapses into repeating the lowest-id row once every row is date-tied — this round's own Refine action, applying the new rule to the live state that motivated it, selects OF-03 rather than OF-02, matching the empirical check above. The mechanism keeps working exactly as DECISION-054 intended even under the high-concurrency condition that first broke its single-stage tiebreak.
+
+Negative, accepted:
+
+A round now compares two figures (last-refined date, then same-day marker count) rather than one, a further small increase in per-round reading cost on top of the one DECISION-054 already accepted. It still depends on unenforced prose — a row that omits its own date on a refinement makes both this decision's and DECISION-054's ordering ambiguous for that row, the same risk Option C (there and here) declined to close with a guard.
+
+Implementation: `framework/commands/next.md` → "Refine The Oldest Open Row"; `framework/policies/documentation.md` → the `Open`-finding-refinement paragraph. Origin: OF-102.
 
 ---
 
