@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { join } from "node:path";
 import { runAdd } from "./add.js";
 import { InMemoryFileSystem } from "../../infrastructure/filesystem/InMemoryFileSystem.js";
-import { ExistingClaudeMdError, GreenfieldDetectedError } from "../../domain/installation.js";
+import { GreenfieldDetectedError } from "../../domain/installation.js";
 
 test("runAdd installs on a detected-brownfield target, naming adopt-project in the stub", async () => {
   const fs = new InMemoryFileSystem();
@@ -41,13 +41,16 @@ test("runAdd installs on a detected-greenfield target when --force is passed", a
   assert.equal(fs.copiedTrees.length, 1);
 });
 
-test("runAdd also refuses to overwrite a customer's own pre-existing CLAUDE.md", async () => {
+test("runAdd preserves a customer's own pre-existing CLAUDE.md rather than refusing the install over it (OF-94)", async () => {
   const fs = new InMemoryFileSystem();
   fs.seed(join("/repo", "package.json"), "{}");
   fs.seed(join("/repo", "CLAUDE.md"), "# My Project\n\nCustom instructions.\n");
 
-  await assert.rejects(
-    () => runAdd(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" }),
-    ExistingClaudeMdError,
-  );
+  const result = await runAdd(fs, { frameworkSourceDir: "/source/framework", targetDir: "/repo" });
+
+  assert.equal(result.claudeMdAction, "coexisted");
+  const written = fs.files.get(result.claudeStubWrittenTo) ?? "";
+  assert.match(written, /# My Project\n\nCustom instructions\./);
+  assert.match(written, /# Kenovis AI-OS/);
+  assert.equal(fs.copiedTrees.length, 1);
 });

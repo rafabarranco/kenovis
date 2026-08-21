@@ -1,6 +1,6 @@
 # Next Command
 
-Version: 2.12
+Version: 2.18
 
 ---
 
@@ -94,9 +94,17 @@ Read three inputs, not one.
 
 **The `Next` pointer the previous round wrote in Step 15.** Start from it. It carries the ordering rationale — dependencies, what unblocks what, why an expensive item is ranked above a cheap one — and that reasoning is written every round and is the first thing a new thread does not have. Re-deriving the order from the priority formula over the whole roadmap is not thoroughness; it is discarding the previous round's work and paying to reach a worse-informed version of the same answer.
 
-A round may depart from the pointer. When it does, it **says why, in `company-os/PRODUCT/ROADMAP.md`, in the same round** — new information, a dependency that turned out false, a founder instruction that outranks it. A departure that is not written down is indistinguishable from never having read the pointer.
+A round may depart from the pointer. When it does, it **says why, in `company-os/PRODUCT/ROADMAP.md`, in the same round** — new information, a dependency that turned out false, a founder instruction that outranks it. A departure that is not written down is indistinguishable from never having read the pointer. (DECISION-030; `company-os/AI/memory/LEARNINGS-ARCHIVE.md` Learning-033.)
 
 If no pointer exists yet — a first round, or one whose predecessor left none — rank from the two inputs above and write one in Step 15.
+
+---
+
+## Under Concurrent Multi-Session Use, Verify The Tree Before Ranking
+
+All three inputs above are read from whatever working directory the session started in. If that directory can be edited by another concurrent session against the same repository — several agent sessions active against one working tree is a normal, not an exotic, state for this kind of tool — its read can already be stale by the time bootstrap finishes: a race this repository has hit and recovered from repeatedly, including a live near-miss where a round almost re-implemented a fix a concurrent session had already shipped minutes earlier, caught only because it re-verified before its first edit (`company-os/AI/memory/learnings.md` Learning-054).
+
+Do the primary working directory's own reading and planning freely — it is cheap and informative even when stale. But before the first edit of the round: clone into an isolated directory, `git fetch origin` there, and confirm the base branch is level (`git rev-list --count HEAD..origin/<base>` → `0`) before trusting which finding is still open, which item is still scheduled, or what the `Next` pointer still says. If the fresh state disagrees with the primary directory's read, re-derive the round's objective from the fresh state and say so — do not proceed on the stale one.
 
 ---
 
@@ -107,7 +115,7 @@ Some work has an executor that is not this command: a decision only the human ca
 When the highest-ranked objective is one of those:
 
 - **Present the decision to the human**, with the input the item or finding already names. It is there so nobody has to invent it under pressure at the end of a round.
-- **Record in `company-os/PRODUCT/ROADMAP.md` that this round reached that item and stopped**, and on what it is blocked. A blocked round is a real outcome and leaves a real trace.
+- **Record in `company-os/PRODUCT/ROADMAP.md` that this round reached that item and stopped**, and on what it is blocked. A blocked round is a real outcome and leaves a real trace. The place to write it is the `Next:` pointer this round writes under Step 13 → "Write The Next Pointer, Or Write That There Is None" — not the item's own progress narrative and not a new row in the `Open Findings` queue, since a stop produces neither progress nor a new finding. Name the blocking item and the reason directly in that pointer.
 - **Stop.**
 
 **Do not descend the priority order looking for something executable.** Skipping leaves no artifact, so a board whose top item needs a human silently becomes a board of whatever the AI could do alone — every round defensible, the ranking quietly inverted, and nothing anywhere showing the top item was passed over. That is the drift `company-os/PRODUCT/ROADMAP.md` item 40 describes, and descending is how it happens with a fresh mechanism each time.
@@ -150,6 +158,7 @@ Evaluate:
 - Technical dependencies.
 - Risk.
 - Effort.
+- Role match (DECISION-050): an `Open` row whose `Role` matches an agent role this round is already activating for its own objective (Step 6) ranks above an equally-aged row with no such match. This is not a scheduling guarantee — no round is required to pick a role-matched row, and DECISION-036's own Refine action still runs on age order regardless of role. It is one more input to the same ranking this step already does, the only reachable form of role-driven routing given no scheduler and no backend exist to run one on their own (DECISION-010, DECISION-013).
 
 ---
 
@@ -170,11 +179,21 @@ Two commands, at most a handful of documents. This is not a framework-review aud
 
 ## Refine The Oldest Open Row
 
-Alongside choosing the round's own objective, refine exactly one row from `company-os/PRODUCT/ROADMAP.md` → "Open Findings": the lowest-id row still carrying `Open`. Ids are assigned in discovery order and the table is never reordered, so the lowest-id `Open` row is the one that has gone longest without being touched.
+Alongside choosing the round's own objective, refine exactly one row from `company-os/PRODUCT/ROADMAP.md` → "Open Findings": **the `Open` row least recently touched** — read each `Open` row's own most recent `Refined <date>` marker (or, for a row never yet refined, its Source column's discovery date), and pick the oldest. Tied rows break first by **fewest `Refined <today's date>` markers the row already carries** (count the row's own prose, ascending — a row touched fewer times today wins over one touched more), then by lowest id.
+
+The date-tiebreak alone is not enough once a full sweep leaves every `Open` row tied on the same calendar date — a real condition, not a hypothetical: on 2026-08-21 seven separate `/next` rounds refined every `Open` row the same day, and from that point on the plain "tied rows break by lowest id" rule re-selected the same row (OF-02) every remaining round of the day, with nothing left to report. `company-os/PRODUCT/ROADMAP.md` OF-102 is the recorded instance; `company-os/DECISIONS.md` DECISION-057 corrects it. The fix reuses exactly what DECISION-054 already reads — the `Refined <date>` markers a row's own prose already carries — rather than adding a field, counter or CI guard: `grep -o` the row's own text for today's date is sufficient.
+
+**Once both stages tie — same last-refined date, same same-day marker count — lowest id is the terminal tiebreak stage.** No third stage exists, and none is needed: the two stages above already rotate fairly through every `Open` row across a day, since picking a row raises its own same-day count and hands the next round's stage-2 comparison to whichever row is still lowest — a full sweep tying again is that rotation completing another lap, not the mechanism breaking. `company-os/PRODUCT/ROADMAP.md` OF-103 considered a third stage (wall-clock time-of-day; a persisted rotation counter) and rejected both — no reliable time source exists across sessions and tools (DECISION-010), and a persisted counter repeats the "mechanism ahead of item 37" rejection DECISION-057's own Option B already made. `company-os/DECISIONS.md` DECISION-059 records this. What needed fixing was not the tiebreak but its cost — see the compact-recheck form below.
+
+Not the lowest-id row still carrying `Open`. That was this step's original rule and it is wrong on its own terms: it assumed a refined-but-still-`Open` row leaves the "oldest" position once touched, and the mechanism never made that true — a row refined without closing keeps its id and stays the numerically lowest survivor, so a literal id reading re-selects that same row every round and starves every higher-id row regardless of how long it has actually sat untouched. `company-os/PRODUCT/ROADMAP.md` OF-99 is the recorded instance: on 2026-08-19, four rounds in a row refined a row other than the literal lowest id, each substituting "untouched by any prior refinement pass" without amending the rule. `company-os/DECISIONS.md` DECISION-054 corrects it. No new field, counter or CI guard is needed — the date each row already carries in prose is what a round reads.
 
 Refining means the row's text changes — its Pain/Frequency/Cost/Role re-checked against the current tree, or the row promoted to a scheduled item, or re-dispositioned with the reason. Leaving the row byte-identical is not refinement.
 
-This is a second, low-cost action, separate from the round's own chosen objective — do not let it become the objective itself, and do not skip the round's real work to perform it. See `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" and company-os/DECISIONS.md DECISION-036.
+**When a row is selected only because a saturated sweep's tiebreak fell through to it, and the premise re-check finds no change since that row's own most recent refinement, write the compact form instead of a new full paragraph:** `**Checked <today's date>, no change — see <date> refinement above.**` This still counts as refinement — the premise was re-checked against the current tree, not carried over unread — and it is what keeps a row landed on repeatedly inside one saturated day from growing a new near-duplicate paragraph every pass, the growth pattern `company-os/PRODUCT/ROADMAP.md` OF-103 traced on `OF-02`. A full paragraph is still owed the moment anything actually changed — a new run landed, a dimension shifted, the row was promoted or re-dispositioned; the compact form is for the genuine no-op case only.
+
+**A `Checked <date>` entry counts identically to a `Refined <date>` entry when a later round tallies same-day markers for the fewest-markers tiebreak stage above.** The rotation guarantee that stage exists for depends on it: a row landed on via the compact form has still been given today's attention, and if that pick were not tallied the row would show artificially few markers and stay eligible for immediate re-selection — the exact monopolization the fewest-markers stage exists to prevent, recurring through its own blind spot rather than through the saturation DECISION-059 already fixed. Found while applying the tiebreak literally to a row already carrying one compact-form entry (`company-os/PRODUCT/ROADMAP.md` OF-02); no new decision needed, since DECISION-059 already states the compact form "counts as refinement" — this only makes the same-day tally read consistently with that.
+
+This is a second, low-cost action, separate from the round's own chosen objective — do not let it become the objective itself, and do not skip the round's real work to perform it. See `policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected" and company-os/DECISIONS.md DECISION-036, DECISION-054, DECISION-057 and DECISION-059.
 
 ---
 
@@ -476,6 +495,8 @@ company-os/PRODUCT/OPERATING_MODEL.md → Conformance
 
 **If the table is still the unfilled form it shipped as, build it before updating a row.** The template ships one placeholder row on purpose — setup is the session least equipped to measure conformance, and both setup commands say so — which means the first closing round finds a table with no row for the section it served, and "update that section's row" resolves to nothing. So the population is this step's job, not setup's: write one row per numbered section of the document above, and put `unmeasured` in the State column of every row this round did not actually verify. `unmeasured` is honest and it is something a later round can move; an absent row is indistinguishable from a section nobody served. This is a one-time step per Installation — a table with a row per section is built, and from then on this step only updates rows.
 
+**Updating a row means updating its `As of` date too (DECISION-049).** Write today's date in the `As of` column whenever this round actually checked that row — whether the State changed or not, since a re-confirmed `Partial` is still a check, not a no-op. Every other row keeps its existing date: this step does not require re-verifying all seventeen rows every round, only being honest about which ones this round actually looked at. A table with sixteen stale dates and one fresh one is telling the truth; a table that only ever restates dates it did not check is the failure DECISION-049 exists to prevent.
+
 **Write the declaration, in `company-os/PRODUCT/ROADMAP.md`, next to the item this round closed:**
 
 ```
@@ -510,6 +531,14 @@ Next:
 ```
 
 with the ranked objectives and the reasoning that ranked them, or the single word `none` and why there is nothing to point at. `none` is a real answer — an empty roadmap is one, and a round blocked on a human decision is another. It is not the same answer as silence, and this line is what separates them.
+
+**Immediately alongside it, write the line that makes this round's own findings checkable regardless of what it closed:**
+
+```
+Findings this round did not fix:
+```
+
+naming the queued ids, or the word `none`. This is `.kenovis/AI/policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected"'s own item-scoped declaration, required here too, because a round that ran no command's item to closure, or that ran `/architect`/`/analyze`/`/feature`, still owes a disposition for whatever it found — the `Next:` pointer is the one artifact every round writes, so this is the one place the declaration cannot be skipped by never closing anything (`company-os/PRODUCT/ROADMAP.md` OF-21, OF-61).
 
 Record important learnings:
 

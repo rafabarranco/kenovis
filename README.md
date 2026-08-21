@@ -102,6 +102,15 @@ Product layer — rewritten per product:
 | [company-os/AI/memory/](company-os/AI/memory/) | Glossary, conventions and learnings accumulated by this product |
 | [cli/](cli/) | Actual product implementation. This product chose a top-level `cli/` directory for it — see [company-os/ENGINEERING/ARCHITECTURE.md](company-os/ENGINEERING/ARCHITECTURE.md) → "Suggested Project Structure". Not a framework requirement: a different product may organize its code anywhere. |
 
+## Where learnings go
+
+Nothing recorded while operating an Installation — including this repository's own, which runs on itself — is lost when that Installation ships or a new one runs `kenovis init`. Two kinds of knowledge, two destinations:
+
+- **Product knowledge** — decisions, roadmap, domain rules, learnings specific to one product — stays inside that product's own [company-os/](company-os/). It is never bundled, read by the CLI, or sent anywhere (RULE-INST-01).
+- **Team craft** — a lesson that proves durable enough to become a standing rule — is promoted out of a single learning entry into the Framework layer itself, in the policy or command it now governs, citing the learning it came from. See [company-os/AI/memory/learnings.md](company-os/AI/memory/learnings.md) → "Promoted And Archived" for this product's own record of that process.
+
+A promoted rule ships inside the npm package and reaches every existing Installation the next time it runs `npx kenovis sync` — no re-init, no manual copying, no Installation left on the old behaviour once it syncs. A framework-level decision in [company-os/DECISIONS.md](company-os/DECISIONS.md) (marked `‡`) works the same way: its effect lands in the Framework layer and ships the same way a promoted learning does; the decision body itself stays here, as this product's own record of why.
+
 ## Source of truth
 
 When information conflicts:

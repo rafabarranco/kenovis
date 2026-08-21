@@ -51,11 +51,17 @@ jobs:
       - name: Check every promoted learning is findable in its policy
         run: python3 .github/scripts/check_learning_promotions.py
 
-      - name: Check every closed item declares what it left behind
+      - name: Check every closed item and the live round pointer declare what they left behind
         run: python3 .github/scripts/check_item_findings.py
+
+      - name: Check every still-inline rejection declares its own citation sweep
+        run: python3 .github/scripts/check_rejection_citations.py
 
       - name: Check the framework layer cites no repository-local script as an enforcement mechanism
         run: python3 .github/scripts/check_github_citations.py
+
+      - name: Check CLAUDE.md and the generated customer stub route findings identically
+        run: python3 .github/scripts/check_claude_stub_sync.py
 
   cli-tests:
     name: cli/ build, typecheck and tests

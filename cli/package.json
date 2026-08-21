@@ -1,6 +1,6 @@
 {
   "name": "kenovis",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "CLI that installs and syncs the Kenovis AI-OS Framework layer into a target repository.",
   "type": "module",
   "license": "Apache-2.0",

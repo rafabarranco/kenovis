@@ -5,6 +5,7 @@ import {
   claudeStubContent,
   CLAUDE_MD_HASH_FILENAME,
   CLAUDE_STUB_FILENAME,
+  DEFAULT_TOOLS,
   detectInstallationKind,
   ExistingClaudeMdError,
   FRAMEWORK_DIR_NAME,
@@ -12,13 +13,17 @@ import {
   hashClaudeMdContent,
   InvalidFrameworkSourceError,
   invalidFrameworkSourceEntries,
-  isClaudeMdSafeToOverwrite,
+  resolveClaudeMdWrite,
   SETUP_PENDING_FILENAME,
   setupPendingContent,
   TARGET_README_FILENAME,
+  toolsMarkerContent,
+  TOOLS_MARKER_FILENAME,
+  type ClaudeMdAction,
   type InstallationKind,
 } from "../../domain/installation.js";
 import { readFrameworkVersion } from "../frameworkVersion.js";
+import { installSelectedToolAdapters } from "../toolAdapters.js";
 import type { FileSystemPort } from "../../infrastructure/filesystem/FileSystemPort.js";
 
 export interface InitOptions {
@@ -35,11 +40,20 @@ export interface InitOptions {
    * refusal is bypassed by `force`. See DECISION-018.
    */
   invokedAs: "init" | "add";
+  /**
+   * AI tool ids to generate native scaffolding for (DECISION-046), e.g.
+   * `["claude"]`. Defaults to `DEFAULT_TOOLS` — unchanged behavior for an
+   * existing customer. Persisted to `.kenovis/.tools` so `sync` can re-apply
+   * the same selection without the flag being passed again.
+   */
+  tools?: string[];
 }
 
 export interface InitResult {
   frameworkInstalledTo: string;
   claudeStubWrittenTo: string;
+  /** What happened to the target's CLAUDE.md — see `ClaudeMdAction`. */
+  claudeMdAction: ClaudeMdAction;
   setupPendingWrittenTo: string;
   /** True when the target already had its own README.md — left untouched either way. */
   targetReadmeUntouched: boolean;
@@ -53,6 +67,16 @@ export interface InitResult {
    * readFrameworkVersion.
    */
   frameworkVersion: string | null;
+  /** Tool ids whose adapter was found in the bundle and applied. */
+  toolsInstalled: string[];
+  /** Requested tool ids this Framework Release's bundle ships no adapter for. */
+  unknownTools: string[];
+  /**
+   * Command-wrapper paths left untouched because a file already existed there
+   * and didn't look Kenovis-managed — most likely the customer's own
+   * same-named file. See `installSelectedToolAdapters`.
+   */
+  skippedToolFiles: string[];
 }
 
 /**
@@ -61,12 +85,14 @@ export interface InitResult {
  * Enforces DECISION-016/017 and company-os/DOMAIN/BUSINESS_RULES.md RULE-INST-01: the
  * target repository's own README.md is never read, written, or overwritten —
  * this function does not even open it, only checks whether it exists so the
- * result can report that it was left alone. The same protection extends to
- * an existing CLAUDE.md that isn't safe to overwrite (checked via
- * `isClaudeMdSafeToOverwrite` — a recorded content hash when available,
- * falling back to the `isKenovisManagedClaudeStub` marker-prefix check
- * otherwise) — refuses with ExistingClaudeMdError instead of silently
- * discarding a customer's own file, unless --force is passed.
+ * result can report that it was left alone. An existing CLAUDE.md that isn't
+ * already a Kenovis-managed stub is never silently discarded either: content
+ * this CLI has no reason to distrust (a plain foreign file, or a
+ * coexistence file whose Kenovis block is unchanged since it was last
+ * written) is preserved and merged via `resolveClaudeMdWrite` rather than
+ * aborting the whole install over it (OF-94); only a coexistence file whose
+ * Kenovis block was hand-edited since throws ExistingClaudeMdError, unless
+ * --force is passed.
  *
  * A --force re-install always mirror-replaces .kenovis/ (removeTree then
  * copyTree), matching runSync's semantics — never a merge that could leave
@@ -116,12 +142,21 @@ export async function runInit(
 
   const claudeStubPath = join(options.targetDir, CLAUDE_STUB_FILENAME);
   const hashPath = join(frameworkDir, CLAUDE_MD_HASH_FILENAME);
+  const claudeMdContent = claudeStubContent({ pending: true, kind: detection.kind });
+  let claudeMdContentToWrite = claudeMdContent;
+  let claudeMdHashToWrite = hashClaudeMdContent(claudeMdContent);
+  let claudeMdAction: ClaudeMdAction = "written";
+
   if (!options.force && (await fs.exists(claudeStubPath))) {
     const existingClaudeMd = await fs.readFile(claudeStubPath);
     const recordedHash = (await fs.exists(hashPath)) ? await fs.readFile(hashPath) : null;
-    if (!isClaudeMdSafeToOverwrite(existingClaudeMd, recordedHash)) {
+    const resolution = resolveClaudeMdWrite(existingClaudeMd, recordedHash, claudeMdContent);
+    if (resolution.action === "refused") {
       throw new ExistingClaudeMdError(claudeStubPath);
     }
+    claudeMdContentToWrite = resolution.content;
+    claudeMdHashToWrite = resolution.hashedBlock;
+    claudeMdAction = resolution.action;
   }
 
   // Mirror-replace, not merge: a --force re-run over an existing .kenovis/
@@ -133,9 +168,18 @@ export async function runInit(
   const setupPendingPath = join(frameworkDir, SETUP_PENDING_FILENAME);
   await fs.writeFile(setupPendingPath, setupPendingContent(detection.kind));
 
-  const claudeMdContent = claudeStubContent({ pending: true, kind: detection.kind });
-  await fs.writeFile(claudeStubPath, claudeMdContent);
-  await fs.writeFile(hashPath, hashClaudeMdContent(claudeMdContent));
+  await fs.writeFile(claudeStubPath, claudeMdContentToWrite);
+  await fs.writeFile(hashPath, claudeMdHashToWrite);
+
+  const tools = options.tools ?? [...DEFAULT_TOOLS];
+  const toolsMarkerPath = join(frameworkDir, TOOLS_MARKER_FILENAME);
+  await fs.writeFile(toolsMarkerPath, toolsMarkerContent(tools));
+
+  const { installed, unknown, skipped } = await installSelectedToolAdapters(fs, {
+    frameworkSourceDir: options.frameworkSourceDir,
+    targetDir: options.targetDir,
+    tools,
+  });
 
   const targetReadmePath = join(options.targetDir, TARGET_README_FILENAME);
   const targetReadmeUntouched = await fs.exists(targetReadmePath);
@@ -143,10 +187,14 @@ export async function runInit(
   return {
     frameworkInstalledTo: frameworkDir,
     claudeStubWrittenTo: claudeStubPath,
+    claudeMdAction,
     setupPendingWrittenTo: setupPendingPath,
     targetReadmeUntouched,
     detectedKind: detection.kind,
     detectionEvidence: detection.evidence,
     frameworkVersion: await readFrameworkVersion(fs, options.frameworkSourceDir),
+    toolsInstalled: installed,
+    unknownTools: unknown,
+    skippedToolFiles: skipped,
   };
 }

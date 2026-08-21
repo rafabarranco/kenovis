@@ -1,0 +1,5 @@
+{
+  "id": "claude",
+  "label": "Claude Code",
+  "commandsDir": ".claude/commands"
+}

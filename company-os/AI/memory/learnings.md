@@ -2,7 +2,7 @@
 
 AI Learnings
 
-Version: 1.21
+Version: 1.23
 ---
 Scope
 
@@ -368,7 +368,7 @@ Second half: **`git add -A` is not safe inside a reconstruction.** It stages by 
 Future action:
 `PRODUCT/ROADMAP.md` → **OF-75** carries the missing rule (nothing in `policies/git.md` covers a stacked PR; `grep -cin "stacked\|dependent branch"` → 0) and **OF-74** carries the other half found by the same merge — `--force-with-lease` is inert when the push target is a URL rather than a tracked remote, which is this repository's only path because of OF-65.
 
-Disposition: Open — no rule promoted yet. The technique belongs in `policies/git.md` beside "Rebasing", and it is queued as OF-75 rather than written here because both git findings should land as one section rather than two, and because this round's mandate was to merge the open PRs, not to change the git policy while doing it.
+Disposition: **Fixed as a rule (2026-08-21, via `/next`)** — `framework/policies/git.md` → "Stacked Pull Requests" states the capture-tree-hash / rebuild / assert-equality technique and the `git add -A` warning, both citing this learning by id; the same round's "Use `--force-with-lease`, never `--force`" paragraph gains the URL-qualified lease form OF-74 asked for. Closes OF-74 and OF-75 together, landing as one section as this row's own text asked.
 
 ---
 
@@ -707,6 +707,250 @@ Future action:
 None queued — the three-part shape (capture, bounded retrieval, lifecycle) is already built and this decision confirms it rather than changing it.
 
 Disposition: Recorded as a technique; no work implied.
+
+---
+
+## Learning-051
+
+Date:
+2026-08-18
+
+Category:
+Architecture
+
+Context:
+Founder raised that `.claude/` never reaches a customer install, only a root `CLAUDE.md` stub — OF-96, `/architect`, DECISION-046, item 45. While tracing the gap, `company-os/ENGINEERING/ARCHITECTURE.md` → Hard Rules turned out to already state, as settled fact, that `.claude/` "stay[s] at repo root because Claude Code requires it" — a sentence describing behavior the code had never implemented. Nobody had reconciled the two; the doc had simply been trusted.
+
+Problem:
+A Hard Rule is written in prose, cited by later decisions and rounds as a settled constraint, and nothing ever re-checks it against the code it describes. It is indistinguishable, by reading alone, from a Hard Rule that *is* enforced.
+
+What happened:
+The mismatch was found only because this item's own scope required opening `installation.ts`/`init.ts` line by line to design the fix — not by any check that runs regularly. Had the fix been designed from the doc alone (a reasonable thing to do — Hard Rules exist so a round does not have to re-derive them from code every time), it would have "confirmed" a Hard Rule that was never true, and the gap OF-96 exists to close would have looked already closed.
+
+Root cause:
+`ENGINEERING/ARCHITECTURE.md`'s Hard Rules are hand-authored prose with no mechanical link to the code they assert. Nothing plays the role `check_decision_index.py` plays for `DECISIONS.md` (body↔index pairing) or `check_template_refs.py` plays for template citations — there is no guard that a Hard Rule sentence and the CLI behavior it describes have not drifted apart. A decision or a roadmap item gets revisited when its own citation is opened on demand (DECISION-042's mechanism); a Hard Rule gets read and trusted, never re-verified against the artifact.
+
+Learning:
+A Hard Rule (or any prose statement of "the code always does X") is a claim, not a fact, until it is checked against the code in the same session that relies on it — the same discipline this document already applies to decisions ("a decision body is opened on demand") extends to architecture prose that asserts behavior. Citing a Hard Rule as precedent for a new decision without grepping the code it describes repeats exactly the failure DECISION-046's own Context section had to spend an extra step catching.
+
+Future action:
+None queued as new work — `ENGINEERING/ARCHITECTURE.md` line 95 was corrected in the same round that found it (item 45), and no general mechanical guard is proposed here: a guard that verifies arbitrary prose against arbitrary code is the kind of thing this framework's own `.kenovis/AI/policies/testing.md` → "A Guard Belongs Where The Work Is Loaded" has repeatedly rejected building speculatively (see item 6/8's own rejected CI-guard proposals). Recorded as a checking habit for future architecture work, not as a missing mechanism.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
+## Learning-052
+
+Date:
+2026-08-18
+
+Category:
+Process
+
+Context:
+After merging PR #150 (OF-96/item 45/DECISION-046), this round tried to advance the shared working directory's own `development` to match and was blocked by Claude Code's Auto Mode permission classifier (now OF-97). The round's own reply to the founder named this as "One thing left undone" — and stopped there. The founder's next message was `Esta planificado?`.
+
+Problem:
+`PRODUCT/OPERATING_MODEL.md` §2 and `.kenovis/AI/SYSTEM.md` → "Nothing Stays In The Thread" both state, in those words, that telling the human is not recording it. This round told the human and did not record it — not from disagreeing with the rule, but from treating a one-line status mention at the end of a reply as if it already satisfied the rule, which is exactly the shape the rule exists to catch.
+
+What happened:
+The founder caught it by asking a direct question rather than by the round noticing on its own. No harm resulted — OF-97 exists now, one exchange later — but ABSOLUTE PRIORITY #1's own text is "the trigger is the moment of discovery, not a checkpoint before the session ends," and this round had already reached the moment (it wrote the sentence describing the gap) without treating that sentence as the trigger.
+
+Root cause:
+Writing "one thing left undone" reads, from the inside, like documentation — it is specific, it is honest, it names the mechanism that failed. But it lives only in the reply, which item 40/§5's own reasoning already establishes is a temporary execution context, not the product-layer's persistent memory. A sentence can be completely accurate and still not be a recording, if the only place it exists is the thread.
+
+Learning:
+Any sentence in a reply that describes a gap, a leftover, or something not done is itself the discovery event `PRODUCT/OPERATING_MODEL.md` §2 requires acting on — write it to `PRODUCT/ROADMAP.md` (or the relevant destination) in the same turn the sentence is written, not as a follow-up once asked. A well-written status update is not a substitute for the write; if anything its precision makes it a more convincing (and more dangerous) illusion of having already recorded something.
+
+Future action:
+None queued as new work — the rule already exists in exactly the words needed (`CLAUDE.md` → "Nothing Stays In The Thread", `SYSTEM.md` §2). This entry exists so a future round recognizes its own "one thing left undone" sentence as the trigger, not as a summary.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
+## Learning-053
+
+Date:
+2026-08-18
+
+Category:
+Process
+
+Context:
+Refining OF-02 vs. OF-69 as this round's DECISION-036 Refine action (`PRODUCT/ROADMAP.md` OF-69 row, "OF-95 fixed, and OF-69 corrected" block). OF-69's own row had read `**Open.**`, unedited, since 2026-08-13 — through a round whose own commit message said "OF-69 closed via this round's Refine action" and a second round whose OF-85 note said "OF-69, refined and closed `Fixed` this same round." Both statements were about a fix that was real (`policies/git.md` → "Rebasing" does cover it), and both never touched the row.
+
+Problem:
+A round's own narrative — a commit message, a note inside a *different* finding's row — asserting that some other row was dispositioned is not the same claim as that row's own text saying so, and nothing compares the two. `check_item_findings.py` binds to items declaring findings, not to a round's prose claiming a disposition change elsewhere in the same document; a claim like "OF-69 closed" sitting inside OF-85's own paragraph is invisible to any guard built around ids-owned-by-items.
+
+What happened:
+Two separate rounds, on two separate days, each stated OF-69 was fixed. Neither wrote it. A third round (this one) found the mismatch only because it independently re-derived "the lowest-id row that has actually gone longest untouched" rather than trusting either round's self-report — the same OF-30/Learning-031 discipline, applied one layer over: not "did the round's fix work," but "did the round's own bookkeeping about a *different* row actually happen."
+
+Root cause:
+Writing "X closed" in a commit message or in another row's prose reads, to the round writing it, as equivalent to writing it in X's own row — it is the same fact, stated once. It is not the same edit. The queue's own convention (one row, one disposition, in that row) has no mechanism forcing a claim about a row to be made *in* that row rather than *about* it from somewhere else in the document.
+
+Learning:
+A disposition claim ("X is now Fixed") is only real where X's own row says so. A round that believes it closed a different row, from a commit message or from prose inside a third row, must open that row and edit it directly — pointing at it from elsewhere is not a disposition, the same way describing a finding in an item's narrative was already ruled not to be one (`policies/documentation.md` → "A Finding Is Fixed, Scheduled, Or Rejected", "Being described in prose is not a disposition"). This extends that rule to a round's claims about rows it did not open in the edit that made the claim.
+
+Future action:
+None queued as new mechanism — a guard that diffs every row's own disposition marker against every commit message's prose claims is exactly the kind of speculative cross-checker this framework's testing policy has repeatedly declined to build (Learning-051's own reasoning applies here too). Recorded as a checking habit: when refining or citing a row, read that row's own current text, not the narrative that claims to have already updated it.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
+## Learning-054
+
+Date:
+2026-08-19
+
+Category:
+Process
+
+Context:
+Bootstrapping this round, the primary working directory's own `PRODUCT/ROADMAP.md` read as top-of-`Next:` naming OF-83. Recent round narratives (the OF-83/OF-95 round, and the OF-97/OF-74 round before this one) each describe recovering from exactly this staleness the same way: clone fresh into an isolated directory, `git fetch` immediately before the first edit, and re-derive the actual current top candidate rather than trusting the primary directory's snapshot. Multiple of those narratives cite the discipline by name — `kenovis_shared_working_directory_concurrency` — which is not a path inside this repository. It is this session's own Claude Code user-level memory file, external to `company-os/`, external to git, and invisible to any other tool or any other machine.
+
+Problem:
+`.kenovis/AI/SYSTEM.md`/`framework/SYSTEM.md` and DECISION-010 require the Framework layer to stay tool-agnostic — a rule this repository holds itself to, not only customer Installations. A load-bearing operating discipline (this exact race has cost at least three rounds real, if bounded, wasted research before a fresh fetch caught it) currently survives only inside one AI tool's own private, per-user memory cache for this one machine. A different tool, a different machine, or a cleared cache loses it entirely, silently — the same failure `PRODUCT/OPERATING_MODEL.md` §5/§6 names for a thread's own memory, one layer further out: the discipline itself has become a hidden dependency of a "thread," where the thread is now an entire class of session rather than one conversation.
+
+What happened:
+No incident this round — the discipline held, because it happened to be loaded from that external file again. That is exactly the risk: it held by continuity of tooling, not because this repository's own Product layer states it.
+
+Root cause:
+The lesson was learned correctly, and recorded correctly — just in the one place that felt closest at hand (a coding assistant's own persistent-memory feature) rather than in `company-os/AI/memory/learnings.md`, the destination this repository's own constitution names for exactly this kind of reusable lesson. Convenient recall from inside one tool was mistaken for durability across every tool.
+
+Learning:
+A concurrent, multi-session shared working directory (`ListAgents` routinely shows 3-10 other `kenovis-*`/sibling-product sessions active) means: before any `git checkout -b` or branch-level work, clone into an isolated directory and re-fetch `origin/<base>` immediately before the first edit — re-deriving the actual current `Next:` pointer rather than trusting the primary working directory's own possibly-stale read, which can be an hour or more behind by the time bootstrap finishes reading it. This holds regardless of which AI tool or session is doing the work, so it belongs here, not only in one tool's own memory.
+
+Future action:
+None queued as new mechanism — this entry *is* the fix: the discipline now has a durable, tool-agnostic home. `.kenovis/AI/commands/next.md` Step 3 is a candidate for a short pointer to this entry in a future round, if the pattern recurs after this recording.
+
+**Second confirmed instance, 2026-08-21, the pattern this row's own Future action asked to watch for.** A `/next` round ranked OF-74/OF-75 as its objective from the primary working directory's read, cloned fresh into an isolated directory per this entry's own discipline, and `git fetch` there — before any edit — surfaced that both had already been fixed by a concurrent session minutes earlier (`policies/git.md`'s `--force-with-lease` URL-qualified form and its "Stacked Pull Requests" section, both landed the same day). Zero wasted edits, because the fetch ran before the first one. This is the second live instance in the amount of time it took the first one's own "if the pattern recurs" condition to be checked, which is itself the signal: the discipline is not incidental, it is load-bearing on a normal day for this repository.
+
+Disposition: Fixed; no work implied beyond this entry.
+
+`framework/commands/next.md` (2.17 → 2.18) Step 3 gains "Under Concurrent Multi-Session Use, Verify The Tree Before Ranking," citing this entry directly and stating the clone-and-fetch-before-first-edit discipline inline — reachable by any tool loading the Framework layer, not only a session that happens to carry this file's own external, tool-specific memory forward. `PRODUCT/OPERATING_MODEL.md` Conformance row 5 cites it as a closed instance of "thread isolation must not silo knowledge."
+
+---
+
+## Learning-055
+
+Date:
+2026-08-19
+
+Category:
+Process
+
+Context:
+Ranking `PRODUCT/ROADMAP.md`'s `Open Findings` queue for this round's own objective — the previous round's `Next:` pointer named no top candidate and required re-deriving one from the full queue, so every row's current disposition had to be read, not sampled.
+
+Problem:
+A first pass scanned each row for its bold disposition keyword (`**Fixed**`, `**Open.**`, etc.) and flagged **OF-69** as `Open` and never-refined — both wrong. The row's true, current disposition was `**Fixed** (2026-08-18)`, written mid-row; later in the same row, narrative prose *quoting the row's own earlier drift* read "...it sat reading `**Open.**` through two further rounds..." — the exact bold pattern the scan matched on, positioned later in the row than the real disposition, so a last-match or first-match heuristic both land on the wrong word depending on which one is used.
+
+What happened:
+Caught before acting on it, by reading the row's actual beginning-of-disposition-column word directly (immediately after the origin-column `|`) for every candidate rather than trusting the scan — the same discipline `.kenovis/AI/policies/documentation.md` already requires for a claim generally, applied here to a row's own status rather than to a count. Had it not been caught, OF-69 would have been ranked and possibly refined a second time as if still open, on a row that had already been fixed and, separately, already corrected for exactly this kind of drift.
+
+Root cause:
+A queue row in this document accumulates text over its lifetime rather than being rewritten in place — the original `Open.` dimensioning stays, later disposition updates append after it, and a closing round's narrative sometimes quotes the row's own prior wording verbatim (as OF-69's own "Row corrected" narrative did, to explain what had been wrong). A keyword scan for a disposition word cannot distinguish "the row's own current status" from "prose narrating what the row's status used to say" — both are the same bold markdown, and their relative position in the row is not a reliable discriminator either way (this row's real answer was in the middle, not first or last).
+
+Learning:
+When determining a queue row's current disposition mechanically (for ranking, for the Refine action's "never touched by a prior pass" check, or for any future tooling), read the word immediately following the origin column's closing `|` — the row's own author always states the disposition there first, before any narrative — never scan the row for any bold status keyword and take the first or last match. A row that later quotes its own history in prose is not a hypothetical case; it is how this row records having been wrong once already.
+
+Future action:
+None queued — this is a reading discipline, not a mechanism gap; the document's own structure (disposition stated first, narrative after) already supports reading it correctly. Worth citing if a future round builds tooling (a script, not a person) to classify queue-row status automatically, since a script has no judgment to fall back on when the naive scan disagrees with itself.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
+## Learning-056
+
+Date:
+2026-08-19
+
+Category:
+Process
+
+Context:
+Refining OF-19 (this round's own Refine action, DECISION-036) required re-checking its premise against GitHub's actual branch-protection state for `development`, not the row's 2026-08-12 text. The session's active `gh` account at the time was `barve-leyias`, one of three logged in on this machine (`git_push_needs_gh_credential_helper`).
+
+Problem:
+`gh api repos/rafabarranco/kenovis/branches/development/protection` returned `404 Not Found` under the `barve-leyias` account — a response that reads identically to "no branch protection is configured on this branch." It was neither: protection exists (`required_pull_request_reviews.required_approving_review_count: 1`), and the account simply lacked admin read access to the endpoint. The same call under `rafabarranco` (the repository owner) returned the real, populated protection object immediately.
+
+What happened:
+Caught before writing anything into the row, by treating the 404 as suspicious rather than conclusive — this repository's own git.md already documents three separate `gh`-identity failure classes (OF-65, OF-86, OF-98) hitting this exact machine, which made "check which account is active before trusting a permission-shaped response" a reflex rather than an afterthought. Had it not been caught, the round would have recorded OF-19 as resolved by inaction ("no protection configured, nothing to bypass"), the opposite of what is actually true.
+
+Root cause:
+GitHub's branch-protection REST endpoint (`GET .../protection`) returns `404` both when no protection rule exists and when the authenticated caller lacks admin-level read access to the branch — the two states are not distinguished in the response, and nothing about a 404 signals which one occurred. A multi-account machine (three `gh` identities logged in, the active one fluctuating between sessions per Learning-054's own class of drift) makes the second case routine here, not exotic.
+
+Learning:
+Before reading a GitHub API response that can be permission-gated (branch protection, repository settings, admin-only endpoints) as a fact about the repository, confirm the active `gh` account actually holds the access level the endpoint requires — `gh auth status`, then `gh auth switch --hostname github.com --user <owner-or-admin-account>` if not. A 404 from an admin-scoped endpoint is not evidence of absence; it is evidence of absence *or* insufficient privilege, and only re-querying under a known-privileged account tells the two apart.
+
+Future action:
+None queued as new mechanism — `policies/git.md` → "Rebasing" already documents the account-switch command for the push/PR-creation case (OF-98); this is the same discipline applied to a read endpoint rather than a write one, recorded here as the generalization.
+
+Disposition: Recorded as a technique; no work implied.
+
+---
+
+## Learning-057
+
+Date:
+2026-08-19
+
+Category:
+Process
+
+Context:
+This round's own objective was `PRODUCT/ROADMAP.md` OF-99: DECISION-036's Refine action ("refine the lowest-id `Open` row") and what rounds were actually doing had diverged, and choosing which one should be the rule was this round's own work, not a founder call — an in-framework process fix, not a product-direction decision.
+
+Problem:
+DECISION-036's rule ("lowest-id row still carrying `Open`") was justified by a claim that does not hold: "ids never resequence, so the lowest surviving id is, by construction, the row that has gone longest without being touched." That equivalence is only true if a row stops being the lowest id once refined — it does not, since refining changes a row's text, not its id or (usually) its disposition. A row that stays `Open` after being refined keeps winning the literal rule every subsequent round, forever, while every higher-id row is structurally unreachable through this mechanism regardless of how long it has actually sat untouched.
+
+What happened:
+The defect was not caught by inspection — it was caught by noticing that four separate rounds on the same day (2026-08-19) had already stopped applying the literal rule, each substituting "untouched by any prior refinement pass" without amending the text they cited as their own justification. That pattern — several independent rounds quietly agreeing on a correction to a written rule without any of them writing the correction down — was itself the signal something was wrong with the rule, not with the rounds. Fixed by adopting what practice had already converged on: the `Open` row least recently touched, read off each row's own most recent `Refined <date>` (or discovery date), tied rows broken by lowest id. DECISION-054.
+
+Root cause:
+A mechanical proxy (id order) was assumed equivalent to the property actually wanted (recency of last touch) based on a one-directional fact (ids never resequence downward) that does not imply the needed direction (a row's *position* relative to "untouched" status is stable). The asymmetry — closing/promoting a row moves it out of contention, but refining-without-closing does not — was never stated as a case the rule had to handle, so nobody design-checked it before four different rounds independently hit it and worked around it by hand.
+
+Learning:
+When a rule justifies a proxy with "by construction, X is always true," check the construction against the one operation the rule itself performs on the tracked entity — here, DECISION-036 requires refining a row, and refining a row is exactly the operation the "by construction" claim never considered happening to the row it was reasoning about. A rule that names its own governed action as an unexamined edge case is a rule worth re-deriving, not just re-citing.
+
+Future action:
+None queued as new mechanism — DECISION-054 and the corrected text in `commands/next.md` / `policies/documentation.md` are the fix. Worth citing if a future decision states a "by construction" invariant about an ordered set that the same decision's own mechanism can mutate.
+
+Disposition: Fixed. `framework/commands/next.md` (2.16 → 2.17), `framework/policies/documentation.md` (3.14 → 3.15), `company-os/DECISIONS.md` DECISION-054, `PRODUCT/ROADMAP.md` OF-99.
+
+---
+
+## Learning-058
+
+Date:
+2026-08-21
+
+Category:
+Process
+
+Context:
+This round's own objective was `PRODUCT/ROADMAP.md` OF-103: DECISION-057's own sub-day Refine tiebreak had saturated a second time the same day it shipped, and the previous round left it queued as needing a third tiebreak stage — a design decision, not a clause it was positioned to invent inline.
+
+Problem:
+The previous round (and OF-103's own text) framed the saturation as the tiebreak failing — the same row (`OF-02`) getting re-selected once every `Open` row tied, three times in one day, was read as the mechanism running out of ways to distinguish rows and needing a fourth stage to keep working.
+
+What happened:
+Before designing a third stage, the actual mechanism was traced by hand rather than assumed broken: DECISION-057's own rule (fewest same-day `Refined` markers, ascending) already removes a row from contention the moment it is picked, because being picked raises its own count — so a full sweep tying again is that same mechanism completing another lap of fair rotation, not failing to distinguish anything. The real, confirmed cost was somewhere else entirely: `policies/documentation.md`'s own requirement that a refinement change a row's text meant every one of those three same-day repeat-picks still had to write a new full paragraph, even though each one's honest content was "still true, nothing changed" — and that is what had grown `OF-02`'s own row large enough to weigh on `PRODUCT/ROADMAP.md`'s own tracked size problem (item 14). DECISION-059 declares lowest id the terminal tiebreak stage (no new stage) and replaces a genuine no-op re-check with a one-line compact form instead of a full paragraph — fixing the cost that was actually measured, not the stage count that was assumed to be the problem.
+
+Root cause:
+A symptom (the same row being picked repeatedly) was diagnosed as the cause (the tiebreak can't tell rows apart) without first checking whether the mechanism's own stated behavior already explains the symptom without being broken. Three consecutive findings on this exact mechanism (OF-99, OF-102, OF-103) each escalated to "add another stage" as the reflexive fix for "the same row got picked again," when only the first of the three (OF-99) was actually a case where the *rule itself* was wrong — the other two were the rule working as designed under a condition (full saturation) that is a legitimate, expected steady state for an exhausted queue, not a bug.
+
+Learning:
+Before adding a new stage, field, or mechanism to fix "the same thing keeps happening," trace whether the existing mechanism's own logic already accounts for the repetition as correct behavior — a rotation completing a lap looks identical, from one round's-eye view, to a rotation that is stuck. The two are told apart by checking the mechanism's own selection function across more than one pick, not by the fact that a pick repeated. When they turn out to be the former, the actual fix is usually in the cost of the repeat (what has to be written down every time), not in the selection logic itself.
+
+Future action:
+None queued as new mechanism — DECISION-059 and the corrected text in `commands/next.md` / `policies/documentation.md` are the fix. Worth citing before any future round proposes a further tiebreak stage on this same mechanism: trace the rotation first.
+
+Disposition: Fixed. `framework/commands/next.md`, `framework/policies/documentation.md`, `company-os/DECISIONS.md` DECISION-059, `PRODUCT/ROADMAP.md` OF-103.
 
 ---
 

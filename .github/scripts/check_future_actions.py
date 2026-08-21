@@ -66,7 +66,7 @@ LEARNING_HEADING = re.compile(r"^## (Learning-\d{3})\s*$", re.MULTILINE)
 FUTURE_ACTION = re.compile(r"^Future action:\s*$", re.MULTILINE)
 DISPOSITION = re.compile(r"^Disposition:(.*)$", re.MULTILINE)
 
-CITES_ID = re.compile(r"\bOF-\d{2}\b|\bitem \d+\b", re.IGNORECASE)
+CITES_ID = re.compile(r"\bOF-\d{2,}\b|\bitem \d+\b", re.IGNORECASE)
 NO_WORK = re.compile(r"no work implied", re.IGNORECASE)
 
 
