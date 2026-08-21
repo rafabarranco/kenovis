@@ -120,6 +120,7 @@ Requirements:
 
 - Version pinned exactly, published from CI with provenance (ENGINEERING/SECURITY.md → Supply-Chain Security).
 - CHANGELOG.md updated per DECISIONS.md DECISION-011.
+- Release pre-flight, before the cut commit: every already-released CHANGELOG.md section is byte-identical to the previous cut commit's version of it (compare everything from the newest released heading down against the same range at the previous `chore(release): cut` commit). A commit landing between a cut and its publish that files its bullet under the just-released heading is exactly what this catches — it happened once, silently, and no CI guard checks placement (deliberately: that needs tag-existence history a tree-only guard can't read). See PRODUCT/ROADMAP.md OF-104.
 - No backup strategy needed — Kenovis holds no customer data or server state.
 ---
 Feature Development Process
