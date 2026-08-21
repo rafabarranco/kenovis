@@ -70,6 +70,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-055** ★ — A Scheduled Queue Row's Own Citation Is What The Reverse-Drift Check Trusts, Not A New Declaration On The Item Side. Closes `PRODUCT/ROADMAP.md` OF-100: `check_item_findings.py` verified only that a closed item declares the ids it left behind, never the reverse — that an `OF-N` row citing `Scheduled — item N` gets corrected to `Fixed` once item N closes, a drift confirmed five times in six days. Rejects a new structured `Closes:` line on the item side (the existing item-side phrasing is not uniform enough to regex, and every instance was already-closed prose that a new going-forward line would not retroactively fix) in favor of trusting the queue row's own already-structured `**Scheduled — item N**` citation, cross-checked against that item's `DONE` state — no new prose convention required.
 - **DECISION-056** — `development`'s Required Review Is Dropped To Zero; CI Becomes A Required Status Check For The First Time. Closes `PRODUCT/ROADMAP.md` OF-19, founder decision: `required_pull_request_reviews` (unsatisfiable for a solo maintainer) is removed from `development`'s branch protection, and the 13 CI guard scripts — never previously wired as `required_status_checks` — are added as a required check with `strict: false`. A routine `gh pr merge --rebase` (no `--admin`) now succeeds once CI is green for the first time since `0.6.0`; `enforce_admins` stays `false` unchanged, so an admin override remains as a deliberate emergency escape hatch, not removed.
 - **DECISION-057** ‡★ — DECISION-054's Refine Tiebreak Gains A Sub-Day Second Stage: Fewest Same-Day `Refined` Markers, Then Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-102: a full same-day sweep of the `Open` queue leaves every row tied on calendar-date granularity, and DECISION-054's own "tied rows break by lowest id" then re-selects the same row (OF-02) for the rest of that day with no new premise to report; the fix counts each row's own already-written `Refined <today's date>` markers (fewer wins, tied to lowest id) rather than adding a persisted field or cross-referencing the document's narrative order, both rejected as more infrastructure than the finding calls for.
+- **DECISION-058** — Item 33 Stays Parked Even With The Internal Queue Exhausted, Founder-Confirmed Rather Than Assumed. With every `Open Findings` row non-actionable and item 33 the only `SCHEDULED` item left, the founder was asked directly whether "ranks last" (DECISION-041) means item 33 auto-triggers once nothing internal remains, or stays parked regardless. Answer: stays parked, no new condition, moves only on the founder's own decision to pursue it.
 
 ---
 
@@ -4305,6 +4306,58 @@ Negative, accepted:
 A round now compares two figures (last-refined date, then same-day marker count) rather than one, a further small increase in per-round reading cost on top of the one DECISION-054 already accepted. It still depends on unenforced prose — a row that omits its own date on a refinement makes both this decision's and DECISION-054's ordering ambiguous for that row, the same risk Option C (there and here) declined to close with a guard.
 
 Implementation: `framework/commands/next.md` → "Refine The Oldest Open Row"; `framework/policies/documentation.md` → the `Open`-finding-refinement paragraph. Origin: OF-102.
+
+---
+
+# DECISION-058
+
+# Item 33 Stays Parked Even With The Internal Queue Exhausted, Founder-Confirmed Rather Than Assumed
+
+Date:
+
+2026-08-21
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+None set — stays parked until the founder gives a new condition or pursues it directly; no calendar trigger applies.
+
+---
+
+## Context
+
+Two consecutive `/next` rounds this same day reached the same conclusion: every `Open Findings` row is non-actionable (OF-02/OF-03 blocked on item 33 itself, OF-04 a practiced discipline rather than a task, OF-30 waiting on a future validating session, OF-64 nothing to merge, OF-87 deliberately unranked), and item 33 (real external validation) is the only remaining `SCHEDULED` item. DECISION-041 already ranked item 33 last, unconditionally, below all internal work — but it did not say what happens once internal work runs out entirely, which is what actually occurred this round. The first round presented the ambiguity directly rather than assume either reading: does "ranks last" mean item 33 becomes next by elimination once nothing internal remains, or does it stay parked regardless, awaiting the founder's own move to source an external team? Put to the founder as a direct choice (pursue it now, leave it parked, or name a different condition).
+
+Founder's answer: leave it parked, no new condition supplied.
+
+## Decision
+
+Item 33 does not auto-trigger when the internal `Open Findings` queue empties. It stays exactly where DECISION-041 left it — ranked last, blocked on the founder's own act of sourcing a real external team — with no calendar date, roadmap state, or queue condition that reactivates it on its own. It moves only when the founder decides to pursue it directly.
+
+## Reasoning
+
+`PRODUCT/OPERATING_MODEL.md` Addendum B holds that the founder decides and does not search; sourcing an external team is exactly the kind of distribution/GTM act that Addendum reserves to the founder, not something `/next` can execute or manufacture a trigger for on the founder's behalf. Leaving item 33 to auto-trigger on queue-exhaustion would have made an engineering mechanism (the priority formula emptying out) stand in for a business decision (whether now is the moment to pursue external validation) — the same category error DECISION-029 already rejected once for "every finding becomes `SCHEDULED` at discovery" and item 32 rejected for treating OF-12 as a decision instead of work. Asking directly, rather than assuming either reading of "ranks last," keeps the business call with the person who owns it.
+
+## Alternatives Considered
+
+**Auto-promote item 33 once the internal queue is empty.** Rejected — it would have let a structural condition (nothing else left) make a business decision (source external users now) without the founder's own input, exactly backwards from Addendum B.
+
+**Leave the ambiguity unresolved and let each round re-derive its own reading.** Rejected — two consecutive rounds already reached the same fork and would have kept re-asking or, worse, drifted toward one reading by default without it ever being a decision. Asking once and recording the answer is cheaper than re-deriving it indefinitely.
+
+## Consequences
+
+Positive: the next `/next` round (and any concurrent one) reads this decision instead of re-presenting the same question — a round with nothing else to do performs Observe and Refine and reports no change, rather than re-litigating item 33 each time. The ambiguity DECISION-041 left open is now closed by the same authority (the founder) rather than by whichever round happened to reach it first.
+
+Negative, accepted: no calendar trigger exists to prompt revisiting this — if the founder's circumstances change, nothing in the mechanism itself will surface that; it depends on the founder raising it, consistent with Addendum B's own "founder decides" model rather than a mechanism watching for it.
+
+Implementation: none — no code or framework change. `PRODUCT/ROADMAP.md` item 33 and its `Next:` pointer record the founder's answer. Origin: this round's own presentation of the item-33 decision.
 
 ---
 
