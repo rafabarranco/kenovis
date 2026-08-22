@@ -954,6 +954,36 @@ Disposition: Fixed. `framework/commands/next.md`, `framework/policies/documentat
 
 ---
 
+## Learning-059
+
+Date:
+2026-08-22
+
+Category:
+Process
+
+Context:
+This round's own objective was `PRODUCT/ROADMAP.md` OF-04: five refinements since 2026-08-14 had each re-confirmed the same conclusion (the discipline is practiced, no CI guard exists, no incident found) without the row ever closing.
+
+Problem:
+DECISION-036/054/057/059's Refine action re-verifies an `Open` row's premise every time it is selected, but nothing in the mechanism ever asks whether continuing to re-verify is still the right action for that row, versus finally deciding it. A row whose premise keeps checking out unchanged looks, from inside a single round, identical to a row that is making progress toward resolution — both produce "still `Open`, unchanged" — so nothing distinguishes stable-and-should-close from active-and-still-pending.
+
+What happened:
+Reading OF-04's own accumulated history directly (its content, not its refinement count) showed every refinement reached the identical substantive conclusion: items 19-23's premises are already fixed, and the only open question is a mechanization decision the row's own text had already, repeatedly, argued against. Five rounds' worth of "no change" was not evidence the row needed a sixth check — it was the evidence itself, already sufficient to decide. This round rejected it instead of refining it again.
+
+Root cause:
+Refine and a final disposition (Fixed/Rejected) are both valid actions on an `Open` row, but Refine is cheap and mechanical (a grep, a re-check) while a final disposition requires judgment, so a round selecting a row by the tiebreak defaults to the cheaper action every time it's offered — the mechanism only ever selects a row *to refine*, it never surfaces "this row's own history already argues for closing it."
+
+Learning:
+When an `Open` row's own accumulated refinement history shows the same conclusion reached multiple times with no new premise, that repetition is itself the evidence needed to close it (Fixed or Rejected) — re-verifying it again is not more rigorous, it is avoiding the judgment call the accumulated checks already support. A round selecting a row via the Refine tiebreak should read what the row's past refinements actually concluded before defaulting to writing one more.
+
+Future action:
+None queued as new mechanism — an automatic "N repeats → force disposition" rule would reproduce the exact over-mechanization OF-04's own text argued against. Worth citing the next time a Refine-selected row's own history already contains its answer.
+
+Disposition: Fixed. `PRODUCT/ROADMAP.md` OF-04 (Rejected, this round).
+
+---
+
 ---
 Learning Examples
 
