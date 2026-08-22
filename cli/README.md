@@ -1,18 +1,38 @@
 <!-- PROJECT-SPECIFIC: this product's own context, not framework. Authored by /init-project or /adopt-project; kenovis sync never overwrites it. -->
 
-# cli/
+# kenovis
+
+Kenovis is an **AI Operating System (AI-OS)**: a framework for running a complete product and engineering organization with AI agents instead of a traditional team.
+
+It gives an AI tool the context, roles, processes and rules it needs to behave like a company — CEO, CTO, product, design, engineering, security, review — rather than like a code generator.
+
+This package is the CLI: it installs and syncs the Kenovis AI-OS (the Framework layer) into your own repository. No backend, no database, no hosted service in v1 — see [DECISIONS.md](../company-os/DECISIONS.md) DECISION-013 and [ENGINEERING/ARCHITECTURE.md](../company-os/ENGINEERING/ARCHITECTURE.md).
+
+## Install
+
+```
+npx kenovis init
+```
+
+Writes the Framework layer into `.kenovis/` and a `CLAUDE.md` stub — never touches your existing `README.md` or code ([DECISIONS.md](../company-os/DECISIONS.md) DECISION-016, DECISION-017). It inspects your repository first and tells you whether to follow a fresh-start or an adoption path, based on what it actually finds — no flags required.
+
+```
+npx kenovis sync
+```
+
+Pulls a newer Framework Release into an existing Installation — mirror-replaces `.kenovis/` only. Product-layer files and your own code are never touched; reversible via your repository's own `git diff` / `git checkout`.
+
+```
+npx kenovis context "<query>"
+```
+
+Searches your own accumulated Product-layer context and prints ranked `path:startLine-endLine` citations with a short excerpt — filesystem-only, no network, nothing indexed or cached between runs. It points at what to open with a real read; it never prints file contents itself.
 
 ## What is this?
 
-This is where Kenovis's own implementation lives: the CLI that installs and syncs the Kenovis AI-OS (this repository's Framework layer) into a customer's repository. See [DECISIONS.md](../company-os/DECISIONS.md) DECISION-013 and [ENGINEERING/ARCHITECTURE.md](../company-os/ENGINEERING/ARCHITECTURE.md) for why this product has no backend or database.
+This is where Kenovis's own implementation lives: `init`, `add`, `sync` and `context` are all shipped and covered by the commands above. Greenfield/brownfield targets are auto-detected, and `init-project`/`adopt-project` auto-trigger on the very next AI session (`.kenovis/.setup-pending`) — no manual slash command required. See [CHANGELOG.md](../CHANGELOG.md) for the full release history.
 
-[PRODUCT/ROADMAP.md](../company-os/PRODUCT/ROADMAP.md) Phase 0 item 3 (build the CLI installer/sync tool) is done. Shipped: the `init` command's install engine, bundling this repository's real Framework layer content into the package at build time — `kenovis init <targetDir>` now works with zero required flags — greenfield/brownfield auto-detection, and the `sync` command (updates an existing `.kenovis/` in place to a newer Framework Release — mirror-replaces `.kenovis/` and rewrites the `CLAUDE.md` stub, never touches Product-layer files or the customer's own code; reversible via the customer's own `git diff`/`git checkout`, per RULE-INST-02). Per [DECISIONS.md](../company-os/DECISIONS.md) DECISION-016 and DECISION-017.
-
-Phase 0 item 4 (auto-trigger `init-project`/`adopt-project`, per [DECISIONS.md](../company-os/DECISIONS.md) DECISION-018) is also done: `init` now *refuses* on a detected-brownfield target (points at the new `kenovis add` instead, bypassable with `--force`), and `add` refuses symmetrically on a detected-greenfield target. Either command writes a `.kenovis/.setup-pending` marker naming the right AI command and a `CLAUDE.md` stub carrying a first-session directive to run it — so the very next AI session runs `init-project`/`adopt-project` automatically, no manual slash command required. `init-project.md`/`adopt-project.md` delete the marker and revert the stub to its passive form on their own completion. A bare `kenovis <targetDir>` (no subcommand) detects the target itself and dispatches to `init` or `add` internally — it never refuses.
-
-[PRODUCT/ROADMAP.md](../company-os/PRODUCT/ROADMAP.md) item 23 (a native retrieval command) is also done: `kenovis context "<query>"` searches an Installation's own `company-os/` (opt-in `--include-framework` also covers `.kenovis/AI/`) and prints ranked `path:startLine-endLine` citations with a short excerpt — filesystem-only, no network, no backend, nothing indexed or cached between runs, per [ENGINEERING/ARCHITECTURE.md](../company-os/ENGINEERING/ARCHITECTURE.md) Hard Rules and DECISION-013. It points at what to open with a real read (the same targeted-read discipline [SYSTEM.md](../.kenovis/AI/SYSTEM.md) → "Context Loading Rules" already requires of a decision body or an archive entry); it never prints file contents itself. v1 is deliberately plain keyword/term-frequency scoring, no embeddings — items 18-22 already bound what a session reads once it knows which citation to open, and this closes the other half: finding which citation to open in the first place.
-
-npm publishing is wired up (`.github/workflows/publish.yml`): pushing a GitHub Release triggers CI to build, test, typecheck and `npm publish --provenance --access public` the package — never from a developer's local machine, per [ENGINEERING/SECURITY.md](../company-os/ENGINEERING/SECURITY.md) → Supply-Chain Security. Latest publish: [`kenovis@0.2.0`](https://www.npmjs.com/package/kenovis) shipped from the `v0.2.0` GitHub Release, with provenance — closes the `--source` footgun found during Learning-004 smoke testing (`init`/`sync` now validate `--source` before touching anything). `npx kenovis init` now works against any external repository with no local setup.
+npm publishing runs from CI only (`.github/workflows/publish.yml`): pushing a GitHub Release triggers CI to build, test, typecheck and `npm publish --provenance --access public` — never from a developer's local machine, per [ENGINEERING/SECURITY.md](../company-os/ENGINEERING/SECURITY.md) → Supply-Chain Security.
 
 ## Upgrading
 
