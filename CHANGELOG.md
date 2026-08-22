@@ -6,6 +6,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-08-22
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.16.0]. Minor rather than patch, decided at cut time: both entries below are low-risk fixes (a README content/packaging fix, a CI-guard false-positive fix) with no CLI behavior change for an existing Installation.
+
+No breaking changes for an existing Installation.
+
 ### Fixed
 
 - **The published npm package page showed `cli/README.md`, an internal engineering changelog, instead of a description of what Kenovis is — the product's actual first impression on any external visitor.** `cli/README.md`, `PRODUCT/ROADMAP.md` OF-105. npm's package root is `cli/`, so `npm publish` ships `cli/README.md` as the registry's Readme tab; its old opening section was titled `cli/` and narrated internal Phase/DECISION history rather than the product. It now opens with the same pitch root `README.md` already carried, plus an `Install` section, ahead of the implementation-detail sections that follow.
