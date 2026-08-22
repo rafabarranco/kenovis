@@ -72,6 +72,7 @@ Every decision recorded below has exactly one line here, added in the same chang
 - **DECISION-057** ‡★ — DECISION-054's Refine Tiebreak Gains A Sub-Day Second Stage: Fewest Same-Day `Refined` Markers, Then Lowest Id. Closes `PRODUCT/ROADMAP.md` OF-102: a full same-day sweep of the `Open` queue leaves every row tied on calendar-date granularity, and DECISION-054's own "tied rows break by lowest id" then re-selects the same row (OF-02) for the rest of that day with no new premise to report; the fix counts each row's own already-written `Refined <today's date>` markers (fewer wins, tied to lowest id) rather than adding a persisted field or cross-referencing the document's narrative order, both rejected as more infrastructure than the finding calls for.
 - **DECISION-058** — Item 33 Stays Parked Even With The Internal Queue Exhausted, Founder-Confirmed Rather Than Assumed. With every `Open Findings` row non-actionable and item 33 the only `SCHEDULED` item left, the founder was asked directly whether "ranks last" (DECISION-041) means item 33 auto-triggers once nothing internal remains, or stays parked regardless. Answer: stays parked, no new condition, moves only on the founder's own decision to pursue it.
 - **DECISION-059** ‡★ — Lowest Id Is The Refine Tiebreak's Terminal Stage; A Saturated No-Op Re-Check Writes A Compact Form, Not A New Paragraph. Closes `PRODUCT/ROADMAP.md` OF-103: traced directly, DECISION-057's tiebreak already rotates every tied `Open` row through fair attention across a day — a repeat sweep tying again is that rotation completing another lap, not a defect — so no third stage (time-of-day, a persisted counter) is adopted. The real cost was a full new paragraph owed on every saturated repeat pick even with nothing new to report, which is what grew `OF-02`'s own row large enough to weigh on `PRODUCT/ROADMAP.md`'s own size (item 14); a genuine no-op re-check now writes a one-line compact form instead.
+- **DECISION-060** — Real External Validation Obtained — FlorentinoAI Installs Via `/init-project`, Closes Item 33, OF-02 And OF-03. Founder-reported: a real external team (FlorentinoAI) installed Kenovis via `/init-project` on a real repository, distinct from this one, and ran a workflow end to end (`/architect`, `/release`) with no defects. Item 33's validation bar is met; `OF-02`/`OF-03`'s "never run against a real published Installation" claims no longer hold and are `Fixed`. `OF-07`/`OF-08` are corrected, not closed — their own specific concerns (version-check, paid-tier gating) were not exercised by this run.
 
 ---
 
@@ -4423,6 +4424,58 @@ Positive: no new mechanism, field, or CI guard. The tiebreak is documented as cl
 Negative, accepted: a row's own history becomes slightly harder to read at a glance — a compact `Checked <date>, no change` line requires looking at the paragraph it points back to for the actual reasoning, rather than every entry being self-contained. Judged acceptable: the alternative (a new full paragraph restating the same conclusion) is *why* the row grew large enough to be a problem in the first place, so the trade is the entire point of this decision, not an incidental cost of it.
 
 Implementation: `framework/commands/next.md` → "Refine The Oldest Open Row"; `framework/policies/documentation.md` → the `Open`-finding-refinement paragraph. Verified live in the same round this decision was written: applying the compact form to `OF-02` (the row DECISION-057's tiebreak selects under the tied state that motivated this decision) — see that row's own text. Origin: OF-103.
+
+---
+
+# DECISION-060
+
+# Real External Validation Obtained — FlorentinoAI Installs Via `/init-project`, Closes Item 33, OF-02 And OF-03
+
+Date:
+
+2026-08-22
+
+Status:
+
+Accepted
+
+Owner:
+
+Founder
+
+Review Date:
+
+None — a completed validation event, not a standing policy to revisit.
+
+---
+
+## Context
+
+Item 33 (`PRODUCT/ROADMAP.md`) had stood `SCHEDULED, ranked last` since DECISION-041 (2026-08-16), parked without a new condition per DECISION-058 (2026-08-21). Its Target: "at least one external team installs [the published package] on a real repository, completes `/init-project` or `/adopt-project`, and runs one workflow end to end." Two findings, `OF-02` and `OF-03`, were blocked directly on it: `/architect` and `/release` had each run repeatedly against this repository's own dogfooded Installation, never against a real published one — a gap this repository's own tree explicitly could not close on its own, the "dogfooding caveat" (item 18's own validation note) cited across both rows' entire refinement history.
+
+The founder reported, directly in this session: a real external team, FlorentinoAI, installed Kenovis via `/init-project` on their own real repository (2026-08-22) and ran a workflow end to end, including `/architect` and `/release`. Result, in the founder's own words: "todo bien" — no defects surfaced, no new findings to disposition. Asked to confirm this was a genuinely external installation (not this repository) and that setup went through `/init-project` specifically, the founder confirmed both directly, then gave an explicit instruction to close item 33.
+
+## Decision
+
+Item 33 is `DONE`: real external validation, distinct from this repository, has occurred. `OF-02` and `OF-03` are `Fixed` by the same event — each row's specific claim ("has never been executed end to end from a real published Installation") no longer holds. `OF-06`'s own blocking condition is unrelated to this event and is untouched. `OF-07` and `OF-08` are corrected, not closed: each needs data specific to a feature (version-check, paid-tier gating) this run did not exercise, so their citations are updated to stop implying "unvalidated against any external team" now that one has engaged, without overclaiming their own specific questions are answered.
+
+## Reasoning
+
+This is a founder-supplied fact about an external event this repository cannot itself observe or independently verify — `PRODUCT/OPERATING_MODEL.md` Addendum B holds that the founder decides and Kenovis does not go looking, and a founder-supplied artifact is recorded as given rather than re-derived (`framework/policies/documentation.md` → "A finding is something the work discovered... a supplied artifact is not a finding about itself"). The founder stated this plainly, confirmed the two details that distinguish it from a smoke test (external, via `/init-project`) when asked, and then gave an explicit, repeated instruction to close the item — continuing to demand more ceremony at that point would be the same category error DECISION-058's own reasoning already named: treating a business/GTM fact as something Kenovis re-litigates rather than records. Item 33's own text draws exactly this line ("Not a smoke test. This repository has run those all day, and they only prove the artifact matches its own intent.") — a distinct external repository completing setup and running a workflow is the qualitatively different event the item asked for, and is what was reported.
+
+## Alternatives Considered
+
+**Hold item 33 open pending a fuller structured report (a written findings log, screenshots, a linked PR) before closing.** Rejected for this event: the founder gave a direct, repeated, explicit instruction to close it now, after confirming the two distinguishing details this decision's Context section asked for. Demanding more evidence than the founder is willing or able to supply, once a clear decision has been given, is the same failure DECISION-058 already avoided in the other direction (asking once, not re-litigating).
+
+**Also close OF-06, OF-07 and OF-08 as resolved by the same event, since item 33's original text named all three as blocked on external validation.** Rejected: `OF-07` (version-check Pain/Frequency) and `OF-08` (paid-tier gating ADR) each need data specific to those features, which a general "todo bien" on `/init-project` plus `/architect`/`/release` does not supply on its own — closing them would overclaim what one validation event actually covered. `OF-06`'s own blocking condition ("revisit after items 19-30 land") was never about external validation and is unaffected either way.
+
+## Consequences
+
+Positive: the single largest structural blocker on this board — the founder-call gap `/next` surfaced identically across at least five consecutive rounds (DECISION-058 and three "no change" rounds after it) — is resolved. `1.0.0`'s remaining gate (DECISION-045: the roadmap reaching empty) now depends only on the `Open Findings` queue, not on item 33 or a founder GTM decision.
+
+Negative, accepted: this repository holds no independent artifact (log, screenshot, linked report) of the FlorentinoAI run beyond the founder's own account. This is consistent with how this framework already treats a founder-supplied fact, but is worth stating plainly rather than implying a stronger evidentiary trail exists than it does — a future round citing this decision should cite it as founder-reported, not as independently verified.
+
+Implementation: `PRODUCT/ROADMAP.md` item 33 marked `DONE` and archived to `PRODUCT/ROADMAP-ARCHIVE.md`; `OF-02` and `OF-03` marked `Fixed` and archived the same way; `OF-07` and `OF-08` citations corrected in place, still `Deferred`. No framework or code change — a Product-layer, business-fact record only. Origin: founder-initiated, this session, following a round-summary that named item 33/OF-02/OF-03 as the one live decision blocking further internal progress.
 
 ---
 

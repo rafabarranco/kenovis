@@ -6,6 +6,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This lo
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-08-22
+
+Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.16.0]. Minor rather than patch, decided at cut time: both entries below are low-risk fixes (a README content/packaging fix, a CI-guard false-positive fix) with no CLI behavior change for an existing Installation.
+
+No breaking changes for an existing Installation.
+
+### Fixed
+
+- **The published npm package page showed `cli/README.md`, an internal engineering changelog, instead of a description of what Kenovis is — the product's actual first impression on any external visitor.** `cli/README.md`, `PRODUCT/ROADMAP.md` OF-105. npm's package root is `cli/`, so `npm publish` ships `cli/README.md` as the registry's Readme tab; its old opening section was titled `cli/` and narrated internal Phase/DECISION history rather than the product. It now opens with the same pitch root `README.md` already carried, plus an `Install` section, ahead of the implementation-detail sections that follow.
+
+- **`check_item_findings.py`'s reverse-citation check could false-positive on a queue row that only quotes another row's `**Scheduled — item N**` phrasing as a backtick-fenced example, reading the quote as the row's own live status instead of its real, unquoted `**Fixed**` marker.** `.github/scripts/check_item_findings.py`. Found closing `PRODUCT/ROADMAP.md` item 33: `OF-100`'s own row narrates `OF-12`'s prior `Scheduled — item 33` phrasing as a worked example, wrapped in backticks, and that quoted text sits textually after `OF-100`'s real `**Fixed**` marker — so `matches[-1]` picked the quote, not the real status, and flagged `OF-100` as still-Scheduled-on-item-33 the moment item 33 closed. The check now excludes any `STATUS_WORD` match immediately preceded by a backtick, since a genuine disposition marker in this document's convention is always bare bold, never additionally fenced. Verified against both directions: a genuine unquoted `Scheduled — item N` citing a closed item is still caught, and the quoted-example case in `OF-100`'s own row is not.
+
 ## [0.16.0] - 2026-08-22
 
 Aligned with the `kenovis` npm package's own version, same as [0.2.0] through [0.15.0]. Minor rather than patch, decided at cut time per the standing instruction in `PRODUCT/ROADMAP.md` Phase 1 item 2: this release carries a CLI code change — the multi-tool adapter registry below, in the repository since 2026-08-18 but absent from the published [0.15.0] package its changelog entry originally sat under (`PRODUCT/ROADMAP.md` OF-104, see "Fixed" below).
